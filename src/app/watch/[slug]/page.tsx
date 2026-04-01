@@ -202,27 +202,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
         }}
       />
 
-      <div className="watch-page">
-        {/* ── Header ────────────────────────────────────────── */}
-        <header className="site-header">
-          <div className="site-header__inner">
-            <Link href="/" className="site-header__logo">
-              iku
-            </Link>
-            <nav className="site-header__nav">
-              <Link href="/" className="nav-link">
-                Feed
-              </Link>
-              <Link href="/browse" className="nav-link">
-                Browse
-              </Link>
-              <Link href="/tags" className="nav-link">
-                Tags
-              </Link>
-            </nav>
-          </div>
-        </header>
-
+      <div className="watch-page shell-content">
         <main>
           <div className="player-layout">
             {/* ── Main column ───────────────────────────────── */}

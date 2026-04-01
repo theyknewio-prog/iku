@@ -2257,3 +2257,299 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+/* ============================================================
+   APP SHELL — 3-COLUMN REDGIFS LAYOUT
+   Left sidebar (fixed, desktop) + main content + bottom nav (mobile)
+   ============================================================ */
+
+/* ── Sidebar dimensions ────────────────────────────────────── */
+:root {
+  --sidebar-w: 220px;          /* expanded (desktop) */
+  --sidebar-w-collapsed: 72px; /* icon-only at narrow desktop */
+  --header-h: 0px;             /* no top header in shell mode */
+}
+
+/* ── Shell wrapper ─────────────────────────────────────────── */
+.app-shell {
+  display: flex;
+  min-height: 100dvh;
+}
+
+/* ── Sidebar ───────────────────────────────────────────────── */
+.app-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-w-collapsed);
+  background: #111111;
+  border-right: 1px solid var(--color-border-subtle);
+  display: none; /* hidden on mobile */
+  flex-direction: column;
+  z-index: var(--z-sticky);
+  overflow: hidden;
+  transition: width var(--dur-normal) var(--ease-expo);
+}
+
+/* Expand on hover */
+.app-sidebar:hover {
+  width: var(--sidebar-w);
+}
+
+@media (min-width: 1024px) {
+  .app-sidebar {
+    display: flex;
+  }
+}
+
+/* Expanded at wider viewport by default */
+@media (min-width: 1280px) {
+  .app-sidebar {
+    width: var(--sidebar-w);
+  }
+  .app-sidebar:hover {
+    width: var(--sidebar-w);
+  }
+}
+
+/* ── Logo ──────────────────────────────────────────────────── */
+.sidebar-logo {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  height: 64px;
+  padding: 0 26px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  background: linear-gradient(135deg, #ff2080, #c44dff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-decoration: none;
+  white-space: nowrap;
+  line-height: 1;
+  border-bottom: 1px solid var(--color-border-subtle);
+  transition: filter var(--dur-fast) ease;
+}
+
+.sidebar-logo:hover {
+  filter: brightness(1.15);
+}
+
+/* ── Sidebar nav ───────────────────────────────────────────── */
+.sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 8px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+
+.sidebar-nav::-webkit-scrollbar { display: none; }
+
+.sidebar-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 10px;
+  border-radius: var(--radius-md);
+  color: var(--color-text-tertiary);
+  text-decoration: none;
+  min-height: 44px;
+  white-space: nowrap;
+  transition:
+    background var(--dur-fast) ease,
+    color var(--dur-fast) ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar-nav-item:hover {
+  background: #1a1a1a;
+  color: var(--color-text-primary);
+}
+
+.sidebar-nav-item--active {
+  color: var(--color-accent);
+  background: rgba(255, 32, 128, 0.08);
+}
+
+.sidebar-nav-item--active:hover {
+  background: rgba(255, 32, 128, 0.12);
+  color: var(--color-accent-hover);
+}
+
+/* Pink left indicator bar */
+.sidebar-nav-item--active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 6px; bottom: 6px;
+  width: 3px;
+  background: linear-gradient(180deg, #ff2080, #c44dff);
+  border-radius: 0 2px 2px 0;
+}
+
+.sidebar-nav-item__icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Icon always visible even in collapsed state — centered at 72px */
+  margin-left: 6px;
+}
+
+.sidebar-nav-item__label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  opacity: 1;
+  transition: opacity var(--dur-fast) ease;
+}
+
+/* Hide labels in collapsed state (only show when sidebar is full-width) */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .app-sidebar:not(:hover) .sidebar-nav-item__label {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .app-sidebar:not(:hover) .sidebar-logo {
+    /* keep logo glowing mark visible even collapsed */
+  }
+}
+
+/* ── Sidebar footer ────────────────────────────────────────── */
+.sidebar-footer {
+  padding: 16px 12px;
+  border-top: 1px solid var(--color-border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.sidebar-footer__link {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  text-decoration: none;
+  padding: 2px 0;
+  white-space: nowrap;
+  transition: color var(--dur-fast) ease;
+}
+
+.sidebar-footer__link:hover {
+  color: var(--color-text-secondary);
+}
+
+.sidebar-footer__copy {
+  font-size: 10px;
+  color: var(--color-text-disabled);
+  margin-top: 4px;
+  white-space: nowrap;
+}
+
+/* Hide sidebar footer text when collapsed */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .app-sidebar:not(:hover) .sidebar-footer {
+    opacity: 0;
+  }
+}
+
+/* ── Main content area ─────────────────────────────────────── */
+.app-main {
+  flex: 1;
+  min-width: 0;
+  /* On desktop: offset by sidebar width */
+}
+
+@media (min-width: 1024px) {
+  .app-main {
+    margin-left: var(--sidebar-w-collapsed);
+  }
+}
+
+@media (min-width: 1280px) {
+  .app-main {
+    margin-left: var(--sidebar-w);
+  }
+}
+
+/* Content inside main pages — reserve bottom nav space on mobile */
+.shell-content {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 1023px) {
+  .shell-content {
+    padding-bottom: 64px; /* bottom nav height */
+  }
+}
+
+/* ── Content tabs bar (homepage / section tabs) ────────────── */
+.content-tabs-bar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-raised);
+  background: rgba(10, 10, 10, 0.92);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid var(--color-border-subtle);
+  padding: 0 16px;
+}
+
+@media (min-width: 768px) {
+  .content-tabs-bar { padding: 0 24px; }
+}
+
+@media (min-width: 1024px) {
+  .content-tabs-bar { padding: 0 32px; }
+}
+
+.content-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.content-tab {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 18px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-tertiary);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  white-space: nowrap;
+  transition:
+    color var(--dur-fast) ease,
+    border-color var(--dur-fast) ease;
+  -webkit-tap-highlight-color: transparent;
+  margin-bottom: -1px; /* overlap border-bottom of parent */
+}
+
+.content-tab:hover {
+  color: var(--color-text-primary);
+}
+
+.content-tab--active {
+  color: var(--color-text-primary);
+  border-bottom-color: var(--color-accent);
+}
+
+/* Override: bottom nav hidden on desktop — already handled above,
+   but make explicit in context of app-shell */
+@media (min-width: 1024px) {
+  .bottom-nav { display: none; }
+}

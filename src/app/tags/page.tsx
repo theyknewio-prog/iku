@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
 import { getPopularTags, getPopularCharacters } from "@/lib/danbooru";
 import type { Metadata } from "next";
 
@@ -26,9 +24,7 @@ export default async function TagsPage() {
   ]);
 
   return (
-    <div>
-      <SiteHeader activePath="tags" />
-
+    <div className="shell-content">
       <main>
         <div className="page-container">
           {/* ── Page hero ─────────────────────────────────────── */}
@@ -97,7 +93,16 @@ export default async function TagsPage() {
           </section>
         </div>
 
-        <SiteFooter />
+        <footer className="site-footer">
+          <div className="page-container">
+            <div className="site-footer__links">
+              <a href="/terms" className="site-footer__link">Terms</a>
+              <a href="/privacy" className="site-footer__link">Privacy</a>
+              <a href="/dmca" className="site-footer__link">DMCA</a>
+            </div>
+            <p className="site-footer__copy">&copy; {new Date().getFullYear()} iku.gg</p>
+          </div>
+        </footer>
       </main>
     </div>
   );

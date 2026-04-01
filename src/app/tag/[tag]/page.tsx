@@ -3,8 +3,6 @@ import { Suspense } from "react";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { Pagination } from "@/components/Pagination";
-import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
 import { searchPosts } from "@/lib/danbooru";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
@@ -76,9 +74,7 @@ export default async function TagPage({ params, searchParams }: Props) {
   const relatedTags = RELATED_TAGS.filter((t) => t !== tag);
 
   return (
-    <div>
-      <SiteHeader activePath="tags" />
-
+    <div className="shell-content">
       <main>
         <div className="page-container">
           {/* ── Tag hero ─────────────────────────────────────── */}
@@ -179,7 +175,16 @@ export default async function TagPage({ params, searchParams }: Props) {
           </section>
         </div>
 
-        <SiteFooter />
+        <footer className="site-footer">
+          <div className="page-container">
+            <div className="site-footer__links">
+              <a href="/terms" className="site-footer__link">Terms</a>
+              <a href="/privacy" className="site-footer__link">Privacy</a>
+              <a href="/dmca" className="site-footer__link">DMCA</a>
+            </div>
+            <p className="site-footer__copy">&copy; {new Date().getFullYear()} iku.gg</p>
+          </div>
+        </footer>
       </main>
     </div>
   );
