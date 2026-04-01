@@ -10,13 +10,15 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "iku.gg — swipe anime",
-  description: "The best anime & hentai video feed. Swipe, discover, enjoy.",
+  title: "iku.gg — Free Hentai Videos | Stream Animated Hentai Online",
+  description: "Stream 65,000+ free hentai videos on iku.gg. The best animated hentai clips featuring your favorite anime characters. Browse by tag, character, or trending.",
+  keywords: ["hentai", "hentai videos", "animated hentai", "anime porn", "free hentai", "hentai streaming", "hentai clips"],
+  other: { rating: "adult" },
   metadataBase: new URL("https://iku.gg"),
-  robots: { index: false, follow: false },
+  robots: { index: true, follow: true },
   openGraph: {
-    title: "iku.gg",
-    description: "Swipe. Discover. Enjoy.",
+    title: "iku.gg — Free Hentai Videos",
+    description: "Stream 65,000+ free hentai videos. Browse animated hentai by tag, character, and score.",
     siteName: "iku",
     type: "website",
   },

@@ -1,8 +1,15 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { SearchBar } from "@/components/SearchBar";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { Suspense } from "react";
 import { searchPosts, getPopularTags, getPopularCharacters } from "@/lib/danbooru";
+
+export const metadata: Metadata = {
+  title: "Browse Hentai Videos — Free Animated Hentai Clips | iku.gg",
+  description: "Browse 65,000+ free hentai videos. Watch the best animated hentai clips sorted by score, character, and tag. Stream hentai anime online.",
+  other: { rating: "adult" },
+};
 
 export default async function BrowsePage() {
   const [trending, newest, popularTags, popularCharacters] = await Promise.all([
@@ -36,15 +43,13 @@ export default async function BrowsePage() {
         <div className="home-hero-bg">
           <div className="page-container" style={{ paddingTop: "48px", paddingBottom: "40px", position: "relative", zIndex: 1 }}>
             <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--color-accent)", marginBottom: "8px" }}>
-              Browse
+              Free Hentai Videos
             </p>
             <h1 style={{ fontSize: "clamp(1.75rem, 5vw, 2.75rem)", fontWeight: 800, letterSpacing: "-0.03em", color: "var(--color-text-primary)", marginBottom: "8px", lineHeight: 1.1 }}>
-              Discover anime
+              Browse Hentai
             </h1>
             <p style={{ fontSize: "var(--text-base)", color: "var(--color-text-tertiary)", maxWidth: "480px", lineHeight: 1.65 }}>
-              {trending.data.length > 0
-                ? `${trending.data.length.toLocaleString()}+ animated clips sorted by score, recency, and favorites.`
-                : "Browse thousands of animated clips."}
+              Stream 65,000+ free hentai videos. The best animated hentai clips sorted by score, character, and tag.
             </p>
           </div>
         </div>
@@ -55,7 +60,7 @@ export default async function BrowsePage() {
             <div className="section-header">
               <h2 className="section-title">
                 <span className="section-title__bar" aria-hidden />
-                Trending now
+                Trending Hentai
               </h2>
             </div>
             <div className="trending-strip">
@@ -74,7 +79,7 @@ export default async function BrowsePage() {
             <div className="section-header">
               <h2 className="section-title">
                 <span className="section-title__bar" aria-hidden />
-                New uploads
+                New Hentai Videos
               </h2>
             </div>
             <div className="video-grid">
@@ -91,7 +96,7 @@ export default async function BrowsePage() {
             <div className="section-header">
               <h2 className="section-title">
                 <span className="section-title__bar" aria-hidden />
-                Popular tags
+                Popular Hentai Tags
               </h2>
             </div>
             <div className="tag-grid-featured">
@@ -111,7 +116,7 @@ export default async function BrowsePage() {
             <div className="section-header">
               <h2 className="section-title">
                 <span className="section-title__bar" aria-hidden />
-                Popular characters
+                Popular Hentai Characters
               </h2>
             </div>
             <div className="tag-grid-featured">
