@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const PROXY_URL = "http://127.0.0.1:3001";
+const PROXY_URL = process.env.PROXY_URL || "http://10.0.0.1:3001";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
