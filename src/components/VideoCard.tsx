@@ -1,21 +1,12 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import Hls from "hls.js";
+import type { FeedVideo } from "./SwipeFeed";
 
-interface VideoItem {
-  id: number;
-  slug: string;
-  title: string;
-  cover: string;
-  views: number;
-  tags: string[];
-}
-
-function formatViews(views: number): string {
-  if (views >= 1_000_000) return `${(views / 1_000_000).toFixed(1)}M`;
-  if (views >= 1_000) return `${Math.floor(views / 1_000)}K`;
-  return String(views);
+function formatSize(bytes: number): string {
+  if (bytes >= 1_000_000) return `${(bytes / 1_000_000).toFixed(1)}MB`;
+  if (bytes >= 1_000) return `${Math.floor(bytes / 1_000)}KB`;
+  return `${bytes}B`;
 }
 
 export function VideoCard({
@@ -23,77 +14,27 @@ export function VideoCard({
   index,
   isActive,
 }: {
-  video: VideoItem;
+  video: FeedVideo;
   index: number;
   isActive: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const hlsRef = useRef<Hls | null>(null);
   const [liked, setLiked] = useState(false);
   const [muted, setMuted] = useState(true);
-  const [streamUrl, setStreamUrl] = useState<string | null>(null);
-  const [resolving, setResolving] = useState(false);
-  const [error, setError] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
-  // Resolve stream URL when active
-  useEffect(() => {
-    if (!isActive || streamUrl || resolving) return;
-
-    setResolving(true);
-    fetch(`/api/resolve?slug=${video.slug}`)
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.url) {
-          setStreamUrl(data.url);
-        } else {
-          setError(true);
-        }
-      })
-      .catch(() => setError(true))
-      .finally(() => setResolving(false));
-  }, [isActive, video.slug, streamUrl, resolving]);
-
-  // HLS playback
+  // Autoplay when active, pause when not
   useEffect(() => {
     const el = videoRef.current;
-    if (!el || !streamUrl) return;
+    if (!el) return;
 
-    if (!isActive) {
+    if (isActive) {
+      el.currentTime = 0;
+      el.play().catch(() => {});
+    } else {
       el.pause();
-      return;
     }
-
-    if (Hls.isSupported()) {
-      if (hlsRef.current) hlsRef.current.destroy();
-
-      const hls = new Hls({
-        maxBufferLength: 15,
-        maxMaxBufferLength: 30,
-        startLevel: -1,
-      });
-      hls.loadSource(streamUrl);
-      hls.attachMedia(el);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        el.play().catch(() => {});
-      });
-      hls.on(Hls.Events.ERROR, (_, data) => {
-        if (data.fatal) setError(true);
-      });
-      hlsRef.current = hls;
-    } else if (el.canPlayType("application/vnd.apple.mpegurl")) {
-      el.src = streamUrl;
-      el.addEventListener("loadedmetadata", () => el.play().catch(() => {}), {
-        once: true,
-      });
-    }
-
-    return () => {
-      if (hlsRef.current) {
-        hlsRef.current.destroy();
-        hlsRef.current = null;
-      }
-    };
-  }, [isActive, streamUrl]);
+  }, [isActive]);
 
   const toggleMute = () => {
     if (videoRef.current) {
@@ -102,57 +43,33 @@ export function VideoCard({
     }
   };
 
+  // Only load video src when near active (±2 positions)
+  const shouldLoad = Math.abs(index - (isActive ? index : index)) <= 2 || isActive;
+  const title = video.character
+    ? `${video.character.replace(/_/g, " ")}${video.copyright ? ` — ${video.copyright.replace(/_/g, " ")}` : ""}`
+    : video.tags.slice(0, 3).map(t => t.replace(/_/g, " ")).join(", ");
+
   return (
     <div className="feed-item" data-index={index}>
-      {/* Cover/loading state */}
-      {(!streamUrl || resolving) && isActive && (
+      {/* Loading state */}
+      {!loaded && isActive && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black">
-          <img
-            src={video.cover}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover opacity-30 blur-md"
-          />
-          <div className="z-20 flex flex-col items-center gap-3">
-            <div className="loader" />
-            <span className="text-[#888] text-xs">loading video...</span>
-          </div>
+          <div className="loader" />
         </div>
       )}
 
-      {/* Error state */}
-      {error && isActive && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black">
-          <img
-            src={video.cover}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover opacity-20 blur-md"
-          />
-          <div className="z-20 flex flex-col items-center gap-3">
-            <span className="text-[#888] text-sm">failed to load — swipe to next</span>
-          </div>
-        </div>
-      )}
-
-      {/* Video poster when not active */}
-      {!isActive && (
-        <div className="absolute inset-0 bg-black">
-          <img
-            src={video.cover}
-            alt=""
-            className="w-full h-full object-cover opacity-60"
-            loading="lazy"
-          />
-        </div>
-      )}
-
-      {/* Video player */}
+      {/* Video */}
       <video
         ref={videoRef}
+        src={shouldLoad ? video.videoUrl : undefined}
+        poster={video.thumbnail}
         loop
         muted={muted}
         playsInline
+        preload={isActive ? "auto" : "none"}
         className="w-full h-full object-contain bg-black"
         onClick={toggleMute}
+        onLoadedData={() => setLoaded(true)}
       />
 
       {/* Side actions */}
@@ -166,13 +83,13 @@ export function VideoCard({
           >
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
           </svg>
-          <span>{liked ? "liked" : "like"}</span>
+          <span>{video.score}</span>
         </button>
 
         <button
           className="feed-action-btn"
           onClick={() =>
-            navigator.share?.({ title: video.title, url: window.location.href })
+            navigator.share?.({ title: "iku.gg", url: window.location.href })
           }
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -203,19 +120,23 @@ export function VideoCard({
 
       {/* Bottom overlay */}
       <div className="feed-overlay">
-        <h2 className="text-white font-semibold text-sm mb-2 line-clamp-2">
-          {video.title}
+        <h2 className="text-white font-semibold text-sm mb-2 line-clamp-1">
+          {title}
         </h2>
 
         <div className="flex flex-wrap gap-1.5 mb-2">
-          {video.tags.map((tag) => (
+          {video.tags.slice(0, 5).map((tag) => (
             <span key={tag} className="tag-pill">
               {tag.replace(/_/g, " ")}
             </span>
           ))}
         </div>
 
-        <p className="text-xs text-white/40">{formatViews(video.views)} views</p>
+        {video.artist && (
+          <p className="text-xs text-white/40">
+            🎨 {video.artist.replace(/_/g, " ")} · {formatSize(video.size)}
+          </p>
+        )}
       </div>
     </div>
   );

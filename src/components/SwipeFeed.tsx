@@ -3,18 +3,23 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { VideoCard } from "./VideoCard";
 
-interface VideoItem {
+export interface FeedVideo {
   id: number;
-  slug: string;
-  title: string;
-  cover: string;
-  views: number;
+  videoUrl: string;
+  thumbnail: string;
+  score: number;
   tags: string[];
+  character: string;
+  artist: string;
+  copyright: string;
+  width: number;
+  height: number;
+  size: number;
 }
 
 export function SwipeFeed() {
-  const [videos, setVideos] = useState<VideoItem[]>([]);
-  const [page, setPage] = useState(0);
+  const [videos, setVideos] = useState<FeedVideo[]>([]);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -41,7 +46,7 @@ export function SwipeFeed() {
   }, []);
 
   useEffect(() => {
-    fetchVideos(0);
+    fetchVideos(1);
   }, [fetchVideos]);
 
   useEffect(() => {
@@ -55,14 +60,14 @@ export function SwipeFeed() {
             const index = Number(entry.target.getAttribute("data-index"));
             if (!isNaN(index)) {
               setActiveIndex(index);
-              if (index >= videos.length - 4) {
+              if (index >= videos.length - 5) {
                 fetchVideos(page + 1);
               }
             }
           }
         });
       },
-      { root: container, threshold: 0.7 }
+      { root: container, threshold: 0.6 }
     );
 
     const items = container.querySelectorAll(".feed-item");
@@ -76,7 +81,7 @@ export function SwipeFeed() {
       <div className="flex items-center justify-center h-dvh bg-[#0a0a0a]">
         <div className="flex flex-col items-center gap-4">
           <div className="loader" />
-          <span className="text-[#888] text-sm">loading iku...</span>
+          <p className="text-[#888] text-sm">loading iku...</p>
         </div>
       </div>
     );
@@ -86,7 +91,7 @@ export function SwipeFeed() {
     <div ref={containerRef} className="feed-container">
       {videos.map((video, index) => (
         <VideoCard
-          key={video.id}
+          key={`${video.id}-${index}`}
           video={video}
           index={index}
           isActive={index === activeIndex}
