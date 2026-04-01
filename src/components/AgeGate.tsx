@@ -15,10 +15,18 @@ export function AgeGate({ children }: { children: React.ReactNode }) {
     setVerified(true);
   };
 
-  // Loading state
+  /* Hydration loading state */
   if (verified === null) {
     return (
-      <div className="flex items-center justify-center h-dvh bg-[#0a0a0a]">
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100dvh",
+          background: "#0a0a0a",
+        }}
+      >
         <div className="loader" />
       </div>
     );
@@ -27,32 +35,41 @@ export function AgeGate({ children }: { children: React.ReactNode }) {
   if (!verified) {
     return (
       <div className="age-gate">
-        <div className="flex flex-col items-center gap-6 px-8 max-w-sm text-center">
+        <div className="age-gate__card">
           {/* Logo */}
-          <h1 className="text-4xl font-bold tracking-tight">
-            <span className="text-white">iku</span>
-            <span className="text-accent">.gg</span>
-          </h1>
+          <div className="age-gate__logo">iku.gg</div>
+          <div className="age-gate__tagline">Anime · Uncensored · Free</div>
 
-          <p className="text-text-secondary text-sm leading-relaxed">
-            This website contains adult content.
+          <h1 className="age-gate__title">Adults only</h1>
+          <p className="age-gate__sub">
+            This site contains explicit adult content.
             <br />
-            You must be at least <strong className="text-white">18 years old</strong> to enter.
+            You must be at least{" "}
+            <strong>18 years old</strong> to enter.
           </p>
 
-          <button
-            onClick={handleVerify}
-            className="w-full py-3.5 rounded-xl bg-accent text-black font-semibold text-base transition-all hover:brightness-110 active:scale-[0.98]"
-          >
-            I am 18 or older — Enter
-          </button>
+          <div className="age-gate__actions">
+            <button onClick={handleVerify} className="age-gate__enter">
+              I am 18 or older &mdash; Enter
+            </button>
+            <a
+              href="https://google.com"
+              className="age-gate__leave"
+            >
+              I am under 18 &mdash; Leave
+            </a>
+          </div>
 
-          <a
-            href="https://google.com"
-            className="text-text-secondary text-xs hover:text-white transition-colors"
-          >
-            I am under 18 — Leave
-          </a>
+          <p className="age-gate__legal">
+            By entering you agree to our{" "}
+            <a href="/terms">Terms of Service</a> and confirm you are of
+            legal age in your jurisdiction. All content is user-submitted
+            from{" "}
+            <a href="https://danbooru.donmai.us" target="_blank" rel="noopener noreferrer">
+              Danbooru
+            </a>
+            .
+          </p>
         </div>
       </div>
     );

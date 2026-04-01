@@ -4,14 +4,16 @@ import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
   variable: "--font-inter",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "iku — swipe hentai",
-  description: "The TikTok of hentai. Swipe through the best anime content.",
+  title: "iku.gg — swipe anime",
+  description: "The best anime & hentai video feed. Swipe, discover, enjoy.",
   metadataBase: new URL("https://iku.gg"),
-  robots: { index: false },
+  robots: { index: false, follow: false },
   openGraph: {
     title: "iku.gg",
     description: "Swipe. Discover. Enjoy.",
@@ -26,6 +28,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   themeColor: "#0a0a0a",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({
@@ -34,7 +37,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable}`}>
+    <html lang="en" className={inter.variable} data-theme="dark">
       <body>{children}</body>
     </html>
   );
