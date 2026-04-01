@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
+import Hls from "hls.js";
 
 interface VideoItem {
   id: string;
@@ -21,21 +22,73 @@ interface VideoCardProps {
 
 export function VideoCard({ video, index, isActive }: VideoCardProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const hlsRef = useRef<Hls | null>(null);
   const [liked, setLiked] = useState(false);
   const [muted, setMuted] = useState(true);
+  const [loading, setLoading] = useState(true);
 
-  // Auto play/pause based on visibility
+  // HLS setup + play/pause
   useEffect(() => {
     const el = videoRef.current;
     if (!el) return;
 
     if (isActive) {
-      el.currentTime = 0;
-      el.play().catch(() => {});
+      const url = video.embedUrl;
+
+      if (url.includes(".m3u8")) {
+        // HLS stream
+        if (Hls.isSupported()) {
+          if (hlsRef.current) {
+            hlsRef.current.destroy();
+          }
+          const hls = new Hls({
+            maxBufferLength: 10,
+            maxMaxBufferLength: 20,
+          });
+          hls.loadSource(url);
+          hls.attachMedia(el);
+          hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            setLoading(false);
+            el.play().catch(() => {});
+          });
+          hls.on(Hls.Events.ERROR, (_, data) => {
+            if (data.fatal) {
+              setLoading(false);
+            }
+          });
+          hlsRef.current = hls;
+        } else if (el.canPlayType("application/vnd.apple.mpegurl")) {
+          // Safari native HLS
+          el.src = url;
+          el.addEventListener("loadedmetadata", () => {
+            setLoading(false);
+            el.play().catch(() => {});
+          }, { once: true });
+        }
+      } else {
+        // Direct MP4/WebM
+        el.src = url;
+        el.addEventListener("loadeddata", () => {
+          setLoading(false);
+          el.play().catch(() => {});
+        }, { once: true });
+      }
     } else {
+      // Not active — pause and cleanup
       el.pause();
+      if (hlsRef.current) {
+        hlsRef.current.destroy();
+        hlsRef.current = null;
+      }
     }
-  }, [isActive]);
+
+    return () => {
+      if (hlsRef.current) {
+        hlsRef.current.destroy();
+        hlsRef.current = null;
+      }
+    };
+  }, [isActive, video.embedUrl]);
 
   const toggleMute = () => {
     if (videoRef.current) {
@@ -46,27 +99,35 @@ export function VideoCard({ video, index, isActive }: VideoCardProps) {
 
   const handleLike = () => {
     setLiked(!liked);
-    // TODO: store liked tags in localStorage for recommendation engine
   };
 
   return (
     <div className="feed-item" data-index={index}>
+      {/* Poster/thumbnail while loading */}
+      {loading && isActive && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
+          <img
+            src={video.thumbnail}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover opacity-40 blur-sm"
+          />
+          <div className="loader z-20" />
+        </div>
+      )}
+
       {/* Video player */}
       <video
         ref={videoRef}
-        src={isActive || Math.abs(index) < 3 ? video.embedUrl : undefined}
         poster={video.thumbnail}
         loop
         muted={muted}
         playsInline
-        preload={isActive ? "auto" : "metadata"}
         className="w-full h-full object-contain bg-black"
         onClick={toggleMute}
       />
 
       {/* Side actions */}
       <div className="feed-actions">
-        {/* Like */}
         <button className="feed-action-btn" onClick={handleLike}>
           <svg
             viewBox="0 0 24 24"
@@ -79,7 +140,6 @@ export function VideoCard({ video, index, isActive }: VideoCardProps) {
           <span>{liked ? "liked" : "like"}</span>
         </button>
 
-        {/* Share */}
         <button
           className="feed-action-btn"
           onClick={() => {
@@ -96,7 +156,6 @@ export function VideoCard({ video, index, isActive }: VideoCardProps) {
           <span>share</span>
         </button>
 
-        {/* Sound toggle */}
         <button className="feed-action-btn" onClick={toggleMute}>
           {muted ? (
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -113,22 +172,17 @@ export function VideoCard({ video, index, isActive }: VideoCardProps) {
           )}
           <span>{muted ? "unmute" : "mute"}</span>
         </button>
-
-        {/* Source */}
-        <button className="feed-action-btn opacity-50">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="16" x2="12" y2="12" />
-            <line x1="12" y1="8" x2="12.01" y2="8" />
-          </svg>
-          <span>{video.source}</span>
-        </button>
       </div>
 
-      {/* Bottom overlay with info */}
+      {/* Bottom overlay */}
       <div className="feed-overlay">
+        {/* Title */}
+        <h2 className="text-white font-semibold text-sm mb-2 line-clamp-2">
+          {video.title}
+        </h2>
+
         {/* Tags */}
-        <div className="flex flex-wrap gap-1.5 mb-3">
+        <div className="flex flex-wrap gap-1.5 mb-2">
           {video.tags.slice(0, 5).map((tag) => (
             <span key={tag} className="tag-pill">
               {tag.replace(/_/g, " ")}
@@ -137,11 +191,9 @@ export function VideoCard({ video, index, isActive }: VideoCardProps) {
         </div>
 
         {/* Views */}
-        {video.views && video.views !== "0" && (
-          <p className="text-xs text-white/50">
-            ★ {video.views} score
-          </p>
-        )}
+        <p className="text-xs text-white/50">
+          {video.views} views
+        </p>
       </div>
     </div>
   );
