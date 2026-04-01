@@ -7,11 +7,13 @@ interface VideoItem {
   id: string;
   title: string;
   videoId: string;
+  videoUrl: string;
   thumbnail: string;
   duration: string;
   views: string;
   tags: string[];
   source: string;
+  type: "direct" | "embed";
 }
 
 export function SwipeFeed() {

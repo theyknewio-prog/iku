@@ -1,16 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useEffect, useState } from "react";
 
 interface VideoItem {
   id: string;
   title: string;
   videoId: string;
+  videoUrl: string;
   thumbnail: string;
   duration: string;
   views: string;
   tags: string[];
   source: string;
+  type: "direct" | "embed";
 }
 
 interface VideoCardProps {
@@ -20,35 +22,64 @@ interface VideoCardProps {
 }
 
 export function VideoCard({ video, index, isActive }: VideoCardProps) {
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [liked, setLiked] = useState(false);
+  const [muted, setMuted] = useState(true);
 
-  const embedUrl = `https://www.xvideos.com/embedframe/${video.videoId}`;
+  // Auto play/pause for direct videos
+  useEffect(() => {
+    if (video.type !== "direct") return;
+    const el = videoRef.current;
+    if (!el) return;
+
+    if (isActive) {
+      el.currentTime = 0;
+      el.play().catch(() => {});
+    } else {
+      el.pause();
+    }
+  }, [isActive, video.type]);
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+      setMuted(!muted);
+    }
+  };
+
+  const shouldLoad = isActive || Math.abs(index) <= 2;
 
   return (
     <div className="feed-item" data-index={index}>
-      {/* Embed player — only load when active or near active */}
-      {isActive || Math.abs(index) <= 1 ? (
-        <iframe
-          src={embedUrl}
-          className="w-full h-full border-0"
-          allowFullScreen
-          allow="autoplay"
-          loading={isActive ? "eager" : "lazy"}
+      {/* Video content */}
+      {video.type === "direct" ? (
+        // Direct MP4/WebM from Gelbooru
+        <video
+          ref={videoRef}
+          src={shouldLoad ? video.videoUrl : undefined}
+          poster={video.thumbnail}
+          loop
+          muted={muted}
+          playsInline
+          preload={isActive ? "auto" : "none"}
+          className="w-full h-full object-contain bg-black"
+          onClick={toggleMute}
         />
       ) : (
-        /* Placeholder with thumbnail */
-        <div className="w-full h-full bg-black flex items-center justify-center">
-          {video.thumbnail ? (
-            <img
-              src={video.thumbnail}
-              alt=""
-              className="w-full h-full object-cover opacity-60"
-              loading="lazy"
-            />
-          ) : (
+        // Embedded iframe (XVideos, PornHub, etc)
+        shouldLoad ? (
+          <iframe
+            src={video.videoUrl}
+            className="w-full h-full border-0"
+            allowFullScreen
+            allow="autoplay"
+            loading={isActive ? "eager" : "lazy"}
+          />
+        ) : (
+          <div className="w-full h-full bg-black flex items-center justify-center">
             <div className="loader" />
-          )}
-        </div>
+          </div>
+        )
       )}
 
       {/* Side actions */}
@@ -80,6 +111,25 @@ export function VideoCard({ video, index, isActive }: VideoCardProps) {
           </svg>
           <span>share</span>
         </button>
+
+        {video.type === "direct" && (
+          <button className="feed-action-btn" onClick={toggleMute}>
+            {muted ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                <line x1="23" y1="9" x2="17" y2="15" />
+                <line x1="17" y1="9" x2="23" y2="15" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+              </svg>
+            )}
+            <span>{muted ? "unmute" : "mute"}</span>
+          </button>
+        )}
       </div>
 
       {/* Bottom overlay */}
@@ -96,9 +146,10 @@ export function VideoCard({ video, index, isActive }: VideoCardProps) {
           ))}
         </div>
 
-        {video.duration && (
-          <p className="text-xs text-white/50">{video.duration}</p>
-        )}
+        <div className="flex items-center gap-2 text-xs text-white/40">
+          {video.views && video.views !== "0" && <span>★ {video.views}</span>}
+          <span>{video.source}</span>
+        </div>
       </div>
     </div>
   );
