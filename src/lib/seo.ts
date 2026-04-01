@@ -1,0 +1,106 @@
+import type { Metadata } from "next";
+import type { Video } from "@/types/video";
+
+const SITE = "https://iku.gg";
+const NAME = "iku.gg";
+
+function humanize(tag: string): string {
+  return tag.replace(/_/g, " ");
+}
+
+function videoTitle(v: Video): string {
+  const char = v.characters[0] ? humanize(v.characters[0]) : "";
+  const copy = v.copyrights[0] ? humanize(v.copyrights[0]) : "";
+  if (char && copy) return `${char} — ${copy}`;
+  if (char) return char;
+  if (copy) return copy;
+  return v.tags.slice(0, 3).map(humanize).join(", ") || `Video #${v.id}`;
+}
+
+export function buildVideoMetadata(video: Video): Metadata {
+  const title = videoTitle(video);
+  const tags = [...video.characters, ...video.tags].slice(0, 5).map(humanize).join(", ");
+  const pageTitle = `${title} Hentai | ${NAME}`;
+  const description = `Watch free ${title} hentai video. ${tags ? `Tags: ${tags}.` : ""} Stream animated hentai clips on iku.gg.`;
+  const canonical = `${SITE}/watch/${video.slug}`;
+
+  return {
+    title: pageTitle,
+    description,
+    keywords: [title, "hentai", "animated hentai", "free hentai", ...video.characters.slice(0, 3).map(humanize)],
+    other: { rating: "adult" },
+    alternates: { canonical },
+    openGraph: {
+      title: pageTitle,
+      description,
+      url: canonical,
+      siteName: NAME,
+      type: "video.other",
+      images: video.thumbnail ? [{ url: video.thumbnail, alt: title }] : undefined,
+      videos: video.url ? [{ url: video.url, type: "video/mp4", width: video.width, height: video.height }] : undefined,
+    },
+    twitter: {
+      card: "player",
+      title: pageTitle,
+      description,
+      images: video.thumbnail ? [video.thumbnail] : undefined,
+    },
+    robots: { index: true, follow: true },
+  };
+}
+
+export function buildTagMetadata(tagName: string, videoCount: number, page: number): Metadata {
+  const label = humanize(tagName);
+  const pageTitle = page > 1
+    ? `${label} Hentai Videos — Page ${page} | ${NAME}`
+    : `${label} Hentai Videos — Best ${label} Anime Porn | ${NAME}`;
+  const description = `Watch ${videoCount > 0 ? `${videoCount.toLocaleString()}+` : "free"} ${label} hentai videos on iku.gg. Stream the best animated ${label} hentai clips.`;
+  const canonical = page > 1
+    ? `${SITE}/tag/${encodeURIComponent(tagName)}?page=${page}`
+    : `${SITE}/tag/${encodeURIComponent(tagName)}`;
+
+  return {
+    title: pageTitle,
+    description,
+    keywords: [label, `${label} hentai`, "hentai", "animated hentai", "free hentai"],
+    other: { rating: "adult" },
+    alternates: { canonical },
+    openGraph: { title: pageTitle, description, url: canonical, siteName: NAME, type: "website" },
+    robots: page > 1 ? { index: false, follow: true } : { index: true, follow: true },
+  };
+}
+
+export function buildVideoJsonLd(video: Video): object {
+  const title = videoTitle(video);
+  return {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    name: `${title} hentai`,
+    description: `${title} hentai animated video. Stream free on iku.gg.`,
+    thumbnailUrl: video.thumbnail || undefined,
+    contentUrl: video.url || undefined,
+    embedUrl: `${SITE}/watch/${video.slug}`,
+    uploadDate: video.createdAt.toISOString(),
+    duration: video.duration ? `PT${Math.floor(video.duration)}S` : undefined,
+    isFamilyFriendly: false,
+    interactionStatistic: {
+      "@type": "InteractionCounter",
+      interactionType: "https://schema.org/LikeAction",
+      userInteractionCount: video.score,
+    },
+    keywords: [title, "hentai", ...video.tags.slice(0, 5).map(humanize)].join(", "),
+  };
+}
+
+export function buildBreadcrumbJsonLd(items: { name: string; url: string }[]): object {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  };
+}

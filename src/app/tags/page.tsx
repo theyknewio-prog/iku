@@ -1,0 +1,104 @@
+import Link from "next/link";
+import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooter } from "@/components/SiteFooter";
+import { getPopularTags, getPopularCharacters } from "@/lib/danbooru";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Hentai Tags — Browse All Categories | iku.gg",
+  description:
+    "Browse all hentai video tags on iku.gg. Find your favorite animated hentai categories, characters, and styles.",
+  other: { rating: "adult" },
+  robots: { index: true, follow: true },
+  openGraph: {
+    title: "Hentai Tags — Browse All Categories | iku.gg",
+    description:
+      "Explore all hentai tags and categories on iku.gg. Stream free animated hentai by tag.",
+    siteName: "iku.gg",
+    type: "website",
+  },
+};
+
+export default async function TagsPage() {
+  const [popularTags, popularCharacters] = await Promise.all([
+    getPopularTags(60),
+    getPopularCharacters(40),
+  ]);
+
+  return (
+    <div>
+      <SiteHeader activePath="tags" />
+
+      <main>
+        <div className="page-container">
+          {/* ── Page hero ─────────────────────────────────────── */}
+          <div className="tag-hero">
+            <p className="tag-hero__label">All Categories</p>
+            <h1 className="tag-hero__title">Browse Hentai Tags</h1>
+            <p
+              style={{
+                color: "var(--color-text-secondary)",
+                fontSize: "var(--text-sm)",
+                marginTop: "8px",
+              }}
+            >
+              {popularTags.length} popular tags to explore
+            </p>
+          </div>
+
+          {/* ── General tags ──────────────────────────────────── */}
+          <section className="page-section">
+            <div className="section-header">
+              <h2 className="section-title">
+                <span className="section-title__bar" aria-hidden />
+                Popular Hentai Tags
+              </h2>
+            </div>
+            <div className="tag-grid">
+              {popularTags.map((tag) => (
+                <Link
+                  key={tag.name}
+                  href={`/tag/${tag.name}`}
+                  className="tag-pill tag-pill--dark"
+                >
+                  {tag.name.replace(/_/g, " ")}
+                  <span className="tag-pill__count">
+                    {tag.count.toLocaleString()}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </section>
+
+          <div className="divider" />
+
+          {/* ── Character tags ────────────────────────────────── */}
+          <section className="page-section">
+            <div className="section-header">
+              <h2 className="section-title">
+                <span className="section-title__bar" aria-hidden />
+                Popular Hentai Characters
+              </h2>
+            </div>
+            <div className="tag-grid">
+              {popularCharacters.map((char) => (
+                <Link
+                  key={char.name}
+                  href={`/tag/${char.name}`}
+                  className="tag-pill tag-pill--dark"
+                >
+                  {char.name.replace(/_/g, " ")}
+                  <span className="tag-pill__count">
+                    {char.count.toLocaleString()}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        <SiteFooter />
+      </main>
+    </div>
+  );
+}

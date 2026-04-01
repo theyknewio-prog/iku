@@ -57,7 +57,7 @@ export function ThumbnailCard({
   const displayFavs  = formatNumber(video.favorites);
 
   return (
-    <Link href={`/v/${video.slug}`} className="video-card" prefetch={false}>
+    <Link href={`/watch/${video.slug}`} className="video-card" prefetch={false}>
       {/* ── Thumbnail media area ─────────────────────────── */}
       <div className="video-card__media">
         {video.thumbnail ? (
