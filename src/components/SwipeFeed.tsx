@@ -4,16 +4,12 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { VideoCard } from "./VideoCard";
 
 interface VideoItem {
-  id: string;
+  id: number;
+  slug: string;
   title: string;
-  videoId: string;
-  videoUrl: string;
-  thumbnail: string;
-  duration: string;
-  views: string;
+  cover: string;
+  views: number;
   tags: string[];
-  source: string;
-  type: "direct" | "embed";
 }
 
 export function SwipeFeed() {
@@ -32,7 +28,7 @@ export function SwipeFeed() {
       const res = await fetch(`/api/feed?page=${pageNum}`);
       const data = await res.json();
 
-      if (data.videos.length > 0) {
+      if (data.videos && data.videos.length > 0) {
         setVideos((prev) => [...prev, ...data.videos]);
         setPage(pageNum);
       }
@@ -44,12 +40,10 @@ export function SwipeFeed() {
     }
   }, []);
 
-  // Initial load
   useEffect(() => {
     fetchVideos(0);
   }, [fetchVideos]);
 
-  // Intersection observer for active video detection + infinite scroll
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -61,8 +55,6 @@ export function SwipeFeed() {
             const index = Number(entry.target.getAttribute("data-index"));
             if (!isNaN(index)) {
               setActiveIndex(index);
-
-              // Load more when near the end
               if (index >= videos.length - 4) {
                 fetchVideos(page + 1);
               }
@@ -70,10 +62,7 @@ export function SwipeFeed() {
           }
         });
       },
-      {
-        root: container,
-        threshold: 0.7,
-      }
+      { root: container, threshold: 0.7 }
     );
 
     const items = container.querySelectorAll(".feed-item");
@@ -87,7 +76,7 @@ export function SwipeFeed() {
       <div className="flex items-center justify-center h-dvh bg-[#0a0a0a]">
         <div className="flex flex-col items-center gap-4">
           <div className="loader" />
-          <span className="text-text-secondary text-sm">loading iku...</span>
+          <span className="text-[#888] text-sm">loading iku...</span>
         </div>
       </div>
     );
@@ -103,13 +92,6 @@ export function SwipeFeed() {
           isActive={index === activeIndex}
         />
       ))}
-
-      {/* Load more trigger */}
-      {videos.length > 0 && (
-        <div className="feed-item flex items-center justify-center">
-          <div className="loader" />
-        </div>
-      )}
     </div>
   );
 }
