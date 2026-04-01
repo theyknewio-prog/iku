@@ -3,112 +3,79 @@ import { NextRequest, NextResponse } from "next/server";
 interface VideoItem {
   id: string;
   title: string;
-  embedUrl: string;
+  videoId: string;
   thumbnail: string;
   duration: string;
   views: string;
   tags: string[];
-  source: string;
+  source: "xvideos";
 }
 
-// Fetch hentai videos from hanime.tv search API
-async function fetchHanime(page: number): Promise<VideoItem[]> {
+// Scrape XVideos hentai tag page for video IDs and metadata
+async function fetchXVideos(page: number): Promise<VideoItem[]> {
   try {
-    const res = await fetch("https://search.htv-services.com/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        search_text: "",
-        tags: [],
-        tags_mode: "AND",
-        brands: [],
-        blacklist: [],
-        order_by: "likes",
-        ordering: "desc",
-        page,
-      }),
+    const url = `https://www.xvideos.com/tags/hentai/${page}`;
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        Accept: "text/html,application/xhtml+xml",
+      },
       next: { revalidate: 600 },
     });
 
     if (!res.ok) return [];
 
-    const data = await res.json();
-    const hits = typeof data.hits === "string" ? JSON.parse(data.hits) : data.hits;
-    if (!Array.isArray(hits)) return [];
+    const html = await res.text();
 
-    // For each video, get the stream URL
+    // Extract video data from the HTML
     const videos: VideoItem[] = [];
+    const videoRegex =
+      /<div\s+class="thumb-block\s*"[^>]*>[\s\S]*?<a\s+href="\/video\.([a-z0-9]+)\/([^"]*)"[^>]*>[\s\S]*?<img[^>]*data-src="([^"]*)"[^>]*>[\s\S]*?<span class="duration">([^<]*)<\/span>[\s\S]*?<p class="title">[\s\S]*?<a[^>]*>([^<]*)<\/a>/g;
 
-    for (const hit of hits.slice(0, 12)) {
-      try {
-        const videoRes = await fetch(
-          `https://hanime.tv/api/v8/video?id=${hit.slug}`,
-          {
-            headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" },
-          }
-        );
+    let match;
+    while ((match = videoRegex.exec(html)) !== null) {
+      const [, videoId, , thumbnail, duration, title] = match;
+      videos.push({
+        id: `xv-${videoId}`,
+        title: title.trim(),
+        videoId,
+        thumbnail: thumbnail.startsWith("//") ? `https:${thumbnail}` : thumbnail,
+        duration: duration.trim(),
+        views: "",
+        tags: ["hentai"],
+        source: "xvideos",
+      });
+    }
 
-        if (!videoRes.ok) continue;
+    // Fallback: simpler regex if the above didn't match
+    if (videos.length === 0) {
+      const simpleRegex = /\/video\.([a-z0-9]+)\//g;
+      const ids = new Set<string>();
+      let m;
+      while ((m = simpleRegex.exec(html)) !== null) {
+        ids.add(m[1]);
+      }
 
-        const videoData = await videoRes.json();
-        const servers = videoData.videos_manifest?.servers;
-        let streamUrl = "";
-
-        if (servers && servers.length > 0) {
-          const streams = servers[0].streams;
-          if (streams && streams.length > 0) {
-            // Get the stream URL — construct full URL
-            const stream = streams[0];
-            if (stream.url) {
-              streamUrl = stream.url;
-              // hanime uses a video_stream_group_id for the actual video
-              if (stream.video_stream_group_id) {
-                streamUrl = stream.url.replace(
-                  "stream.m3u8",
-                  `${stream.video_stream_group_id}.m3u8`
-                );
-              }
-            }
-          }
-        }
-
-        if (!streamUrl) continue;
-
-        const tags = (hit.tags || videoData.hentai_video?.hentai_tags || [])
-          .map((t: any) => (typeof t === "string" ? t : t.text))
-          .filter(Boolean)
-          .slice(0, 6);
-
+      for (const vid of Array.from(ids).slice(0, 20)) {
         videos.push({
-          id: `hanime-${hit.id}`,
-          title: hit.name || videoData.hentai_video?.name || "",
-          embedUrl: streamUrl,
-          thumbnail: hit.cover_url || hit.poster_url || "",
-          duration: hit.duration_in_ms
-            ? `${Math.floor(hit.duration_in_ms / 60000)}:${String(
-                Math.floor((hit.duration_in_ms % 60000) / 1000)
-              ).padStart(2, "0")}`
-            : "",
-          views: formatViews(hit.views || 0),
-          tags,
-          source: "hanime",
+          id: `xv-${vid}`,
+          title: "Hentai",
+          videoId: vid,
+          thumbnail: "",
+          duration: "",
+          views: "",
+          tags: ["hentai"],
+          source: "xvideos",
         });
-      } catch {
-        continue;
       }
     }
 
     return videos;
   } catch (err) {
-    console.error("Hanime fetch error:", err);
+    console.error("XVideos fetch error:", err);
     return [];
   }
-}
-
-function formatViews(views: number): string {
-  if (views >= 1_000_000) return `${(views / 1_000_000).toFixed(1)}M`;
-  if (views >= 1_000) return `${(views / 1_000).toFixed(0)}K`;
-  return String(views);
 }
 
 export async function GET(request: NextRequest) {
@@ -116,7 +83,7 @@ export async function GET(request: NextRequest) {
   const page = parseInt(searchParams.get("page") || "0");
 
   try {
-    const videos = await fetchHanime(page);
+    const videos = await fetchXVideos(page);
 
     return NextResponse.json({
       videos,

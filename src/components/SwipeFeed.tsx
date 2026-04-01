@@ -6,7 +6,7 @@ import { VideoCard } from "./VideoCard";
 interface VideoItem {
   id: string;
   title: string;
-  embedUrl: string;
+  videoId: string;
   thumbnail: string;
   duration: string;
   views: string;

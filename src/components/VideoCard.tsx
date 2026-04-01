@@ -1,12 +1,11 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
-import Hls from "hls.js";
+import { useState } from "react";
 
 interface VideoItem {
   id: string;
   title: string;
-  embedUrl: string;
+  videoId: string;
   thumbnail: string;
   duration: string;
   views: string;
@@ -21,114 +20,40 @@ interface VideoCardProps {
 }
 
 export function VideoCard({ video, index, isActive }: VideoCardProps) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const hlsRef = useRef<Hls | null>(null);
   const [liked, setLiked] = useState(false);
-  const [muted, setMuted] = useState(true);
-  const [loading, setLoading] = useState(true);
 
-  // HLS setup + play/pause
-  useEffect(() => {
-    const el = videoRef.current;
-    if (!el) return;
-
-    if (isActive) {
-      const url = video.embedUrl;
-
-      if (url.includes(".m3u8")) {
-        // HLS stream
-        if (Hls.isSupported()) {
-          if (hlsRef.current) {
-            hlsRef.current.destroy();
-          }
-          const hls = new Hls({
-            maxBufferLength: 10,
-            maxMaxBufferLength: 20,
-          });
-          hls.loadSource(url);
-          hls.attachMedia(el);
-          hls.on(Hls.Events.MANIFEST_PARSED, () => {
-            setLoading(false);
-            el.play().catch(() => {});
-          });
-          hls.on(Hls.Events.ERROR, (_, data) => {
-            if (data.fatal) {
-              setLoading(false);
-            }
-          });
-          hlsRef.current = hls;
-        } else if (el.canPlayType("application/vnd.apple.mpegurl")) {
-          // Safari native HLS
-          el.src = url;
-          el.addEventListener("loadedmetadata", () => {
-            setLoading(false);
-            el.play().catch(() => {});
-          }, { once: true });
-        }
-      } else {
-        // Direct MP4/WebM
-        el.src = url;
-        el.addEventListener("loadeddata", () => {
-          setLoading(false);
-          el.play().catch(() => {});
-        }, { once: true });
-      }
-    } else {
-      // Not active — pause and cleanup
-      el.pause();
-      if (hlsRef.current) {
-        hlsRef.current.destroy();
-        hlsRef.current = null;
-      }
-    }
-
-    return () => {
-      if (hlsRef.current) {
-        hlsRef.current.destroy();
-        hlsRef.current = null;
-      }
-    };
-  }, [isActive, video.embedUrl]);
-
-  const toggleMute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !videoRef.current.muted;
-      setMuted(!muted);
-    }
-  };
-
-  const handleLike = () => {
-    setLiked(!liked);
-  };
+  const embedUrl = `https://www.xvideos.com/embedframe/${video.videoId}`;
 
   return (
     <div className="feed-item" data-index={index}>
-      {/* Poster/thumbnail while loading */}
-      {loading && isActive && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
-          <img
-            src={video.thumbnail}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover opacity-40 blur-sm"
-          />
-          <div className="loader z-20" />
+      {/* Embed player — only load when active or near active */}
+      {isActive || Math.abs(index) <= 1 ? (
+        <iframe
+          src={embedUrl}
+          className="w-full h-full border-0"
+          allowFullScreen
+          allow="autoplay"
+          loading={isActive ? "eager" : "lazy"}
+        />
+      ) : (
+        /* Placeholder with thumbnail */
+        <div className="w-full h-full bg-black flex items-center justify-center">
+          {video.thumbnail ? (
+            <img
+              src={video.thumbnail}
+              alt=""
+              className="w-full h-full object-cover opacity-60"
+              loading="lazy"
+            />
+          ) : (
+            <div className="loader" />
+          )}
         </div>
       )}
 
-      {/* Video player */}
-      <video
-        ref={videoRef}
-        poster={video.thumbnail}
-        loop
-        muted={muted}
-        playsInline
-        className="w-full h-full object-contain bg-black"
-        onClick={toggleMute}
-      />
-
       {/* Side actions */}
       <div className="feed-actions">
-        <button className="feed-action-btn" onClick={handleLike}>
+        <button className="feed-action-btn" onClick={() => setLiked(!liked)}>
           <svg
             viewBox="0 0 24 24"
             fill={liked ? "#e879f9" : "none"}
@@ -144,7 +69,7 @@ export function VideoCard({ video, index, isActive }: VideoCardProps) {
           className="feed-action-btn"
           onClick={() => {
             if (navigator.share) {
-              navigator.share({ title: "iku", url: window.location.href });
+              navigator.share({ title: video.title, url: window.location.href });
             }
           }}
         >
@@ -155,33 +80,14 @@ export function VideoCard({ video, index, isActive }: VideoCardProps) {
           </svg>
           <span>share</span>
         </button>
-
-        <button className="feed-action-btn" onClick={toggleMute}>
-          {muted ? (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-              <line x1="23" y1="9" x2="17" y2="15" />
-              <line x1="17" y1="9" x2="23" y2="15" />
-            </svg>
-          ) : (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-              <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-              <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-            </svg>
-          )}
-          <span>{muted ? "unmute" : "mute"}</span>
-        </button>
       </div>
 
       {/* Bottom overlay */}
       <div className="feed-overlay">
-        {/* Title */}
         <h2 className="text-white font-semibold text-sm mb-2 line-clamp-2">
           {video.title}
         </h2>
 
-        {/* Tags */}
         <div className="flex flex-wrap gap-1.5 mb-2">
           {video.tags.slice(0, 5).map((tag) => (
             <span key={tag} className="tag-pill">
@@ -190,10 +96,9 @@ export function VideoCard({ video, index, isActive }: VideoCardProps) {
           ))}
         </div>
 
-        {/* Views */}
-        <p className="text-xs text-white/50">
-          {video.views} views
-        </p>
+        {video.duration && (
+          <p className="text-xs text-white/50">{video.duration}</p>
+        )}
       </div>
     </div>
   );
