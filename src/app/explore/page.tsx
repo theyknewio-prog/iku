@@ -70,20 +70,7 @@ export default async function ExplorePage(props: {
           </nav>
 
           {/* ── Video grid ───────────────────────────────── */}
-          <BlacklistFilter videos={videos}>
-            {(filtered) => (
-              <div className="video-grid">
-                {filtered.map((video, i) => (
-                  <ThumbnailCard
-                    key={video.id}
-                    video={video}
-                    priority={i < 10}
-                    lazy={i >= 10}
-                  />
-                ))}
-              </div>
-            )}
-          </BlacklistFilter>
+          <BlacklistFilter videos={videos} />
 
           {/* ── Empty state ──────────────────────────────── */}
           {videos.length === 0 && (

@@ -16,24 +16,17 @@ const REVALIDATE_POST = 3600; // 1 hour
 const REVALIDATE_SEARCH = 300; // 5 minutes
 const REVALIDATE_TAGS = 86400; // 24 hours
 
-// Rate limiting: simple in-memory token bucket (10 req/sec)
-let tokens = 10;
-let lastRefill = Date.now();
+// Rate limiting: 2 req/sec to avoid Danbooru 429s
+let lastRequest = 0;
+const MIN_INTERVAL = 500; // 500ms between requests = 2/sec
 
-function consumeToken(): Promise<void> {
+async function throttle(): Promise<void> {
   const now = Date.now();
-  const elapsed = now - lastRefill;
-  tokens = Math.min(10, tokens + (elapsed / 1000) * 10);
-  lastRefill = now;
-
-  if (tokens >= 1) {
-    tokens -= 1;
-    return Promise.resolve();
+  const elapsed = now - lastRequest;
+  if (elapsed < MIN_INTERVAL) {
+    await new Promise((resolve) => setTimeout(resolve, MIN_INTERVAL - elapsed));
   }
-
-  const waitMs = ((1 - tokens) / 10) * 1000;
-  tokens = 0;
-  return new Promise((resolve) => setTimeout(resolve, waitMs));
+  lastRequest = Date.now();
 }
 
 async function fetchDanbooru<T>(
@@ -41,7 +34,7 @@ async function fetchDanbooru<T>(
   params: Record<string, string> = {},
   revalidate: number = REVALIDATE_SEARCH
 ): Promise<T> {
-  await consumeToken();
+  await throttle();
 
   const url = new URL(path, BASE_URL);
   for (const [key, value] of Object.entries(params)) {
@@ -50,16 +43,25 @@ async function fetchDanbooru<T>(
     }
   }
 
-  const res = await fetch(url.toString(), {
+  let res = await fetch(url.toString(), {
     headers: { "User-Agent": USER_AGENT },
     next: { revalidate },
   });
+
+  // Retry once on 429 with 2s backoff
+  if (res.status === 429) {
+    console.warn(`Danbooru 429 rate limited, retrying in 2s: ${url.pathname}`);
+    await new Promise((r) => setTimeout(r, 2000));
+    res = await fetch(url.toString(), {
+      headers: { "User-Agent": USER_AGENT },
+      next: { revalidate },
+    });
+  }
 
   if (!res.ok) {
     console.error(
       `Danbooru API error: ${res.status} ${res.statusText} for ${url.toString()}`
     );
-    // Return empty array/object instead of throwing — prevents page crash
     return [] as unknown as T;
   }
 

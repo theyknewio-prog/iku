@@ -33,12 +33,13 @@ const CHAR_GRADIENTS = [
 ];
 
 export default async function HomePage() {
-  const [trending, newest, topRated, tags, characters] = await Promise.all([
-    searchPosts({ limit: 20, order: "score" }),
-    searchPosts({ limit: 20, order: "date" }),
-    searchPosts({ limit: 20, order: "favcount" }),
-    getPopularTags(30),
-    getPopularCharacters(20),
+  // Fetch sequentially to respect Danbooru's rate limit (2 req/sec)
+  const trending = await searchPosts({ limit: 20, order: "score" });
+  const newest = await searchPosts({ limit: 10, order: "date" });
+  const topRated = await searchPosts({ limit: 10, order: "favcount" });
+  const [tags, characters] = await Promise.all([
+    getPopularTags(20),
+    getPopularCharacters(12),
   ]);
 
   /* Hero video — pick highest scored */
