@@ -5938,3 +5938,49 @@ body {
   color: var(--color-text-tertiary);
   margin-top: var(--space-1);
 }
+
+/* ── Mobile hamburger menu dropdown ─────────────────────── */
+.v2-mobile-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 220px;
+  background: #111;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 8px 0;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+  z-index: 200;
+  animation: menuFadeIn 0.15s ease;
+}
+
+@keyframes menuFadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.v2-mobile-menu__item {
+  display: block;
+  padding: 10px 20px;
+  color: rgba(255,255,255,0.7);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.12s, color 0.12s;
+}
+
+.v2-mobile-menu__item:hover {
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+}
+
+.v2-mobile-menu__divider {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  margin: 6px 0;
+}
+
+@media (min-width: 1024px) {
+  .v2-topbar__hamburger { display: none; }
+  .v2-mobile-menu { display: none; }
+}

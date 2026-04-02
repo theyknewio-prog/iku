@@ -153,6 +153,7 @@ const MORE_ITEMS = [
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
 
   useEffect(() => {
@@ -230,10 +231,34 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Link href="/settings"  className={`v2-topbar__link${pathname.startsWith("/settings") ? " v2-topbar__link--active" : ""}`}>Settings</Link>
           </nav>
 
-          <button className="v2-topbar__hamburger" aria-label="Menu" type="button">
+          <button
+            className="v2-topbar__hamburger"
+            aria-label="Menu"
+            type="button"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
             <IconHamburger size={22} />
           </button>
         </div>
+
+        {/* Mobile menu dropdown */}
+        {menuOpen && (
+          <div className="v2-mobile-menu" onClick={() => setMenuOpen(false)}>
+            <Link href="/" className="v2-mobile-menu__item">Home</Link>
+            <Link href="/explore" className="v2-mobile-menu__item">Browse</Link>
+            <Link href="/trending" className="v2-mobile-menu__item">Trending</Link>
+            <Link href="/new" className="v2-mobile-menu__item">New</Link>
+            <Link href="/tags" className="v2-mobile-menu__item">Tags</Link>
+            <Link href="/feed" className="v2-mobile-menu__item">Feed</Link>
+            <div className="v2-mobile-menu__divider" />
+            <Link href="/blog" className="v2-mobile-menu__item">Blog</Link>
+            <Link href="/glossary" className="v2-mobile-menu__item">Glossary</Link>
+            <div className="v2-mobile-menu__divider" />
+            <Link href="/history" className="v2-mobile-menu__item">History</Link>
+            <Link href="/favorites" className="v2-mobile-menu__item">Favorites</Link>
+            <Link href="/settings" className="v2-mobile-menu__item">Settings</Link>
+          </div>
+        )}
       </header>
 
       {/* ══ MAIN CONTENT ════════════════════════════════════════ */}
