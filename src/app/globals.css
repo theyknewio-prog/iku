@@ -3957,19 +3957,19 @@ body {
 
 /* ── Mobile bottom nav ───────────────────────────────────── */
 .v2-bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
   height: var(--v2-bottomnav-h);
-  background: rgba(8,8,8,0.97);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border-top: 1px solid rgba(255,255,255,0.05);
+  background: #080808;
+  border-top: 1px solid rgba(255,255,255,0.08);
   display: flex;
   align-items: stretch;
   padding-bottom: env(safe-area-inset-bottom, 0px);
-  z-index: 200;
+  z-index: 9999;
+  transform: none !important;
+  will-change: auto;
 }
 
 @media (min-width: 1024px) { .v2-bottom-nav { display: none; } }

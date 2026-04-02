@@ -127,6 +127,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
+  <>
     <div className="v2-shell">
 
       {/* ══ SIDEBAR (desktop, 60px icon-only) ═════════════════ */}
@@ -184,21 +185,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {children}
       </div>
 
-      {/* ══ MOBILE BOTTOM NAV ═══════════════════════════════════ */}
-      <nav className="v2-bottom-nav" aria-label="Mobile navigation">
-        {BOTTOM_ITEMS.map(({ href, label, Icon }) => (
-          <Link
-            key={href}
-            href={href}
-            className={`v2-bottom-nav__item${isActive(href) ? " v2-bottom-nav__item--active" : ""}`}
-            aria-current={isActive(href) ? "page" : undefined}
-          >
-            <Icon size={22} />
-            <span className="v2-bottom-nav__label">{label}</span>
-          </Link>
-        ))}
-      </nav>
-
     </div>
+
+    {/* ══ MOBILE BOTTOM NAV — outside v2-shell to avoid stacking context issues ═══ */}
+    <nav className="v2-bottom-nav" aria-label="Mobile navigation">
+      {BOTTOM_ITEMS.map(({ href, label, Icon }) => (
+        <Link
+          key={href}
+          href={href}
+          className={`v2-bottom-nav__item${isActive(href) ? " v2-bottom-nav__item--active" : ""}`}
+          aria-current={isActive(href) ? "page" : undefined}
+        >
+          <Icon size={22} />
+          <span className="v2-bottom-nav__label">{label}</span>
+        </Link>
+      ))}
+    </nav>
+  </>
   );
 }
