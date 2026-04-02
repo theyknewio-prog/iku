@@ -3,59 +3,21 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-/* ── Logo SVG ─────────────────────────────────────────────── */
+/* ── Logo — "iku" in Righteous font with accent dot ─────── */
 
-function IkuLogo({ size = 28 }: { size?: number }) {
+function IkuLogo() {
   return (
-    <svg
-      width={size * 2.8}
-      height={size}
-      viewBox="0 0 68 30"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-label="iku"
-    >
-      {/* i — stem */}
-      <rect x="0" y="10" width="7" height="18" rx="3.5" fill="#f0f0f0" />
-      {/* i — dot (pink circle accent) */}
-      <circle cx="3.5" cy="4" r="4" fill="#ff2080" />
-
-      {/* k — vertical stem */}
-      <rect x="12" y="0" width="7" height="28" rx="3.5" fill="#f0f0f0" />
-      {/* k — upper diagonal arm */}
-      <path
-        d="M19 14 L31 3"
-        stroke="#f0f0f0"
-        strokeWidth="7"
-        strokeLinecap="round"
-      />
-      {/* k — lower diagonal arm */}
-      <path
-        d="M19 14 L31 25"
-        stroke="#f0f0f0"
-        strokeWidth="7"
-        strokeLinecap="round"
-      />
-
-      {/* u — left stem */}
-      <rect x="36" y="10" width="7" height="14" rx="3.5" fill="#f0f0f0" />
-      {/* u — right stem */}
-      <rect x="57" y="10" width="7" height="14" rx="3.5" fill="#f0f0f0" />
-      {/* u — bottom curve connecting both stems */}
-      <path
-        d="M39.5 22 Q39.5 29 50 29 Q60.5 29 60.5 22"
-        stroke="#f0f0f0"
-        strokeWidth="7"
-        strokeLinecap="round"
-        fill="none"
-      />
-    </svg>
+    <Link href="/" className="logo-text" aria-label="iku home">
+      {/* The pink dot replaces the dot on the "i" — positioned above */}
+      <span aria-hidden="true" className="logo-text__dot" />
+      iku
+    </Link>
   );
 }
 
 /* ── SVG Icons (strokeWidth 1.5 — premium thinner stroke) ─── */
 
-function IconSearch({ size = 16 }: { size?: number }) {
+function IconSearch({ size = 15 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="11" cy="11" r="8" />
@@ -64,7 +26,7 @@ function IconSearch({ size = 16 }: { size?: number }) {
   );
 }
 
-function IconHome({ size = 20 }: { size?: number }) {
+function IconHome({ size = 18 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -73,7 +35,7 @@ function IconHome({ size = 20 }: { size?: number }) {
   );
 }
 
-function IconTrending({ size = 20 }: { size?: number }) {
+function IconTrending({ size = 18 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
@@ -82,7 +44,7 @@ function IconTrending({ size = 20 }: { size?: number }) {
   );
 }
 
-function IconExplore({ size = 20 }: { size?: number }) {
+function IconExplore({ size = 18 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="3" width="7" height="7" rx="1" />
@@ -93,7 +55,7 @@ function IconExplore({ size = 20 }: { size?: number }) {
   );
 }
 
-function IconTag({ size = 20 }: { size?: number }) {
+function IconTag({ size = 18 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
@@ -102,7 +64,7 @@ function IconTag({ size = 20 }: { size?: number }) {
   );
 }
 
-function IconFeed({ size = 20 }: { size?: number }) {
+function IconFeed({ size = 18 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <polygon points="5 3 19 12 5 21 5 3" />
@@ -110,7 +72,7 @@ function IconFeed({ size = 20 }: { size?: number }) {
   );
 }
 
-function IconNew({ size = 20 }: { size?: number }) {
+function IconNew({ size = 18 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="10" />
@@ -155,28 +117,27 @@ export function AppShell({ children }: AppShellProps) {
       {/* ── Top header bar (all viewports) ───────────────── */}
       <header className="app-header">
         <div className="app-header__inner">
-          {/* Logo — always visible in header (desktop hides via CSS at 1280px+
-              where sidebar has more room, but we keep it always for consistency) */}
-          <Link href="/" className="app-header__logo" aria-label="iku home">
-            <IkuLogo size={22} />
-          </Link>
+          {/* Logo */}
+          <div className="app-header__logo">
+            <IkuLogo />
+          </div>
 
           {/* Search — center pill */}
           <div className="app-header__search">
             <div className="search-bar">
               <span className="search-bar__icon">
-                <IconSearch size={15} />
+                <IconSearch size={14} />
               </span>
               <input
                 className="search-bar__input"
                 type="search"
-                placeholder="Search hentai, characters, tags..."
+                placeholder="Search characters, tags, artists..."
                 aria-label="Search hentai, characters, tags"
               />
             </div>
           </div>
 
-          {/* Right slot — reserved for future auth buttons */}
+          {/* Right slot */}
           <div className="app-header__actions" />
         </div>
       </header>
@@ -192,7 +153,7 @@ export function AppShell({ children }: AppShellProps) {
               aria-current={isActive(href) ? "page" : undefined}
             >
               <span className="sidebar-nav-item__icon">
-                <Icon size={20} />
+                <Icon size={18} />
               </span>
               <span className="sidebar-nav-item__label">{label}</span>
             </Link>
@@ -215,7 +176,7 @@ export function AppShell({ children }: AppShellProps) {
 
       {/* ── Right sidebar (desktop 1280px+) ──────────────── */}
       <aside className="app-right-sidebar" aria-label="Trending tags">
-        <h3 className="right-sidebar__title">Trending Tags</h3>
+        <h3 className="right-sidebar__title">Trending</h3>
         <div className="right-sidebar__tags">
           {[
             "hentai", "anime", "3d", "cosplay", "ahegao",
@@ -242,7 +203,7 @@ export function AppShell({ children }: AppShellProps) {
             className={`bottom-nav__item${isActive(href) ? " bottom-nav__item--active" : ""}`}
             aria-current={isActive(href) ? "page" : undefined}
           >
-            <Icon size={22} />
+            <Icon size={20} />
             {isActive(href) && (
               <span className="bottom-nav__label">{label}</span>
             )}

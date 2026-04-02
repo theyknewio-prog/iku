@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Poppins, Righteous } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "@/components/AppShell";
 
@@ -7,6 +7,20 @@ const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-poppins",
+  display: "swap",
+});
+
+const righteous = Righteous({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-righteous",
   display: "swap",
 });
 
@@ -40,7 +54,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.variable} data-theme="dark">
+    <html lang="en" className={`${inter.variable} ${poppins.variable} ${righteous.variable}`} data-theme="dark">
       <body>
         <AppShell>{children}</AppShell>
       </body>

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import type { Video } from "@/types/video";
 
 /* ── Helpers ─────────────────────────────────────────────── */
@@ -27,14 +27,14 @@ function isHot(score: number): boolean {
 function isNew(createdAt: Date): boolean {
   const now = new Date();
   const diff = now.getTime() - new Date(createdAt).getTime();
-  return diff < 48 * 60 * 60 * 1000; // 48 hours
+  return diff < 48 * 60 * 60 * 1000;
 }
 
 /* ── Component ──────────────────────────────────────────── */
 
 interface ThumbnailCardProps {
   video: Video;
-  rank?: number;         // optional rank number (for trending)
+  rank?: number;
   showArtist?: boolean;
   lazy?: boolean;
   priority?: boolean;
@@ -48,6 +48,10 @@ export function ThumbnailCard({
   priority = false,
 }: ThumbnailCardProps) {
   const [wishlisted, setWishlisted] = useState(false);
+  const [previewActive, setPreviewActive] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const duration = formatDuration(video.duration);
   const hot = isHot(video.score);
@@ -56,55 +60,102 @@ export function ThumbnailCard({
   const displayScore = formatNumber(video.score);
   const displayFavs  = formatNumber(video.favorites);
 
+  /* Title — character + copyright or fallback tags */
+  const title = video.characters[0]
+    ? `${video.characters[0].replace(/_/g, " ")}${
+        video.copyrights[0] ? ` — ${video.copyrights[0].replace(/_/g, " ")}` : ""
+      }`
+    : video.tags
+        .slice(0, 3)
+        .map((t) => t.replace(/_/g, " "))
+        .join(", ") || video.slug;
+
+  /* ── Hover handlers — 300ms debounce before loading video ── */
+  const handleMouseEnter = useCallback(() => {
+    hoverTimerRef.current = setTimeout(() => {
+      const el = videoRef.current;
+      if (!el || !video.url) return;
+      if (!el.src) {
+        el.src = video.url;
+        el.load();
+      }
+      el.play().catch(() => {});
+      setPreviewActive(true);
+    }, 300);
+  }, [video.url]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current);
+      hoverTimerRef.current = null;
+    }
+    const el = videoRef.current;
+    if (el) {
+      el.pause();
+      el.currentTime = 0;
+    }
+    setPreviewActive(false);
+    setProgress(0);
+  }, []);
+
+  const handleTimeUpdate = useCallback(() => {
+    const el = videoRef.current;
+    if (!el || !el.duration) return;
+    setProgress(el.currentTime / el.duration);
+  }, []);
+
   return (
-    <Link href={`/watch/${video.slug}`} className="video-card" prefetch={false}>
+    <Link
+      href={`/watch/${video.slug}`}
+      className="video-card"
+      prefetch={false}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       {/* ── Thumbnail media area ─────────────────────────── */}
       <div className="video-card__media">
+        {/* Static thumbnail */}
         {video.thumbnail ? (
           <Image
             src={video.thumbnail}
-            alt={video.slug}
+            alt={title}
             fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
             className="video-card__thumbnail"
             loading={lazy && !priority ? "lazy" : "eager"}
             priority={priority}
-            unoptimized /* external Danbooru URLs */
+            unoptimized
           />
         ) : (
-          /* Placeholder gradient when no thumbnail */
           <div
             style={{
-              width: "100%",
-              height: "100%",
-              background: "linear-gradient(135deg, #1e1e1e 0%, #141414 100%)",
+              position: "absolute",
+              inset: 0,
+              background: "linear-gradient(135deg, #141414 0%, #0f0f0f 100%)",
             }}
           />
         )}
 
-        {/* Play icon overlay */}
-        <div className="video-card__play">
-          <div className="video-card__play-icon">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="white"
-              style={{ marginLeft: "2px" }}
-            >
-              <path d="M8 5v14l11-7z" />
-            </svg>
-          </div>
-        </div>
+        {/* Hover video preview */}
+        <video
+          ref={videoRef}
+          className="video-card__preview"
+          loop
+          muted
+          playsInline
+          preload="none"
+          onTimeUpdate={handleTimeUpdate}
+          style={{ opacity: previewActive ? 1 : 0 }}
+        />
 
-        {/* Duration badge */}
+        {/* Duration badge — bottom right */}
         {duration && (
           <span className="video-card__duration">{duration}</span>
         )}
 
-        {/* Score pill — hot shows pink */}
+        {/* Score pill — top left */}
         <span className={`video-card__score${hot ? " video-card__score--hot" : ""}`}>
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor">
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
           </svg>
           {displayScore}
@@ -143,11 +194,11 @@ export function ThumbnailCard({
           }}
         >
           <svg
-            width="14"
-            height="14"
+            width="13"
+            height="13"
             viewBox="0 0 24 24"
             fill={wishlisted ? "#ff2080" : "none"}
-            stroke={wishlisted ? "#ff2080" : "rgba(255,255,255,0.9)"}
+            stroke={wishlisted ? "#ff2080" : "rgba(255,255,255,0.85)"}
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -155,36 +206,31 @@ export function ThumbnailCard({
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
           </svg>
         </button>
+
+        {/* Progress bar — shown on hover, fills as video plays */}
+        <div className="video-card__progress">
+          <div
+            className="video-card__progress-fill"
+            style={{ width: `${progress * 100}%` }}
+          />
+        </div>
       </div>
 
       {/* ── Card body ────────────────────────────────────── */}
       <div className="video-card__body">
-        {/* Title — 2 line clamp */}
-        <h3 className="video-card__title">
-          {video.characters[0]
-            ? `${video.characters[0].replace(/_/g, " ")}${
-                video.copyrights[0] ? ` — ${video.copyrights[0].replace(/_/g, " ")}` : ""
-              }`
-            : video.tags
-                .slice(0, 3)
-                .map((t) => t.replace(/_/g, " "))
-                .join(", ") || video.slug}
-        </h3>
+        {/* Artist name — accent color, prominent */}
+        {showArtist && displayArtist && (
+          <span className="video-card__artist-label">
+            {displayArtist.replace(/_/g, " ")}
+          </span>
+        )}
 
-        {/* Meta row */}
+        {/* Title */}
+        <h3 className="video-card__title">{title}</h3>
+
+        {/* Meta row — views + score */}
         <div className="video-card__meta">
-          {showArtist && displayArtist && (
-            <>
-              <span
-                className="video-card__artist"
-                onClick={(e) => e.preventDefault()}
-              >
-                {displayArtist.replace(/_/g, " ")}
-              </span>
-              <span className="video-card__dot" />
-            </>
-          )}
-          <span>
+          <span className="video-card__meta-item">
             <svg
               width="10"
               height="10"
@@ -192,13 +238,20 @@ export function ThumbnailCard({
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
-              style={{ display: "inline", marginRight: "3px", verticalAlign: "middle" }}
+              style={{ display: "inline", verticalAlign: "middle" }}
             >
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-              <circle cx="12" cy="12" r="3" />
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
-            {displayFavs}
+            {" "}{displayFavs}
           </span>
+          {video.tags[0] && (
+            <>
+              <span className="video-card__dot" />
+              <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "80px" }}>
+                {video.tags[0].replace(/_/g, " ")}
+              </span>
+            </>
+          )}
         </div>
       </div>
     </Link>

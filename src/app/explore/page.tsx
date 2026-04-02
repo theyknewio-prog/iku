@@ -14,8 +14,8 @@ export const metadata: Metadata = {
 type SortOption = "score" | "date" | "favcount";
 
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
-  { value: "score", label: "Top Rated" },
-  { value: "date", label: "Newest" },
+  { value: "score",    label: "Top Rated" },
+  { value: "date",     label: "Newest" },
   { value: "favcount", label: "Most Saved" },
 ];
 
@@ -35,148 +35,140 @@ export default async function ExplorePage(props: {
     order: sort,
   });
 
+  /* Compute page window — 7 pages centered on current */
+  const windowStart = Math.max(1, page - 3);
+  const windowEnd   = windowStart + 6;
+  const pageNumbers = Array.from({ length: windowEnd - windowStart + 1 }, (_, i) => windowStart + i);
+
   return (
     <AgeGate>
       <main className="shell-content">
         <div className="page-container">
-          {/* Header */}
-          <div style={{ paddingTop: "24px", paddingBottom: "16px" }}>
-            <h1
-              style={{
-                fontSize: "clamp(1.5rem, 4vw, 2rem)",
-                fontWeight: 800,
-                letterSpacing: "-0.02em",
-                color: "var(--color-text-primary)",
-                marginBottom: "4px",
-              }}
-            >
+          {/* ── Header ──────────────────────────────────── */}
+          <div className="explore-header">
+            <h1 className="explore-header__title">
               Explore Hentai
             </h1>
-            <p style={{ fontSize: "14px", color: "var(--color-text-tertiary)" }}>
+            <p className="explore-header__sub">
               {page === 1 ? "65,000+" : `Page ${page} ·`} free animated hentai videos
             </p>
           </div>
 
-          {/* Sort bar */}
-          <div
-            style={{
-              display: "flex",
-              gap: "8px",
-              marginBottom: "20px",
-              flexWrap: "wrap",
-              alignItems: "center",
-            }}
-          >
+          {/* ── Sort bar ─────────────────────────────────── */}
+          <nav className="sort-bar" aria-label="Sort options">
             {SORT_OPTIONS.map((opt) => (
               <Link
                 key={opt.value}
-                href={`/explore?sort=${opt.value}${page > 1 ? `&page=1` : ""}`}
-                className="tag-pill"
-                style={{
-                  background:
-                    sort === opt.value
-                      ? "rgba(255,32,128,0.2)"
-                      : "rgba(255,255,255,0.08)",
-                  color: sort === opt.value ? "#ff2080" : "#ccc",
-                  fontWeight: sort === opt.value ? 600 : 400,
-                  textDecoration: "none",
-                  padding: "6px 14px",
-                  fontSize: "13px",
-                }}
+                href={`/explore?sort=${opt.value}&page=1`}
+                className={`sort-pill${sort === opt.value ? " sort-pill--active" : ""}`}
+                aria-current={sort === opt.value ? "page" : undefined}
               >
                 {opt.label}
               </Link>
             ))}
-          </div>
+          </nav>
 
-          {/* Video grid */}
+          {/* ── Video grid ───────────────────────────────── */}
           <div className="video-grid">
             {videos.map((video, i) => (
               <ThumbnailCard
                 key={video.id}
                 video={video}
-                priority={i < 8}
-                lazy={i >= 8}
+                priority={i < 10}
+                lazy={i >= 10}
               />
             ))}
           </div>
 
-          {/* Empty state */}
+          {/* ── Empty state ──────────────────────────────── */}
           {videos.length === 0 && (
             <div
               style={{
                 textAlign: "center",
                 padding: "60px 20px",
-                color: "var(--color-text-tertiary)",
+                color: "rgba(255,255,255,0.25)",
+                fontSize: "14px",
               }}
             >
-              <p>No videos found.</p>
+              No videos found.
             </div>
           )}
 
-          {/* Pagination */}
-          <nav
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: "8px",
-              padding: "32px 0",
-              flexWrap: "wrap",
-            }}
-            aria-label="Pagination"
-          >
-            {page > 1 && (
+          {/* ── Pagination — circle style ────────────────── */}
+          <nav className="pagination-v2" aria-label="Pagination">
+            {/* Previous */}
+            {page > 1 ? (
               <Link
                 href={`/explore?sort=${sort}&page=${page - 1}`}
-                className="tag-pill"
-                style={{
-                  textDecoration: "none",
-                  padding: "8px 16px",
-                  fontSize: "13px",
-                }}
+                className="pagination-v2__btn pagination-v2__btn--nav"
+                aria-label="Previous page"
               >
-                ← Previous
+                ← Prev
               </Link>
+            ) : (
+              <span
+                className="pagination-v2__btn pagination-v2__btn--nav"
+                style={{ opacity: 0.25, pointerEvents: "none" }}
+                aria-disabled="true"
+              >
+                ← Prev
+              </span>
+            )}
+
+            {/* Leading ellipsis */}
+            {windowStart > 1 && (
+              <>
+                <Link href={`/explore?sort=${sort}&page=1`} className="pagination-v2__btn">1</Link>
+                {windowStart > 2 && (
+                  <span
+                    className="pagination-v2__btn"
+                    style={{ color: "rgba(255,255,255,0.2)", pointerEvents: "none", cursor: "default" }}
+                  >
+                    …
+                  </span>
+                )}
+              </>
             )}
 
             {/* Page numbers */}
-            {Array.from({ length: Math.min(7, page + 3) }, (_, i) => {
-              const p = Math.max(1, page - 3) + i;
-              if (p < 1) return null;
-              return (
-                <Link
-                  key={p}
-                  href={`/explore?sort=${sort}&page=${p}`}
-                  className="tag-pill"
-                  style={{
-                    textDecoration: "none",
-                    padding: "8px 14px",
-                    fontSize: "13px",
-                    background:
-                      p === page
-                        ? "rgba(255,32,128,0.25)"
-                        : "rgba(255,255,255,0.08)",
-                    color: p === page ? "#ff2080" : "#ccc",
-                    fontWeight: p === page ? 700 : 400,
-                  }}
-                >
-                  {p}
-                </Link>
-              );
-            })}
+            {pageNumbers.map((p) => (
+              <Link
+                key={p}
+                href={`/explore?sort=${sort}&page=${p}`}
+                className={`pagination-v2__btn${p === page ? " pagination-v2__btn--active" : ""}`}
+                aria-current={p === page ? "page" : undefined}
+              >
+                {p}
+              </Link>
+            ))}
 
-            {hasMore && (
+            {/* Trailing ellipsis */}
+            {hasMore && windowEnd < page + 6 && (
+              <span
+                className="pagination-v2__btn"
+                style={{ color: "rgba(255,255,255,0.2)", pointerEvents: "none", cursor: "default" }}
+              >
+                …
+              </span>
+            )}
+
+            {/* Next */}
+            {hasMore ? (
               <Link
                 href={`/explore?sort=${sort}&page=${page + 1}`}
-                className="tag-pill"
-                style={{
-                  textDecoration: "none",
-                  padding: "8px 16px",
-                  fontSize: "13px",
-                }}
+                className="pagination-v2__btn pagination-v2__btn--nav"
+                aria-label="Next page"
               >
                 Next →
               </Link>
+            ) : (
+              <span
+                className="pagination-v2__btn pagination-v2__btn--nav"
+                style={{ opacity: 0.25, pointerEvents: "none" }}
+                aria-disabled="true"
+              >
+                Next →
+              </span>
             )}
           </nav>
         </div>
