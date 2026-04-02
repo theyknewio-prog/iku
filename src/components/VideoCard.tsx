@@ -77,8 +77,8 @@ export function VideoCard({
     muteTimerRef.current = setTimeout(() => setShowMuteHint(false), 900);
   }, []);
 
-  /* Only load video src when within ±2 of active */
-  const shouldLoad = Math.abs(index - (isActive ? index : index)) <= 2 || isActive;
+  /* Only load video src when active — saves bandwidth, speeds up feed */
+  const shouldLoad = isActive;
 
   /* Build display title */
   const title = video.character

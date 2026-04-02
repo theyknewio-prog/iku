@@ -17,18 +17,21 @@ export async function GET(request: NextRequest) {
       tags: tag || undefined,
     });
 
-    const videos = data.map((v) => ({
-      id: v.id,
-      slug: v.slug,
-      url: v.url,
-      thumbnail: v.thumbnail,
-      score: v.score,
-      tags: v.tags,
-      characters: v.characters,
-      copyrights: v.copyrights,
-      artists: v.artists,
-      duration: v.duration,
-    }));
+    // Filter for lightweight videos (< 15MB) for fast loading in feed
+    const videos = data
+      .filter((v) => v.fileSize < 15_000_000)
+      .map((v) => ({
+        id: v.id,
+        slug: v.slug,
+        url: v.url,
+        thumbnail: v.thumbnail,
+        score: v.score,
+        tags: v.tags,
+        characters: v.characters,
+        copyrights: v.copyrights,
+        artists: v.artists,
+        duration: v.duration,
+      }));
 
     return NextResponse.json({ videos, page, hasMore });
   } catch (error) {
