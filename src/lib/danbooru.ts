@@ -131,12 +131,10 @@ export async function searchPosts(
 
   const clampedLimit = Math.min(limit, 200);
 
-  // Build the tag query: prepend our default filter
-  const fullTags = tags
-    ? `${DEFAULT_TAGS} ${tags}`
-    : DEFAULT_TAGS;
-
-  // Add ordering
+  // Danbooru free accounts: max 2 tags.
+  // When user provides a tag, we use: rating:e + tag (2 tags)
+  // When no tag, we use: animated filetype:mp4 (2 tags — order is a meta-tag, doesn't count)
+  // We filter for MP4 files in the results when searching by tag.
   const orderTag =
     order === "score"
       ? "order:score"
@@ -144,7 +142,14 @@ export async function searchPosts(
         ? "order:favcount"
         : "order:id_desc";
 
-  const tagQuery = `${fullTags} ${orderTag}`;
+  let tagQuery: string;
+  if (tags) {
+    // User tag search: rating:e + tag + order (order is free, doesn't count)
+    tagQuery = `rating:e ${tags} ${orderTag}`;
+  } else {
+    // Default browse: animated filetype:mp4 + order
+    tagQuery = `${DEFAULT_TAGS} ${orderTag}`;
+  }
 
   const params: Record<string, string> = {
     tags: tagQuery,
@@ -164,8 +169,13 @@ export async function searchPosts(
     REVALIDATE_SEARCH
   );
 
+  // When searching by user tag, filter to only MP4 videos (since we can't use filetype:mp4 tag)
+  const filtered = tags
+    ? posts.filter((p) => p.file_url?.endsWith(".mp4") || p.file_url?.endsWith(".webm"))
+    : posts;
+
   return {
-    data: posts.map(mapPostToVideo),
+    data: filtered.map(mapPostToVideo),
     hasMore: posts.length === clampedLimit,
   };
 }
