@@ -60,15 +60,11 @@ export default async function HomePage() {
         <section
           className="v2-hero"
           style={
-            hero?.thumbnail
+            hero?.preview
               ? {
-                  backgroundImage: `url(${
-                    hero.thumbnail.includes("180x180")
-                      ? hero.thumbnail.replace("180x180", "720x720")
-                      : hero.preview || hero.thumbnail
-                  })`,
+                  backgroundImage: `url(${hero.preview})`,
                   backgroundSize: "cover",
-                  backgroundPosition: "center top",
+                  backgroundPosition: "center 30%",
                 }
               : undefined
           }
@@ -123,7 +119,7 @@ export default async function HomePage() {
           {hero && (
             <div className="v2-hero__poster">
               <img
-                src={hero.preview || (hero.thumbnail?.includes("180x180") ? hero.thumbnail.replace("180x180", "720x720") : hero.thumbnail)}
+                src={hero.preview}
                 alt={heroTitle}
                 className="v2-hero__poster-img"
               />

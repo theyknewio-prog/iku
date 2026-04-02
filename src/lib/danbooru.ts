@@ -70,6 +70,15 @@ async function fetchDanbooru<T>(
 // Type mapper: DanbooruPost -> Video
 // ---------------------------------------------------------------------------
 
+/** Build a 720px preview IMAGE url from the 180px thumbnail */
+function buildPreviewUrl(thumbnailUrl: string | null): string {
+  if (!thumbnailUrl) return "";
+  // cdn.donmai.us/180x180/xx/xx/hash.jpg → cdn.donmai.us/720x720/xx/xx/hash.webp
+  return thumbnailUrl
+    .replace("/180x180/", "/720x720/")
+    .replace(/\.jpg$/, ".webp");
+}
+
 export function mapPostToVideo(post: DanbooruPost): Video {
   return {
     id: post.id,
@@ -80,7 +89,7 @@ export function mapPostToVideo(post: DanbooruPost): Video {
     ),
     url: post.file_url ?? post.large_file_url ?? "",
     thumbnail: post.preview_file_url ?? "",
-    preview: post.large_file_url ?? post.file_url ?? "",
+    preview: buildPreviewUrl(post.preview_file_url),
     score: post.score,
     favorites: post.fav_count,
     tags: splitTags(post.tag_string_general),
