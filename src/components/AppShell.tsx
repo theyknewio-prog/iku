@@ -2,31 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
-/* ── Logo — "iku" in Righteous font with accent dot ─────── */
+/* ── SVG Icons ─────────────────────────────────────────────── */
 
-function IkuLogo() {
-  return (
-    <Link href="/" className="logo-text" aria-label="iku home">
-      {/* The pink dot replaces the dot on the "i" — positioned above */}
-      <span aria-hidden="true" className="logo-text__dot" />
-      iku
-    </Link>
-  );
-}
-
-/* ── SVG Icons (strokeWidth 1.5 — premium thinner stroke) ─── */
-
-function IconSearch({ size = 15 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="11" cy="11" r="8" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
-    </svg>
-  );
-}
-
-function IconHome({ size = 18 }: { size?: number }) {
+function IconHome({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -35,16 +15,7 @@ function IconHome({ size = 18 }: { size?: number }) {
   );
 }
 
-function IconTrending({ size = 18 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-      <polyline points="17 6 23 6 23 12" />
-    </svg>
-  );
-}
-
-function IconExplore({ size = 18 }: { size?: number }) {
+function IconBrowse({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="3" width="7" height="7" rx="1" />
@@ -55,7 +26,27 @@ function IconExplore({ size = 18 }: { size?: number }) {
   );
 }
 
-function IconTag({ size = 18 }: { size?: number }) {
+function IconTrending({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+      <polyline points="17 6 23 6 23 12" />
+    </svg>
+  );
+}
+
+function IconCharacters({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  );
+}
+
+function IconTag({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
@@ -64,15 +55,7 @@ function IconTag({ size = 18 }: { size?: number }) {
   );
 }
 
-function IconFeed({ size = 18 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <polygon points="5 3 19 12 5 21 5 3" />
-    </svg>
-  );
-}
-
-function IconNew({ size = 18 }: { size?: number }) {
+function IconNew({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="10" />
@@ -82,27 +65,58 @@ function IconNew({ size = 18 }: { size?: number }) {
   );
 }
 
-/* ── Nav items definition ─────────────────────────────────── */
-
-const NAV_ITEMS = [
-  { href: "/",          label: "Home",     Icon: IconHome },
-  { href: "/explore",   label: "Explore",  Icon: IconExplore },
-  { href: "/trending",  label: "Trending", Icon: IconTrending },
-  { href: "/new",       label: "New",      Icon: IconNew },
-  { href: "/tags",      label: "Tags",     Icon: IconTag },
-  { href: "/feed",      label: "Feed",     Icon: IconFeed },
-] as const;
-
-/* ── AppShell ─────────────────────────────────────────────── */
-
-interface AppShellProps {
-  children: React.ReactNode;
+function IconFeed({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="5 3 19 12 5 21 5 3" />
+    </svg>
+  );
 }
 
-export function AppShell({ children }: AppShellProps) {
-  const pathname = usePathname();
+function IconSearch({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+  );
+}
 
-  // /feed is full-screen TikTok mode — render without shell chrome
+/* ── Nav definitions ─────────────────────────────────────────── */
+
+const SIDEBAR_ITEMS = [
+  { href: "/",          label: "Home",       Icon: IconHome },
+  { href: "/explore",   label: "Browse",     Icon: IconBrowse },
+  { href: "/trending",  label: "Trending",   Icon: IconTrending },
+  { href: "/new",       label: "New",        Icon: IconNew },
+  { href: "/tags",      label: "Tags",       Icon: IconTag },
+  { href: "/feed",      label: "Feed",       Icon: IconFeed },
+] as const;
+
+const BOTTOM_ITEMS = [
+  { href: "/",         label: "Home",     Icon: IconHome },
+  { href: "/explore",  label: "Browse",   Icon: IconBrowse },
+  { href: "/trending", label: "Trending", Icon: IconTrending },
+  { href: "/tags",     label: "Tags",     Icon: IconTag },
+  { href: "/feed",     label: "Feed",     Icon: IconFeed },
+] as const;
+
+/* ── AppShell ─────────────────────────────────────────────────── */
+
+export function AppShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
+
+  /* Topbar becomes opaque on scroll */
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 40);
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  /* /feed is full-screen TikTok mode — no chrome */
   if (pathname === "/feed") {
     return <>{children}</>;
   }
@@ -113,103 +127,78 @@ export function AppShell({ children }: AppShellProps) {
   }
 
   return (
-    <div className="app-shell">
-      {/* ── Top header bar (all viewports) ───────────────── */}
-      <header className="app-header">
-        <div className="app-header__inner">
-          {/* Logo */}
-          <div className="app-header__logo">
-            <IkuLogo />
-          </div>
+    <div className="v2-shell">
 
-          {/* Search — center pill */}
-          <div className="app-header__search">
-            <div className="search-bar">
-              <span className="search-bar__icon">
-                <IconSearch size={14} />
-              </span>
-              <input
-                className="search-bar__input"
-                type="search"
-                placeholder="Search characters, tags, artists..."
-                aria-label="Search hentai, characters, tags"
-              />
-            </div>
-          </div>
+      {/* ══ SIDEBAR (desktop, 60px icon-only) ═════════════════ */}
+      <aside className="v2-sidebar" aria-label="Main navigation">
 
-          {/* Right slot */}
-          <div className="app-header__actions" />
-        </div>
-      </header>
+        {/* Logo mark */}
+        <Link href="/" className="v2-sidebar__logo" aria-label="iku home">
+          IK
+        </Link>
 
-      {/* ── Left sidebar (desktop only, 1024px+) ─────────── */}
-      <aside className="app-sidebar" aria-label="Sidebar navigation">
-        <nav className="sidebar-nav" aria-label="Main navigation">
-          {NAV_ITEMS.map(({ href, label, Icon }) => (
+        {/* Nav items */}
+        <nav className="v2-sidebar__nav">
+          {SIDEBAR_ITEMS.map(({ href, label, Icon }) => (
             <Link
               key={href}
               href={href}
-              className={`sidebar-nav-item${isActive(href) ? " sidebar-nav-item--active" : ""}`}
+              className={`v2-sidebar__item${isActive(href) ? " v2-sidebar__item--active" : ""}`}
               aria-current={isActive(href) ? "page" : undefined}
             >
-              <span className="sidebar-nav-item__icon">
-                <Icon size={18} />
-              </span>
-              <span className="sidebar-nav-item__label">{label}</span>
+              <Icon size={20} />
+              <span className="v2-sidebar__tooltip">{label}</span>
             </Link>
           ))}
         </nav>
 
-        {/* Footer links */}
-        <div className="sidebar-footer">
-          <a href="/terms"   className="sidebar-footer__link">Terms</a>
-          <a href="/privacy" className="sidebar-footer__link">Privacy</a>
-          <a href="/dmca"    className="sidebar-footer__link">DMCA</a>
-          <p className="sidebar-footer__copy">&copy; {new Date().getFullYear()} iku.gg</p>
+        {/* Divider + bottom area */}
+        <div className="v2-sidebar__bottom">
+          <div className="v2-sidebar__divider" />
+          <div className="v2-sidebar__avatar" aria-hidden="true" />
         </div>
       </aside>
 
-      {/* ── Main content ─────────────────────────────────── */}
-      <div className="app-main">
+      {/* ══ TOPBAR (fixed, transparent → frosted on scroll) ════ */}
+      <header className={`v2-topbar${scrolled ? " v2-topbar--scrolled" : ""}`}>
+        {/* Nav links — desktop only */}
+        <nav className="v2-topbar__nav" aria-label="Content navigation">
+          <Link href="/"         className={`v2-topbar__link${pathname === "/" ? " v2-topbar__link--active" : ""}`}>Home</Link>
+          <Link href="/trending" className={`v2-topbar__link${pathname.startsWith("/trending") ? " v2-topbar__link--active" : ""}`}>Trending</Link>
+          <Link href="/new"      className={`v2-topbar__link${pathname.startsWith("/new") ? " v2-topbar__link--active" : ""}`}>New</Link>
+          <Link href="/explore"  className={`v2-topbar__link${pathname.startsWith("/explore") ? " v2-topbar__link--active" : ""}`}>Browse</Link>
+          <Link href="/tags"     className={`v2-topbar__link${pathname.startsWith("/tags") ? " v2-topbar__link--active" : ""}`}>Tags</Link>
+        </nav>
+
+        {/* Right: search pill */}
+        <div className="v2-topbar__right">
+          <Link href="/explore" className="v2-topbar__search" aria-label="Search">
+            <span className="v2-topbar__search-icon"><IconSearch size={14} /></span>
+            <span className="v2-topbar__search-text">Search titles, tags, characters...</span>
+          </Link>
+        </div>
+      </header>
+
+      {/* ══ MAIN CONTENT ════════════════════════════════════════ */}
+      <div className="v2-main">
         {children}
       </div>
 
-      {/* ── Right sidebar (desktop 1280px+) ──────────────── */}
-      <aside className="app-right-sidebar" aria-label="Trending tags">
-        <h3 className="right-sidebar__title">Trending</h3>
-        <div className="right-sidebar__tags">
-          {[
-            "hentai", "anime", "3d", "cosplay", "ahegao",
-            "uncensored", "creampie", "maid", "milf",
-            "schoolgirl", "elf", "futanari", "tentacle", "gangbang",
-          ].map((tag) => (
-            <Link
-              key={tag}
-              href={`/tag/${tag}`}
-              className="tag-pill tag-pill--dark"
-            >
-              #{tag}
-            </Link>
-          ))}
-        </div>
-      </aside>
-
-      {/* ── Mobile bottom nav ────────────────────────────── */}
-      <nav className="bottom-nav" aria-label="Mobile navigation">
-        {NAV_ITEMS.slice(0, 5).map(({ href, label, Icon }) => (
+      {/* ══ MOBILE BOTTOM NAV ═══════════════════════════════════ */}
+      <nav className="v2-bottom-nav" aria-label="Mobile navigation">
+        {BOTTOM_ITEMS.map(({ href, label, Icon }) => (
           <Link
             key={href}
             href={href}
-            className={`bottom-nav__item${isActive(href) ? " bottom-nav__item--active" : ""}`}
+            className={`v2-bottom-nav__item${isActive(href) ? " v2-bottom-nav__item--active" : ""}`}
             aria-current={isActive(href) ? "page" : undefined}
           >
-            <Icon size={20} />
-            {isActive(href) && (
-              <span className="bottom-nav__label">{label}</span>
-            )}
+            <Icon size={22} />
+            <span className="v2-bottom-nav__label">{label}</span>
           </Link>
         ))}
       </nav>
+
     </div>
   );
 }

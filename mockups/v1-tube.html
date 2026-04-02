@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IKU — Watch Free Hentai Online</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0b0b0b;
+      --surface:   #1b1b1b;
+      --surface2:  #242424;
+      --surface3:  #2e2e2e;
+      --text:      #f1f1f1;
+      --secondary: #a0a0a0;
+      --accent:    #ff9900;
+      --accent-h:  #ffb730;
+      --border:    #2e2e2e;
+      --radius:    6px;
+      --gap:       8px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      line-height: 1.4;
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    a:hover { color: var(--accent); }
+
+    /* ─── HEADER ─── */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      height: 56px;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 24px;
+    }
+
+    .header__logo {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      user-select: none;
+    }
+
+    .header__logo-mark {
+      background: var(--accent);
+      color: #000;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: -0.02em;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .header__logo-text {
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: -0.03em;
+      color: var(--text);
+    }
+
+    /* NAV */
+    .header__nav {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .header__nav-link {
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #ccc;
+      transition: color 0.15s, background 0.15s;
+      white-space: nowrap;
+    }
+
+    .header__nav-link:hover {
+      color: var(--text);
+      background: var(--surface3);
+    }
+
+    .header__nav-link--active {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .header__nav-link--live {
+      color: #ff4444;
+    }
+
+    .header__nav-link--live::before {
+      content: '● ';
+      font-size: 8px;
+      vertical-align: middle;
+    }
+
+    .header__nav-link--ai {
+      color: var(--accent);
+      border: 1px solid rgba(255, 153, 0, 0.35);
+    }
+
+    .header__nav-link--ai:hover {
+      background: rgba(255, 153, 0, 0.1);
+      color: var(--accent-h);
+    }
+
+    /* SEARCH */
+    .header__search {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .header__search-form {
+      display: flex;
+      align-items: center;
+      background: var(--surface3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      height: 34px;
+    }
+
+    .header__search-input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-size: 13px;
+      padding: 0 12px;
+      width: 220px;
+    }
+
+    .header__search-input::placeholder { color: #666; }
+
+    .header__search-btn {
+      background: var(--accent);
+      border: none;
+      cursor: pointer;
+      height: 34px;
+      width: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-size: 15px;
+      transition: background 0.15s;
+    }
+
+    .header__search-btn:hover { background: var(--accent-h); }
+
+    .header__actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .btn-upload {
+      background: var(--accent);
+      color: #000;
+      font-weight: 700;
+      font-size: 12px;
+      padding: 6px 14px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: background 0.15s;
+    }
+
+    .btn-upload:hover { background: var(--accent-h); }
+
+    .btn-login {
+      background: transparent;
+      color: #ccc;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .btn-login:hover { border-color: #666; color: var(--text); }
+
+    /* ─── CATEGORY STRIP ─── */
+    .cat-strip {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      height: 44px;
+    }
+
+    .cat-strip::-webkit-scrollbar { display: none; }
+
+    .cat-pill {
+      flex-shrink: 0;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #ccc;
+      background: var(--surface3);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .cat-pill:hover {
+      color: var(--text);
+      border-color: #555;
+    }
+
+    .cat-pill--active {
+      background: var(--accent);
+      color: #000;
+      font-weight: 700;
+    }
+
+    .cat-pill--active:hover { background: var(--accent-h); color: #000; }
+
+    /* ─── MAIN CONTENT ─── */
+    .main {
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 0 16px 40px;
+    }
+
+    /* ─── HERO BANNER ─── */
+    .hero {
+      padding: 20px 0 0;
+    }
+
+    .hero__label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .hero__grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: var(--gap);
+    }
+
+    .hero__main {
+      grid-row: span 2;
+    }
+
+    /* ─── THUMB CARD ─── */
+    .thumb-card {
+      cursor: pointer;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--surface2);
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+
+    .thumb-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+    }
+
+    .thumb-card:hover .thumb-card__title {
+      color: var(--accent);
+    }
+
+    .thumb-card__media {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 */
+      overflow: hidden;
+    }
+
+    .thumb-card__media > span.thumb-card__duration {
+      position: absolute;
+    }
+
+    .thumb-card__overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      background: rgba(0,0,0,0.3);
+      transition: opacity 0.15s;
+    }
+
+    .thumb-card:hover .thumb-card__overlay { opacity: 1; }
+
+    .thumb-card__play {
+      width: 44px;
+      height: 44px;
+      background: rgba(255,153,0,0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-size: 16px;
+    }
+
+    .thumb-card__duration {
+      position: absolute;
+      bottom: 6px;
+      right: 6px;
+      background: rgba(0,0,0,0.82);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 5px;
+      border-radius: 3px;
+      letter-spacing: 0.02em;
+      z-index: 2;
+    }
+
+    .thumb-card__hd {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      background: var(--accent);
+      color: #000;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 1px 4px;
+      border-radius: 2px;
+      letter-spacing: 0.05em;
+      z-index: 2;
+    }
+
+    .thumb-card__new {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: #e53935;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 2px;
+      letter-spacing: 0.05em;
+      z-index: 2;
+    }
+
+    .thumb-card__info {
+      padding: 8px 10px 10px;
+    }
+
+    .thumb-card__title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.35;
+      margin-bottom: 4px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      transition: color 0.15s;
+    }
+
+    .thumb-card--hero .thumb-card__title {
+      font-size: 15px;
+    }
+
+    .thumb-card__meta {
+      font-size: 11px;
+      color: var(--secondary);
+    }
+
+    .thumb-card__channel {
+      font-size: 11px;
+      color: #888;
+      margin-bottom: 2px;
+    }
+
+    .thumb-card__channel a:hover { color: var(--accent); }
+
+    /* ─── SECTION ─── */
+    .section {
+      padding-top: 32px;
+    }
+
+    .section__header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 12px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    .section__header-accent {
+      width: 3px;
+      height: 18px;
+      background: var(--accent);
+      border-radius: 2px;
+      flex-shrink: 0;
+      align-self: center;
+    }
+
+    .section__view-all {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .section__view-all:hover { color: var(--accent-h); }
+
+    /* ─── 5-COL GRID ─── */
+    .grid-5 {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--gap);
+    }
+
+    .grid-6 {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: var(--gap);
+    }
+
+    /* ─── CATEGORIES GRID ─── */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: var(--gap);
+    }
+
+    .cat-card {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      aspect-ratio: 16/9;
+      transition: transform 0.18s;
+    }
+
+    .cat-card:hover { transform: scale(1.02); }
+
+    .cat-card__bg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .cat-card__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(0deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 60%);
+      display: flex;
+      align-items: flex-end;
+      padding: 10px 12px;
+    }
+
+    .cat-card__name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+    }
+
+    .cat-card__count {
+      font-size: 10px;
+      color: rgba(255,255,255,0.7);
+      display: block;
+      margin-top: 1px;
+    }
+
+    /* ─── BANNER AD STRIP ─── */
+    .banner-strip {
+      margin-top: 28px;
+      background: linear-gradient(90deg, #1a1a1a, #242424);
+      border: 1px solid #333;
+      border-radius: var(--radius);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .banner-strip__text {
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    .banner-strip__text strong { color: var(--accent); }
+
+    .btn-premium {
+      background: linear-gradient(90deg, #f90, #ffb730);
+      color: #000;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 8px 20px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      letter-spacing: 0.03em;
+      transition: opacity 0.15s;
+      flex-shrink: 0;
+    }
+
+    .btn-premium:hover { opacity: 0.9; }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 40px 20px 24px;
+      margin-top: 48px;
+    }
+
+    .footer__inner {
+      max-width: 1480px;
+      margin: 0 auto;
+    }
+
+    .footer__logo {
+      margin-bottom: 24px;
+    }
+
+    .footer__grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 32px;
+      margin-bottom: 32px;
+    }
+
+    .footer__col-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--secondary);
+      margin-bottom: 12px;
+    }
+
+    .footer__links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .footer__links a {
+      font-size: 12px;
+      color: #888;
+      transition: color 0.15s;
+    }
+
+    .footer__links a:hover { color: var(--text); }
+
+    .footer__bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .footer__legal {
+      font-size: 11px;
+      color: #555;
+      line-height: 1.6;
+      max-width: 700px;
+    }
+
+    .footer__compliance {
+      display: flex;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .badge-18 {
+      background: #e53935;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .badge-rta {
+      border: 2px solid #555;
+      color: #777;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 3px 6px;
+      border-radius: 3px;
+      letter-spacing: 0.05em;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+    /* ─── PROGRESS BAR (hover teaser) ─── */
+    .thumb-card__progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: rgba(255,255,255,0.15);
+    }
+
+    .thumb-card__progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 0 2px 2px 0;
+    }
+
+    /* ─── SORT TABS ─── */
+    .sort-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 14px;
+    }
+
+    .sort-tab {
+      padding: 5px 12px;
+      border-radius: 3px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #888;
+      background: var(--surface2);
+      cursor: pointer;
+      transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+
+    .sort-tab:hover { color: var(--text); background: var(--surface3); }
+
+    .sort-tab--active {
+      color: var(--text);
+      background: var(--surface3);
+      border-color: var(--border);
+    }
+
+    /* ─── VIEWS BADGE ─── */
+    .views-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      color: var(--accent);
+      font-weight: 700;
+      background: rgba(255,153,0,0.1);
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ HEADER ═══════════════════════════════ -->
+<header class="header">
+  <div class="header__logo">
+    <span class="header__logo-mark">IKU</span>
+    <span class="header__logo-text">tube</span>
+  </div>
+
+  <nav class="header__nav">
+    <a href="#" class="header__nav-link header__nav-link--active">Videos</a>
+    <a href="#" class="header__nav-link">Categories</a>
+    <a href="#" class="header__nav-link">Characters</a>
+    <a href="#" class="header__nav-link">Series</a>
+    <a href="#" class="header__nav-link header__nav-link--live">Live</a>
+    <a href="#" class="header__nav-link header__nav-link--ai">AI</a>
+    <a href="#" class="header__nav-link">Community</a>
+  </nav>
+
+  <div class="header__search">
+    <form class="header__search-form">
+      <input class="header__search-input" type="text" placeholder="Search videos, characters, series…">
+      <button class="header__search-btn" type="submit">&#128269;</button>
+    </form>
+  </div>
+
+  <div class="header__actions">
+    <button class="btn-upload">&#43; Upload</button>
+    <button class="btn-login">Log In</button>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════ CATEGORY STRIP ═══════════════════════ -->
+<div class="cat-strip">
+  <span class="cat-pill cat-pill--active">All</span>
+  <span class="cat-pill">Hentai</span>
+  <span class="cat-pill">3D / CGI</span>
+  <span class="cat-pill">Cosplay</span>
+  <span class="cat-pill">POV</span>
+  <span class="cat-pill">Uncensored</span>
+  <span class="cat-pill">Creampie</span>
+  <span class="cat-pill">MILF</span>
+  <span class="cat-pill">Schoolgirl</span>
+  <span class="cat-pill">Tentacle</span>
+  <span class="cat-pill">Yuri</span>
+  <span class="cat-pill">Futa</span>
+  <span class="cat-pill">Ahegao</span>
+  <span class="cat-pill">Femdom</span>
+  <span class="cat-pill">Isekai</span>
+  <span class="cat-pill">NTR</span>
+  <span class="cat-pill">Vanilla</span>
+  <span class="cat-pill">VR</span>
+</div>
+
+<!-- ═══════════════════════════════ MAIN ═════════════════════════════════ -->
+<main class="main">
+
+  <!-- ─── FEATURED / HERO ─── -->
+  <section class="hero">
+    <div class="hero__label">
+      <span class="section-label">&#9733; Featured</span>
+      <span style="font-size:12px; color:#666;">Editor's picks</span>
+    </div>
+    <div class="hero__grid">
+
+      <!-- Main hero card (large) -->
+      <div class="thumb-card thumb-card--hero hero__main">
+        <div class="thumb-card__media" style="background: linear-gradient(135deg, #b71c1c 0%, #880E4F 50%, #4A148C 100%);">
+          <span class="thumb-card__hd">HD</span>
+          <span class="thumb-card__duration">42:17</span>
+          <div class="thumb-card__overlay">
+            <div class="thumb-card__play">&#9654;</div>
+          </div>
+          <div class="thumb-card__progress">
+            <div class="thumb-card__progress-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+        <div class="thumb-card__info">
+          <div class="thumb-card__channel"><a href="#">EroAnime Studio</a></div>
+          <h3 class="thumb-card__title">Raiden Shogun Full Animation — Genshin Impact [UNCENSORED]</h3>
+          <span class="thumb-card__meta">2.4M views &bull; 98% &bull; 3 days ago</span>
+        </div>
+      </div>
+
+      <!-- Small hero cards -->
+      <div class="thumb-card">
+        <div class="thumb-card__media" style="background: linear-gradient(135deg, #1565C0, #00BCD4);">
+          <span class="thumb-card__hd">4K</span>
+          <span class="thumb-card__duration">28:05</span>
+          <div class="thumb-card__overlay"><div class="thumb-card__play">&#9654;</div></div>
+        </div>
+        <div class="thumb-card__info">
+          <div class="thumb-card__channel"><a href="#">NaughtyPixels</a></div>
+          <h3 class="thumb-card__title">Rem &amp; Ram — Re:Zero Night Scene</h3>
+          <span class="thumb-card__meta">1.1M views &bull; 97% &bull; 5 days ago</span>
+        </div>
+      </div>
+
+      <div class="thumb-card">
+        <div class="thumb-card__media" style="background: linear-gradient(135deg, #2E7D32, #F9A825);">
+          <span class="thumb-card__hd">HD</span>
+          <span class="thumb-card__new">NEW</span>
+          <span class="thumb-card__duration">19:44</span>
+          <div class="thumb-card__overlay"><div class="thumb-card__play">&#9654;</div></div>
+        </div>
+        <div class="thumb-card__info">
+          <div class="thumb-card__channel"><a href="#">LeakersClub</a></div>
+          <h3 class="thumb-card__title">Bulma vs Android 18 — Dragon Ball 3D CGI</h3>
+          <span class="thumb-card__meta">874K views &bull; 94% &bull; 1 day ago</span>
+        </div>
+      </div>
+
+      <div class="thumb-card">
+        <div class="thumb-card__media" style="background: linear-gradient(135deg, #E91E63, #FF6F00);">
+          <span class="thumb-card__hd">HD</span>
+          <span class="thumb-card__duration">35:22</span>
+          <div class="thumb-card__overlay"><div class="thumb-card__play">&#9654;</div></div>
+        </div>
+        <div class="thumb-card__info">
+          <div class="thumb-card__channel"><a href="#">SukiDesu</a></div>
+          <h3 class="thumb-card__title">Nezuko Cosplay POV — Demon Slayer Fan Film</h3>
+          <span class="thumb-card__meta">3.2M views &bull; 99% &bull; 2 weeks ago</span>
+        </div>
+      </div>
+
+      <div class="thumb-card">
+        <div class="thumb-card__media" style="background: linear-gradient(135deg, #6A1B9A, #0D47A1);">
+          <span class="thumb-card__hd">4K</span>
+          <span class="thumb-card__duration">51:08</span>
+          <div class="thumb-card__overlay"><div class="thumb-card__play">&#9654;</div></div>
+        </div>
+        <div class="thumb-card__info">
+          <div class="thumb-card__channel"><a href="#">H-Motion</a></div>
+          <h3 class="thumb-card__title">Mikasa Ackerman — AOT OVA Uncensored Cut</h3>
+          <span class="thumb-card__meta">1.8M views &bull; 96% &bull; 1 week ago</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── PREMIUM BANNER ─── -->
+  <div class="banner-strip">
+    <div class="banner-strip__text">
+      <strong>IKU Premium</strong> — No ads, 4K Ultra HD, exclusive series &amp; early releases.
+    </div>
+    <button class="btn-premium">&#9733; Get Premium — 3 days FREE</button>
+  </div>
+
+  <!-- ─── TRENDING NOW ─── -->
+  <section class="section">
+    <div class="section__header">
+      <div class="section__header-accent"></div>
+      <h2 class="section-title">Trending Now</h2>
+      <span class="views-badge">&#128293; Hot</span>
+      <a href="#" class="section__view-all">View All &rsaquo;</a>
+    </div>
+
+    <div class="sort-tabs">
+      <span class="sort-tab sort-tab--active">Today</span>
+      <span class="sort-tab">This Week</span>
+      <span class="sort-tab">This Month</span>
+      <span class="sort-tab">All Time</span>
+    </div>
+
+    <div class="grid-5">
+
+      <div class="thumb-card">
+        <div class="thumb-card__media" style="background: linear-gradient(135deg, #C62828, #AD1457);">
+          <span class="thumb-card__hd">HD</span>
+          <span class="thumb-card__duration">14:32</span>
+          <div class="thumb-card__overlay"><div class="thumb-card__play">&#9654;</div></div>
+        </div>
+        <div class="thumb-card__info">
+          <div class="thumb-card__channel"><a href="#">MegumiFan</a></div>
+          <h3 class="thumb-card__title">Megumi Fushiguro x Nobara — JJK Doujin Animated</h3>
+          <span class="thumb-card__meta">420K views &bull; 96% &bull; 2 days ago</span>
+        </div>
+      </div>
+
+      <div class="thumb-card">
+        <div class="thumb-card__media" style="background: linear-gradient(135deg, #00695C, #1565C0);">
+          <span class="thumb-card__hd">4K</span>
+          <span class="thumb-card__duration">22:18</span>
+          <div class="thumb-card__overlay"><div class="thumb-card__play">&#9654;</div></div>
+        </div>
+        <div class="thumb-card__info">
+          <div class="thumb-card__channel"><a href="#">OVA Vault</a></div>
+          <h3 class="thumb-card__title">Asuna Yuuki Exclusive OVA — Sword Art Online</h3>
+          <span class="thumb-card__meta">789K views &bull; 98% &bull; 4 days ago</span>
+        </div>
+      </div>
+
+      <div class="thumb-card">
+        <div class="thumb-card__media" style="background: linear-gradient(135deg, #F57F17, #E64A19);">
+          <span class="thumb-card__new">NEW</span>
+          <span class="thumb-card__duration">9:55</span>
+          <div class="thumb-card__overlay"><div class="thumb-card__play">&#9654;</div></div>
+        </div>
+        <div class="thumb-card__info">
+          <div class="thumb-card__channel"><a href="#">AnimeMILF</a></div>
+          <h3 class="thumb-card__title">Yor Forger — Spy x Family Mommy Special</h3>
+          <span class="thumb-card__meta">1.3M views &bull; 99% &bull; 6 hours ago</span>
+        </div>
+      </div>
+
+      <div class="thumb-card">
+        <div class="thumb-card__media" style="background: linear-gradient(135deg, #283593, #6A1B9A);">
+          <span class="thumb-card__hd">HD</span>
+          <span class="thumb-card__duration">33:01</span>
+          <div class="thumb-card__overlay"><div class="thumb-card__play">&#9654;</div></div>
+        </div>
+        <div class="thumb-card__info">
+          <div class="thumb-card__channel"><a href="#">FutaDojo</a></div>
+          <h3 class="thumb-card__title">Hestia &amp; Bell — DanMachi Futa Doujin [Full]</h3>
+          <span class="thumb-card__meta">560K views &bull; 93% &bull; 3 days ago</span>
+        </div>
+      </div>
+
+      <div class="thumb-card">
+        <div class="thumb-card__media" style="background: linear-gradient(135deg, #1B5E20, #827717);">
+          <span class="thumb-card__hd">HD</span>
+          <span class="thumb-card__duration">17:44</span>
+          <div class="thumb-card__overlay"><div class="thumb-card__play">&#9654;</div></div>
+        </div>
+        <div class="thumb-card__info">
+          <div class="thumb-card__channel"><a href="#">TentacleStudio</a></div>
+          <h3 class="thumb-card__title">Tohru Dragon Maid — Tentacle Scene Extended</h3>
+          <span class="thumb-card__meta">330K views &bull; 91% &bull; 1 week ago</span>
+        </div>
+      </div>
+
+      <div class="thumb-card">
+        <div class="thumb-card__media" style="background: linear-gradient(135deg, #880E4F, #4527A0);">
+          <span class="thumb-card__hd">4K</span>
+          <span class="thumb-card__duration">46:12</span>
+          <div class="thumb-card__overlay"><div class="thumb-card__play">&#9654;</div></div>
+        </div>
+        <div class="thumb-card__info">
+          <div class="thumb-card__channel"><a href="#">YuriHeaven</a></div>
+          <h3 class="thumb-card__title">Maki x Nobara Yuri Episode — JJK Girls Night</h3>
+          <span class="thumb-card__meta">612K views &bull; 97% &bull; 5 days ago</span>
+        </div>
+      </div>
+
+      <div class="thumb-card">
+        <div class="thumb-card__media" style="background: linear-gradient(135deg, #BF360C, #1A237E);">
+          <span class="thumb-card__duration">12:03</span>
+          <div class="thumb-card__overlay"><div class="thumb-card__play">&#9654;</div></div>
+          <div class="thumb-card__progress">
+            <div class="thumb-card__progress-fill" style="width: 42%;"></div>
+          </div>
+        </div>
+        <div class="thumb-card__info">
+          <div class="thumb-card__channel"><a href="#">NarutoXXX</a></div>
+          <h3 class="thumb-card__title">Hinata Hyuga — Wedding Night Uncensored</h3>
+          <span class="thumb-card__meta">2.1M views &bull; 98% &bull; 2 months ago</span>
+        </div>
+      </div>
+
+      <div class="thumb-card">
+        <div class="thumb-card__media" style="background: linear-gradient(135deg, #006064, #33691E);">
+          <span class="thumb-card__hd">HD</span>
+          <span class="thumb-card__duration">25:39</span>
+          <div class="thumb-card__overlay"><div class="thumb-card__play">&#9654;</div></div>
+        </div>
+        <div class="thumb-card__info">
+          <div class="thumb-card__channel"><a href="#">SeraphStudio</a></div>
+          <h3 class="thumb-card__title">Shikamaru x Temari — Full Doujin Naruto Shippuden</h3>
+          <span class="thumb-card__meta">198K views &bull; 89% &bull; 2 weeks ago</span>
+        </div>
+      </div>
+
+      <div class="thumb-card">
+        <div class="thumb-card__media" style="background: linear-gradient(135deg, #4A148C, #E65100);">
+          <span class="thumb-card__hd">HD</span>
+          <span class="thumb-card__new">NEW</span>
+          <span class="thumb-card__duration">38:50</span>
+          <div class="thumb-card__overlay"><div class="thumb-card__play">&#9654;</div></div>
+        </div>
+        <div class="thumb-card__info">
+          <div class="thumb-card__channel"><a href="#">VRHentai360</a></div>
+          <h3 class="thumb-card__title">Erza Scarlet VR 180° — Fairy Tail Interactive</h3>
+          <span class="thumb-card__meta">441K views &bull; 95% &bull; 12 hours ago</span>
+        </div>
+      </div>
+
+      <div class="thumb-card">
+        <div class="thumb-card__media" style="background: linear-gradient(135deg, #37474F, #B71C1C);">
+          <span class="thumb-card__duration">7:21</span>
+          <div class="thumb-card__overlay"><div class="thumb-card__play">&#9654;</div></div>
+        </div>
+        <div class="thumb-card__info">
+          <div class="thumb-card__channel"><a href="#">SenseiZone</a></div>
+          <h3 class="thumb-card__title">Naruto Sensei Fantasy — Kurenai x Kakashi Doujin</h3>
+          <span class="thumb-card__meta">88K views &bull; 84% &bull; 3 weeks ago</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── NEW UPLOADS ─── -->
+  <section class="section">
+    <div class="section__header">
+      <div class="section__header-accent" style="background: #e53935;"></div>
+      <h2 class="section-title">New Uploads</h2>
+      <span style="font-size:12px; color:#666;">Updated every hour</span>
+      <a href="#" class="section__view-all">View All &rsaquo;</a>
+    </div>
+
+    <div class="grid-6">
+
+      <div class="thumb-card">
+        <div class="thumb-card__media" style="background: linear-gradient(135deg, #E91E63, #FF5722);">
+          <span class="thumb-card__new">NEW</span>
+          <span class="thumb-card__duration">11:14</span>
+          <div class="thumb-card__overlay"><div class="thumb-card__play">&#9654;</div></div>
+        </div>
+        <div class="thumb-card__info">
+          <div class="thumb-card__channel"><a href="#">AkibaFanClub</a></div>
+          <h3 class="thumb-card__title">Chisato Nishikigi — Lycoris Recoil POV</h3>
+          <span class="thumb-card__meta">12K views &bull; 100% &bull; 1 hour ago</span>
+        </div>
+      </div>
+
+      <div class="thumb-card">
+        <div class="thumb-card__media" style="background: linear-gradient(135deg, #0288D1, #00838F);">
+          <span class="thumb-card__new">NEW</span>
+          <span class="thumb-card__hd">HD</span>
+          <span class="thumb-card__duration">20:07</span>
+          <div class="thumb-card__overlay"><div class="thumb-card__play">&#9654;</div></div>
+        </div>
+        <div class="thumb-card__info">
+          <div class="thumb-card__channel"><a href="#">CelestialArt</a></div>
+          <h3 class="thumb-card__title">Frieren — Beyond Journey's End Scene Unlocked</h3>
+          <span class="thumb-card__meta">8.4K views &bull; 98% &bull; 2 hours ago</span>
+        </div>
+      </div>
+
+      <div class="thumb-card">
+        <div class="thumb-card__media" style="background: linear-gradient(135deg, #7B1FA2, #C2185B);">
+          <span class="thumb-card__new">NEW</span>
+          <span class="thumb-card__duration">5:33</span>
+          <div class="thumb-card__overlay"><div class="thumb-card__play">&#9654;</div></div>
+        </div>
+        <div class="thumb-card__info">
+          <div class="thumb-card__channel"><a href="#">SakuraClips</a></div>
+          <h3 class="thumb-card__title">Nami x Robin Yuri Ship — One Piece Fan Art Animated</h3>
+          <span class="thumb-card__meta">5.1K views &bull; 97% &bull; 3 hours ago</span>
+        </div>
+      </div>
+
+      <div class="thumb-card">
+        <div class="thumb-card__media" style="background: linear-gradient(135deg, #558B2F, #E65100);">
+          <span class="thumb-card__hd">4K</span>
+          <span class="thumb-card__new">NEW</span>
+          <span class="thumb-card__duration">44:00</span>
+          <div class="thumb-card__overlay"><div class="thumb-card__play">&#9654;</div></div>
+        </div>
+        <div class="thumb-card__info">
+          <div class="thumb-card__channel"><a href="#">3DHarem</a></div>
+          <h3 class="thumb-card__title">Overwatch 3D Animation — Mercy x Tracer Full</h3>
+          <span class="thumb-card__meta">31K views &bull; 96% &bull; 4 hours ago</span>
+        </div>
+      </div>
+
+      <div class="thumb-card">
+        <div class="thumb-card__media" style="background: linear-gradient(135deg, #D84315, #6A1B9A);">
+          <span class="thumb-card__new">NEW</span>
+          <span class="thumb-card__duration">16:49</span>
+          <div class="thumb-card__overlay"><div class="thumb-card__play">&#9654;</div></div>
+        </div>
+        <div class="thumb-card__info">
+          <div class="thumb-card__channel"><a href="#">IsekaiFan</a></div>
+          <h3 class="thumb-card__title">Albedo — Overlord Creampie Doujin [Subbed]</h3>
+          <span class="thumb-card__meta">4.2K views &bull; 95% &bull; 5 hours ago</span>
+        </div>
+      </div>
+
+      <div class="thumb-card">
+        <div class="thumb-card__media" style="background: linear-gradient(135deg, #0D47A1, #1B5E20);">
+          <span class="thumb-card__hd">HD</span>
+          <span class="thumb-card__new">NEW</span>
+          <span class="thumb-card__duration">29:58</span>
+          <div class="thumb-card__overlay"><div class="thumb-card__play">&#9654;</div></div>
+        </div>
+        <div class="thumb-card__info">
+          <div class="thumb-card__channel"><a href="#">DoujinWorld</a></div>
+          <h3 class="thumb-card__title">Zero Two x Ichigo — Darling Rivalry Doujin</h3>
+          <span class="thumb-card__meta">22K views &bull; 94% &bull; 6 hours ago</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── POPULAR CATEGORIES ─── -->
+  <section class="section">
+    <div class="section__header">
+      <div class="section__header-accent" style="background: #AB47BC;"></div>
+      <h2 class="section-title">Popular Categories</h2>
+      <a href="#" class="section__view-all">All Categories &rsaquo;</a>
+    </div>
+
+    <div class="cat-grid">
+
+      <div class="cat-card">
+        <div class="cat-card__bg" style="background: linear-gradient(135deg, #E91E63 0%, #9C27B0 100%);"></div>
+        <div class="cat-card__overlay">
+          <div>
+            <span class="cat-card__name">Hentai</span>
+            <span class="cat-card__count">142K videos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-card__bg" style="background: linear-gradient(135deg, #1565C0 0%, #00ACC1 100%);"></div>
+        <div class="cat-card__overlay">
+          <div>
+            <span class="cat-card__name">3D / CGI</span>
+            <span class="cat-card__count">38K videos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-card__bg" style="background: linear-gradient(135deg, #F57F17 0%, #BF360C 100%);"></div>
+        <div class="cat-card__overlay">
+          <div>
+            <span class="cat-card__name">Cosplay</span>
+            <span class="cat-card__count">21K videos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-card__bg" style="background: linear-gradient(135deg, #2E7D32 0%, #827717 100%);"></div>
+        <div class="cat-card__overlay">
+          <div>
+            <span class="cat-card__name">Tentacle</span>
+            <span class="cat-card__count">9.4K videos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-card__bg" style="background: linear-gradient(135deg, #880E4F 0%, #4527A0 100%);"></div>
+        <div class="cat-card__overlay">
+          <div>
+            <span class="cat-card__name">Yuri</span>
+            <span class="cat-card__count">15K videos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-card__bg" style="background: linear-gradient(135deg, #4A148C 0%, #E65100 100%);"></div>
+        <div class="cat-card__overlay">
+          <div>
+            <span class="cat-card__name">Futa</span>
+            <span class="cat-card__count">11K videos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-card__bg" style="background: linear-gradient(135deg, #B71C1C 0%, #F57F17 100%);"></div>
+        <div class="cat-card__overlay">
+          <div>
+            <span class="cat-card__name">Uncensored</span>
+            <span class="cat-card__count">67K videos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-card__bg" style="background: linear-gradient(135deg, #006064 0%, #1A237E 100%);"></div>
+        <div class="cat-card__overlay">
+          <div>
+            <span class="cat-card__name">Schoolgirl</span>
+            <span class="cat-card__count">33K videos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-card__bg" style="background: linear-gradient(135deg, #37474F 0%, #AD1457 100%);"></div>
+        <div class="cat-card__overlay">
+          <div>
+            <span class="cat-card__name">Femdom</span>
+            <span class="cat-card__count">7.2K videos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-card__bg" style="background: linear-gradient(135deg, #1B5E20 0%, #F9A825 100%);"></div>
+        <div class="cat-card__overlay">
+          <div>
+            <span class="cat-card__name">Ahegao</span>
+            <span class="cat-card__count">18K videos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-card__bg" style="background: linear-gradient(135deg, #0D47A1 0%, #880E4F 100%);"></div>
+        <div class="cat-card__overlay">
+          <div>
+            <span class="cat-card__name">NTR</span>
+            <span class="cat-card__count">12K videos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-card__bg" style="background: linear-gradient(135deg, #E91E63 0%, #FF6F00 100%);"></div>
+        <div class="cat-card__overlay">
+          <div>
+            <span class="cat-card__name">MILF</span>
+            <span class="cat-card__count">29K videos</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+<footer class="footer">
+  <div class="footer__inner">
+
+    <div class="footer__logo">
+      <span class="header__logo-mark" style="font-size:13px; padding:3px 7px;">IKU</span>
+      <span style="font-size:16px; font-weight:700; color:#666; margin-left:6px; vertical-align:middle;">tube</span>
+    </div>
+
+    <div class="footer__grid">
+      <div>
+        <div class="footer__col-title">Content</div>
+        <ul class="footer__links">
+          <li><a href="#">Videos</a></li>
+          <li><a href="#">Categories</a></li>
+          <li><a href="#">Characters</a></li>
+          <li><a href="#">Series</a></li>
+          <li><a href="#">Live Streams</a></li>
+          <li><a href="#">AI Generator</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title">Account</div>
+        <ul class="footer__links">
+          <li><a href="#">Sign Up Free</a></li>
+          <li><a href="#">Log In</a></li>
+          <li><a href="#">Premium</a></li>
+          <li><a href="#">Settings</a></li>
+          <li><a href="#">Watch History</a></li>
+          <li><a href="#">Favorites</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title">Creators</div>
+        <ul class="footer__links">
+          <li><a href="#">Upload Video</a></li>
+          <li><a href="#">Creator Studio</a></li>
+          <li><a href="#">Monetization</a></li>
+          <li><a href="#">Affiliate Program</a></li>
+          <li><a href="#">Creator Guidelines</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title">Support</div>
+        <ul class="footer__links">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">DMCA / Removal</a></li>
+          <li><a href="#">Report Content</a></li>
+          <li><a href="#">Feedback</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title">Company</div>
+        <ul class="footer__links">
+          <li><a href="#">About IKU</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press Kit</a></li>
+          <li><a href="#">Advertising</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <div class="footer__legal">
+        &copy; 2026 IKU Tube. All rights reserved. All models featured on this website are 18 years of age or older.
+        IKU Tube is an adult community that contains age-restricted content. By entering, you affirm that you are at
+        least 18 years of age or the age of majority in the jurisdiction you are accessing the website from and you
+        consent to viewing sexually explicit content. &nbsp;
+        <a href="#" style="color:#555;">Privacy Policy</a> &bull;
+        <a href="#" style="color:#555;">Terms of Service</a> &bull;
+        <a href="#" style="color:#555;">2257 Statement</a> &bull;
+        <a href="#" style="color:#555;">Cookie Policy</a>
+      </div>
+      <div class="footer__compliance">
+        <div class="badge-18">18+</div>
+        <div class="badge-rta">RTA</div>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+</body>
+</html>
