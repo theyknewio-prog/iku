@@ -3487,3 +3487,190 @@ body {
   color: var(--color-accent);
   border: none;
 }
+
+/* ============================================================
+   HOMEPAGE — PimpBunny-style thumbnail grid
+   ============================================================ */
+
+/* Outer page wrapper — pads from shell edges */
+.home-page {
+  padding: 24px 16px 0;
+}
+
+@media (min-width: 768px)  { .home-page { padding: 28px 20px 0; } }
+@media (min-width: 1024px) { .home-page { padding: 32px 24px 0; } }
+@media (min-width: 1280px) { .home-page { padding: 32px 28px 0; } }
+
+/* Each content block (video grid + pills) */
+.home-section {
+  margin-bottom: 12px;
+}
+
+.home-section--compact {
+  margin-bottom: 8px;
+}
+
+/* Row: heading left + "See All" right */
+.home-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+/* Section heading — uppercase overline style */
+.home-section__heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+
+/* Accent left bar — 3px gradient pill */
+.home-section__bar {
+  display: inline-block;
+  width: 3px;
+  height: 16px;
+  background: linear-gradient(180deg, #ff2080 0%, #7c3aff 100%);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* "See All →" link */
+.home-section__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  color: var(--color-text-tertiary);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--dur-fast) ease;
+  flex-shrink: 0;
+}
+
+.home-section__link:hover {
+  color: var(--color-accent);
+}
+
+/* Thin horizontal divider between sections */
+.home-divider {
+  height: 1px;
+  background: var(--color-border-subtle);
+  margin: 20px 0 24px;
+}
+
+/* ── Tag / Character pill strips ─────────────────────────── */
+
+.home-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 4px;
+}
+
+/* Pill element */
+.home-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 400;
+  font-family: var(--font-sans);
+  color: var(--color-text-secondary);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.07);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background var(--dur-fast) ease,
+    border-color var(--dur-fast) ease,
+    color var(--dur-fast) ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.home-pill:hover {
+  background: rgba(255,32,128,0.13);
+  border-color: rgba(255,32,128,0.32);
+  color: var(--color-accent-hover);
+}
+
+/* Character variant — slightly different tint */
+.home-pill--character {
+  background: rgba(124,58,255,0.06);
+  border-color: rgba(124,58,255,0.10);
+  color: rgba(255,255,255,0.5);
+}
+
+.home-pill--character:hover {
+  background: rgba(124,58,255,0.16);
+  border-color: rgba(124,58,255,0.36);
+  color: var(--color-accent2-hover, #9055ff);
+}
+
+/* Count badge inside pill */
+.home-pill__count {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-text-tertiary);
+  background: rgba(255,255,255,0.06);
+  padding: 1px 5px;
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+  transition: color var(--dur-fast) ease, background var(--dur-fast) ease;
+}
+
+.home-pill:hover .home-pill__count {
+  color: inherit;
+  background: rgba(255,32,128,0.15);
+}
+
+.home-pill--character:hover .home-pill__count {
+  background: rgba(124,58,255,0.15);
+}
+
+/* ── Footer at bottom of homepage ───────────────────────── */
+
+.home-footer {
+  padding: 28px 0 24px;
+  border-top: 1px solid var(--color-border-subtle);
+  margin-top: 8px;
+}
+
+@media (max-width: 1023px) {
+  .home-footer {
+    margin-bottom: 72px; /* clear mobile bottom nav */
+  }
+}
+
+.home-footer__links {
+  display: flex;
+  gap: 4px 20px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.home-footer__link {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  text-decoration: none;
+  transition: color var(--dur-fast) ease;
+}
+
+.home-footer__link:hover { color: var(--color-text-secondary); }
+
+.home-footer__copy {
+  font-size: 11px;
+  color: var(--color-text-disabled);
+}
