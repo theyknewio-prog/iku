@@ -12,8 +12,8 @@ const DEFAULT_TAGS = "animated filetype:mp4 rating:e";
 const USER_AGENT = "IkuApp/1.0 (server-side)";
 
 // Revalidation intervals (seconds)
-const REVALIDATE_POST = 86400; // 24 hours — video data doesn't change
-const REVALIDATE_SEARCH = 3600; // 1 hour — good balance
+const REVALIDATE_POST = 86400; // 24 hours
+const REVALIDATE_SEARCH = 21600; // 6 hours — prevents 429 rate limits
 const REVALIDATE_TAGS = 86400; // 24 hours
 
 // Rate limiting: 5 req/sec — Danbooru allows 10 but we stay safe

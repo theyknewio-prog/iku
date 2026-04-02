@@ -3917,7 +3917,7 @@ body {
    "i" gets accent color, "ku" stays white */
 .v2-topbar__logo {
   font-family: var(--font-display, var(--font-sans));
-  font-size: 20px;
+  font-size: 28px;
   font-weight: 800;
   letter-spacing: -0.04em;
   color: #fff;
@@ -3925,6 +3925,7 @@ body {
 
 /* Override: style the logo via the text spans */
 .v2-topbar__logo-text {
+  font-size: 28px;
   /* show "i" in accent, "ku" in white */
   background: linear-gradient(to right, var(--v2-accent-start) 0%, var(--v2-accent-start) 33%, #fff 33%);
   -webkit-background-clip: text;
