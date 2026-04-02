@@ -49,7 +49,7 @@ function fmt(s: number): string {
 
 function IconEye() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" width={22} height={22}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" width={20} height={20}>
       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
       <circle cx="12" cy="12" r="3" />
     </svg>
@@ -58,7 +58,7 @@ function IconEye() {
 
 function IconHeart({ filled }: { filled: boolean }) {
   return (
-    <svg viewBox="0 0 24 24" fill={filled ? "#ff2080" : "none"} stroke={filled ? "#ff2080" : "currentColor"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" width={24} height={24}>
+    <svg viewBox="0 0 24 24" fill={filled ? "#ff2080" : "none"} stroke={filled ? "#ff2080" : "currentColor"} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" width={22} height={22}>
       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
     </svg>
   );
@@ -66,7 +66,7 @@ function IconHeart({ filled }: { filled: boolean }) {
 
 function IconShare() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" width={22} height={22}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" width={20} height={20}>
       <circle cx="18" cy="5" r="3" />
       <circle cx="6" cy="12" r="3" />
       <circle cx="18" cy="19" r="3" />
@@ -78,7 +78,7 @@ function IconShare() {
 
 function IconSoundOn() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" width={22} height={22}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" width={20} height={20}>
       <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
       <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
       <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
@@ -88,7 +88,7 @@ function IconSoundOn() {
 
 function IconSoundOff() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" width={22} height={22}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" width={20} height={20}>
       <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
       <line x1="23" y1="9" x2="17" y2="15" />
       <line x1="17" y1="9" x2="23" y2="15" />
@@ -98,7 +98,7 @@ function IconSoundOff() {
 
 function IconExpand() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" width={22} height={22}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" width={20} height={20}>
       <polyline points="15 3 21 3 21 9" />
       <polyline points="9 21 3 21 3 15" />
       <line x1="21" y1="3" x2="14" y2="10" />
@@ -109,11 +109,12 @@ function IconExpand() {
 
 function IconPlay() {
   return (
-    <svg viewBox="0 0 64 64" fill="none" width={64} height={64}>
-      {/* Outer circle */}
-      <circle cx="32" cy="32" r="30" fill="rgba(0,0,0,0.45)" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" />
-      {/* Play triangle */}
-      <polygon points="26,20 26,44 46,32" fill="white" />
+    <svg viewBox="0 0 56 56" fill="none" width={56} height={56}>
+      {/* Outer circle — glassmorphism dark */}
+      <circle cx="28" cy="28" r="26" fill="rgba(0,0,0,0.50)" />
+      <circle cx="28" cy="28" r="26" stroke="rgba(255,255,255,0.18)" strokeWidth="1" />
+      {/* Play triangle — slightly offset for optical centering */}
+      <polygon points="23,18 23,38 42,28" fill="rgba(255,255,255,0.92)" />
     </svg>
   );
 }
