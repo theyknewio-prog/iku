@@ -182,6 +182,33 @@ export default async function TagPage({ params, searchParams }: Props) {
               ))}
             </div>
           </section>
+
+          {/* ── Cross-links: Glossary & Blog ─────────────────── */}
+          <section className="page-section">
+            <div className="section-header">
+              <h2 className="section-title">
+                <span className="section-title__bar" aria-hidden />
+                Learn More
+              </h2>
+            </div>
+            <div className="tag-crosslinks">
+              <Link href="/glossary" className="tag-crosslink-card">
+                <span className="tag-crosslink-card__label">Glossary</span>
+                <span className="tag-crosslink-card__title">What Does {titleCased} Mean?</span>
+                <span className="tag-crosslink-card__cta">Read definition →</span>
+              </Link>
+              <Link href="/blog/understanding-hentai-tags" className="tag-crosslink-card">
+                <span className="tag-crosslink-card__label">Guide</span>
+                <span className="tag-crosslink-card__title">Understanding Hentai Tags</span>
+                <span className="tag-crosslink-card__cta">Read guide →</span>
+              </Link>
+              <Link href="/blog/what-is-hentai" className="tag-crosslink-card">
+                <span className="tag-crosslink-card__label">Blog</span>
+                <span className="tag-crosslink-card__title">What is Hentai?</span>
+                <span className="tag-crosslink-card__cta">Read article →</span>
+              </Link>
+            </div>
+          </section>
         </div>
 
         <footer className="site-footer">

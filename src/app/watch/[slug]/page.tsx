@@ -8,6 +8,11 @@ import { WatchActions } from "@/components/WatchActions";
 import { getPost, getRelatedPosts } from "@/lib/danbooru";
 import { extractIdFromSlug } from "@/lib/slugify";
 import type { Video } from "@/types/video";
+import {
+  generateVideoDescription,
+  generateVideoFAQ,
+  generateBreadcrumbs,
+} from "@/lib/content-generator";
 
 /* ─────────────────────────────────────────────────────────────
    Types
@@ -158,6 +163,11 @@ export default async function WatchPage({ params }: WatchPageProps) {
   const description = buildDescription(video);
   const canonicalUrl = `https://iku.gg/watch/${video.slug}`;
   const duration = video.duration ?? undefined;
+
+  /* Rich content from content-generator */
+  const videoDescription = generateVideoDescription(video);
+  const videoFAQ = generateVideoFAQ(video);
+  const breadcrumbs = generateBreadcrumbs(video);
   const scorePercent = Math.round(
     (video.score / (video.score + Math.max(1, 20))) * 100
   );
@@ -194,13 +204,54 @@ export default async function WatchPage({ params }: WatchPageProps) {
     ].join(", "),
   };
 
+  /* FAQPage JSON-LD */
+  const faqJsonLd = videoFAQ.length > 0
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: videoFAQ.map((item) => ({
+          "@type": "Question",
+          name: item.question,
+          acceptedAnswer: { "@type": "Answer", text: item.answer },
+        })),
+      }
+    : null;
+
+  /* BreadcrumbList JSON-LD */
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: breadcrumbs.map((crumb, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: crumb.name,
+      item: crumb.url,
+    })),
+  };
+
   return (
     <>
-      {/* JSON-LD */}
+      {/* JSON-LD — VideoObject */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+      {/* JSON-LD — FAQPage */}
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
+      )}
+      {/* JSON-LD — BreadcrumbList */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c"),
         }}
       />
 
@@ -209,6 +260,27 @@ export default async function WatchPage({ params }: WatchPageProps) {
           <div className="player-layout">
             {/* ── Main column ───────────────────────────────── */}
             <div className="player-main">
+
+              {/* Breadcrumbs nav */}
+              <nav className="watch-breadcrumbs" aria-label="Breadcrumb">
+                {breadcrumbs.map((crumb, i) => (
+                  <span key={crumb.url}>
+                    {i > 0 && <span className="glossary-breadcrumbs__sep" aria-hidden> / </span>}
+                    {i < breadcrumbs.length - 1 ? (
+                      <Link
+                        href={crumb.url.replace("https://iku.gg", "")}
+                        className="glossary-breadcrumbs__link"
+                      >
+                        {crumb.name}
+                      </Link>
+                    ) : (
+                      <span className="glossary-breadcrumbs__current" aria-current="page">
+                        {crumb.name}
+                      </span>
+                    )}
+                  </span>
+                ))}
+              </nav>
 
               {/* Video player */}
               <div className="player-video-wrap">
@@ -360,6 +432,22 @@ export default async function WatchPage({ params }: WatchPageProps) {
                     >
                       {fmt(tag)}
                     </Link>
+                  ))}
+                </div>
+              )}
+
+              {/* Auto-generated video description */}
+              <p className="watch-description">{videoDescription}</p>
+
+              {/* FAQ accordion */}
+              {videoFAQ.length > 0 && (
+                <div className="watch-faq">
+                  <h2 className="watch-faq__heading">Frequently Asked Questions</h2>
+                  {videoFAQ.map((item, i) => (
+                    <details key={i} className="watch-faq__item">
+                      <summary className="watch-faq__question">{item.question}</summary>
+                      <p className="watch-faq__answer">{item.answer}</p>
+                    </details>
                   ))}
                 </div>
               )}

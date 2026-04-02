@@ -5223,3 +5223,718 @@ body {
   60%  { opacity: 1; transform: translateY(-50%) scale(1.08); }
   100% { opacity: 0; transform: translateY(-50%) scale(0.95); }
 }
+
+/* ============================================================
+   GLOSSARY — iku.gg semantic content layer
+   ============================================================ */
+
+.glossary-hero {
+  padding: var(--space-12) 0 var(--space-8);
+}
+
+.glossary-hero__sub {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-3);
+  max-width: 640px;
+  line-height: var(--leading-relaxed);
+}
+
+.glossary-hero__links {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+  flex-wrap: wrap;
+}
+
+/* Alphabet navigation */
+.glossary-alpha-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-6) 0;
+  padding: var(--space-4);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.glossary-alpha-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: background var(--dur-fast), color var(--dur-fast);
+}
+
+.glossary-alpha-link:hover {
+  background: var(--color-accent-dim);
+  color: var(--color-accent);
+}
+
+/* Letter sections */
+.glossary-sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+
+.glossary-letter-section {
+  scroll-margin-top: 80px;
+}
+
+.glossary-letter-heading {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-accent);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+/* Term cards grid */
+.glossary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-4);
+}
+
+.glossary-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  transition: border-color var(--dur-fast), background var(--dur-fast), box-shadow var(--dur-fast);
+}
+
+.glossary-card:hover {
+  border-color: var(--color-border-accent);
+  background: var(--color-bg-card-hover);
+  box-shadow: var(--glow-card);
+}
+
+.glossary-card__category {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.glossary-card__title {
+  font-size: var(--text-md);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.glossary-card__excerpt {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+  flex: 1;
+}
+
+.glossary-card__cta {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-accent);
+  margin-top: auto;
+}
+
+/* Footer cross-links */
+.glossary-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.glossary-footer-link {
+  display: inline-block;
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: border-color var(--dur-fast), color var(--dur-fast);
+}
+
+.glossary-footer-link:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* Breadcrumbs — shared by glossary and blog */
+.glossary-breadcrumbs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px;
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-6);
+}
+
+.glossary-breadcrumbs__link {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color var(--dur-fast);
+}
+
+.glossary-breadcrumbs__link:hover {
+  color: var(--color-accent);
+}
+
+.glossary-breadcrumbs__sep {
+  color: var(--color-text-disabled);
+}
+
+.glossary-breadcrumbs__current {
+  color: var(--color-text-primary);
+}
+
+/* Term detail page */
+.glossary-term-header {
+  margin-bottom: var(--space-6);
+}
+
+.glossary-category-badge {
+  display: inline-block;
+  padding: 2px var(--space-3);
+  background: var(--color-accent-dim);
+  border: 1px solid var(--color-border-accent);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: var(--space-3);
+}
+
+.glossary-term-title {
+  font-size: var(--text-3xl);
+  font-weight: 800;
+  color: var(--color-text-primary);
+  line-height: var(--leading-tight);
+}
+
+.glossary-term-body {
+  margin-bottom: var(--space-8);
+  padding: var(--space-6);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.glossary-term-definition {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+}
+
+.glossary-related-section {
+  margin-top: var(--space-10);
+}
+
+.glossary-related-heading {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-4);
+}
+
+.glossary-tag-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* ============================================================
+   BLOG — iku.gg
+   ============================================================ */
+
+.blog-featured {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-8);
+  background: linear-gradient(135deg, var(--color-bg-elevated) 0%, rgba(124,58,255,0.08) 100%);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  text-decoration: none;
+  margin-bottom: var(--space-8);
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+
+.blog-featured:hover {
+  border-color: var(--color-border-accent);
+  box-shadow: var(--glow-card);
+}
+
+.blog-featured__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+}
+
+.blog-featured__badge {
+  padding: 2px var(--space-3);
+  background: var(--button-primary-bg);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.blog-featured__title {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--color-text-primary);
+  line-height: var(--leading-tight);
+}
+
+.blog-featured__excerpt {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+  max-width: 680px;
+}
+
+.blog-featured__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.blog-featured__cta {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-accent);
+  margin-top: var(--space-2);
+}
+
+/* Blog grid — 2-column */
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-5);
+}
+
+/* Blog card */
+.blog-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  transition: border-color var(--dur-fast), background var(--dur-fast), box-shadow var(--dur-fast);
+}
+
+.blog-card:hover {
+  border-color: var(--color-border-accent);
+  background: var(--color-bg-card-hover);
+  box-shadow: var(--glow-card);
+}
+
+.blog-card__meta {
+  display: flex;
+  gap: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+.blog-card__title {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: var(--leading-snug);
+}
+
+.blog-card__excerpt {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+  flex: 1;
+}
+
+.blog-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.blog-card__cta {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+/* Tag pill shared between blog + glossary */
+.blog-tag-pill {
+  display: inline-block;
+  padding: 2px var(--space-2);
+  background: var(--color-bg-muted);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+/* Blog article post */
+.blog-post-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-10);
+  padding: var(--space-8) 0;
+}
+
+@media (min-width: 900px) {
+  .blog-post-layout {
+    grid-template-columns: 1fr 280px;
+    align-items: start;
+  }
+}
+
+.blog-post-main {
+  min-width: 0;
+}
+
+.blog-post-header {
+  margin-bottom: var(--space-8);
+}
+
+.blog-post-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-4);
+}
+
+.blog-post-meta__dot {
+  color: var(--color-text-disabled);
+}
+
+.blog-post-title {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--color-text-primary);
+  line-height: var(--leading-tight);
+  margin-bottom: var(--space-4);
+}
+
+.blog-post-excerpt {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-4);
+}
+
+.blog-post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* Article body — rendered HTML */
+.blog-post-body {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-10);
+}
+
+.blog-post-body h2 {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: var(--space-8) 0 var(--space-3);
+  line-height: var(--leading-snug);
+}
+
+.blog-post-body p {
+  margin-bottom: var(--space-4);
+}
+
+.blog-post-body strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.blog-post-body em {
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.blog-post-body a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.blog-post-body a:hover {
+  text-decoration: underline;
+}
+
+.blog-glossary-links {
+  margin-top: var(--space-10);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+/* Blog sidebar */
+.blog-post-sidebar {
+  position: sticky;
+  top: 80px;
+}
+
+.blog-sidebar-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.blog-sidebar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: border-color var(--dur-fast);
+}
+
+.blog-sidebar-item:hover {
+  border-color: var(--color-border-accent);
+}
+
+.blog-sidebar-item__title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  line-height: var(--leading-snug);
+}
+
+.blog-sidebar-item__read {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+/* ============================================================
+   WATCH PAGE — rich content additions
+   ============================================================ */
+
+.watch-breadcrumbs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px;
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-4);
+}
+
+.watch-description {
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  line-height: var(--leading-relaxed);
+  margin: var(--space-4) 0;
+  padding: var(--space-4);
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--color-border-accent);
+}
+
+/* FAQ accordion */
+.watch-faq {
+  margin: var(--space-6) 0;
+}
+
+.watch-faq__heading {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  margin-bottom: var(--space-3);
+}
+
+.watch-faq__item {
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.watch-faq__item:last-child {
+  border-bottom: none;
+}
+
+.watch-faq__question {
+  list-style: none;
+  cursor: pointer;
+  padding: var(--space-3) 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  transition: color var(--dur-fast);
+}
+
+.watch-faq__question::after {
+  content: '+';
+  font-size: var(--text-base);
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.watch-faq__item[open] .watch-faq__question::after {
+  content: '−';
+}
+
+.watch-faq__question:hover {
+  color: var(--color-accent);
+}
+
+.watch-faq__answer {
+  padding: 0 0 var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+}
+
+/* ============================================================
+   HOMEPAGE — Learn section
+   ============================================================ */
+
+.v2-learn-section {
+  margin: var(--space-10) 0;
+  padding: 0 var(--space-6);
+}
+
+.v2-learn-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-5);
+}
+
+.v2-learn-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--space-4);
+}
+
+.v2-learn-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  transition: border-color var(--dur-fast), background var(--dur-fast), box-shadow var(--dur-fast);
+}
+
+.v2-learn-card:hover {
+  border-color: var(--color-border-accent);
+  background: var(--color-bg-card-hover);
+  box-shadow: var(--glow-card);
+}
+
+.v2-learn-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: var(--color-accent-dim);
+  border-radius: var(--radius-md);
+  font-size: var(--text-md);
+  font-weight: 800;
+  color: var(--color-accent);
+  margin-bottom: var(--space-1);
+}
+
+.v2-learn-card__title {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: var(--leading-snug);
+}
+
+.v2-learn-card__sub {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+/* ============================================================
+   TAG PAGE — cross-links section
+   ============================================================ */
+
+.tag-crosslinks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+
+.tag-crosslink-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-5);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+
+.tag-crosslink-card:hover {
+  border-color: var(--color-border-accent);
+  box-shadow: var(--glow-card);
+}
+
+.tag-crosslink-card__label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-accent);
+}
+
+.tag-crosslink-card__title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  line-height: var(--leading-snug);
+}
+
+.tag-crosslink-card__cta {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  margin-top: var(--space-1);
+}

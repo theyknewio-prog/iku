@@ -223,6 +223,36 @@ export default async function HomePage() {
 
         </div>
 
+        {/* ══ LEARN SECTION ═════════════════════════════════════ */}
+        <section className="v2-learn-section">
+          <div className="v2-learn-header">
+            <h2 className="v2-tags-section__title">Learn About Hentai</h2>
+            <Link href="/blog" className="v2-tags-section__link">All guides</Link>
+          </div>
+          <div className="v2-learn-grid">
+            <Link href="/blog/what-is-hentai" className="v2-learn-card">
+              <span className="v2-learn-card__icon">?</span>
+              <div className="v2-learn-card__title">What is Hentai?</div>
+              <div className="v2-learn-card__sub">History, genres &amp; culture</div>
+            </Link>
+            <Link href="/blog/understanding-hentai-tags" className="v2-learn-card">
+              <span className="v2-learn-card__icon">#</span>
+              <div className="v2-learn-card__title">Understanding Tags</div>
+              <div className="v2-learn-card__sub">How the tag system works</div>
+            </Link>
+            <Link href="/blog/best-hentai-anime-2025" className="v2-learn-card">
+              <span className="v2-learn-card__icon">★</span>
+              <div className="v2-learn-card__title">Best of 2025-2026</div>
+              <div className="v2-learn-card__sub">Top rated series to watch</div>
+            </Link>
+            <Link href="/glossary" className="v2-learn-card">
+              <span className="v2-learn-card__icon">A</span>
+              <div className="v2-learn-card__title">Hentai Glossary</div>
+              <div className="v2-learn-card__sub">20+ terms explained</div>
+            </Link>
+          </div>
+        </section>
+
         {/* ══ FOOTER ════════════════════════════════════════════ */}
         <footer className="v2-footer">
           <div className="v2-footer__links">
