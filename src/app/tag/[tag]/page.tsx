@@ -13,6 +13,21 @@ type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
+// Pre-build the top 100 tags as static pages — instant load for visitors
+export async function generateStaticParams() {
+  try {
+    const { getPopularTags, getPopularCharacters } = await import("@/lib/danbooru");
+    const [tags, chars] = await Promise.all([
+      getPopularTags(60),
+      getPopularCharacters(40),
+    ]);
+    const allTags = [...tags, ...chars].map((t) => ({ tag: t.name }));
+    return allTags;
+  } catch {
+    return [];
+  }
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { tag } = await params;
   const label = tag.replace(/_/g, " ");
