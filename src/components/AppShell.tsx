@@ -65,6 +65,7 @@ function IconNew({ size = 20 }: { size?: number }) {
 
 const NAV_ITEMS = [
   { href: "/",          label: "Home",     Icon: IconHome },
+  { href: "/explore",   label: "Explore",  Icon: IconExplore },
   { href: "/trending",  label: "Trending", Icon: IconTrending },
   { href: "/new",       label: "New",      Icon: IconNew },
   { href: "/tags",      label: "Tags",     Icon: IconTag },
