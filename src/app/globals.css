@@ -2553,3 +2553,147 @@ body {
 @media (min-width: 1024px) {
   .bottom-nav { display: none; }
 }
+
+/* ============================================================
+   HOME FEED — RedGIFs-style player feed
+   ============================================================ */
+
+.home-feed {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 0 80px;
+}
+
+.home-player {
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--color-border-subtle, #1a1a1a);
+  padding-bottom: 16px;
+}
+
+.home-player__video-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  max-height: 80vh;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .home-player__video-wrap {
+    aspect-ratio: 9 / 14;
+    max-height: 70vh;
+    border-radius: 16px;
+  }
+}
+
+.home-player__video-wrap video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+/* Action buttons — right side overlay */
+.home-player__actions {
+  position: absolute;
+  right: 12px;
+  bottom: 20%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  z-index: 5;
+}
+
+.home-player__action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+  transition: transform 0.15s ease;
+}
+
+.home-player__action:active {
+  transform: scale(1.15);
+}
+
+.home-player__action span {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Info section below video */
+.home-player__info {
+  padding: 12px 4px 0;
+}
+
+.home-player__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.home-player__artist {
+  color: var(--color-accent, #ff2080);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.home-player__artist:hover {
+  text-decoration: underline;
+}
+
+.home-player__dot {
+  color: var(--color-text-tertiary, #555);
+}
+
+.home-player__link {
+  color: var(--color-text-secondary, #888);
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.home-player__link:hover {
+  color: var(--color-text-primary, #f0f0f0);
+}
+
+.home-player__title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary, #f0f0f0);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.home-player__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.home-player__tags .tag-pill {
+  font-size: 12px;
+  padding: 3px 10px;
+  text-decoration: none;
+}
+
+.home-player__niches {
+  padding: 8px 0;
+}
+
+.home-player__niches-label {
+  font-size: 12px;
+  color: var(--color-text-tertiary, #555);
+}
