@@ -3,7 +3,8 @@ import Link from "next/link";
 import { AgeGate } from "@/components/AgeGate";
 import { PosterCard } from "@/components/PosterCard";
 import { Carousel } from "@/components/Carousel";
-import { searchPosts, getPopularTags, getPopularCharacters } from "@/lib/danbooru";
+import { getPopularTags, getPopularCharacters } from "@/lib/danbooru";
+import { getVideos } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai Videos | Stream Animated Hentai Online",
@@ -33,10 +34,10 @@ const CHAR_GRADIENTS = [
 ];
 
 export default async function HomePage() {
-  // Fetch sequentially to respect Danbooru's rate limit (2 req/sec)
-  const trending = await searchPosts({ limit: 20, order: "score" });
-  const newest = await searchPosts({ limit: 10, order: "date" });
-  const topRated = await searchPosts({ limit: 10, order: "favcount" });
+  // Fetch sequentially to respect rate limits across both sources
+  const trending = await getVideos({ limit: 20, order: "score", source: "all" });
+  const newest = await getVideos({ limit: 10, order: "date", source: "all" });
+  const topRated = await getVideos({ limit: 10, order: "favcount", source: "all" });
   const [tags, characters] = await Promise.all([
     getPopularTags(20),
     getPopularCharacters(12),

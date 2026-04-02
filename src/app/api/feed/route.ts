@@ -1,20 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
-import { searchPosts, mapPostToVideo } from "@/lib/danbooru";
+import { getVideos } from "@/lib/content";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
   const sort = searchParams.get("sort") || "score";
   const tag = searchParams.get("tag") || "";
+  const sourceParam = searchParams.get("source") || "all";
+  const source =
+    sourceParam === "danbooru"
+      ? "danbooru"
+      : sourceParam === "gelbooru"
+        ? "gelbooru"
+        : "all";
 
   const order = sort === "date" ? "date" : sort === "favcount" ? "favcount" : "score";
 
   try {
-    const { data, hasMore } = await searchPosts({
+    const { data, hasMore } = await getVideos({
       limit: 20,
       page,
       order,
       tags: tag || undefined,
+      source,
     });
 
     // Filter for lightweight videos (< 15MB) for fast loading in feed

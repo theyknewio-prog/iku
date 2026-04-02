@@ -9,7 +9,8 @@ export default function robots(): MetadataRoute.Robots {
     },
     sitemap: [
       "https://iku.gg/sitemap.xml",
-      "https://iku.gg/watch/sitemap.xml",
+      "https://iku.gg/watch/sitemap/0.xml",
+      "https://iku.gg/watch/sitemap/1.xml",
       "https://iku.gg/tag/sitemap.xml",
     ],
   };

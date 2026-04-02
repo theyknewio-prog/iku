@@ -103,6 +103,7 @@ export function mapPostToVideo(post: DanbooruPost): Video {
     fileSize: post.file_size,
     duration: post.media_asset?.duration ?? null,
     createdAt: new Date(post.created_at),
+    source: "danbooru",
   };
 }
 

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { searchPosts } from "@/lib/danbooru";
+import { getVideos } from "@/lib/content";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { AgeGate } from "@/components/AgeGate";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 };
 
 type SortOption = "score" | "date" | "favcount";
+type SourceOption = "all" | "danbooru" | "gelbooru";
 
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "score",    label: "Top Rated" },
@@ -20,20 +21,29 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "favcount", label: "Most Saved" },
 ];
 
+const SOURCE_OPTIONS: { value: SourceOption; label: string }[] = [
+  { value: "all",      label: "All" },
+  { value: "danbooru", label: "Danbooru" },
+  { value: "gelbooru", label: "Gelbooru" },
+];
+
 const PER_PAGE = 40;
 
 export default async function ExplorePage(props: {
-  searchParams: Promise<{ page?: string; sort?: string }>;
+  searchParams: Promise<{ page?: string; sort?: string; source?: string }>;
 }) {
   const searchParams = await props.searchParams;
   const page = Math.max(1, parseInt(searchParams.page || "1"));
   const sort = (SORT_OPTIONS.find((o) => o.value === searchParams.sort)?.value ||
     "score") as SortOption;
+  const source = (SOURCE_OPTIONS.find((o) => o.value === searchParams.source)?.value ||
+    "all") as SourceOption;
 
-  const { data: videos, hasMore } = await searchPosts({
+  const { data: videos, hasMore } = await getVideos({
     limit: PER_PAGE,
     page,
     order: sort,
+    source,
   });
 
   /* Compute page window — 7 pages centered on current */
@@ -60,9 +70,23 @@ export default async function ExplorePage(props: {
             {SORT_OPTIONS.map((opt) => (
               <Link
                 key={opt.value}
-                href={`/explore?sort=${opt.value}&page=1`}
+                href={`/explore?sort=${opt.value}&source=${source}&page=1`}
                 className={`sort-pill${sort === opt.value ? " sort-pill--active" : ""}`}
                 aria-current={sort === opt.value ? "page" : undefined}
+              >
+                {opt.label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* ── Source filter pills ──────────────────────── */}
+          <nav className="sort-bar" aria-label="Source filter" style={{ marginTop: "8px" }}>
+            {SOURCE_OPTIONS.map((opt) => (
+              <Link
+                key={opt.value}
+                href={`/explore?sort=${sort}&source=${opt.value}&page=1`}
+                className={`sort-pill${source === opt.value ? " sort-pill--active" : ""}`}
+                aria-current={source === opt.value ? "page" : undefined}
               >
                 {opt.label}
               </Link>
@@ -91,7 +115,7 @@ export default async function ExplorePage(props: {
             {/* Previous */}
             {page > 1 ? (
               <Link
-                href={`/explore?sort=${sort}&page=${page - 1}`}
+                href={`/explore?sort=${sort}&source=${source}&page=${page - 1}`}
                 className="pagination-v2__btn pagination-v2__btn--nav"
                 aria-label="Previous page"
               >
@@ -110,7 +134,7 @@ export default async function ExplorePage(props: {
             {/* Leading ellipsis */}
             {windowStart > 1 && (
               <>
-                <Link href={`/explore?sort=${sort}&page=1`} className="pagination-v2__btn">1</Link>
+                <Link href={`/explore?sort=${sort}&source=${source}&page=1`} className="pagination-v2__btn">1</Link>
                 {windowStart > 2 && (
                   <span
                     className="pagination-v2__btn"
@@ -126,7 +150,7 @@ export default async function ExplorePage(props: {
             {pageNumbers.map((p) => (
               <Link
                 key={p}
-                href={`/explore?sort=${sort}&page=${p}`}
+                href={`/explore?sort=${sort}&source=${source}&page=${p}`}
                 className={`pagination-v2__btn${p === page ? " pagination-v2__btn--active" : ""}`}
                 aria-current={p === page ? "page" : undefined}
               >
@@ -147,7 +171,7 @@ export default async function ExplorePage(props: {
             {/* Next */}
             {hasMore ? (
               <Link
-                href={`/explore?sort=${sort}&page=${page + 1}`}
+                href={`/explore?sort=${sort}&source=${source}&page=${page + 1}`}
                 className="pagination-v2__btn pagination-v2__btn--nav"
                 aria-label="Next page"
               >
