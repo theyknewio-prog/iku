@@ -29,10 +29,12 @@ export function VideoCard({
   video,
   index,
   isActive,
+  preloadNext = false,
 }: {
   video: FeedVideo;
   index: number;
   isActive: boolean;
+  preloadNext?: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [liked, setLiked] = useState(false);
@@ -77,8 +79,8 @@ export function VideoCard({
     muteTimerRef.current = setTimeout(() => setShowMuteHint(false), 900);
   }, []);
 
-  /* Only load video src when active or next — saves bandwidth */
-  const shouldLoad = isActive;
+  /* Preload active + next 1 video for smooth swiping */
+  const shouldLoad = isActive || preloadNext;
 
   /* Build display title */
   const title = video.character
@@ -106,21 +108,21 @@ export function VideoCard({
         </div>
       )}
 
-      {/* Loading state */}
-      {!loaded && isActive && (
-        <div
+      {/* Loading — show poster thumbnail instead of black + spinner */}
+      {!loaded && isActive && video.thumbnail && (
+        <img
+          src={video.thumbnail}
+          alt=""
           style={{
             position: "absolute",
             inset: 0,
-            zIndex: 10,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            width: "100%",
+            height: "100%",
+            objectFit: "contain",
+            zIndex: 5,
             background: "#000",
           }}
-        >
-          <div className="loader" />
-        </div>
+        />
       )}
 
       {/* Video element */}

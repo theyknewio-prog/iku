@@ -119,14 +119,17 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Right side info */}
-          <div className="v2-hero__side">
-            <div className="v2-hero__episodes">
-              <span className="v2-hero__ep-label">Score</span>
-              <span className="v2-hero__ep-count">{hero ? hero.score : "—"}</span>
-              <span className="v2-hero__ep-sub">All time best</span>
+          {/* Right side — thumbnail of the trending video */}
+          {hero && (
+            <div className="v2-hero__poster">
+              <img
+                src={hero.preview || (hero.thumbnail?.includes("180x180") ? hero.thumbnail.replace("180x180", "720x720") : hero.thumbnail)}
+                alt={heroTitle}
+                className="v2-hero__poster-img"
+              />
+              <div className="v2-hero__poster-glow" />
             </div>
-          </div>
+          )}
         </section>
 
         {/* ══ CONTENT AREA ═══════════════════════════════════════ */}

@@ -4401,19 +4401,54 @@ body {
   transform: translateY(-1px);
 }
 
-/* Right side panel */
-.v2-hero__side {
+/* Right side — hero poster thumbnail */
+.v2-hero__poster {
   position: absolute;
   right: 20px;
   bottom: 48px;
   z-index: 2;
-  display: none;
+  display: none; /* hidden on small mobile */
+}
+
+@media (min-width: 480px) {
+  .v2-hero__poster {
+    display: block;
+  }
+}
+
+.v2-hero__poster-img {
+  width: 140px;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.7), 0 0 50px rgba(232,70,124,0.12);
+  object-fit: cover;
+  aspect-ratio: 9 / 14;
+  display: block;
+}
+
+.v2-hero__poster-glow {
+  position: absolute;
+  inset: -30px;
+  background: radial-gradient(circle at center, rgba(232,70,124,0.10) 0%, transparent 70%);
+  z-index: -1;
+  pointer-events: none;
 }
 
 @media (min-width: 768px) {
-  .v2-hero__side { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+  .v2-hero__poster { right: 32px; bottom: 64px; }
+  .v2-hero__poster-img { width: 200px; border-radius: 14px; }
 }
 
+@media (min-width: 1024px) {
+  .v2-hero__poster { right: 48px; bottom: 80px; }
+  .v2-hero__poster-img { width: 260px; border-radius: 16px; }
+}
+
+@media (min-width: 1280px) {
+  .v2-hero__poster-img { width: 300px; }
+}
+
+/* Legacy — remove old side panel */
 .v2-hero__episodes {
   background: rgba(10,10,10,0.75);
   backdrop-filter: blur(12px);

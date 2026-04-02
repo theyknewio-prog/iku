@@ -119,6 +119,7 @@ export function SwipeFeed() {
             video={video}
             index={index}
             isActive={index === activeIndex}
+            preloadNext={index > activeIndex && index <= activeIndex + 2}
           />
         ))}
       </div>
