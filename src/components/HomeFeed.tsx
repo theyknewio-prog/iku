@@ -7,6 +7,7 @@ import {
   useCallback,
 } from "react";
 import Link from "next/link";
+import { filterByBlacklist } from "@/lib/blacklist";
 
 /* ─────────────────────────────────────────────
    Types
@@ -462,7 +463,9 @@ export function HomeFeed({
   initialVideos: FeedVideo[];
   mode: "trending" | "newest";
 }) {
-  const [videos, setVideos] = useState(initialVideos);
+  const [videos, setVideos] = useState(() =>
+    filterByBlacklist(initialVideos as import("@/types/video").Video[]) as FeedVideo[]
+  );
   const [activeIndex, setActiveIndex] = useState(0);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -480,7 +483,8 @@ export function HomeFeed({
       if (!res.ok) return;
       const data = await res.json();
       if (data.videos?.length > 0) {
-        setVideos((prev) => [...prev, ...data.videos]);
+        const incoming = filterByBlacklist(data.videos) as FeedVideo[];
+        setVideos((prev) => [...prev, ...incoming]);
         setPage((p) => p + 1);
         setHasMore(data.hasMore ?? true);
       } else {

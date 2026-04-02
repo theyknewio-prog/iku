@@ -2,6 +2,8 @@
 
 import { useRef, useEffect, useState, useCallback } from "react";
 import type { FeedVideo } from "./SwipeFeed";
+import { useVideoShortcuts } from "@/hooks/useVideoShortcuts";
+import { useDoubleTap } from "@/hooks/useDoubleTap";
 
 /* ── Helpers ──────────────────────────────────────────────── */
 
@@ -42,7 +44,12 @@ export function VideoCard({
   const [loaded, setLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
   const [showMuteHint, setShowMuteHint] = useState(false);
+  const [seekOverlay, setSeekOverlay] = useState<{ side: "left" | "right"; id: number } | null>(null);
   const muteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const seekOverlayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  /* Keyboard shortcuts — only when this card is active */
+  useVideoShortcuts(isActive ? videoRef : { current: null });
 
   /* Auto-play / pause based on active state */
   useEffect(() => {
@@ -78,6 +85,28 @@ export function VideoCard({
     if (muteTimerRef.current) clearTimeout(muteTimerRef.current);
     muteTimerRef.current = setTimeout(() => setShowMuteHint(false), 900);
   }, []);
+
+  /* Show seek overlay briefly */
+  const showSeekOverlay = useCallback((side: "left" | "right") => {
+    if (seekOverlayTimerRef.current) clearTimeout(seekOverlayTimerRef.current);
+    setSeekOverlay({ side, id: Date.now() });
+    seekOverlayTimerRef.current = setTimeout(() => setSeekOverlay(null), 800);
+  }, []);
+
+  /* Double-tap seek */
+  const { handleClick: handleDoubleTap } = useDoubleTap({
+    onDoubleTap: (side) => {
+      const el = videoRef.current;
+      if (!el || !side) return;
+      if (side === "left") {
+        el.currentTime = Math.max(0, el.currentTime - 10);
+      } else {
+        el.currentTime = Math.min(el.duration || 0, el.currentTime + 10);
+      }
+      showSeekOverlay(side);
+    },
+    onSingleTap: toggleMute,
+  });
 
   /* Preload active + next 1 video for smooth swiping */
   const shouldLoad = isActive || preloadNext;
@@ -125,20 +154,35 @@ export function VideoCard({
         />
       )}
 
-      {/* Video element */}
-      <video
-        ref={videoRef}
-        src={shouldLoad ? video.videoUrl : undefined}
-        poster={video.thumbnail}
-        loop
-        muted={muted}
-        playsInline
-        preload={isActive ? "auto" : "none"}
-        style={{ width: "100%", height: "100%", objectFit: "contain", background: "#000" }}
-        onClick={toggleMute}
-        onLoadedData={() => setLoaded(true)}
-        onTimeUpdate={handleTimeUpdate}
-      />
+      {/* Video element — wrapped for double-tap seek */}
+      <div
+        style={{ position: "absolute", inset: 0 }}
+        onClick={handleDoubleTap}
+      >
+        <video
+          ref={videoRef}
+          src={shouldLoad ? video.videoUrl : undefined}
+          poster={video.thumbnail}
+          loop
+          muted={muted}
+          playsInline
+          preload={isActive ? "auto" : "none"}
+          style={{ width: "100%", height: "100%", objectFit: "contain", background: "#000" }}
+          onLoadedData={() => setLoaded(true)}
+          onTimeUpdate={handleTimeUpdate}
+        />
+      </div>
+
+      {/* Seek overlay */}
+      {seekOverlay && (
+        <div
+          key={seekOverlay.id}
+          className={`seek-overlay seek-overlay--${seekOverlay.side}`}
+          aria-hidden="true"
+        >
+          {seekOverlay.side === "left" ? "◄◄ 10s" : "10s ►►"}
+        </div>
+      )}
 
       {/* Mute indicator (flashes on tap) */}
       {showMuteHint && (

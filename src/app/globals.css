@@ -5068,3 +5068,158 @@ body {
   color: rgba(255,255,255,0.18);
   font-family: var(--font-sans);
 }
+
+/* ============================================================
+   SEARCH AUTOCOMPLETE
+   ============================================================ */
+
+.search-autocomplete {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  /* Mirrors the .v2-topbar__search flex behavior */
+  display: flex;
+  align-items: center;
+}
+
+/* The form inside inherits topbar search styles — keep full width */
+.search-autocomplete .v2-topbar__search {
+  width: 100%;
+  position: relative;
+}
+
+/* Spinner while fetching */
+.search-autocomplete__spinner {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.12);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes spin {
+  to { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* Dropdown list */
+.search-autocomplete__dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 200;
+  background: #141414;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 4px;
+  list-style: none;
+  margin: 0;
+  /* Fade-in */
+  animation: dropdownFadeIn 0.15s ease forwards;
+  /* Thin custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+
+.search-autocomplete__dropdown::-webkit-scrollbar {
+  width: 4px;
+}
+
+.search-autocomplete__dropdown::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.search-autocomplete__dropdown::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+}
+
+@keyframes dropdownFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Individual suggestion row */
+.search-autocomplete__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.1s ease;
+  user-select: none;
+}
+
+.search-autocomplete__item:hover,
+.search-autocomplete__item--active {
+  background: rgba(255,255,255,0.05);
+}
+
+/* Category color dot */
+.search-autocomplete__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Tag name */
+.search-autocomplete__name {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Post count badge */
+.search-autocomplete__count {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   SEEK OVERLAY (double-tap / keyboard seek feedback)
+   ============================================================ */
+
+.seek-overlay {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 10px 18px;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(6px);
+  border-radius: 999px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: rgba(255,255,255,0.92);
+  font-family: var(--font-sans);
+  pointer-events: none;
+  z-index: 20;
+  animation: seekFadeOut 0.8s ease forwards;
+}
+
+.seek-overlay--left  { left: 12%; }
+.seek-overlay--right { right: 12%; }
+
+@keyframes seekFadeOut {
+  0%   { opacity: 1; transform: translateY(-50%) scale(1); }
+  60%  { opacity: 1; transform: translateY(-50%) scale(1.08); }
+  100% { opacity: 0; transform: translateY(-50%) scale(0.95); }
+}

@@ -2,8 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import type { Video } from "@/types/video";
+import { isFavorite, toggleFavorite } from "@/lib/favorites";
+import { isWatched } from "@/lib/history";
 
 /* ── Helpers ─────────────────────────────────────────────── */
 
@@ -48,10 +50,17 @@ export function ThumbnailCard({
   priority = false,
 }: ThumbnailCardProps) {
   const [wishlisted, setWishlisted] = useState(false);
+  const [watched, setWatched] = useState(false);
   const [previewActive, setPreviewActive] = useState(false);
   const [progress, setProgress] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  /* Hydrate localStorage state client-side */
+  useEffect(() => {
+    setWishlisted(isFavorite(video.id));
+    setWatched(isWatched(video.id));
+  }, [video.id]);
 
   const duration = formatDuration(video.duration);
   const hot = isHot(video.score);
@@ -104,6 +113,9 @@ export function ThumbnailCard({
     setProgress(el.currentTime / el.duration);
   }, []);
 
+  /* Derive the video title for favorites storage */
+  const videoTitle = title;
+
   return (
     <Link
       href={`/watch/${video.slug}`}
@@ -111,6 +123,7 @@ export function ThumbnailCard({
       prefetch={false}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      style={watched ? { opacity: 0.75 } : undefined}
     >
       {/* ── Thumbnail media area ─────────────────────────── */}
       <div className="video-card__media">
@@ -148,13 +161,40 @@ export function ThumbnailCard({
           style={{ opacity: previewActive ? 1 : 0 }}
         />
 
+        {/* Watched checkmark badge */}
+        {watched && (
+          <span
+            aria-label="Watched"
+            style={{
+              position: "absolute",
+              top: "6px",
+              left: "6px",
+              width: "18px",
+              height: "18px",
+              borderRadius: "50%",
+              background: "rgba(0,0,0,0.65)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 3,
+            }}
+          >
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </span>
+        )}
+
         {/* Duration badge — bottom right */}
         {duration && (
           <span className="video-card__duration">{duration}</span>
         )}
 
-        {/* Score pill — top left */}
-        <span className={`video-card__score${hot ? " video-card__score--hot" : ""}`}>
+        {/* Score pill — top left (shifted right if watched badge present) */}
+        <span
+          className={`video-card__score${hot ? " video-card__score--hot" : ""}`}
+          style={watched ? { left: "28px" } : undefined}
+        >
           <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor">
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
           </svg>
@@ -183,14 +223,20 @@ export function ThumbnailCard({
           <span className="video-card__new">New</span>
         )}
 
-        {/* Wishlist heart */}
+        {/* Wishlist heart — uses favorites.ts */}
         <button
           className={`btn-heart${wishlisted ? " active" : ""}`}
-          aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          aria-label={wishlisted ? "Remove from favorites" : "Add to favorites"}
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            setWishlisted(!wishlisted);
+            const newState = toggleFavorite({
+              id: video.id,
+              slug: video.slug,
+              title: videoTitle,
+              thumbnail: video.thumbnail,
+            });
+            setWishlisted(newState);
           }}
         >
           <svg

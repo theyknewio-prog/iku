@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { SearchAutocomplete } from "./SearchAutocomplete";
 
 /* ── SVG Icons ─────────────────────────────────────────────── */
 
@@ -35,17 +36,6 @@ function IconTrending({ size = 20 }: { size?: number }) {
   );
 }
 
-function IconCharacters({ size = 20 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-    </svg>
-  );
-}
-
 function IconTag({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -73,35 +63,52 @@ function IconFeed({ size = 20 }: { size?: number }) {
   );
 }
 
-function IconSearch({ size = 18 }: { size?: number }) {
+function IconHistory({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="11" cy="11" r="8" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
     </svg>
   );
 }
 
-/* ── Nav definitions ─────────────────────────────────────────── */
+function IconHeart({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+    </svg>
+  );
+}
 
-const SIDEBAR_ITEMS = [
-  { href: "/",          label: "Home",       Icon: IconHome },
-  { href: "/explore",   label: "Browse",     Icon: IconBrowse },
-  { href: "/trending",  label: "Trending",   Icon: IconTrending },
-  { href: "/new",       label: "New",        Icon: IconNew },
-  { href: "/tags",      label: "Tags",       Icon: IconTag },
-  { href: "/feed",      label: "Feed",       Icon: IconFeed },
-] as const;
+function IconSettings({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+    </svg>
+  );
+}
 
-const BOTTOM_ITEMS = [
-  { href: "/",         label: "Home",     Icon: IconHome },
-  { href: "/explore",  label: "Browse",   Icon: IconBrowse },
-  { href: "/feed",     label: "Feed",     Icon: IconFeed },
-  { href: "/trending", label: "Trending", Icon: IconTrending },
-  { href: "/tags",     label: "Tags",     Icon: IconTag },
-] as const;
+function IconMore({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" stroke="none">
+      <circle cx="5" cy="12" r="1.5" />
+      <circle cx="12" cy="12" r="1.5" />
+      <circle cx="19" cy="12" r="1.5" />
+    </svg>
+  );
+}
 
-/* ── Hamburger icon ──────────────────────────────────────────── */
+function IconClose({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  );
+}
+
+
 function IconHamburger({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
@@ -112,13 +119,42 @@ function IconHamburger({ size = 20 }: { size?: number }) {
   );
 }
 
+/* ── Nav definitions ─────────────────────────────────────────── */
+
+const SIDEBAR_ITEMS = [
+  { href: "/",          label: "Home",      Icon: IconHome },
+  { href: "/explore",   label: "Browse",    Icon: IconBrowse },
+  { href: "/trending",  label: "Trending",  Icon: IconTrending },
+  { href: "/new",       label: "New",       Icon: IconNew },
+  { href: "/tags",      label: "Tags",      Icon: IconTag },
+  { href: "/feed",      label: "Feed",      Icon: IconFeed },
+  { href: "/history",   label: "History",   Icon: IconHistory },
+  { href: "/favorites", label: "Favorites", Icon: IconHeart },
+  { href: "/settings",  label: "Settings",  Icon: IconSettings },
+] as const;
+
+/* Mobile bottom — 4 primary + More button */
+const BOTTOM_ITEMS = [
+  { href: "/",         label: "Home",     Icon: IconHome },
+  { href: "/explore",  label: "Browse",   Icon: IconBrowse },
+  { href: "/feed",     label: "Feed",     Icon: IconFeed },
+  { href: "/trending", label: "Trending", Icon: IconTrending },
+] as const;
+
+const MORE_ITEMS = [
+  { href: "/history",   label: "History",   Icon: IconHistory },
+  { href: "/favorites", label: "Favorites", Icon: IconHeart },
+  { href: "/tags",      label: "Tags",      Icon: IconTag },
+  { href: "/settings",  label: "Settings",  Icon: IconSettings },
+] as const;
+
 /* ── AppShell ─────────────────────────────────────────────────── */
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
 
-  /* Topbar becomes opaque on scroll */
   useEffect(() => {
     function onScroll() {
       setScrolled(window.scrollY > 40);
@@ -127,7 +163,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  /* /feed is full-screen TikTok mode — no chrome */
+  /* Close drawer on navigation */
+  useEffect(() => {
+    setMoreOpen(false);
+  }, [pathname]);
+
   if (pathname === "/feed") {
     return <>{children}</>;
   }
@@ -137,12 +177,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return pathname.startsWith(href);
   }
 
-  function handleSearch(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const input = e.currentTarget.querySelector("input") as HTMLInputElement;
-    const q = input.value.trim().replace(/\s+/g, "_");
-    if (q) window.location.href = `/tag/${encodeURIComponent(q)}`;
-  }
 
   return (
   <>
@@ -151,12 +185,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* ══ SIDEBAR (desktop, 60px icon-only) ═════════════════ */}
       <aside className="v2-sidebar" aria-label="Main navigation">
 
-        {/* Logo mark */}
         <Link href="/" className="v2-sidebar__logo" aria-label="iku home">
           IK
         </Link>
 
-        {/* Nav items */}
         <nav className="v2-sidebar__nav">
           {SIDEBAR_ITEMS.map(({ href, label, Icon }) => (
             <Link
@@ -171,48 +203,33 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           ))}
         </nav>
 
-        {/* Divider + bottom area */}
         <div className="v2-sidebar__bottom">
           <div className="v2-sidebar__divider" />
           <div className="v2-sidebar__avatar" aria-hidden="true" />
         </div>
       </aside>
 
-      {/* ══ TOPBAR — RedGIFs layout: [Logo] [Search] [Hamburger] ═ */}
+      {/* ══ TOPBAR ════════════════════════════════════════════ */}
       <header className={`v2-topbar${scrolled ? " v2-topbar--scrolled" : ""}`}>
 
-        {/* LEFT: Logo — always visible */}
         <Link href="/" className="v2-topbar__logo" aria-label="iku home">
           <span className="v2-topbar__logo-text">iku</span>
         </Link>
 
-        {/* CENTER: Search bar — full width middle */}
-        <form
-          className="v2-topbar__search"
-          onSubmit={handleSearch}
-          role="search"
-        >
-          <span className="v2-topbar__search-icon"><IconSearch size={15} /></span>
-          <input
-            type="search"
-            className="v2-topbar__search-input"
-            placeholder="Search"
-            aria-label="Search"
-          />
-        </form>
+        <SearchAutocomplete />
 
-        {/* RIGHT: Hamburger (mobile) / Nav links (desktop) */}
         <div className="v2-topbar__right">
-          {/* Desktop nav links */}
           <nav className="v2-topbar__nav" aria-label="Content navigation">
-            <Link href="/"         className={`v2-topbar__link${pathname === "/" ? " v2-topbar__link--active" : ""}`}>Home</Link>
-            <Link href="/trending" className={`v2-topbar__link${pathname.startsWith("/trending") ? " v2-topbar__link--active" : ""}`}>Trending</Link>
-            <Link href="/new"      className={`v2-topbar__link${pathname.startsWith("/new") ? " v2-topbar__link--active" : ""}`}>New</Link>
-            <Link href="/explore"  className={`v2-topbar__link${pathname.startsWith("/explore") ? " v2-topbar__link--active" : ""}`}>Browse</Link>
-            <Link href="/tags"     className={`v2-topbar__link${pathname.startsWith("/tags") ? " v2-topbar__link--active" : ""}`}>Tags</Link>
+            <Link href="/"          className={`v2-topbar__link${pathname === "/" ? " v2-topbar__link--active" : ""}`}>Home</Link>
+            <Link href="/trending"  className={`v2-topbar__link${pathname.startsWith("/trending") ? " v2-topbar__link--active" : ""}`}>Trending</Link>
+            <Link href="/new"       className={`v2-topbar__link${pathname.startsWith("/new") ? " v2-topbar__link--active" : ""}`}>New</Link>
+            <Link href="/explore"   className={`v2-topbar__link${pathname.startsWith("/explore") ? " v2-topbar__link--active" : ""}`}>Browse</Link>
+            <Link href="/tags"      className={`v2-topbar__link${pathname.startsWith("/tags") ? " v2-topbar__link--active" : ""}`}>Tags</Link>
+            <Link href="/history"   className={`v2-topbar__link${pathname.startsWith("/history") ? " v2-topbar__link--active" : ""}`}>History</Link>
+            <Link href="/favorites" className={`v2-topbar__link${pathname.startsWith("/favorites") ? " v2-topbar__link--active" : ""}`}>Favorites</Link>
+            <Link href="/settings"  className={`v2-topbar__link${pathname.startsWith("/settings") ? " v2-topbar__link--active" : ""}`}>Settings</Link>
           </nav>
 
-          {/* Mobile hamburger */}
           <button className="v2-topbar__hamburger" aria-label="Menu" type="button">
             <IconHamburger size={22} />
           </button>
@@ -226,7 +243,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
     </div>
 
-    {/* ══ MOBILE BOTTOM NAV — outside v2-shell to avoid stacking context issues ═══ */}
+    {/* ══ MOBILE BOTTOM NAV ═══════════════════════════════════ */}
     <nav className="v2-bottom-nav" aria-label="Mobile navigation">
       {BOTTOM_ITEMS.map(({ href, label, Icon }) => (
         <Link
@@ -239,7 +256,73 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <span className="v2-bottom-nav__label">{label}</span>
         </Link>
       ))}
+
+      {/* More — opens slide-up drawer */}
+      <button
+        type="button"
+        className={`v2-bottom-nav__item${moreOpen ? " v2-bottom-nav__item--active" : ""}`}
+        aria-label="More options"
+        aria-expanded={moreOpen}
+        onClick={() => setMoreOpen((v) => !v)}
+      >
+        {moreOpen ? <IconClose size={22} /> : <IconMore size={22} />}
+        <span className="v2-bottom-nav__label">More</span>
+      </button>
     </nav>
+
+    {/* ══ MORE DRAWER ════════════════════════════════════════ */}
+    {moreOpen && (
+      <>
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.6)",
+            zIndex: 49,
+          }}
+          onClick={() => setMoreOpen(false)}
+          aria-hidden="true"
+        />
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="More navigation options"
+          style={{
+            position: "fixed",
+            bottom: "calc(60px + env(safe-area-inset-bottom))",
+            left: 0,
+            right: 0,
+            background: "var(--color-bg-elevated)",
+            borderTop: "1px solid var(--color-border-default)",
+            borderRadius: "16px 16px 0 0",
+            zIndex: 50,
+            padding: "20px 24px 24px",
+            display: "grid",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: "8px",
+          }}
+        >
+          {MORE_ITEMS.map(({ href, label, Icon }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`v2-bottom-nav__item${isActive(href) ? " v2-bottom-nav__item--active" : ""}`}
+              aria-current={isActive(href) ? "page" : undefined}
+              style={{
+                padding: "14px 8px",
+                borderRadius: "10px",
+                background: isActive(href)
+                  ? "var(--color-accent-dim)"
+                  : "var(--color-bg-muted)",
+              }}
+            >
+              <Icon size={22} />
+              <span className="v2-bottom-nav__label">{label}</span>
+            </Link>
+          ))}
+        </div>
+      </>
+    )}
   </>
   );
 }

@@ -2,7 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import type { Video } from "@/types/video";
+import { isWatched } from "@/lib/history";
 
 /* ── Gradient palette for fallback backgrounds ─────────────── */
 const GRADIENTS = [
@@ -43,6 +45,12 @@ interface PosterCardProps {
 }
 
 export function PosterCard({ video, rank, badge, priority = false }: PosterCardProps) {
+  const [watched, setWatched] = useState(false);
+
+  useEffect(() => {
+    setWatched(isWatched(video.id));
+  }, [video.id]);
+
   const gradient = pickGradient(video.id);
   const fresh = isNew(video.createdAt);
   const autoBadge = badge ?? (fresh ? "NEW" : null);
@@ -58,7 +66,12 @@ export function PosterCard({ video, rank, badge, priority = false }: PosterCardP
     : `Score ${formatScore(video.score)}`;
 
   return (
-    <Link href={`/watch/${video.slug}`} className="poster-card" prefetch={false}>
+    <Link
+      href={`/watch/${video.slug}`}
+      className="poster-card"
+      prefetch={false}
+      style={watched ? { opacity: 0.7 } : undefined}
+    >
       <div className="poster-card__image" style={{ background: gradient }}>
         {/* Real thumbnail */}
         {video.thumbnail && (
@@ -86,6 +99,30 @@ export function PosterCard({ video, rank, badge, priority = false }: PosterCardP
         {/* Rank number (top10 style) */}
         {rank !== undefined && (
           <span className="poster-card__rank">{rank}</span>
+        )}
+
+        {/* Watched checkmark */}
+        {watched && (
+          <span
+            aria-label="Watched"
+            style={{
+              position: "absolute",
+              top: "6px",
+              right: "6px",
+              width: "20px",
+              height: "20px",
+              borderRadius: "50%",
+              background: "rgba(0,0,0,0.65)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 4,
+            }}
+          >
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </span>
         )}
 
         {/* Shine overlay */}

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { searchPosts } from "@/lib/danbooru";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { AgeGate } from "@/components/AgeGate";
+import { BlacklistFilter } from "@/components/BlacklistFilter";
 
 export const metadata: Metadata = {
   title: "Explore All Hentai Videos — 65,000+ Free Animated Clips | iku.gg",
@@ -69,16 +70,20 @@ export default async function ExplorePage(props: {
           </nav>
 
           {/* ── Video grid ───────────────────────────────── */}
-          <div className="video-grid">
-            {videos.map((video, i) => (
-              <ThumbnailCard
-                key={video.id}
-                video={video}
-                priority={i < 10}
-                lazy={i >= 10}
-              />
-            ))}
-          </div>
+          <BlacklistFilter videos={videos}>
+            {(filtered) => (
+              <div className="video-grid">
+                {filtered.map((video, i) => (
+                  <ThumbnailCard
+                    key={video.id}
+                    video={video}
+                    priority={i < 10}
+                    lazy={i >= 10}
+                  />
+                ))}
+              </div>
+            )}
+          </BlacklistFilter>
 
           {/* ── Empty state ──────────────────────────────── */}
           {videos.length === 0 && (

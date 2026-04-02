@@ -3,6 +3,8 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
+import { WatchPlayer } from "@/components/WatchPlayer";
+import { WatchActions } from "@/components/WatchActions";
 import { getPost, getRelatedPosts } from "@/lib/danbooru";
 import { extractIdFromSlug } from "@/lib/slugify";
 import type { Video } from "@/types/video";
@@ -210,20 +212,9 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
               {/* Video player */}
               <div className="player-video-wrap">
-                <video
+                <WatchPlayer
                   src={video.url}
                   poster={video.thumbnail || undefined}
-                  controls
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "contain",
-                    background: "#000",
-                  }}
                 />
               </div>
 
@@ -290,8 +281,23 @@ export default async function WatchPage({ params }: WatchPageProps) {
                     gap: "8px",
                     marginLeft: "auto",
                     flexWrap: "wrap",
+                    alignItems: "center",
                   }}
                 >
+                  {/* Favorite + history tracking */}
+                  <WatchActions
+                    videoId={video.id}
+                    slug={video.slug}
+                    title={
+                      video.characters[0]
+                        ? `${fmt(video.characters[0])}${video.copyrights[0] ? ` — ${fmt(video.copyrights[0])}` : ""}`
+                        : video.copyrights[0]
+                        ? fmt(video.copyrights[0])
+                        : video.slug
+                    }
+                    thumbnail={video.thumbnail}
+                  />
+
                   <button
                     className="player-vote-btn player-vote-btn--up"
                     aria-label="Upvote"

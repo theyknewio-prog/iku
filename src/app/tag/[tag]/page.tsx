@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { Pagination } from "@/components/Pagination";
+import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { searchPosts } from "@/lib/danbooru";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
@@ -134,16 +135,20 @@ export default async function TagPage({ params, searchParams }: Props) {
               </Link>
             </div>
           ) : (
-            <div className="video-grid">
-              {videos.map((video: Video, i) => (
-                <ThumbnailCard
-                  key={video.id}
-                  video={video}
-                  priority={i < 4}
-                  lazy={i >= 4}
-                />
-              ))}
-            </div>
+            <BlacklistFilter videos={videos}>
+              {(filtered) => (
+                <div className="video-grid">
+                  {filtered.map((video: Video, i) => (
+                    <ThumbnailCard
+                      key={video.id}
+                      video={video}
+                      priority={i < 4}
+                      lazy={i >= 4}
+                    />
+                  ))}
+                </div>
+              )}
+            </BlacklistFilter>
           )}
 
           {/* ── Pagination ───────────────────────────────────── */}
