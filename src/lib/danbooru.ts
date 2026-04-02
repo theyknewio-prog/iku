@@ -250,15 +250,25 @@ export async function getRelatedPosts(
   limit: number = 12
 ): Promise<Video[]> {
   // First, fetch the source post to get its tags
-  const source = await fetchDanbooru<DanbooruPost>(
-    `/posts/${postId}.json`,
-    {},
-    REVALIDATE_POST
-  );
+  let source: DanbooruPost;
+  try {
+    source = await fetchDanbooru<DanbooruPost>(
+      `/posts/${postId}.json`,
+      {},
+      REVALIDATE_POST
+    );
+    if (!source || !source.id) {
+      const fallback = await searchPosts({ limit, order: "score" });
+      return fallback.data.slice(0, limit);
+    }
+  } catch {
+    const fallback = await searchPosts({ limit, order: "score" });
+    return fallback.data.slice(0, limit);
+  }
 
   // Build a query from the post's character and copyright tags
-  const characters = splitTags(source.tag_string_character);
-  const copyrights = splitTags(source.tag_string_copyright);
+  const characters = splitTags(source.tag_string_character || "");
+  const copyrights = splitTags(source.tag_string_copyright || "");
 
   // Use the first character tag if available, otherwise first copyright
   let relatedTag = "";
@@ -274,17 +284,19 @@ export async function getRelatedPosts(
     return result.data.filter((v) => v.id !== postId).slice(0, limit);
   }
 
+  // Use rating:e + relatedTag only (2 tags max for free Danbooru)
   const posts = await fetchDanbooru<DanbooruPost[]>(
     "/posts.json",
     {
-      tags: `${DEFAULT_TAGS} ${relatedTag} order:score`,
-      limit: String(Math.min(limit + 1, 200)), // +1 to account for excluding source
+      tags: `rating:e ${relatedTag} order:score`,
+      limit: String(Math.min(limit + 5, 200)),
     },
     REVALIDATE_SEARCH
   );
 
+  // Filter for MP4/WebM only (since we can't use filetype:mp4 tag)
   return posts
-    .filter((p) => p.id !== postId)
+    .filter((p) => p.id !== postId && (p.file_url?.endsWith(".mp4") || p.file_url?.endsWith(".webm")))
     .slice(0, limit)
     .map(mapPostToVideo);
 }
