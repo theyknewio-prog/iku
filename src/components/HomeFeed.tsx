@@ -125,9 +125,11 @@ function IconPlay() {
 function VideoPlayerCard({
   video,
   isActive,
+  nearActive = false,
 }: {
   video: FeedVideo;
   isActive: boolean;
+  nearActive?: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
@@ -158,17 +160,20 @@ function VideoPlayerCard({
     const el = videoRef.current;
     if (!el) return;
 
-    if (isActive) {
-      // Set src if not already set
+    if (isActive || nearActive) {
+      // Preload src for active and nearby videos
       if (!el.src && video.url) {
         el.src = video.url;
         el.load();
       }
+    }
+
+    if (isActive) {
       el.play().catch(() => {});
     } else {
       el.pause();
     }
-  }, [isActive, video.url]);
+  }, [isActive, nearActive, video.url]);
 
   // ── Sync playing state ───────────────────────
   useEffect(() => {
@@ -559,7 +564,7 @@ export function HomeFeed({
           ref={(el) => { cardRefs.current[i] = el; }}
           data-index={i}
         >
-          <VideoPlayerCard video={video} isActive={i === activeIndex} />
+          <VideoPlayerCard video={video} isActive={i === activeIndex} nearActive={Math.abs(i - activeIndex) <= 2} />
         </div>
       ))}
 

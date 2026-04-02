@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { AgeGate } from "@/components/AgeGate";
-import { HomeFeed } from "@/components/HomeFeed";
+import { HomePageClient } from "@/components/HomePageClient";
 import { searchPosts } from "@/lib/danbooru";
 
 export const metadata: Metadata = {
@@ -10,54 +10,33 @@ export const metadata: Metadata = {
   other: { rating: "adult" },
 };
 
-export default async function HomePage(props: {
-  searchParams: Promise<{ tab?: string }>;
-}) {
-  const searchParams = await props.searchParams;
-  const tab = searchParams.tab === "newest" ? "newest" : "trending";
+export default async function HomePage() {
+  // Prefetch both tabs server-side
+  const [trending, newest] = await Promise.all([
+    searchPosts({ limit: 20, order: "score" }),
+    searchPosts({ limit: 20, order: "date" }),
+  ]);
 
-  const { data: videos } = await searchPosts({
-    limit: 20,
-    order: tab === "trending" ? "score" : "date",
-  });
-
-  const feedVideos = videos.map((v) => ({
-    id: v.id,
-    slug: v.slug,
-    url: v.url,
-    thumbnail: v.thumbnail,
-    score: v.score,
-    tags: v.tags,
-    characters: v.characters,
-    copyrights: v.copyrights,
-    artists: v.artists,
-    duration: v.duration,
-  }));
+  const mapVideos = (data: typeof trending.data) =>
+    data.map((v) => ({
+      id: v.id,
+      slug: v.slug,
+      url: v.url,
+      thumbnail: v.thumbnail,
+      score: v.score,
+      tags: v.tags,
+      characters: v.characters,
+      copyrights: v.copyrights,
+      artists: v.artists,
+      duration: v.duration,
+    }));
 
   return (
     <AgeGate>
-      <main className="shell-content">
-        {/* Tabs */}
-        <div className="content-tabs-bar">
-          <div className="content-tabs">
-            <a
-              href="/"
-              className={`content-tab${tab === "trending" ? " content-tab--active" : ""}`}
-            >
-              Trending
-            </a>
-            <a
-              href="/?tab=newest"
-              className={`content-tab${tab === "newest" ? " content-tab--active" : ""}`}
-            >
-              Newest
-            </a>
-          </div>
-        </div>
-
-        {/* RedGIFs-style player feed */}
-        <HomeFeed initialVideos={feedVideos} mode={tab} />
-      </main>
+      <HomePageClient
+        trendingVideos={mapVideos(trending.data)}
+        newestVideos={mapVideos(newest.data)}
+      />
     </AgeGate>
   );
 }
