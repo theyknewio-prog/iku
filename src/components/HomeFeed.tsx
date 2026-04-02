@@ -369,6 +369,51 @@ function VideoPlayerCard({
           </Link>
         </div>
 
+        {/* ── Overlay info (bottom-left, over video) ── */}
+        <div className="gif-preview__overlay-info" onClick={(e) => e.stopPropagation()}>
+          {/* Avatar + username */}
+          <div className="gif-preview__user">
+            <div className="gif-preview__avatar" aria-hidden="true">
+              {artist ? artist[0].toUpperCase() : "?"}
+            </div>
+            {artist ? (
+              <Link
+                href={`/tag/${artist}`}
+                className="gif-preview__username"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {artist.replace(/_/g, " ")}
+              </Link>
+            ) : (
+              <span className="gif-preview__username gif-preview__username--anon">
+                Anonymous
+              </span>
+            )}
+          </div>
+
+          {/* Description / title */}
+          {title && (
+            <p className="gif-preview__description">{title}</p>
+          )}
+
+          {/* Hashtags */}
+          {video.tags.length > 0 && (
+            <div className="gif-preview__tags">
+              {video.tags.slice(0, 5).map((tag) => (
+                <Link
+                  key={tag}
+                  href={`/tag/${tag}`}
+                  className="tag-pill"
+                  onClick={(e) => e.stopPropagation()}
+                  prefetch={false}
+                >
+                  #{tag.replace(/_/g, " ")}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* ── Progress bar at bottom of player ── */}
         <div className="gif-preview__progress-bar">
           <div className="gif-preview__seek-wrap">
@@ -400,82 +445,6 @@ function VideoPlayerCard({
           {/* Countdown */}
           <span className="gif-preview__countdown">{remaining}</span>
         </div>
-      </div>
-
-      {/* ── Info section below player ── */}
-      <div className="gif-preview__info">
-        <div className="gif-preview__meta">
-          {/* Avatar placeholder + username */}
-          <div className="gif-preview__user">
-            <div className="gif-preview__avatar" aria-hidden="true">
-              {artist ? artist[0].toUpperCase() : "?"}
-            </div>
-            {artist ? (
-              <Link
-                href={`/tag/${artist}`}
-                className="gif-preview__username"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {artist.replace(/_/g, " ")}
-              </Link>
-            ) : (
-              <span className="gif-preview__username gif-preview__username--anon">
-                Anonymous
-              </span>
-            )}
-          </div>
-
-          {/* Full page link */}
-          <Link
-            href={`/watch/${video.slug}`}
-            className="gif-preview__full-link"
-            onClick={(e) => e.stopPropagation()}
-            prefetch={false}
-          >
-            Full page →
-          </Link>
-        </div>
-
-        {/* Description / title */}
-        {title && (
-          <p className="gif-preview__description">{title}</p>
-        )}
-
-        {/* Hashtags */}
-        {video.tags.length > 0 && (
-          <div className="gif-preview__tags">
-            {video.tags.slice(0, 6).map((tag) => (
-              <Link
-                key={tag}
-                href={`/tag/${tag}`}
-                className="tag-pill"
-                onClick={(e) => e.stopPropagation()}
-                prefetch={false}
-              >
-                #{tag.replace(/_/g, " ")}
-              </Link>
-            ))}
-          </div>
-        )}
-
-        {/* Niches row */}
-        {(video.characters.length > 0 || video.copyrights.length > 0) && (
-          <div className="gif-preview__niches">
-            {[...video.characters.slice(0, 2), ...video.copyrights.slice(0, 2)].map(
-              (n) => (
-                <Link
-                  key={n}
-                  href={`/tag/${n}`}
-                  className="gif-preview__niche-pill"
-                  onClick={(e) => e.stopPropagation()}
-                  prefetch={false}
-                >
-                  {n.replace(/_/g, " ")}
-                </Link>
-              )
-            )}
-          </div>
-        )}
       </div>
     </article>
   );

@@ -5,6 +5,15 @@ import { usePathname } from "next/navigation";
 
 /* ── SVG Icons ────────────────────────────────────────────── */
 
+function IconSearch({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+  );
+}
+
 function IconHome({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -93,13 +102,36 @@ export function AppShell({ children }: AppShellProps) {
 
   return (
     <div className="app-shell">
+      {/* ── Top header bar (all viewports) ───────────────── */}
+      <header className="app-header">
+        <div className="app-header__inner">
+          {/* Logo — left */}
+          <Link href="/" className="app-header__logo" aria-label="iku home">
+            iku
+          </Link>
+
+          {/* Search — center */}
+          <div className="app-header__search">
+            <div className="search-bar">
+              <span className="search-bar__icon">
+                <IconSearch size={16} />
+              </span>
+              <input
+                className="search-bar__input"
+                type="search"
+                placeholder="Search Tags"
+                aria-label="Search tags"
+              />
+            </div>
+          </div>
+
+          {/* Right slot — reserved for future buttons */}
+          <div className="app-header__actions" />
+        </div>
+      </header>
+
       {/* ── Left sidebar (desktop only) ──────────────────── */}
       <aside className="app-sidebar" aria-label="Sidebar navigation">
-        {/* Logo */}
-        <Link href="/" className="sidebar-logo" aria-label="iku home">
-          iku
-        </Link>
-
         {/* Nav links */}
         <nav className="sidebar-nav" aria-label="Main navigation">
           {NAV_ITEMS.map(({ href, label, Icon }) => (
@@ -130,6 +162,28 @@ export function AppShell({ children }: AppShellProps) {
       <div className="app-main">
         {children}
       </div>
+
+      {/* ── Right sidebar (desktop 1280px+) ──────────────── */}
+      <aside className="app-right-sidebar" aria-label="Trending tags">
+        <div className="right-sidebar__card">
+          <h3 className="right-sidebar__title">Trending Tags</h3>
+          <div className="right-sidebar__tags">
+            {[
+              "hentai", "anime", "3d", "cosplay", "ahegao",
+              "uncensored", "creampie", "blowjob", "maid", "milf",
+              "schoolgirl", "elf", "futanari", "tentacle", "gangbang",
+            ].map((tag) => (
+              <Link
+                key={tag}
+                href={`/tag/${tag}`}
+                className="tag-pill tag-pill--dark"
+              >
+                #{tag}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </aside>
 
       {/* ── Mobile bottom nav ────────────────────────────── */}
       <nav className="bottom-nav" aria-label="Mobile navigation">
