@@ -56,13 +56,15 @@ const RELATED_TAGS = [
 
 export default async function TagPage({ params, searchParams }: Props) {
   const { tag } = await params;
-  const { page = "1", sort = "score" } = await searchParams;
+  const sp = await searchParams;
+  const pageParam = typeof sp.page === "string" ? sp.page : "1";
+  const sortParam = typeof sp.sort === "string" ? sp.sort : "score";
 
-  const currentPage = Math.max(1, parseInt(String(page)));
+  const currentPage = Math.max(1, parseInt(pageParam));
   const label = tag.replace(/_/g, " ");
   const titleCased = label.replace(/\b\w/g, (c) => c.toUpperCase());
   const order =
-    sort === "date" || sort === "favcount" || sort === "score" ? sort : "score";
+    sortParam === "date" || sortParam === "favcount" || sortParam === "score" ? sortParam : "score";
 
   const { data: videos, hasMore } = await searchPosts({
     tags: tag,
