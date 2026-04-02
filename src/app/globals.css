@@ -3874,6 +3874,23 @@ body {
   }
 }
 
+/* Mobile logo in topbar */
+.v2-topbar__mobile-logo {
+  font-family: var(--font-display, var(--font-sans));
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@media (min-width: 1024px) {
+  .v2-topbar__mobile-logo { display: none; }
+}
+
 .v2-topbar--scrolled {
   background: rgba(10,10,10,0.96);
   backdrop-filter: blur(16px) saturate(180%);

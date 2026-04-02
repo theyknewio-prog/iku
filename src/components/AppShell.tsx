@@ -96,9 +96,9 @@ const SIDEBAR_ITEMS = [
 const BOTTOM_ITEMS = [
   { href: "/",         label: "Home",     Icon: IconHome },
   { href: "/explore",  label: "Browse",   Icon: IconBrowse },
+  { href: "/feed",     label: "Feed",     Icon: IconFeed },
   { href: "/trending", label: "Trending", Icon: IconTrending },
   { href: "/tags",     label: "Tags",     Icon: IconTag },
-  { href: "/feed",     label: "Feed",     Icon: IconFeed },
 ] as const;
 
 /* ── AppShell ─────────────────────────────────────────────────── */
@@ -162,6 +162,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* ══ TOPBAR (fixed, transparent → frosted on scroll) ════ */}
       <header className={`v2-topbar${scrolled ? " v2-topbar--scrolled" : ""}`}>
+        {/* Logo — mobile only, centered */}
+        <Link href="/" className="v2-topbar__mobile-logo" aria-label="iku home">iku</Link>
+
         {/* Nav links — desktop only */}
         <nav className="v2-topbar__nav" aria-label="Content navigation">
           <Link href="/"         className={`v2-topbar__link${pathname === "/" ? " v2-topbar__link--active" : ""}`}>Home</Link>
