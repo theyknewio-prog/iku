@@ -60,6 +60,23 @@ export default async function HomePage() {
         <section className="v2-hero">
           {/* Background layers */}
           <div className="v2-hero__bg" />
+          {hero?.thumbnail && (
+            <img
+              src={hero.thumbnail}
+              alt=""
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                opacity: 0.15,
+                filter: "blur(30px) saturate(1.5)",
+                zIndex: 0,
+              }}
+            />
+          )}
           <div className="v2-hero__character" />
           <div className="v2-hero__gradient" />
 

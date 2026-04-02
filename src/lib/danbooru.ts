@@ -56,9 +56,11 @@ async function fetchDanbooru<T>(
   });
 
   if (!res.ok) {
-    throw new Error(
-      `Danbooru API error: ${res.status} ${res.statusText} for ${url.pathname}`
+    console.error(
+      `Danbooru API error: ${res.status} ${res.statusText} for ${url.toString()}`
     );
+    // Return empty array/object instead of throwing — prevents page crash
+    return [] as unknown as T;
   }
 
   return res.json() as Promise<T>;

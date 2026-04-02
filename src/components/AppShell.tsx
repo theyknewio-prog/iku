@@ -171,12 +171,27 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <Link href="/tags"     className={`v2-topbar__link${pathname.startsWith("/tags") ? " v2-topbar__link--active" : ""}`}>Tags</Link>
         </nav>
 
-        {/* Right: search pill */}
+        {/* Right: search form */}
         <div className="v2-topbar__right">
-          <Link href="/explore" className="v2-topbar__search" aria-label="Search">
+          <form
+            className="v2-topbar__search"
+            action="/tag/search"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const form = e.currentTarget;
+              const input = form.querySelector("input") as HTMLInputElement;
+              const q = input.value.trim().replace(/\s+/g, "_");
+              if (q) window.location.href = `/tag/${encodeURIComponent(q)}`;
+            }}
+          >
             <span className="v2-topbar__search-icon"><IconSearch size={14} /></span>
-            <span className="v2-topbar__search-text">Search titles, tags, characters...</span>
-          </Link>
+            <input
+              type="search"
+              className="v2-topbar__search-input"
+              placeholder="Search tags, characters..."
+              aria-label="Search"
+            />
+          </form>
         </div>
       </header>
 
