@@ -13,12 +13,12 @@ const USER_AGENT = "IkuApp/1.0 (server-side)";
 
 // Revalidation intervals (seconds)
 const REVALIDATE_POST = 3600; // 1 hour
-const REVALIDATE_SEARCH = 300; // 5 minutes
+const REVALIDATE_SEARCH = 600; // 10 minutes (was 5)
 const REVALIDATE_TAGS = 86400; // 24 hours
 
-// Rate limiting: 2 req/sec to avoid Danbooru 429s
+// Rate limiting: 5 req/sec — Danbooru allows 10 but we stay safe
 let lastRequest = 0;
-const MIN_INTERVAL = 500; // 500ms between requests = 2/sec
+const MIN_INTERVAL = 200; // 200ms between requests = 5/sec
 
 async function throttle(): Promise<void> {
   const now = Date.now();
