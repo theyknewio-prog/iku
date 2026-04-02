@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
 import { VideoCard } from "./VideoCard";
 
 export interface FeedVideo {
@@ -88,15 +89,39 @@ export function SwipeFeed() {
   }
 
   return (
-    <div ref={containerRef} className="feed-container">
-      {videos.map((video, index) => (
-        <VideoCard
-          key={`${video.id}-${index}`}
-          video={video}
-          index={index}
-          isActive={index === activeIndex}
-        />
-      ))}
+    <div style={{ position: "relative" }}>
+      {/* Fixed close button — top-left, above everything */}
+      <Link
+        href="/"
+        className="feed-close-btn"
+        aria-label="Close feed and go back"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </Link>
+
+      <div ref={containerRef} className="feed-container">
+        {videos.map((video, index) => (
+          <VideoCard
+            key={`${video.id}-${index}`}
+            video={video}
+            index={index}
+            isActive={index === activeIndex}
+          />
+        ))}
+      </div>
     </div>
   );
 }
