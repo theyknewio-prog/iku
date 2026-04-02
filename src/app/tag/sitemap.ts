@@ -3,6 +3,9 @@ import { getPopularTags, getPopularCharacters } from "@/lib/danbooru";
 
 const SITE = "https://iku.gg";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 86400;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [tags, characters] = await Promise.all([
     getPopularTags(200),
