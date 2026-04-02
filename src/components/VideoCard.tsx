@@ -77,7 +77,7 @@ export function VideoCard({
     muteTimerRef.current = setTimeout(() => setShowMuteHint(false), 900);
   }, []);
 
-  /* Only load video src when active — saves bandwidth, speeds up feed */
+  /* Only load video src when active or next — saves bandwidth */
   const shouldLoad = isActive;
 
   /* Build display title */
@@ -132,7 +132,7 @@ export function VideoCard({
         muted={muted}
         playsInline
         preload={isActive ? "auto" : "none"}
-        style={{ width: "100%", height: "100%", objectFit: "cover", background: "#000" }}
+        style={{ width: "100%", height: "100%", objectFit: "contain", background: "#000" }}
         onClick={toggleMute}
         onLoadedData={() => setLoaded(true)}
         onTimeUpdate={handleTimeUpdate}

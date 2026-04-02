@@ -57,27 +57,24 @@ export default async function HomePage() {
       <main className="v2-page">
 
         {/* ══ HERO SECTION ══════════════════════════════════════ */}
-        <section className="v2-hero">
+        <section
+          className="v2-hero"
+          style={
+            hero?.thumbnail
+              ? {
+                  backgroundImage: `url(${
+                    hero.thumbnail.includes("180x180")
+                      ? hero.thumbnail.replace("180x180", "720x720")
+                      : hero.preview || hero.thumbnail
+                  })`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center top",
+                }
+              : undefined
+          }
+        >
           {/* Background layers */}
-          <div className="v2-hero__bg" />
-          {hero?.thumbnail && (
-            <img
-              src={hero.thumbnail}
-              alt=""
-              aria-hidden="true"
-              style={{
-                position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                opacity: 0.15,
-                filter: "blur(30px) saturate(1.5)",
-                zIndex: 0,
-              }}
-            />
-          )}
-          <div className="v2-hero__character" />
+          <div className="v2-hero__bg" style={hero?.thumbnail ? { background: "none" } : undefined} />
           <div className="v2-hero__gradient" />
 
           {/* Left content */}

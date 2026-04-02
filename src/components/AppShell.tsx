@@ -101,6 +101,17 @@ const BOTTOM_ITEMS = [
   { href: "/tags",     label: "Tags",     Icon: IconTag },
 ] as const;
 
+/* ── Hamburger icon ──────────────────────────────────────────── */
+function IconHamburger({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+      <line x1="3" y1="6"  x2="21" y2="6" />
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <line x1="3" y1="18" x2="21" y2="18" />
+    </svg>
+  );
+}
+
 /* ── AppShell ─────────────────────────────────────────────────── */
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -124,6 +135,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   function isActive(href: string) {
     if (href === "/") return pathname === "/";
     return pathname.startsWith(href);
+  }
+
+  function handleSearch(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const input = e.currentTarget.querySelector("input") as HTMLInputElement;
+    const q = input.value.trim().replace(/\s+/g, "_");
+    if (q) window.location.href = `/tag/${encodeURIComponent(q)}`;
   }
 
   return (
@@ -160,41 +178,44 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
 
-      {/* ══ TOPBAR (fixed, transparent → frosted on scroll) ════ */}
+      {/* ══ TOPBAR — RedGIFs layout: [Logo] [Search] [Hamburger] ═ */}
       <header className={`v2-topbar${scrolled ? " v2-topbar--scrolled" : ""}`}>
-        {/* Logo — mobile only, centered */}
-        <Link href="/" className="v2-topbar__mobile-logo" aria-label="iku home">iku</Link>
 
-        {/* Nav links — desktop only */}
-        <nav className="v2-topbar__nav" aria-label="Content navigation">
-          <Link href="/"         className={`v2-topbar__link${pathname === "/" ? " v2-topbar__link--active" : ""}`}>Home</Link>
-          <Link href="/trending" className={`v2-topbar__link${pathname.startsWith("/trending") ? " v2-topbar__link--active" : ""}`}>Trending</Link>
-          <Link href="/new"      className={`v2-topbar__link${pathname.startsWith("/new") ? " v2-topbar__link--active" : ""}`}>New</Link>
-          <Link href="/explore"  className={`v2-topbar__link${pathname.startsWith("/explore") ? " v2-topbar__link--active" : ""}`}>Browse</Link>
-          <Link href="/tags"     className={`v2-topbar__link${pathname.startsWith("/tags") ? " v2-topbar__link--active" : ""}`}>Tags</Link>
-        </nav>
+        {/* LEFT: Logo — always visible */}
+        <Link href="/" className="v2-topbar__logo" aria-label="iku home">
+          <span className="v2-topbar__logo-text">iku</span>
+        </Link>
 
-        {/* Right: search form */}
+        {/* CENTER: Search bar — full width middle */}
+        <form
+          className="v2-topbar__search"
+          onSubmit={handleSearch}
+          role="search"
+        >
+          <span className="v2-topbar__search-icon"><IconSearch size={15} /></span>
+          <input
+            type="search"
+            className="v2-topbar__search-input"
+            placeholder="Search"
+            aria-label="Search"
+          />
+        </form>
+
+        {/* RIGHT: Hamburger (mobile) / Nav links (desktop) */}
         <div className="v2-topbar__right">
-          <form
-            className="v2-topbar__search"
-            action="/tag/search"
-            onSubmit={(e) => {
-              e.preventDefault();
-              const form = e.currentTarget;
-              const input = form.querySelector("input") as HTMLInputElement;
-              const q = input.value.trim().replace(/\s+/g, "_");
-              if (q) window.location.href = `/tag/${encodeURIComponent(q)}`;
-            }}
-          >
-            <span className="v2-topbar__search-icon"><IconSearch size={14} /></span>
-            <input
-              type="search"
-              className="v2-topbar__search-input"
-              placeholder="Search tags, characters..."
-              aria-label="Search"
-            />
-          </form>
+          {/* Desktop nav links */}
+          <nav className="v2-topbar__nav" aria-label="Content navigation">
+            <Link href="/"         className={`v2-topbar__link${pathname === "/" ? " v2-topbar__link--active" : ""}`}>Home</Link>
+            <Link href="/trending" className={`v2-topbar__link${pathname.startsWith("/trending") ? " v2-topbar__link--active" : ""}`}>Trending</Link>
+            <Link href="/new"      className={`v2-topbar__link${pathname.startsWith("/new") ? " v2-topbar__link--active" : ""}`}>New</Link>
+            <Link href="/explore"  className={`v2-topbar__link${pathname.startsWith("/explore") ? " v2-topbar__link--active" : ""}`}>Browse</Link>
+            <Link href="/tags"     className={`v2-topbar__link${pathname.startsWith("/tags") ? " v2-topbar__link--active" : ""}`}>Tags</Link>
+          </nav>
+
+          {/* Mobile hamburger */}
+          <button className="v2-topbar__hamburger" aria-label="Menu" type="button">
+            <IconHamburger size={22} />
+          </button>
         </div>
       </header>
 
