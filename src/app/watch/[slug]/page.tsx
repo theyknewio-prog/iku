@@ -40,6 +40,9 @@ function buildTitle(video: Video): string {
   if (character && copyright) return `${character} Hentai - ${copyright} | iku.gg`;
   if (character) return `${character} Hentai | iku.gg`;
   if (copyright) return `${copyright} Hentai | iku.gg`;
+  // Fallback for rule34video/WP sources: build title from tags (which come from video title)
+  const tagTitle = video.tags.slice(0, 5).map(fmt).join(" ");
+  if (tagTitle) return `${tagTitle} — Hentai | iku.gg`;
   return `Hentai Video | iku.gg`;
 }
 
@@ -49,9 +52,11 @@ function buildDescription(video: Video): string {
   const tagSample = video.tags.slice(0, 6).map(fmt).join(", ");
   const parts: string[] = [];
   if (char) parts.push(`Watch ${char} hentai`);
+  else if (tagSample) parts.push(`Watch ${tagSample} hentai`);
   else parts.push("Watch hentai");
   if (copy) parts.push(`from ${copy}`);
-  parts.push(`on iku.gg. Animated hentai video featuring: ${tagSample}.`);
+  parts.push(`on iku.gg. Free animated hentai video.`);
+  if (tagSample && !char) parts.push(`Featuring: ${tagSample}.`);
   parts.push("Stream free hentai online.");
   return parts.join(" ");
 }

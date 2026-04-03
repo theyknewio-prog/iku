@@ -8,7 +8,7 @@ import { getVideos } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai Videos | Stream Animated Hentai Online",
-  description: "Stream 57,000+ free hentai videos on iku.gg. Watch trending animated hentai clips. Browse by character, tag, and score.",
+  description: "Stream 353,000+ free hentai videos on iku.gg. Watch trending animated hentai clips. Browse by character, tag, and score.",
   other: { rating: "adult" },
 };
 
@@ -67,12 +67,12 @@ export default async function HomePage() {
               The largest free <span className="v2-site-hero__accent">animated hentai</span> library
             </h1>
             <p className="v2-site-hero__sub">
-              57,000+ animated clips updated daily.
+              353,000+ animated clips updated daily.
               Stream by character, tag, or trending score. Free, no account needed.
             </p>
             <div className="v2-site-hero__stats">
               <div className="v2-site-hero__stat">
-                <span className="v2-site-hero__stat-num">57K+</span>
+                <span className="v2-site-hero__stat-num">353K+</span>
                 <span className="v2-site-hero__stat-label">Videos</span>
               </div>
               <div className="v2-site-hero__stat">

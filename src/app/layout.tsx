@@ -26,14 +26,14 @@ const righteous = Righteous({
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai Videos | Stream Animated Hentai Online",
-  description: "Stream 57,000+ free hentai videos on iku.gg. The best animated hentai clips featuring your favorite anime characters. Browse by tag, character, or trending.",
+  description: "Stream 353,000+ free hentai videos on iku.gg. The best animated hentai clips featuring your favorite anime characters. Browse by tag, character, or trending.",
   keywords: ["hentai", "hentai videos", "animated hentai", "anime porn", "free hentai", "hentai streaming", "hentai clips"],
   other: { rating: "adult" },
   metadataBase: new URL("https://iku.gg"),
   robots: { index: true, follow: true },
   openGraph: {
     title: "iku.gg — Free Hentai Videos",
-    description: "Stream 57,000+ free hentai videos. Browse animated hentai by tag, character, and score.",
+    description: "Stream 353,000+ free hentai videos. Browse animated hentai by tag, character, and score.",
     siteName: "iku",
     type: "website",
   },
@@ -64,7 +64,7 @@ export default function RootLayout({
               "@type": "WebSite",
               name: "iku.gg",
               url: "https://iku.gg",
-              description: "Stream 57,000+ free hentai videos. The best animated hentai clips featuring your favorite anime characters.",
+              description: "Stream 353,000+ free hentai videos. The best animated hentai clips featuring your favorite anime characters.",
               potentialAction: {
                 "@type": "SearchAction",
                 target: "https://iku.gg/tag/{search_term_string}",
