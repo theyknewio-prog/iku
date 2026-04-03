@@ -6,7 +6,8 @@ import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { WatchPlayer } from "@/components/WatchPlayer";
 import { WatchActions } from "@/components/WatchActions";
 import { getPost, getRelatedPosts } from "@/lib/danbooru";
-import { extractIdFromSlug } from "@/lib/slugify";
+import { getGelbooruPost } from "@/lib/gelbooru";
+import { extractIdFromSlug, isGelbooruSlug } from "@/lib/slugify";
 import type { Video } from "@/types/video";
 import {
   generateVideoDescription,
@@ -71,7 +72,13 @@ export async function generateMetadata({
   let video: Video;
   try {
     const id = extractIdFromSlug(slug);
-    video = await getPost(id);
+    if (isGelbooruSlug(slug)) {
+      const gv = await getGelbooruPost(id);
+      if (!gv) return { title: "Hentai Video | iku.gg", robots: { index: false } };
+      video = gv;
+    } else {
+      video = await getPost(id);
+    }
   } catch {
     return {
       title: "Hentai Video | iku.gg",
@@ -154,7 +161,13 @@ export default async function WatchPage({ params }: WatchPageProps) {
   let video: Video;
   try {
     const id = extractIdFromSlug(slug);
-    video = await getPost(id);
+    if (isGelbooruSlug(slug)) {
+      const gv = await getGelbooruPost(id);
+      if (!gv) notFound();
+      video = gv;
+    } else {
+      video = await getPost(id);
+    }
   } catch {
     notFound();
   }

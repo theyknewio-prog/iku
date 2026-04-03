@@ -254,3 +254,21 @@ export async function searchGelbooru(
 
   return data;
 }
+
+/**
+ * Fetch a single Gelbooru post by ID.
+ */
+export async function getGelbooruPost(id: number): Promise<Video | null> {
+  try {
+    const json = await fetchGelbooru({
+      tags: `id:${id}`,
+      limit: "1",
+    });
+    if (!json) return null;
+    const posts = normalisePosts(json.post);
+    if (posts.length === 0) return null;
+    return mapGelbooruToVideo(posts[0]);
+  } catch {
+    return null;
+  }
+}
