@@ -4122,7 +4122,110 @@ body {
 }
 
 /* ============================================================
-   V2 HERO SECTION
+   V2 SITE HERO — Brand header
+   ============================================================ */
+
+.v2-site-hero {
+  position: relative;
+  padding: 56px 24px 48px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.v2-site-hero__bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(232,70,124,0.12) 0%, rgba(123,47,247,0.06) 40%, transparent 70%);
+  pointer-events: none;
+}
+
+.v2-site-hero__content {
+  position: relative;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.v2-site-hero__h1 {
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+.v2-site-hero__accent {
+  background: linear-gradient(135deg, #e8467c, #7b2ff7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.v2-site-hero__sub {
+  font-size: 15px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.6;
+  max-width: 520px;
+  margin: 0 auto 28px;
+}
+
+.v2-site-hero__stats {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.v2-site-hero__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.v2-site-hero__stat-num {
+  font-size: 24px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #e8467c, #7b2ff7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+}
+
+.v2-site-hero__stat-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.35);
+}
+
+.v2-site-hero__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .v2-site-hero {
+    padding: 40px 16px 36px;
+  }
+  .v2-site-hero__h1 {
+    font-size: 26px;
+  }
+  .v2-site-hero__sub {
+    font-size: 13px;
+  }
+  .v2-site-hero__stats {
+    gap: 20px;
+  }
+  .v2-site-hero__stat-num {
+    font-size: 20px;
+  }
+}
+
+/* ============================================================
+   V2 HERO SECTION — Featured trending video
    ============================================================ */
 
 .v2-hero {

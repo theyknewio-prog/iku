@@ -59,7 +59,48 @@ export default async function HomePage() {
     <AgeGate>
       <main className="v2-page">
 
-        {/* ══ HERO SECTION ══════════════════════════════════════ */}
+        {/* ══ SITE HERO — Brand + Value Prop ═══════════════════ */}
+        <section className="v2-site-hero">
+          <div className="v2-site-hero__bg" />
+          <div className="v2-site-hero__content">
+            <h1 className="v2-site-hero__h1">
+              The largest free <span className="v2-site-hero__accent">animated hentai</span> library
+            </h1>
+            <p className="v2-site-hero__sub">
+              57,000+ videos from Danbooru, Gelbooru &amp; Rule34 — updated daily.
+              Stream hentai by character, tag, or trending score. No account needed.
+            </p>
+            <div className="v2-site-hero__stats">
+              <div className="v2-site-hero__stat">
+                <span className="v2-site-hero__stat-num">57K+</span>
+                <span className="v2-site-hero__stat-label">Videos</span>
+              </div>
+              <div className="v2-site-hero__stat">
+                <span className="v2-site-hero__stat-num">50+</span>
+                <span className="v2-site-hero__stat-label">Characters</span>
+              </div>
+              <div className="v2-site-hero__stat">
+                <span className="v2-site-hero__stat-num">3</span>
+                <span className="v2-site-hero__stat-label">Sources</span>
+              </div>
+              <div className="v2-site-hero__stat">
+                <span className="v2-site-hero__stat-num">24h</span>
+                <span className="v2-site-hero__stat-label">Fresh content</span>
+              </div>
+            </div>
+            <div className="v2-site-hero__actions">
+              <Link href="/explore" className="v2-btn-play">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21" /></svg>
+                Start Watching
+              </Link>
+              <Link href="/trending" className="v2-btn-info">
+                Trending Now
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ══ TRENDING HERO — Featured video ══════════════════ */}
         <section
           className="v2-hero"
           style={
@@ -72,11 +113,9 @@ export default async function HomePage() {
               : undefined
           }
         >
-          {/* Background layers */}
           <div className="v2-hero__bg" style={hero?.thumbnail ? { background: "none" } : undefined} />
           <div className="v2-hero__gradient" />
 
-          {/* Left content */}
           <div className="v2-hero__content">
             <span className="v2-hero__badge">Trending #1</span>
 
@@ -85,12 +124,12 @@ export default async function HomePage() {
               <span className="v2-hero__meta-dot" />
               <span>HD 1080p</span>
               <span className="v2-hero__meta-dot" />
-              {hero && <span className="v2-hero__meta-score">★ {hero.score > 0 ? hero.score : "9.4"}</span>}
+              {hero && <span className="v2-hero__meta-score">★ {hero.score.toLocaleString()}</span>}
             </div>
 
-            <h1 className="v2-hero__title">
+            <h2 className="v2-hero__title">
               {heroTitle}<span>.</span>
-            </h1>
+            </h2>
 
             <div className="v2-hero__tags">
               {heroTags.map((tag) => (
@@ -100,10 +139,6 @@ export default async function HomePage() {
               ))}
             </div>
 
-            <p className="v2-hero__desc">
-              Discover the most-watched animated clips, featuring top-scored characters and iconic scenes from fan-favorite series. Updated daily.
-            </p>
-
             <div className="v2-hero__actions">
               {hero && (
                 <Link href={`/watch/${hero.slug}`} className="v2-btn-play">
@@ -111,21 +146,12 @@ export default async function HomePage() {
                   Watch Now
                 </Link>
               )}
-              <Link href="/trending" className="v2-btn-info">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                Details
-              </Link>
             </div>
           </div>
 
-          {/* Right side — thumbnail of the trending video */}
           {hero && (
             <div className="v2-hero__poster">
-              <img
-                src={hero.preview}
-                alt={heroTitle}
-                className="v2-hero__poster-img"
-              />
+              <img src={hero.preview} alt={heroTitle} className="v2-hero__poster-img" />
               <div className="v2-hero__poster-glow" />
             </div>
           )}
