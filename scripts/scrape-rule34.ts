@@ -12,6 +12,7 @@
 
 import fs from "fs";
 import path from "path";
+import { hasBannedTagString } from "./banned-tags";
 
 const API_KEY = "f230feb40110c4e896f9cb32fd4d8c08c13c476f4bf83d64036ad23887e482510b1a391cefab9dacdde28b51cd64c9695ed1fd06ad327753074c494d528f1790";
 const USER_ID = "6053223";
@@ -59,6 +60,9 @@ function sanitize(raw: string): string {
 function mapPost(post: R34Post): VideoEntry | null {
   if (!post.file_url) return null;
   if (!post.file_url.endsWith(".mp4") && !post.file_url.endsWith(".webm")) return null;
+
+  // Skip banned content
+  if (post.tags && hasBannedTagString(post.tags)) return null;
 
   const firstTag = sanitize(post.tags);
   const slug = firstTag ? `r34-${post.id}-${firstTag}` : `r34-${post.id}`;

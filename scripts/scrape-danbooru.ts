@@ -13,6 +13,7 @@
 
 import fs from "fs";
 import path from "path";
+import { hasBannedTagString } from "./banned-tags";
 
 const BASE_URL = "https://danbooru.donmai.us";
 const USER_AGENT = "IkuScraper/1.0 (bulk index)";
@@ -84,6 +85,10 @@ function splitTags(tagString: string): string[] {
 function mapPost(post: DanbooruPost): VideoEntry | null {
   const url = post.file_url ?? post.large_file_url ?? "";
   if (!url) return null;
+
+  // Skip banned content (loli, shota, underage, etc.)
+  const allTags = [post.tag_string_general, post.tag_string_character, post.tag_string_copyright, post.tag_string_meta].join(" ");
+  if (hasBannedTagString(allTags)) return null;
 
   const thumbnail = post.preview_file_url ?? "";
   return {

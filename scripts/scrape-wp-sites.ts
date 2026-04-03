@@ -17,6 +17,7 @@
 
 import fs from "fs";
 import path from "path";
+import { hasBannedTitle } from "./banned-tags";
 
 const OUTPUT = path.resolve(process.cwd(), "src/data/wp-hentai-videos.json");
 const DELAY = 800;
@@ -147,6 +148,9 @@ function parseSitemap(xml: string, site: SiteConfig): WPEntry[] {
 
     const slug = `${site.prefix}-${globalId}-${urlSlug}`;
     const title = extractTitle(pageUrl);
+
+    // Skip banned content
+    if (hasBannedTitle(title) || hasBannedTitle(urlSlug)) continue;
 
     entries.push({
       id: globalId++,

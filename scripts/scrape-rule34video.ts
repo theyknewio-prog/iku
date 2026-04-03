@@ -13,6 +13,7 @@
 
 import fs from "fs";
 import path from "path";
+import { hasBannedTitle } from "./banned-tags";
 
 const OUTPUT = path.resolve(process.cwd(), "src/data/rule34video-videos.json");
 const DELAY = 800;
@@ -98,6 +99,9 @@ function parseSitemapPage(xml: string): R34VEntry[] {
     let date = "";
     const dateMatch = content.match(/<lastmod>([^<]+)<\/lastmod>/);
     if (dateMatch) date = dateMatch[1].trim();
+
+    // Skip banned content
+    if (hasBannedTitle(title)) continue;
 
     const slug = `r34v-${id}-${sanitizeSlug(title)}`;
 

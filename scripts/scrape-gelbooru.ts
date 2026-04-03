@@ -11,6 +11,7 @@
 
 import fs from "fs";
 import path from "path";
+import { hasBannedTagString } from "./banned-tags";
 
 const BASE_URL = "https://gelbooru.com/index.php";
 const API_KEY = "3ed16caf49d543883a94b9e8beeb56804c4bbdd577bbb22697579e11d84aca13c755ad81e6c3caf03c8b158f07b92097466280dfec9ea35313b61efd3bcc1a41";
@@ -58,6 +59,9 @@ function sanitize(raw: string): string {
 function mapPost(post: GelbooruPost): VideoEntry | null {
   if (!post.file_url) return null;
   if (!post.file_url.endsWith(".mp4") && !post.file_url.endsWith(".webm")) return null;
+
+  // Skip banned content
+  if (post.tags && hasBannedTagString(post.tags)) return null;
 
   const firstTag = sanitize(post.tags);
   const slug = firstTag ? `gel-${post.id}-${firstTag}` : `gel-${post.id}`;
