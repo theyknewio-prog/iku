@@ -29,12 +29,12 @@ export default async function ExplorePage(props: {
   const sort = (SORT_OPTIONS.find((o) => o.value === searchParams.sort)?.value ||
     "score") as SortOption;
 
-  // Danbooru-only — Gelbooru has hotlink protection that blocks video playback
+  // Both sources — Gelbooru videos proxied through /api/proxy
   const { data: videos, hasMore } = await getVideos({
     limit: PER_PAGE,
     page,
     order: sort,
-    source: "danbooru",
+    source: "all",
   });
 
   /* Compute page window — 7 pages centered on current */

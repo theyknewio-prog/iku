@@ -17,13 +17,13 @@ export async function GET(request: NextRequest) {
   const order = sort === "date" ? "date" : sort === "favcount" ? "favcount" : "score";
 
   try {
-    // Force Danbooru-only for feed — Gelbooru has hotlink protection that blocks video playback
+    // Both sources — Gelbooru videos proxied through /api/proxy
     const { data, hasMore } = await getVideos({
       limit: 20,
       page,
       order,
       tags: tag || undefined,
-      source: "danbooru",
+      source: "all",
     });
 
     // Filter out broken videos and large files

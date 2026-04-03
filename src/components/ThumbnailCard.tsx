@@ -80,8 +80,7 @@ export function ThumbnailCard({
         .join(", ") || video.slug;
 
   /* ── Hover handlers — 300ms debounce before loading video ── */
-  // Gelbooru videos have hotlink protection — skip hover preview for them
-  const canPreview = video.source !== "gelbooru" && !!video.url;
+  const canPreview = !!video.url;
 
   const handleMouseEnter = useCallback(() => {
     if (!canPreview) return;

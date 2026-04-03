@@ -145,9 +145,15 @@ function buildGelbooruSlug(id: number, tags: string): string {
 // Type mapper: GelbooruPost -> Video
 // ---------------------------------------------------------------------------
 
+/** Wrap a Gelbooru CDN URL through our proxy to bypass hotlink protection */
+function proxyUrl(raw: string): string {
+  if (!raw) return "";
+  return `/api/proxy?url=${encodeURIComponent(raw)}`;
+}
+
 export function mapGelbooruToVideo(post: GelbooruPost): Video | null {
-  const url = post.file_url ?? "";
-  if (!url) return null; // Skip posts with no video URL
+  const rawUrl = post.file_url ?? "";
+  if (!rawUrl) return null; // Skip posts with no video URL
 
   const tagList = post.tags
     ? post.tags
@@ -159,10 +165,10 @@ export function mapGelbooruToVideo(post: GelbooruPost): Video | null {
   return {
     id: post.id,
     slug: buildGelbooruSlug(post.id, post.tags),
-    url,
-    thumbnail: post.preview_url ?? "",
+    url: proxyUrl(rawUrl),
+    thumbnail: proxyUrl(post.preview_url ?? ""),
     // Gelbooru does not have a separate "720p preview" — use sample_url when available
-    preview: post.sample_url || post.preview_url || "",
+    preview: proxyUrl(post.sample_url || post.preview_url || ""),
     score: post.score ?? 0,
     favorites: 0, // Gelbooru API does not expose favorite counts
     tags: tagList,
