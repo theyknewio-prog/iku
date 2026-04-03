@@ -152,10 +152,17 @@ export default async function BlogPostPage({ params }: BlogPostProps) {
                   </div>
                 </header>
 
-                {/* Article body */}
+                {/* Article body — content is from static data files (src/data/blog.ts).
+                   If this ever becomes dynamic/user-generated, add a proper HTML
+                   sanitizer like DOMPurify. The basic strip below is a safety net. */}
                 <div
                   className="blog-post-body"
-                  dangerouslySetInnerHTML={{ __html: article.content }}
+                  dangerouslySetInnerHTML={{
+                    __html: article.content
+                      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+                      .replace(/on\w+\s*=\s*["'][^"']*["']/gi, "")
+                      .replace(/javascript:/gi, ""),
+                  }}
                 />
 
                 {/* Glossary cross-links */}
