@@ -4,7 +4,7 @@
 Devenir **le plus gros site de hentai animé au monde**. Cible prioritaire : marché anglophone (EN), puis expansion mondiale. Phase actuelle : finir le produit (UX, SEO, performance, stabilité) avant d'attaquer la monétisation (ads, premium, affiliés).
 
 ## Projet
-Site de streaming d'hentai animé agrégant du contenu depuis plusieurs sources (Danbooru, Gelbooru, Rule34.xxx, Rule34Video, sites WordPress). Next.js 16 / React 19, déployé sur un VPS Hetzner CX33 (8GB RAM, 80GB disque) via Coolify + Docker. Domaine : **iku.gg** (DNS Porkbun, SSL Let's Encrypt).
+Site de streaming d'hentai animé agrégant du contenu depuis plusieurs sources (Danbooru, Gelbooru, Rule34.xxx, Rule34Video, sites WordPress). Next.js 16 / React 19, déployé sur un VPS Hetzner CX33 (8GB RAM, 80GB disque) via Coolify + Docker. Domaine : **iku.gg** (DNS Cloudflare → Hetzner, SSL Cloudflare + Let's Encrypt).
 
 **353K+ vidéos** au total, mises à jour quotidiennement via un cron GitHub Actions.
 
@@ -38,7 +38,7 @@ Sab — débutant en code. Toujours expliquer les changements de manière pédag
 | Content queue | Articles programmés | `src/data/content-queue.json` | 304KB | — |
 
 ### Couche unifiée
-Tout passe par `src/lib/content.ts` → `getVideos()` qui fusionne les 4 sources, interleave, déduplique et trie.
+Tout passe par `src/lib/content.ts` → `getVideos()` qui fusionne les 4 sources, interleave, déduplique, filtre le contenu banni et trie.
 
 ### Type central : `Video` (`src/types/video.ts`)
 ```ts
@@ -92,11 +92,40 @@ interface Video {
 
 ---
 
+## Modération de contenu — TOLÉRANCE ZÉRO
+
+### Contenu interdit (pédopornographique / mineurs)
+**Le contenu mettant en scène des mineurs (même fictifs) est STRICTEMENT INTERDIT sur iku.gg.**
+
+3 niveaux de protection en place :
+
+1. **Scrapers** (`scripts/banned-tags.ts`) : les 5 scrapers rejettent tout contenu avec des tags/titres bannis à l'import. Ce contenu n'entre jamais dans les fichiers JSON.
+2. **Données** : 1,457 vidéos purgées des fichiers JSON le 2026-04-03 (438 Gelbooru, 1012 Rule34Video, 4 Danbooru, 3 Rule34).
+3. **Serveur** (`src/lib/content.ts`) : `filterBannedContent()` filtre toute vidéo avec des tags bannis avant qu'elle n'atteigne une page ou une API. `containsBannedContent()` bloque l'accès direct via `/watch/[slug]` → 404.
+
+### Tags bannis (non contournable, côté serveur)
+```
+loli, lolicon, lolidom, loli_focus, shota, shotacon, shotadom, shota_focus,
+child, children, minor, underage, toddler, toddlercon, infant,
+young_girl, young_boy, child_on_child, cub, baby,
+oppai_loli, legal_loli, elementary_school, kindergarten, randoseru
+```
+
+### Règles pour le développement
+- **JAMAIS supprimer ou affaiblir le filtrage** dans `content.ts` ou les scrapers
+- **Tout nouveau scraper** doit importer et utiliser `banned-tags.ts`
+- **Tout nouveau point d'entrée de contenu** (API, page) doit passer par `getVideos()` ou vérifier avec `containsBannedContent()`
+- Le glossaire ne doit PAS contenir d'entrées pour les termes bannis (l'entrée "shota" a été supprimée)
+
+---
+
 ## Sécurité (mise à jour 2026-04-03)
 
 ### Ce qui est protégé ✅
 - **Injection shell** : `execFile()` au lieu de `exec()` pour yt-dlp (pas de shell)
 - **API keys** : dans `.env.local` / variables Coolify, plus hardcodées dans le code
+- **Clé Rule34 régénérée** le 2026-04-03 (l'ancienne était dans l'historique git)
+- **Clé Gelbooru** : pas de régénération possible (fixe par compte), risque faible (lecture seule, contenu public)
 - **SSRF** : proxy validé (https only, ports standard, hostname whitelist stricte)
 - **CORS** : proxy restreint à `https://iku.gg` (plus de wildcard `*`)
 - **Rate limiting** : toutes les 4 routes API protégées avec caches bornés (10K IPs max)
@@ -105,10 +134,7 @@ interface Video {
 - **CSP** : Content-Security-Policy strict (script-src, img-src, media-src, connect-src whitelistés)
 - **XSS blog** : sanitization des `<script>`, event handlers, `javascript:` dans le contenu blog
 - **Memory leaks** : tous les caches in-memory bornés + cleanup toutes les 5 min
-
-### Ce qui reste à faire
-- **Cloudflare** : mettre le CDN gratuit devant le site (DDoS + WAF + CDN). Changer les nameservers sur Porkbun
-- **Régénérer les clés API** : les anciennes clés Gelbooru et Rule34 sont dans l'historique git — les révoquer et en créer de nouvelles
+- **Cloudflare** : CDN + DDoS + WAF gratuit devant le site (configuré le 2026-04-03, nameservers Porkbun → Cloudflare)
 
 ### Variables d'environnement requises
 ```
@@ -220,7 +246,8 @@ docker run -p 3000:3000 iku
 - **VPS** : Hetzner CX33 — 8GB RAM, 4 vCPU, 80GB disque
 - **Swap** : 4GB configuré et actif (`/swapfile`)
 - **Orchestration** : Coolify v4 (auto-deploy depuis GitHub)
-- **DNS** : Porkbun → Coolify (à migrer vers Cloudflare pour DDoS/CDN)
+- **DNS** : Porkbun (registrar) → Cloudflare (nameservers `kallie.ns.cloudflare.com` + `robert.ns.cloudflare.com`) → Hetzner
+- **CDN/DDoS/WAF** : Cloudflare Free (configuré le 2026-04-03)
 - **SSL** : Let's Encrypt (auto-renew via Coolify)
 - **CI** : GitHub Actions (daily scrape + auto-deploy via webhook Coolify)
 - **Monitoring** : `/api/health` endpoint (uptime, RAM)
@@ -279,11 +306,12 @@ src/
     ├── useDoubleTap.ts      # Détection double-tap
     └── useLocalStorage.ts   # Hook localStorage
 scripts/
-├── scrape-danbooru.ts      # Scraper Danbooru
-├── scrape-gelbooru.ts      # Scraper Gelbooru
-├── scrape-rule34.ts        # Scraper Rule34
-├── scrape-rule34video.ts   # Scraper Rule34Video
-├── scrape-wp-sites.ts      # Scraper sites WordPress
+├── banned-tags.ts          # Tags/mots bannis partagés par TOUS les scrapers (CRITIQUE)
+├── scrape-danbooru.ts      # Scraper Danbooru (filtre banned-tags)
+├── scrape-gelbooru.ts      # Scraper Gelbooru (filtre banned-tags)
+├── scrape-rule34.ts        # Scraper Rule34 (filtre banned-tags)
+├── scrape-rule34video.ts   # Scraper Rule34Video (filtre banned-tags par titre)
+├── scrape-wp-sites.ts      # Scraper sites WordPress (filtre banned-tags par titre)
 ├── enrich-wp-thumbnails.ts # Enrichissement thumbnails WP
 └── publish-scheduled.ts    # Publication articles programmés
 ```
@@ -332,26 +360,42 @@ scripts/
 
 ---
 
+## Performance — ISR Cache (ajouté le 2026-04-03)
+
+Toutes les pages utilisent l'ISR (Incremental Static Regeneration) pour réduire la charge serveur :
+
+| Pages | Revalidation | Raison |
+|-------|-------------|--------|
+| `/trending`, `/new` | 30 min | Contenu fréquemment mis à jour |
+| `/`, `/explore`, `/tag/*`, `/character/*`, `/series/*` | 1h | Bon équilibre fraîcheur/perf |
+| `/watch/*`, `/tags`, `/character`, `/series`, `/blog`, `/glossary` | 24h | Contenu quasi-statique |
+
+Avant : SSR complet à chaque requête. Maintenant : première visite = génération + cache, visites suivantes = réponse instantanée depuis le disque.
+
+---
+
 ## Prochaines étapes (priorité)
 
-### Immédiat
-1. **Mettre Cloudflare** devant le site (gratuit : DDoS + WAF + CDN) — changer DNS Porkbun
-2. **Régénérer les clés API** Gelbooru et Rule34 (les anciennes sont dans l'historique git)
+### FAIT ✅ (2026-04-03)
+1. ~~Mettre Cloudflare~~ — CDN + DDoS + WAF gratuit, nameservers configurés
+2. ~~Régénérer clé API Rule34~~ — nouvelle clé active (Gelbooru : pas de régénération possible)
+3. ~~ISR/cache sur 13 pages~~ — énorme réduction de charge serveur
+4. ~~Purge contenu pédopornographique~~ — 1,457 vidéos supprimées + filtrage serveur + scrapers bloquants
 
 ### Court terme (performance pour scale)
-3. Ajouter ISR/cache sur homepage et `/watch/[slug]` (actuellement SSR live à chaque requête)
-4. Ajouter Redis pour cache partagé (ou in-memory LRU plus sophistiqué)
-5. Optimiser les images (`unoptimized={true}` à retirer sur les PosterCard)
+5. Ajouter Redis pour cache partagé (ou in-memory LRU plus sophistiqué)
+6. Images : `unoptimized={true}` gardé volontairement — Cloudflare CDN cache les images externes, plus efficace que l'optimisation Next.js sur un serveur 8GB
 
 ### Moyen terme (scale à 200K daily users)
-6. CDN pour les vidéos (Bunny CDN ou Cloudflare Stream)
-7. Upgrade serveur CX33 → CPX21 (8 vCPU, 16GB RAM) si besoin
-8. Migrer les JSONs vers PostgreSQL pour réduire la RAM
+7. CDN pour les vidéos (Bunny CDN ou Cloudflare Stream)
+8. Upgrade serveur CX33 → CPX21 (8 vCPU, 16GB RAM) si besoin
+9. Migrer les JSONs vers PostgreSQL pour réduire la RAM
 
 ---
 
 ## Notes pour Claude Code
 
+- **JAMAIS affaiblir le filtrage de contenu banni** — `content.ts` et `scripts/banned-tags.ts` sont critiques. Tolérance zéro.
 - **Ne jamais éditer les fichiers JSON dans `src/data/`** — ils sont générés par les scrapers
 - **Toujours tester avec `npm run build`** avant de push — le build nécessite 6GB de RAM et peut OOM
 - **Les clés API sont dans `.env.local` et Coolify** — NE PLUS les hardcoder dans le code
