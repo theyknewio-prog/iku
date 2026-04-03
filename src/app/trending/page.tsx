@@ -19,6 +19,8 @@ export const metadata: Metadata = {
   },
 };
 
+export const revalidate = 1800;
+
 const CATEGORY_TAGS = [
   { label: "School Uniform", tag: "school_uniform" },
   { label: "Bunny Girl", tag: "bunny_girl" },

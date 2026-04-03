@@ -13,6 +13,8 @@ type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
+export const revalidate = 3600;
+
 export function generateStaticParams() {
   return SERIES.map((s) => ({ slug: s.slug }));
 }

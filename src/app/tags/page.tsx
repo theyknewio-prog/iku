@@ -17,6 +17,8 @@ export const metadata: Metadata = {
   },
 };
 
+export const revalidate = 86400;
+
 export default async function TagsPage() {
   const [popularTags, popularCharacters] = await Promise.all([
     getPopularTags(60),

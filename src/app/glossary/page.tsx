@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
+export const revalidate = 86400;
+
 export default function GlossaryPage() {
   const byLetter = getTermsByLetter();
   const letters = Object.keys(byLetter).sort();

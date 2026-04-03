@@ -19,6 +19,8 @@ export const metadata: Metadata = {
   },
 };
 
+export const revalidate = 86400;
+
 // Group characters by series for display
 function groupBySeries() {
   const groups: { series: (typeof SERIES)[number]; chars: (typeof CHARACTERS)[number][] }[] = [];

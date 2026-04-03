@@ -21,6 +21,8 @@ export const metadata: Metadata = {
   },
 };
 
+export const revalidate = 1800;
+
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };

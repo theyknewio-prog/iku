@@ -18,6 +18,8 @@ export const metadata: Metadata = {
   },
 };
 
+export const revalidate = 86400;
+
 export default function SeriesIndexPage() {
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",

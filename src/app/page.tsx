@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   other: { rating: "adult" },
 };
 
+export const revalidate = 3600;
+
 /* ── Tag chip colours — round-robin ────────────────────────── */
 const TAG_GRADIENTS = [
   "linear-gradient(160deg, #1a0a2e 0%, #e8467c 100%)",

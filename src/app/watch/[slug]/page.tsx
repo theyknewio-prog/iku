@@ -18,6 +18,8 @@ import {
   generateBreadcrumbs,
 } from "@/lib/content-generator";
 
+export const revalidate = 86400;
+
 /* ─────────────────────────────────────────────────────────────
    Types
 ───────────────────────────────────────────────────────────── */

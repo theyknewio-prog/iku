@@ -7,6 +7,8 @@ import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { CHARACTERS } from "@/data/characters";
 import { SERIES } from "@/data/series";
 
+export const revalidate = 3600;
+
 export async function generateMetadata(props: {
   searchParams: Promise<{ page?: string; sort?: string }>;
 }): Promise<Metadata> {
