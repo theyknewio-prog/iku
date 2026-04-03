@@ -17,6 +17,7 @@ import {
   generateVideoFAQ,
   generateBreadcrumbs,
 } from "@/lib/content-generator";
+import { containsBannedContent } from "@/lib/content";
 
 export const revalidate = 86400;
 
@@ -206,6 +207,11 @@ export default async function WatchPage({ params }: WatchPageProps) {
       video = await getPost(id);
     }
   } catch {
+    notFound();
+  }
+
+  // Block banned content from being viewed directly
+  if (containsBannedContent(video)) {
     notFound();
   }
 

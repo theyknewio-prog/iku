@@ -11,6 +11,39 @@ import { searchRule34 } from "@/lib/rule34-search";
 import { searchRule34Video } from "@/lib/rule34video";
 import type { Video, PaginatedResult } from "@/types/video";
 
+// ---------------------------------------------------------------------------
+// Global server-side content filter — CANNOT be bypassed by users.
+// Removes illegal/underage content before it reaches any page or API.
+// ---------------------------------------------------------------------------
+
+const BANNED_TAGS = new Set([
+  // Underage characters / pedo content
+  "loli", "lolicon", "lolidom", "loli_focus",
+  "shota", "shotacon", "shotadom", "shota_focus",
+  "child", "children", "minor", "underage",
+  "toddler", "toddlercon", "infant",
+  "young_girl", "young_boy",
+  "child_on_child",
+  // Cub / baby
+  "cub", "baby",
+  // Explicit loli/shota variants
+  "oppai_loli", "legal_loli",
+  // School-age specific
+  "elementary_school", "kindergarten",
+  "randoseru", // Japanese school bag for young children
+]);
+
+function filterBannedContent(videos: Video[]): Video[] {
+  return videos.filter(
+    (v) => !v.tags.some((t) => BANNED_TAGS.has(t.toLowerCase()))
+  );
+}
+
+/** Check if a single video contains banned content */
+export function containsBannedContent(video: { tags: string[] }): boolean {
+  return video.tags.some((t) => BANNED_TAGS.has(t.toLowerCase()));
+}
+
 export interface GetVideosOptions {
   limit?: number;
   page?: number;
@@ -100,11 +133,13 @@ export async function getVideos(
   } = options;
 
   if (source === "danbooru") {
-    return searchPosts({ limit, page, order, tags: tags || undefined });
+    const result = await searchPosts({ limit, page, order, tags: tags || undefined });
+    return { ...result, data: filterBannedContent(result.data) };
   }
 
   if (source === "gelbooru") {
-    return searchGelbooru({ limit, page, order, tags: tags || undefined });
+    const result = await searchGelbooru({ limit, page, order, tags: tags || undefined });
+    return { ...result, data: filterBannedContent(result.data) };
   }
 
   // source === "all": fetch all 4 sources concurrently
@@ -161,5 +196,8 @@ export async function getVideos(
     (rule34Result.status === "fulfilled" && rule34Result.value.hasMore) ||
     (rule34videoResult.status === "fulfilled" && rule34videoResult.value.hasMore);
 
-  return { data: unique, hasMore };
+  // Remove illegal/underage content — server-side, non-bypassable
+  const safe = filterBannedContent(unique);
+
+  return { data: safe, hasMore };
 }
