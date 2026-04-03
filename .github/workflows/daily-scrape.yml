@@ -26,6 +26,26 @@ jobs:
       - name: Install tsx
         run: npm install -g tsx
 
+      - name: Publish scheduled content
+        run: tsx scripts/publish-scheduled.ts
+
+      - name: Check for content changes
+        id: content_changes
+        run: |
+          if git diff --quiet src/data/blog.ts src/data/glossary.ts src/data/content-queue.json 2>/dev/null; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit published content
+        if: steps.content_changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/blog.ts src/data/glossary.ts src/data/content-queue.json
+          git commit -m "content: publish scheduled articles and glossary terms [skip ci]"
+
       - name: Scrape Danbooru
         run: tsx scripts/scrape-danbooru.ts
 
@@ -49,17 +69,20 @@ jobs:
           GEL=$(node -e "console.log(require('./src/data/gelbooru-videos.json').length)")
           echo "count=$((DAN + GEL))" >> "$GITHUB_OUTPUT"
 
-      - name: Commit and push
+      - name: Commit video changes
         if: steps.changes.outputs.changed == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add src/data/videos.json src/data/gelbooru-videos.json
           git commit -m "data: update video index (${{ steps.count.outputs.count }} total videos) [skip ci]"
-          git push
+
+      - name: Push all changes
+        if: steps.content_changes.outputs.changed == 'true' || steps.changes.outputs.changed == 'true'
+        run: git push
 
       - name: Trigger Coolify deploy
-        if: steps.changes.outputs.changed == 'true'
+        if: steps.content_changes.outputs.changed == 'true' || steps.changes.outputs.changed == 'true'
         run: |
           curl -s -X POST \
             -H "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}" \
