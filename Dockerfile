@@ -34,6 +34,7 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV HOSTNAME="0.0.0.0"
 # Runtime heap: 3GB max (not 6GB) — leave room for OS + yt-dlp on 8GB server
 ENV NODE_OPTIONS="--max-old-space-size=3072"
 
