@@ -25,14 +25,25 @@ export function SwipeFeed() {
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const loadingRef = useRef(false);
+  // Captured from the first API response and forwarded on all subsequent fetches.
+  const sessionOffsetRef = useRef<number | null>(null);
 
   const fetchVideos = useCallback(async (pageNum: number) => {
     if (loadingRef.current) return;
     loadingRef.current = true;
 
     try {
-      const res = await fetch(`/api/feed?page=${pageNum}`);
+      const offsetParam =
+        sessionOffsetRef.current !== null
+          ? `&offset=${sessionOffsetRef.current}`
+          : "";
+      const res = await fetch(`/api/feed?page=${pageNum}${offsetParam}`);
       const data = await res.json();
+
+      // Store the offset from the first response for all future pages.
+      if (sessionOffsetRef.current === null && typeof data.offset === "number") {
+        sessionOffsetRef.current = data.offset;
+      }
 
       if (data.videos && data.videos.length > 0) {
         setVideos((prev) => [...prev, ...data.videos]);

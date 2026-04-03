@@ -470,6 +470,9 @@ export function HomeFeed({
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  // Session offset: received from the first API response and forwarded to every
+  // subsequent request so the infinite-scroll pages stay in the same catalog slice.
+  const [sessionOffset, setSessionOffset] = useState<number | null>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -479,13 +482,21 @@ export function HomeFeed({
     setLoading(true);
     try {
       const sort = mode === "trending" ? "score" : "date";
-      const res = await fetch(`/api/feed?page=${page + 1}&sort=${sort}`);
+      const nextPage = page + 1;
+      // Include the session offset so the server returns the right catalog slice.
+      // On page 1 we have no offset yet — the server will generate one and send it back.
+      const offsetParam = sessionOffset !== null ? `&offset=${sessionOffset}` : "";
+      const res = await fetch(`/api/feed?page=${nextPage}&sort=${sort}${offsetParam}`);
       if (!res.ok) return;
       const data = await res.json();
+      // Capture the offset from the first response so all future pages use it.
+      if (sessionOffset === null && typeof data.offset === "number") {
+        setSessionOffset(data.offset);
+      }
       if (data.videos?.length > 0) {
         const incoming = filterByBlacklist(data.videos) as FeedVideo[];
         setVideos((prev) => [...prev, ...incoming]);
-        setPage((p) => p + 1);
+        setPage(nextPage);
         setHasMore(data.hasMore ?? true);
       } else {
         setHasMore(false);
@@ -495,7 +506,7 @@ export function HomeFeed({
     } finally {
       setLoading(false);
     }
-  }, [page, loading, mode, hasMore]);
+  }, [page, loading, mode, hasMore, sessionOffset]);
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
