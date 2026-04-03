@@ -1,4 +1,4 @@
-name: Daily Danbooru Scrape
+name: Daily Scrape & Content
 
 on:
   schedule:
@@ -12,7 +12,7 @@ permissions:
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v4
@@ -26,6 +26,7 @@ jobs:
       - name: Install tsx
         run: npm install -g tsx
 
+      # ── Scheduled content publishing ──────────────────────
       - name: Publish scheduled content
         run: tsx scripts/publish-scheduled.ts
 
@@ -46,36 +47,53 @@ jobs:
           git add src/data/blog.ts src/data/glossary.ts src/data/content-queue.json
           git commit -m "content: publish scheduled articles and glossary terms [skip ci]"
 
+      # ── Scrape all video sources ──────────────────────────
       - name: Scrape Danbooru
         run: tsx scripts/scrape-danbooru.ts
 
       - name: Scrape Gelbooru
         run: tsx scripts/scrape-gelbooru.ts
 
-      - name: Check for changes
+      - name: Scrape Rule34.xxx
+        run: tsx scripts/scrape-rule34.ts
+
+      - name: Scrape Rule34Video.com
+        run: tsx scripts/scrape-rule34video.ts
+
+      - name: Scrape WordPress hentai sites
+        run: tsx scripts/scrape-wp-sites.ts
+
+      # ── Commit & deploy ───────────────────────────────────
+      - name: Check for video changes
         id: changes
         run: |
-          if git diff --quiet src/data/videos.json src/data/gelbooru-videos.json 2>/dev/null; then
+          if git diff --quiet src/data/*.json 2>/dev/null; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Count videos
+      - name: Count total videos
         if: steps.changes.outputs.changed == 'true'
         id: count
         run: |
-          DAN=$(node -e "console.log(require('./src/data/videos.json').length)")
-          GEL=$(node -e "console.log(require('./src/data/gelbooru-videos.json').length)")
-          echo "count=$((DAN + GEL))" >> "$GITHUB_OUTPUT"
+          TOTAL=$(node -e "
+            const d = require('./src/data/videos.json').length;
+            const g = require('./src/data/gelbooru-videos.json').length;
+            const r = require('./src/data/rule34-videos.json').length;
+            const rv = require('./src/data/rule34video-videos.json').length;
+            const wp = require('./src/data/wp-hentai-videos.json').length;
+            console.log(d + g + r + rv + wp);
+          ")
+          echo "count=$TOTAL" >> "$GITHUB_OUTPUT"
 
       - name: Commit video changes
         if: steps.changes.outputs.changed == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add src/data/videos.json src/data/gelbooru-videos.json
-          git commit -m "data: update video index (${{ steps.count.outputs.count }} total videos) [skip ci]"
+          git add src/data/*.json
+          git commit -m "data: daily scrape update (${{ steps.count.outputs.count }} total videos) [skip ci]"
 
       - name: Push all changes
         if: steps.content_changes.outputs.changed == 'true' || steps.changes.outputs.changed == 'true'
