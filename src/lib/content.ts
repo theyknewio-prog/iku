@@ -7,6 +7,7 @@
 
 import { searchPosts } from "@/lib/danbooru";
 import { searchGelbooru } from "@/lib/gelbooru";
+import { searchRule34 } from "@/lib/rule34-search";
 import type { Video, PaginatedResult } from "@/types/video";
 
 export interface GetVideosOptions {
@@ -105,12 +106,12 @@ export async function getVideos(
     return searchGelbooru({ limit, page, order, tags: tags || undefined });
   }
 
-  // source === "all": fetch both concurrently
-  // Give Gelbooru half the slot to keep the page size consistent
+  // source === "all": fetch all 3 sources concurrently
+  const danbooruLimit = limit;
   const gelbooruLimit = Math.ceil(limit / 3);
-  const danbooruLimit = limit; // Primary — always request full quota
+  const rule34Limit = Math.ceil(limit / 3);
 
-  const [danbooruResult, gelbooruResult] = await Promise.allSettled([
+  const [danbooruResult, gelbooruResult, rule34Result] = await Promise.allSettled([
     searchPosts({
       limit: danbooruLimit,
       page,
@@ -123,29 +124,31 @@ export async function getVideos(
       order,
       tags: tags || undefined,
     }),
+    searchRule34({
+      limit: rule34Limit,
+      page,
+      order,
+      tags: tags || undefined,
+    }),
   ]);
 
   const danbooruVideos =
-    danbooruResult.status === "fulfilled"
-      ? danbooruResult.value.data
-      : [];
-
+    danbooruResult.status === "fulfilled" ? danbooruResult.value.data : [];
   const gelbooruVideos =
-    gelbooruResult.status === "fulfilled"
-      ? gelbooruResult.value.data
-      : [];
+    gelbooruResult.status === "fulfilled" ? gelbooruResult.value.data : [];
+  const rule34Videos =
+    rule34Result.status === "fulfilled" ? rule34Result.value.data : [];
 
-  if (gelbooruResult.status === "rejected") {
-    console.error("Gelbooru fetch failed (graceful fallback):", gelbooruResult.reason);
-  }
-
-  const merged = interleave(danbooruVideos, gelbooruVideos);
+  // Interleave: Danbooru primary, Gelbooru + Rule34 mixed in
+  const secondary = [...gelbooruVideos, ...rule34Videos];
+  const merged = interleave(danbooruVideos, secondary);
   const sorted = sortVideos(merged, order);
   const unique = deduplicate(sorted);
 
   const hasMore =
     (danbooruResult.status === "fulfilled" && danbooruResult.value.hasMore) ||
-    (gelbooruResult.status === "fulfilled" && gelbooruResult.value.hasMore);
+    (gelbooruResult.status === "fulfilled" && gelbooruResult.value.hasMore) ||
+    (rule34Result.status === "fulfilled" && rule34Result.value.hasMore);
 
   return { data: unique, hasMore };
 }
