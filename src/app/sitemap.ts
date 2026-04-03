@@ -13,6 +13,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE}/tags`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
     { url: `${SITE}/blog`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
     { url: `${SITE}/glossary`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
+    { url: `${SITE}/character`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
+    { url: `${SITE}/series`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
   ];
 
   const blogPages: MetadataRoute.Sitemap = BLOG_ARTICLES.map((a) => ({
