@@ -5,12 +5,33 @@ import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { AgeGate } from "@/components/AgeGate";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 
-export const metadata: Metadata = {
-  title: "Explore All Hentai Videos — 65,000+ Free Animated Clips | iku.gg",
-  description:
-    "Explore the largest collection of free hentai videos. 65,000+ animated hentai clips sorted by score, newest, and favorites. Stream hentai online.",
-  other: { rating: "adult" },
-};
+export async function generateMetadata(props: {
+  searchParams: Promise<{ page?: string; sort?: string }>;
+}): Promise<Metadata> {
+  const sp = await props.searchParams;
+  const page = parseInt(sp.page || "1") || 1;
+  const sort = sp.sort || "score";
+  const base = "https://iku.gg/explore";
+  const canonical = page > 1 ? `${base}?sort=${sort}&page=${page}` : base;
+  const prev = page > 1 ? `${base}?sort=${sort}&page=${page - 1}` : undefined;
+  const next = `${base}?sort=${sort}&page=${page + 1}`;
+
+  return {
+    title: page > 1
+      ? `Explore Hentai Videos — Page ${page} | iku.gg`
+      : "Explore All Hentai Videos — 65,000+ Free Animated Clips | iku.gg",
+    description: "Explore the largest collection of free hentai videos. 65,000+ animated hentai clips sorted by score, newest, and favorites. Stream hentai online.",
+    other: { rating: "adult" },
+    alternates: {
+      canonical,
+      types: {
+        ...(prev ? { "prev": prev } : {}),
+        ...(next ? { "next": next } : {}),
+      },
+    },
+    robots: page > 1 ? { index: false, follow: true } : { index: true, follow: true },
+  };
+}
 
 type SortOption = "score" | "date" | "favcount";
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [

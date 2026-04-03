@@ -15,16 +15,37 @@ type Props = {
 
 // Tag pages are fully dynamic (SSR on demand) — no build-time API calls
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { tag } = await params;
+  const sp = await searchParams;
   const label = tag.replace(/_/g, " ");
   const titleCased = label.replace(/\b\w/g, (c) => c.toUpperCase());
+  const page = parseInt(typeof sp.page === "string" ? sp.page : "1") || 1;
+  const sort = typeof sp.sort === "string" ? sp.sort : "score";
+
+  const base = `https://iku.gg/tag/${tag}`;
+  const canonical = page > 1 ? `${base}?sort=${sort}&page=${page}` : base;
+
+  // rel prev/next for pagination SEO
+  const prev = page > 1 ? `${base}?sort=${sort}&page=${page - 1}` : undefined;
+  const next = `${base}?sort=${sort}&page=${page + 1}`;
 
   return {
-    title: `${titleCased} Hentai Videos - Best ${titleCased} Anime Porn | iku.gg`,
+    title: page > 1
+      ? `${titleCased} Hentai Videos — Page ${page} | iku.gg`
+      : `${titleCased} Hentai Videos - Best ${titleCased} Anime Porn | iku.gg`,
     description: `Watch the best ${label} hentai videos on iku.gg. Stream free ${label} animated hentai clips — top rated by score, sorted by date or favorites.`,
     other: { rating: "adult" },
-    robots: { index: true, follow: true },
+    alternates: {
+      canonical,
+      ...(prev || next ? {
+        types: {
+          ...(prev ? { "prev": prev } : {}),
+          ...(next ? { "next": next } : {}),
+        },
+      } : {}),
+    },
+    robots: page > 1 ? { index: false, follow: true } : { index: true, follow: true },
     openGraph: {
       title: `${titleCased} Hentai Videos | iku.gg`,
       description: `Stream free ${label} hentai videos. The best ${label} animated hentai on iku.gg.`,
