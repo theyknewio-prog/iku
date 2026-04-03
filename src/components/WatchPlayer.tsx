@@ -17,6 +17,8 @@ import { useDoubleTap } from "@/hooks/useDoubleTap";
 interface WatchPlayerProps {
   src: string;
   poster?: string;
+  /** For rule34video: page URL to resolve via /api/resolve-video */
+  resolveUrl?: string;
 }
 
 interface SeekOverlay {
@@ -177,12 +179,31 @@ type Speed = (typeof SPEEDS)[number];
    WatchPlayer
 ───────────────────────────────────────────────────────────── */
 
-export function WatchPlayer({ src, poster }: WatchPlayerProps) {
+export function WatchPlayer({ src, poster, resolveUrl }: WatchPlayerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const overlayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  /* Resolved video URL (for sources like rule34video with temp URLs) */
+  const [resolvedSrc, setResolvedSrc] = useState(src);
+  const [resolving, setResolving] = useState(false);
+
+  useEffect(() => {
+    if (src || !resolveUrl) return;
+    let cancelled = false;
+    setResolving(true);
+    fetch(`/api/resolve-video?url=${encodeURIComponent(resolveUrl)}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (!cancelled && data.videoUrl) setResolvedSrc(data.videoUrl);
+        else if (!cancelled) setError(true);
+      })
+      .catch(() => { if (!cancelled) setError(true); })
+      .finally(() => { if (!cancelled) setResolving(false); });
+    return () => { cancelled = true; };
+  }, [src, resolveUrl]);
 
   /* Playback state */
   const [playing, setPlaying] = useState(false);
@@ -499,7 +520,7 @@ export function WatchPlayer({ src, poster }: WatchPlayerProps) {
         {/* Video */}
         <video
           ref={videoRef}
-          src={src}
+          src={resolvedSrc || undefined}
           poster={poster}
           autoPlay
           muted={muted}
@@ -523,8 +544,8 @@ export function WatchPlayer({ src, poster }: WatchPlayerProps) {
           }}
         />
 
-        {/* Buffering spinner */}
-        {buffering && (
+        {/* Resolving / Buffering spinner */}
+        {(buffering || resolving) && (
           <div
             style={{
               position: "absolute",

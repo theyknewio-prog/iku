@@ -8,6 +8,7 @@
 import { searchPosts } from "@/lib/danbooru";
 import { searchGelbooru } from "@/lib/gelbooru";
 import { searchRule34 } from "@/lib/rule34-search";
+import { searchRule34Video } from "@/lib/rule34video";
 import type { Video, PaginatedResult } from "@/types/video";
 
 export interface GetVideosOptions {
@@ -106,12 +107,13 @@ export async function getVideos(
     return searchGelbooru({ limit, page, order, tags: tags || undefined });
   }
 
-  // source === "all": fetch all 3 sources concurrently
+  // source === "all": fetch all 4 sources concurrently
   const danbooruLimit = limit;
   const gelbooruLimit = Math.ceil(limit / 3);
   const rule34Limit = Math.ceil(limit / 3);
+  const rule34videoLimit = Math.ceil(limit / 4);
 
-  const [danbooruResult, gelbooruResult, rule34Result] = await Promise.allSettled([
+  const [danbooruResult, gelbooruResult, rule34Result, rule34videoResult] = await Promise.allSettled([
     searchPosts({
       limit: danbooruLimit,
       page,
@@ -130,6 +132,12 @@ export async function getVideos(
       order,
       tags: tags || undefined,
     }),
+    Promise.resolve(searchRule34Video({
+      limit: rule34videoLimit,
+      page,
+      order,
+      tags: tags || undefined,
+    })),
   ]);
 
   const danbooruVideos =
@@ -138,9 +146,11 @@ export async function getVideos(
     gelbooruResult.status === "fulfilled" ? gelbooruResult.value.data : [];
   const rule34Videos =
     rule34Result.status === "fulfilled" ? rule34Result.value.data : [];
+  const rule34videoVideos =
+    rule34videoResult.status === "fulfilled" ? rule34videoResult.value.data : [];
 
-  // Interleave: Danbooru primary, Gelbooru + Rule34 mixed in
-  const secondary = [...gelbooruVideos, ...rule34Videos];
+  // Interleave: Danbooru primary, Gelbooru + Rule34 + Rule34Video mixed in
+  const secondary = [...gelbooruVideos, ...rule34Videos, ...rule34videoVideos];
   const merged = interleave(danbooruVideos, secondary);
   const sorted = sortVideos(merged, order);
   const unique = deduplicate(sorted);
@@ -148,7 +158,8 @@ export async function getVideos(
   const hasMore =
     (danbooruResult.status === "fulfilled" && danbooruResult.value.hasMore) ||
     (gelbooruResult.status === "fulfilled" && gelbooruResult.value.hasMore) ||
-    (rule34Result.status === "fulfilled" && rule34Result.value.hasMore);
+    (rule34Result.status === "fulfilled" && rule34Result.value.hasMore) ||
+    (rule34videoResult.status === "fulfilled" && rule34videoResult.value.hasMore);
 
   return { data: unique, hasMore };
 }

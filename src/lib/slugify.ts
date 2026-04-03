@@ -28,7 +28,14 @@ export function extractIdFromSlug(slug: string): number {
   // gel-8742200-xxx → 8742200, r34-14029915-xxx → 14029915, 5083150-xxx → 5083150
   let cleaned = slug;
   if (cleaned.startsWith("gel-")) cleaned = cleaned.slice(4);
+  else if (cleaned.startsWith("r34v-")) cleaned = cleaned.slice(5);
   else if (cleaned.startsWith("r34-")) cleaned = cleaned.slice(4);
+  else if (cleaned.startsWith("hmm-")) cleaned = cleaned.slice(4);
+  else if (cleaned.startsWith("htv-")) cleaned = cleaned.slice(4);
+  else if (cleaned.startsWith("aid-")) cleaned = cleaned.slice(4);
+  else if (cleaned.startsWith("wh-")) cleaned = cleaned.slice(3);
+  else if (cleaned.startsWith("hw-")) cleaned = cleaned.slice(3);
+  else if (cleaned.startsWith("hg-")) cleaned = cleaned.slice(3);
 
   const match = cleaned.match(/^(\d+)/);
   if (!match) throw new Error(`Invalid slug: ${slug}`);
@@ -41,6 +48,15 @@ export function isGelbooruSlug(slug: string): boolean {
 
 export function isRule34Slug(slug: string): boolean {
   return slug.startsWith("r34-");
+}
+
+export function isRule34VideoSlug(slug: string): boolean {
+  return slug.startsWith("r34v-");
+}
+
+const WP_PREFIXES = ["hmm-", "htv-", "aid-", "wh-", "hw-", "hg-"];
+export function isWPHentaiSlug(slug: string): boolean {
+  return WP_PREFIXES.some((p) => slug.startsWith(p));
 }
 
 /**

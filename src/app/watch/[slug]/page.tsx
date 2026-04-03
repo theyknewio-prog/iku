@@ -8,7 +8,9 @@ import { WatchActions } from "@/components/WatchActions";
 import { getPost, getRelatedPosts } from "@/lib/danbooru";
 import { getGelbooruPost } from "@/lib/gelbooru";
 import { getRule34Post } from "@/lib/rule34";
-import { extractIdFromSlug, isGelbooruSlug, isRule34Slug } from "@/lib/slugify";
+import { getRule34VideoPost, getRule34VideoPageUrl } from "@/lib/rule34video";
+import { getWPHentaiPost, getWPHentaiPageUrl } from "@/lib/wp-hentai";
+import { extractIdFromSlug, isGelbooruSlug, isRule34Slug, isRule34VideoSlug, isWPHentaiSlug } from "@/lib/slugify";
 import type { Video } from "@/types/video";
 import {
   generateVideoDescription,
@@ -73,7 +75,15 @@ export async function generateMetadata({
   let video: Video;
   try {
     const id = extractIdFromSlug(slug);
-    if (isRule34Slug(slug)) {
+    if (isWPHentaiSlug(slug)) {
+      const wv = getWPHentaiPost(id);
+      if (!wv) return { title: "Hentai Video | iku.gg", robots: { index: false } };
+      video = wv;
+    } else if (isRule34VideoSlug(slug)) {
+      const rv = getRule34VideoPost(id);
+      if (!rv) return { title: "Hentai Video | iku.gg", robots: { index: false } };
+      video = rv;
+    } else if (isRule34Slug(slug)) {
       const rv = await getRule34Post(id);
       if (!rv) return { title: "Hentai Video | iku.gg", robots: { index: false } };
       video = rv;
@@ -164,9 +174,20 @@ export default async function WatchPage({ params }: WatchPageProps) {
   const { slug } = await params;
 
   let video: Video;
+  let resolvePageUrl: string | null = null;
   try {
     const id = extractIdFromSlug(slug);
-    if (isRule34Slug(slug)) {
+    if (isWPHentaiSlug(slug)) {
+      const wv = getWPHentaiPost(id);
+      if (!wv) notFound();
+      video = wv;
+      resolvePageUrl = getWPHentaiPageUrl(id);
+    } else if (isRule34VideoSlug(slug)) {
+      const rv = getRule34VideoPost(id);
+      if (!rv) notFound();
+      video = rv;
+      resolvePageUrl = getRule34VideoPageUrl(id);
+    } else if (isRule34Slug(slug)) {
       const rv = await getRule34Post(id);
       if (!rv) notFound();
       video = rv;
@@ -309,6 +330,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 <WatchPlayer
                   src={video.url}
                   poster={video.thumbnail || undefined}
+                  resolveUrl={resolvePageUrl || undefined}
                 />
               </div>
 
@@ -432,11 +454,13 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
                   <a
                     href={
-                      video.source === "gelbooru"
-                        ? `https://gelbooru.com/index.php?page=post&s=view&id=${video.id}`
-                        : video.source === "rule34"
-                          ? `https://rule34.xxx/index.php?page=post&s=view&id=${video.id}`
-                          : `https://danbooru.donmai.us/posts/${video.id}`
+                      video.source === "rule34video"
+                        ? (resolvePageUrl || `https://rule34video.com/video/${video.id}/`)
+                        : video.source === "gelbooru"
+                          ? `https://gelbooru.com/index.php?page=post&s=view&id=${video.id}`
+                          : video.source === "rule34"
+                            ? `https://rule34.xxx/index.php?page=post&s=view&id=${video.id}`
+                            : `https://danbooru.donmai.us/posts/${video.id}`
                     }
                     target="_blank"
                     rel="noopener noreferrer"
