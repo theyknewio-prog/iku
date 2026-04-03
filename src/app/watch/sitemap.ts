@@ -44,7 +44,11 @@ export async function generateSitemaps() {
   return Array.from({ length: count }, (_, i) => ({ id: i }));
 }
 
-export default async function sitemap({ id }: { id: number }): Promise<MetadataRoute.Sitemap> {
+export default async function sitemap(props: {
+  id: Promise<string>;
+}): Promise<MetadataRoute.Sitemap> {
+  const idStr = await props.id;
+  const id = parseInt(idStr, 10);
   const all = loadAllEntries();
   const start = id * MAX_PER_SITEMAP;
   const chunk = all.slice(start, start + MAX_PER_SITEMAP);
