@@ -35,9 +35,10 @@ const CHAR_GRADIENTS = [
 
 export default async function HomePage() {
   // Fetch sequentially to respect rate limits across both sources
-  const trending = await getVideos({ limit: 20, order: "score", source: "all" });
-  const newest = await getVideos({ limit: 10, order: "date", source: "all" });
-  const topRated = await getVideos({ limit: 10, order: "favcount", source: "all" });
+  // Danbooru-only — Gelbooru has hotlink protection that blocks video playback
+  const trending = await getVideos({ limit: 20, order: "score", source: "danbooru" });
+  const newest = await getVideos({ limit: 10, order: "date", source: "danbooru" });
+  const topRated = await getVideos({ limit: 10, order: "favcount", source: "danbooru" });
   const [tags, characters] = await Promise.all([
     getPopularTags(20),
     getPopularCharacters(12),

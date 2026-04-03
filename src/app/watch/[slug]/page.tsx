@@ -297,10 +297,45 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
               {/* Video player */}
               <div className="player-video-wrap">
-                <WatchPlayer
-                  src={video.url}
-                  poster={video.thumbnail || undefined}
-                />
+                {video.source === "gelbooru" ? (
+                  <div style={{
+                    aspectRatio: "16/9",
+                    background: "#000",
+                    borderRadius: "var(--radius-lg, 12px)",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 12,
+                  }}>
+                    <span style={{ fontSize: 40 }}>⚠</span>
+                    <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 15, fontWeight: 500 }}>
+                      This video can&apos;t be played directly
+                    </span>
+                    <a
+                      href={`https://gelbooru.com/index.php?page=post&s=view&id=${video.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        marginTop: 4,
+                        padding: "8px 20px",
+                        background: "#e8467c",
+                        color: "#fff",
+                        borderRadius: 8,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        textDecoration: "none",
+                      }}
+                    >
+                      Watch on Gelbooru →
+                    </a>
+                  </div>
+                ) : (
+                  <WatchPlayer
+                    src={video.url}
+                    poster={video.thumbnail || undefined}
+                  />
+                )}
               </div>
 
               {/* H1 — must contain "hentai" for SEO */}
