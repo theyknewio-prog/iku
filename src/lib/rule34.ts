@@ -1,9 +1,8 @@
 import type { Video } from "@/types/video";
 
 const BASE_URL = "https://api.rule34.xxx/index.php";
-const API_KEY =
-  "f230feb40110c4e896f9cb32fd4d8c08c13c476f4bf83d64036ad23887e482510b1a391cefab9dacdde28b51cd64c9695ed1fd06ad327753074c494d528f1790";
-const USER_ID = "6053223";
+const API_KEY = process.env.RULE34_API_KEY ?? "";
+const USER_ID = process.env.RULE34_USER_ID ?? "";
 const USER_AGENT = "IkuApp/1.0 (server-side)";
 
 const REVALIDATE = 86400; // 24h

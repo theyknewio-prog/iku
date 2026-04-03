@@ -12,7 +12,7 @@ permissions:
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
       - uses: actions/checkout@v4
@@ -50,18 +50,28 @@ jobs:
       # ── Scrape all video sources ──────────────────────────
       - name: Scrape Danbooru
         run: tsx scripts/scrape-danbooru.ts
+        continue-on-error: true
 
       - name: Scrape Gelbooru
         run: tsx scripts/scrape-gelbooru.ts
+        continue-on-error: true
 
       - name: Scrape Rule34.xxx
         run: tsx scripts/scrape-rule34.ts
+        continue-on-error: true
 
       - name: Scrape Rule34Video.com
         run: tsx scripts/scrape-rule34video.ts
+        continue-on-error: true
 
       - name: Scrape WordPress hentai sites
         run: tsx scripts/scrape-wp-sites.ts
+        continue-on-error: true
+
+      - name: Enrich WP thumbnails
+        run: tsx scripts/enrich-wp-thumbnails.ts
+        timeout-minutes: 10
+        continue-on-error: true
 
       # ── Commit & deploy ───────────────────────────────────
       - name: Check for video changes

@@ -29,12 +29,22 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Missing url param" }, { status: 400 });
   }
 
-  // Validate host — only proxy Gelbooru URLs
+  // Validate host — strict domain + protocol check
   let parsed: URL;
   try {
     parsed = new URL(targetUrl);
   } catch {
     return NextResponse.json({ error: "Invalid url" }, { status: 400 });
+  }
+
+  // Only allow https to prevent SSRF via file://, gopher://, etc.
+  if (parsed.protocol !== "https:") {
+    return NextResponse.json({ error: "Only https allowed" }, { status: 400 });
+  }
+
+  // Block non-standard ports
+  if (parsed.port && parsed.port !== "443") {
+    return NextResponse.json({ error: "Non-standard port" }, { status: 400 });
   }
 
   if (!ALLOWED_HOSTS.includes(parsed.hostname)) {
@@ -67,7 +77,7 @@ export async function GET(request: NextRequest) {
     const contentType = upstream.headers.get("content-type") || "video/mp4";
     responseHeaders.set("Content-Type", contentType);
     responseHeaders.set("Accept-Ranges", "bytes");
-    responseHeaders.set("Access-Control-Allow-Origin", "*");
+    responseHeaders.set("Access-Control-Allow-Origin", "https://iku.gg");
     // Cache proxied videos for 24h on client, 7d on CDN
     responseHeaders.set("Cache-Control", "public, max-age=86400, s-maxage=604800");
 

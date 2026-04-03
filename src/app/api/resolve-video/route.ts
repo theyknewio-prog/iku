@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { exec } from "child_process";
+import { execFile } from "child_process";
 import { promisify } from "util";
 
-const execAsync = promisify(exec);
+const execFileAsync = promisify(execFile);
 
 /**
  * GET /api/resolve-video?url=<page_url>
@@ -43,8 +43,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "url parameter required" }, { status: 400 });
   }
 
-  // Rate limit by IP
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  // Rate limit by IP — use last IP in x-forwarded-for (closest to reverse proxy)
+  // or fall back to x-real-ip which is set by trusted proxies like Traefik/Coolify
+  const xRealIp = request.headers.get("x-real-ip");
+  const xForwardedFor = request.headers.get("x-forwarded-for");
+  const ip = xRealIp || (xForwardedFor ? xForwardedFor.split(",").pop()?.trim() : null) || "unknown";
   const now = Date.now();
   const rl = rateLimit.get(ip);
   if (rl && now < rl.resetAt) {
@@ -59,8 +62,8 @@ export async function GET(request: NextRequest) {
     rateLimit.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW });
   }
 
-  // Validate it's a known source
-  const allowed = [
+  // Validate it's a known source — strict domain check via URL parsing
+  const allowedDomains = [
     "rule34video.com",
     "hentaicity.com",
     "hentaimama.io",
@@ -70,7 +73,19 @@ export async function GET(request: NextRequest) {
     "hentaiworld.tv",
     "hentaigasm.com",
   ];
-  const isAllowed = allowed.some((domain) => pageUrl.includes(domain));
+  let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(pageUrl);
+  } catch {
+    return NextResponse.json({ error: "invalid url" }, { status: 400 });
+  }
+  // Only allow https
+  if (parsedUrl.protocol !== "https:") {
+    return NextResponse.json({ error: "https required" }, { status: 400 });
+  }
+  const isAllowed = allowedDomains.some(
+    (domain) => parsedUrl.hostname === domain || parsedUrl.hostname.endsWith(`.${domain}`)
+  );
   if (!isAllowed) {
     return NextResponse.json({ error: "unsupported source" }, { status: 400 });
   }
@@ -91,8 +106,9 @@ export async function GET(request: NextRequest) {
 
   activeResolves++;
   try {
-    const { stdout } = await execAsync(
-      `yt-dlp -j --no-download "${pageUrl}"`,
+    const { stdout } = await execFileAsync(
+      "yt-dlp",
+      ["-j", "--no-download", pageUrl],
       { timeout: 15000 }
     );
 
