@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 import fs from "fs";
 import path from "path";
 
+export const dynamic = "force-dynamic";
+
 const SITE = "https://iku.gg";
 const MAX_PER_SITEMAP = 45000;
 const DATA_DIR = path.join(process.cwd(), "src/data");
