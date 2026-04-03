@@ -17,10 +17,10 @@ Sab — débutant en code. Toujours expliquer les changements de manière pédag
 - **Framework** : Next.js 16.2.2 (App Router, Server Components, React 19)
 - **Styling** : CSS vanilla via `globals.css` (pas de Tailwind, pas de CSS Modules)
 - **Fonts** : Inter (body), Poppins (headings), Righteous (logo/branding)
-- **API externe principale** : `@nekolab/hanime` (package npm)
 - **Video player** : Custom `<WatchPlayer>` avec HLS.js, double-tap seek, PiP, theater mode
-- **Déploiement** : Docker (node:22-slim + python3 + yt-dlp) → Coolify → Hetzner CX33
-- **CI/CD** : GitHub Actions — daily scrape à 4h UTC
+- **Déploiement** : Docker multi-stage (build 6GB heap + runtime 3GB heap) → Coolify → Hetzner CX33
+- **CI/CD** : GitHub Actions — daily scrape à 4h UTC (5 scrapers + thumbnail enrichment)
+- **Output** : `standalone` (image Docker optimisée)
 
 ---
 
@@ -33,7 +33,7 @@ Sab — débutant en code. Toujours expliquer les changements de manière pédag
 | Danbooru | API live + JSON cache | `src/data/videos.json` | 12MB | `{id}-{char}-{copy}` |
 | Gelbooru | API live + JSON cache | `src/data/gelbooru-videos.json` | 9.9MB | `gel-{id}-{tag}` |
 | Rule34.xxx | API live + JSON cache | `src/data/rule34-videos.json` | 11MB | `r34-{id}-{tag}` |
-| Rule34Video | JSON statique (sitemap scrape) | `src/data/rule34video-videos.json` | 85MB | `r34v-{id}-{slug}` |
+| Rule34Video | JSON statique (sitemap scrape) | `src/data/rule34video-videos.json` | 85MB (Git LFS) | `r34v-{id}-{slug}` |
 | Sites WordPress | JSON statique (sitemap scrape) | `src/data/wp-hentai-videos.json` | 4.2MB | `hmm-`/`htv-`/`aid-`/`wh-`/`hw-`/`hg-` |
 | Content queue | Articles programmés | `src/data/content-queue.json` | 304KB | — |
 
@@ -82,12 +82,42 @@ interface Video {
 | `/settings` | Paramètres utilisateur (blacklist, etc.) |
 
 ### API Routes
-| Route | Description |
-|-------|-------------|
-| `/api/proxy` | Proxy pour CDN Gelbooru (bypass hotlink protection). Hosts autorisés : `video-cdn*.gelbooru.com`, `img*.gelbooru.com` |
-| `/api/resolve-video` | Résout les URLs vidéo temporaires via **yt-dlp** pour Rule34Video et sites WP. Rate limit: 10 req/min/IP, max 3 concurrent. Cache in-memory 1h |
-| `/api/resolve` | Proxy vers un service externe (`PROXY_URL`) pour résolution de slugs |
-| `/api/feed` | API pour le swipe feed |
+| Route | Rate Limit | Description |
+|-------|------------|-------------|
+| `/api/proxy` | 60/min/IP | Proxy pour CDN Gelbooru (bypass hotlink protection). CORS restreint à `iku.gg`. Validation https + port strict |
+| `/api/resolve-video` | 10/min/IP, 3 concurrent | Résout les URLs vidéo via **yt-dlp** (execFile, pas de shell). Cache in-memory borné (500 max, TTL 1h) |
+| `/api/resolve` | 20/min/IP | Proxy vers un service externe (`PROXY_URL`). Validation slug par regex |
+| `/api/feed` | 30/min/IP | API pour le swipe feed |
+| `/api/health` | — | Health check (uptime, mémoire RAM) |
+
+---
+
+## Sécurité (mise à jour 2026-04-03)
+
+### Ce qui est protégé ✅
+- **Injection shell** : `execFile()` au lieu de `exec()` pour yt-dlp (pas de shell)
+- **API keys** : dans `.env.local` / variables Coolify, plus hardcodées dans le code
+- **SSRF** : proxy validé (https only, ports standard, hostname whitelist stricte)
+- **CORS** : proxy restreint à `https://iku.gg` (plus de wildcard `*`)
+- **Rate limiting** : toutes les 4 routes API protégées avec caches bornés (10K IPs max)
+- **IP spoofing** : utilisation de `x-real-ip` (header Traefik) au lieu du spoofable `x-forwarded-for[0]`
+- **Headers sécurité** : HSTS, X-Frame-Options DENY, X-Content-Type nosniff, Referrer-Policy, Permissions-Policy
+- **CSP** : Content-Security-Policy strict (script-src, img-src, media-src, connect-src whitelistés)
+- **XSS blog** : sanitization des `<script>`, event handlers, `javascript:` dans le contenu blog
+- **Memory leaks** : tous les caches in-memory bornés + cleanup toutes les 5 min
+
+### Ce qui reste à faire
+- **Cloudflare** : mettre le CDN gratuit devant le site (DDoS + WAF + CDN). Changer les nameservers sur Porkbun
+- **Régénérer les clés API** : les anciennes clés Gelbooru et Rule34 sont dans l'historique git — les révoquer et en créer de nouvelles
+
+### Variables d'environnement requises
+```
+GELBOORU_API_KEY=...
+GELBOORU_USER_ID=...
+RULE34_API_KEY=...
+RULE34_USER_ID=...
+```
+Fichier `.env.example` fourni. En prod, configurées dans Coolify (env vars application).
 
 ---
 
@@ -103,7 +133,7 @@ interface Video {
 | `enrich-wp-thumbnails.ts` | Scrape thumbnails WP | `npx tsx scripts/enrich-wp-thumbnails.ts` |
 | `publish-scheduled.ts` | Publie articles programmés | `npx tsx scripts/publish-scheduled.ts` |
 
-Le cron GitHub Actions (`.github/workflows/`) exécute tous les scrapers quotidiennement à 4h UTC.
+Le cron GitHub Actions (`.github/workflows/daily-scrape.yml`) exécute tous les scrapers + enrichissement thumbnails quotidiennement à 4h UTC. Timeout 45 min. Chaque scraper a `continue-on-error: true` pour la résilience.
 
 ---
 
@@ -126,43 +156,12 @@ Le cron GitHub Actions (`.github/workflows/`) exécute tous les scrapers quotidi
 
 ## SEO
 
-- **JSON-LD** : VideoObject, FAQPage, BreadcrumbList, WebSite (schema.org)
-- **Sitemaps** : Sitemap principal (`/sitemap.xml`) + sitemaps paginés par chunks de 45K (`/watch/sitemap/0.xml`, `/watch/sitemap/1.xml`, ...) + sitemap tags + sitemap characters + sitemap series
-- **robots.ts** : Autorise `/`, `/watch/`, `/tag/`, bloque `/api/`, `/_next/`, `/feed`, `/v/`
+- **JSON-LD** : VideoObject, FAQPage, BreadcrumbList, WebSite (schema.org) — tous avec escaping `\u003c`
+- **Sitemaps** : Sitemap principal (`/sitemap.xml`) + sitemaps paginés par chunks de 45K (dynamique via `robots.ts`) + sitemap tags + sitemap characters + sitemap series
+- **robots.ts** : Calcul dynamique du nombre de chunks basé sur le vrai compte de vidéos. Référence tous les sitemaps (watch, tag, character, series). Allow : `/watch/`, `/tag/`, `/character/`, `/series/`, `/blog/`, `/glossary/`. Disallow : `/api/`, `/_next/`, `/feed`, `/favorites`, `/history`, `/settings`
 - **Content generator** (`src/lib/content-generator.ts`) : Génère descriptions, FAQ et breadcrumbs automatiques par vidéo
 - **Blog SEO** (`src/data/blog.ts`) : Articles éducatifs pour le trafic organique
 - **Glossaire** (`src/data/glossary.ts`) : Termes et définitions pour le trafic longue traîne
-
----
-
-## Problèmes connus (CRITIQUES)
-
-### 1. yt-dlp non installé en production
-- **Impact** : 296K vidéos (Rule34Video + WP) = écran noir au clic
-- **Cause** : Le Dockerfile installe yt-dlp mais il n'est peut-être pas dans le PATH
-- **Fix** : Vérifier/corriger le Dockerfile, tester yt-dlp dans le container
-
-### 2. Sitemap trop gros (résolu partiellement)
-- Le sitemap watch est déjà splitté en chunks de 45K (voir `src/app/watch/sitemap.ts`)
-- Le `robots.ts` ne référence que les sitemaps 0 et 1 — **mettre à jour dynamiquement**
-
-### 3. RAM serrée (8GB)
-- JSONs chargés en mémoire (~120MB cumulés)
-- yt-dlp (Python) en parallèle peut pic à 6-7GB
-- **Pas de swap configuré** sur le serveur
-- Solution : ajouter 2-4GB de swap + surveiller
-
-### 4. Thumbnails WP vides
-- Les 17.8K vidéos WordPress n'ont pas de thumbnails (`""`)
-- Script `enrich-wp-thumbnails.ts` existe mais n'est peut-être pas dans le cron
-
-### 5. Git repo lourd
-- `rule34video-videos.json` = 85MB dans le repo Git
-- GitHub warn au-delà de 100MB par fichier
-- Solution : Git LFS ou générer le JSON au build
-
-### 6. Rate limit API
-- `/api/resolve-video` a un rate limit (10/min/IP, 3 concurrent max) ✅ Déjà implémenté
 
 ---
 
@@ -218,12 +217,15 @@ docker run -p 3000:3000 iku
 
 ## Infra
 
-- **VPS** : Hetzner CX33 — 8GB RAM, 2 vCPU, 80GB disque
-- **Orchestration** : Coolify (auto-deploy depuis GitHub)
-- **DNS** : Porkbun → Coolify
+- **VPS** : Hetzner CX33 — 8GB RAM, 4 vCPU, 80GB disque
+- **Swap** : 4GB configuré et actif (`/swapfile`)
+- **Orchestration** : Coolify v4 (auto-deploy depuis GitHub)
+- **DNS** : Porkbun → Coolify (à migrer vers Cloudflare pour DDoS/CDN)
 - **SSL** : Let's Encrypt (auto-renew via Coolify)
-- **CI** : GitHub Actions (daily scrape + auto-deploy)
-- **Monitoring** : Aucun pour l'instant (penser à ajouter)
+- **CI** : GitHub Actions (daily scrape + auto-deploy via webhook Coolify)
+- **Monitoring** : `/api/health` endpoint (uptime, RAM)
+- **Docker** : Multi-stage build (build=6GB heap, runtime=3GB heap, standalone output)
+- **Git LFS** : `rule34video-videos.json` (85MB) tracké en LFS
 
 ---
 
@@ -236,21 +238,25 @@ src/
 │   ├── page.tsx            # Homepage
 │   ├── globals.css         # TOUT le CSS du site
 │   ├── sitemap.ts          # Sitemap principal (pages statiques + blog + glossaire)
-│   ├── robots.ts           # Directives robots.txt
+│   ├── robots.ts           # Directives robots.txt (dynamique, calcule les chunks)
 │   ├── watch/
 │   │   ├── [slug]/page.tsx # Page vidéo (le plus gros fichier)
 │   │   └── sitemap.ts      # Sitemaps paginés pour /watch (45K par chunk)
 │   └── api/
-│       ├── proxy/route.ts       # Proxy Gelbooru CDN
-│       └── resolve-video/route.ts # yt-dlp video URL resolver
+│       ├── proxy/route.ts       # Proxy Gelbooru CDN (rate limited, CORS strict)
+│       ├── resolve-video/route.ts # yt-dlp video URL resolver (execFile, rate limited)
+│       ├── resolve/route.ts     # Proxy externe (rate limited, slug validé)
+│       ├── feed/route.ts        # API feed (rate limited)
+│       └── health/route.ts      # Health check endpoint
 ├── components/
 │   ├── AppShell.tsx        # Layout global (sidebar + topbar + bottom nav)
 │   └── WatchPlayer.tsx     # Player vidéo custom
 ├── lib/
 │   ├── content.ts          # Couche unifiée — POINT D'ENTRÉE pour les vidéos
 │   ├── danbooru.ts         # API Danbooru
-│   ├── gelbooru.ts         # API Gelbooru
-│   ├── rule34-search.ts    # API Rule34.xxx
+│   ├── gelbooru.ts         # API Gelbooru (API key via env var)
+│   ├── rule34-search.ts    # API Rule34.xxx (API key via env var)
+│   ├── rule34.ts           # API Rule34 single post (API key via env var)
 │   ├── rule34video.ts      # Données Rule34Video (JSON statique)
 │   ├── wp-hentai.ts        # Données WP sites (JSON statique)
 │   ├── slugify.ts          # Génération et parsing de slugs
@@ -260,7 +266,7 @@ src/
 │   ├── videos.json         # Danbooru (12MB)
 │   ├── gelbooru-videos.json # Gelbooru (9.9MB)
 │   ├── rule34-videos.json  # Rule34 (11MB)
-│   ├── rule34video-videos.json # Rule34Video (85MB) ⚠️ TRÈS GROS
+│   ├── rule34video-videos.json # Rule34Video (85MB, Git LFS)
 │   ├── wp-hentai-videos.json # WordPress sites (4.2MB)
 │   ├── blog.ts             # Articles de blog
 │   ├── glossary.ts         # Termes du glossaire
@@ -286,8 +292,9 @@ scripts/
 
 ## Skills disponibles (`.claude/skills/`)
 
-12 skills custom sont installés dans ce projet. **Consulte le skill pertinent AVANT de coder** pour connaître le contexte, les contraintes et les conventions spécifiques au domaine.
+18 skills installés. **Consulte le skill pertinent AVANT de coder.**
 
+### Skills custom iku.gg (12)
 | Skill | Quand l'utiliser |
 |-------|-----------------|
 | `iku-seo-domination` | SEO, sitemaps, schema.org, JSON-LD, meta tags, cocon sémantique, maillage interne |
@@ -297,11 +304,49 @@ scripts/
 | `iku-ui-design` | Dark theme, palette pink/purple, composants, responsive, glassmorphism, CSS |
 | `iku-scraping-pipeline` | Scrapers, slugs/préfixes, yt-dlp, cron GitHub Actions, ajout de source |
 | `iku-monetization` | Réseaux pub adult, placements, CPM, revenus, affiliate |
-| `iku-security-legal` | Clés API hardcodées, DMCA, age gate, headers sécurité, .env |
+| `iku-security-legal` | API keys, DMCA, age gate, headers sécurité, .env, CSP |
 | `iku-devops` | Docker, Coolify, Hetzner, CI/CD, monitoring, swap, scaling |
 | `iku-video-streaming` | Player HLS, proxy Gelbooru, yt-dlp, formats vidéo, raccourcis clavier |
 | `iku-i18n-global` | Internationalisation, hreflang, expansion mondiale, traduction |
 | `iku-analytics-growth` | Google Search Console, analytics, KPIs, crawl budget, A/B testing |
+
+### Skills communautaires (6)
+| Skill | Source | Usage |
+|-------|--------|-------|
+| `next-best-practices` | Vercel Labs | Conventions Next.js 16, App Router, RSC |
+| `systematic-debugging` | obra/superpowers | Méthodologie de debug structurée |
+| `verification-before-completion` | obra/superpowers | Vérification avant de déclarer terminé |
+| `programmatic-seo` | marketingskills | SEO programmatique pour 353K pages |
+| `harden` | pbakaus/impeccable | Hardening sécurité |
+| `optimize` | pbakaus/impeccable | Optimisation performance |
+
+---
+
+## Accès serveur
+
+- **SSH** : `ssh root@204.168.233.29` (clé ed25519 configurée via Coolify)
+- **Coolify UI** : `http://204.168.233.29:8000`
+- **Container app** : `hjta50cv9nfem56atjtwmlx1-*` (nom dynamique, chercher avec `docker ps`)
+- **Container IP interne** : `10.0.1.x` (réseau Docker Coolify)
+- **yt-dlp en prod** : installé et fonctionnel (`/usr/local/bin/yt-dlp`, v2026.03.17)
+
+---
+
+## Prochaines étapes (priorité)
+
+### Immédiat
+1. **Mettre Cloudflare** devant le site (gratuit : DDoS + WAF + CDN) — changer DNS Porkbun
+2. **Régénérer les clés API** Gelbooru et Rule34 (les anciennes sont dans l'historique git)
+
+### Court terme (performance pour scale)
+3. Ajouter ISR/cache sur homepage et `/watch/[slug]` (actuellement SSR live à chaque requête)
+4. Ajouter Redis pour cache partagé (ou in-memory LRU plus sophistiqué)
+5. Optimiser les images (`unoptimized={true}` à retirer sur les PosterCard)
+
+### Moyen terme (scale à 200K daily users)
+6. CDN pour les vidéos (Bunny CDN ou Cloudflare Stream)
+7. Upgrade serveur CX33 → CPX21 (8 vCPU, 16GB RAM) si besoin
+8. Migrer les JSONs vers PostgreSQL pour réduire la RAM
 
 ---
 
@@ -309,8 +354,10 @@ scripts/
 
 - **Ne jamais éditer les fichiers JSON dans `src/data/`** — ils sont générés par les scrapers
 - **Toujours tester avec `npm run build`** avant de push — le build nécessite 6GB de RAM et peut OOM
-- **Les clés API Gelbooru et Rule34 sont hardcodées** dans les fichiers lib — à migrer vers des env vars (voir skill `iku-security-legal`)
+- **Les clés API sont dans `.env.local` et Coolify** — NE PLUS les hardcoder dans le code
 - **Le CSS est monolithique** dans `globals.css` — chercher par préfixe de classe (`v2-`, `wp-`, `player-`, etc.)
 - **Pour ajouter une nouvelle source de vidéos** : consulter le skill `iku-scraping-pipeline` pour le guide pas-à-pas
 - **Next.js 16 a des breaking changes** par rapport aux versions précédentes — lire les docs dans `node_modules/next/dist/docs/` avant de modifier le routing ou les APIs
 - **Consulter le skill approprié** avant toute modification importante — chaque skill contient les conventions, contraintes et patterns spécifiques à son domaine
+- **Toute nouvelle route API doit avoir un rate limit** — voir les patterns dans les routes existantes
+- **Le Dockerfile est multi-stage** — le runtime n'a que 3GB de heap, pas 6GB
