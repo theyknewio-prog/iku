@@ -1,6 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getVideos } from "@/lib/content";
 
+// Rate limit: 30 requests/min per IP
+const feedRateLimit = new Map<string, { count: number; resetAt: number }>();
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, val] of feedRateLimit) {
+    if (now > val.resetAt) feedRateLimit.delete(key);
+  }
+  if (feedRateLimit.size > 10000) {
+    let i = 0;
+    for (const key of feedRateLimit.keys()) {
+      if (i++ >= feedRateLimit.size - 10000) break;
+      feedRateLimit.delete(key);
+    }
+  }
+}, 5 * 60_000);
+
 // How many "pages" worth of catalog we skip to spread sessions across the
 // content library. Gelbooru/Danbooru support page numbers up to a few hundred
 // before returning empty results, so keep the ceiling modest.
@@ -16,6 +32,24 @@ const ORDER_ROTATION: Array<"score" | "date" | "favcount"> = [
 ];
 
 export async function GET(request: NextRequest) {
+  // Rate limit
+  const ip = request.headers.get("x-real-ip")
+    || request.headers.get("x-forwarded-for")?.split(",").pop()?.trim()
+    || "unknown";
+  const now = Date.now();
+  const rl = feedRateLimit.get(ip);
+  if (rl && now < rl.resetAt) {
+    if (rl.count >= 30) {
+      return NextResponse.json(
+        { error: "too many requests" },
+        { status: 429, headers: { "Retry-After": "60" } }
+      );
+    }
+    rl.count++;
+  } else {
+    feedRateLimit.set(ip, { count: 1, resetAt: now + 60_000 });
+  }
+
   const { searchParams } = new URL(request.url);
   const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
   const sort = searchParams.get("sort") || "score";

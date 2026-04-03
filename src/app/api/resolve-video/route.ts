@@ -12,15 +12,19 @@ const execFileAsync = promisify(execFile);
  */
 
 // In-memory cache: pageUrl → { videoUrl, expiresAt }
+// Bounded to prevent memory leaks — evict oldest when full
 const cache = new Map<string, { videoUrl: string; expiresAt: number }>();
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour
+const CACHE_MAX_SIZE = 500;
 
 // Rate limit: IP → { count, resetAt }
+// Bounded to prevent memory leaks from many unique IPs
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
 const RATE_LIMIT_MAX = 10; // 10 resolves per minute per IP
+const RATE_LIMIT_MAX_SIZE = 10000;
 
-// Clean expired entries every 10 minutes
+// Clean expired entries every 5 minutes
 setInterval(() => {
   const now = Date.now();
   for (const [key, val] of cache) {
@@ -29,7 +33,24 @@ setInterval(() => {
   for (const [key, val] of rateLimit) {
     if (now > val.resetAt) rateLimit.delete(key);
   }
-}, 10 * 60 * 1000);
+  // Hard cap: if still too large after cleanup, evict oldest entries
+  if (cache.size > CACHE_MAX_SIZE) {
+    const toDelete = cache.size - CACHE_MAX_SIZE;
+    let i = 0;
+    for (const key of cache.keys()) {
+      if (i++ >= toDelete) break;
+      cache.delete(key);
+    }
+  }
+  if (rateLimit.size > RATE_LIMIT_MAX_SIZE) {
+    const toDelete = rateLimit.size - RATE_LIMIT_MAX_SIZE;
+    let i = 0;
+    for (const key of rateLimit.keys()) {
+      if (i++ >= toDelete) break;
+      rateLimit.delete(key);
+    }
+  }
+}, 5 * 60 * 1000);
 
 // Max concurrent yt-dlp processes
 let activeResolves = 0;
