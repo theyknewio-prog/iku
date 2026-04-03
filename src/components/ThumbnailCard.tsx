@@ -80,7 +80,11 @@ export function ThumbnailCard({
         .join(", ") || video.slug;
 
   /* ── Hover handlers — 300ms debounce before loading video ── */
+  // Gelbooru videos have hotlink protection — skip hover preview for them
+  const canPreview = video.source !== "gelbooru" && !!video.url;
+
   const handleMouseEnter = useCallback(() => {
+    if (!canPreview) return;
     hoverTimerRef.current = setTimeout(() => {
       const el = videoRef.current;
       if (!el || !video.url) return;
@@ -91,7 +95,7 @@ export function ThumbnailCard({
       el.play().catch(() => {});
       setPreviewActive(true);
     }, 300);
-  }, [video.url]);
+  }, [video.url, canPreview]);
 
   const handleMouseLeave = useCallback(() => {
     if (hoverTimerRef.current) {

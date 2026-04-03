@@ -17,15 +17,16 @@ export async function GET(request: NextRequest) {
   const order = sort === "date" ? "date" : sort === "favcount" ? "favcount" : "score";
 
   try {
+    // Force Danbooru-only for feed — Gelbooru has hotlink protection that blocks video playback
     const { data, hasMore } = await getVideos({
       limit: 20,
       page,
       order,
       tags: tag || undefined,
-      source,
+      source: "danbooru",
     });
 
-    // Filter out broken videos and large files for fast loading in feed
+    // Filter out broken videos and large files
     const videos = data
       .filter((v) => v.url && v.fileSize < 15_000_000)
       .map((v) => ({
