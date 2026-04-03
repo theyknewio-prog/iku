@@ -24,8 +24,13 @@ export function generateSlug(
  * The ID is always the leading numeric segment.
  */
 export function extractIdFromSlug(slug: string): number {
-  // Handle both Danbooru slugs (5083150-xxx) and Gelbooru slugs (gel-8742200-xxx)
-  const match = slug.match(/(\d+)/);
+  // Strip known prefixes before extracting the numeric ID
+  // gel-8742200-xxx → 8742200, r34-14029915-xxx → 14029915, 5083150-xxx → 5083150
+  let cleaned = slug;
+  if (cleaned.startsWith("gel-")) cleaned = cleaned.slice(4);
+  else if (cleaned.startsWith("r34-")) cleaned = cleaned.slice(4);
+
+  const match = cleaned.match(/^(\d+)/);
   if (!match) throw new Error(`Invalid slug: ${slug}`);
   return parseInt(match[1], 10);
 }
