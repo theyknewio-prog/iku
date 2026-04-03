@@ -55,6 +55,25 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${poppins.variable} ${righteous.variable}`} data-theme="dark">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "iku.gg",
+              url: "https://iku.gg",
+              description: "Stream 65,000+ free hentai videos. The best animated hentai clips featuring your favorite anime characters.",
+              potentialAction: {
+                "@type": "SearchAction",
+                target: "https://iku.gg/tag/{search_term_string}",
+                "query-input": "required name=search_term_string",
+              },
+            }).replace(/</g, "\\u003c"),
+          }}
+        />
+      </head>
       <body>
         <AppShell>{children}</AppShell>
       </body>

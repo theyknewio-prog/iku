@@ -78,8 +78,29 @@ export default async function TagPage({ params, searchParams }: Props) {
 
   const relatedTags = RELATED_TAGS.filter((t) => t !== tag);
 
+  const tagJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: `${titleCased} Hentai Videos`,
+    description: `Stream free ${label} hentai videos on iku.gg.`,
+    url: `https://iku.gg/tag/${tag}`,
+    isPartOf: { "@type": "WebSite", name: "iku.gg", url: "https://iku.gg" },
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://iku.gg" },
+      { "@type": "ListItem", position: 2, name: "Tags", item: "https://iku.gg/tags" },
+      { "@type": "ListItem", position: 3, name: titleCased, item: `https://iku.gg/tag/${tag}` },
+    ],
+  };
+
   return (
     <div className="shell-content">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(tagJsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
       <main>
         <div className="page-container">
           {/* ── Tag hero ─────────────────────────────────────── */}
