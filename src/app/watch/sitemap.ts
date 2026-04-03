@@ -1,51 +1,43 @@
 import type { MetadataRoute } from "next";
-import danbooruData from "@/data/videos.json";
-import gelbooruData from "@/data/gelbooru-videos.json";
-import rule34Data from "@/data/rule34-videos.json";
-import rule34videoData from "@/data/rule34video-videos.json";
-
-let wpHentaiData: Array<{ slug: string; date: string }> = [];
-try { wpHentaiData = require("@/data/wp-hentai-videos.json"); } catch {}
 
 const SITE = "https://iku.gg";
-const MAX_PER_SITEMAP = 45000; // Google limit is 50K, stay under
+const MAX_PER_SITEMAP = 45000;
 
-type SitemapEntry = { slug: string; date: string };
+type Entry = { slug: string; date: string };
 
-function buildAllEntries(): SitemapEntry[] {
-  const entries: SitemapEntry[] = [];
+function loadAllEntries(): Entry[] {
+  const entries: Entry[] = [];
 
-  for (const v of danbooruData as Array<{ slug: string; createdAt: string }>) {
-    entries.push({ slug: v.slug, date: v.createdAt || "" });
-  }
-  for (const v of gelbooruData as Array<{ slug: string; createdAt: string }>) {
-    entries.push({ slug: v.slug, date: v.createdAt || "" });
-  }
-  for (const v of rule34Data as Array<{ slug: string; createdAt: string }>) {
-    entries.push({ slug: v.slug, date: v.createdAt || "" });
-  }
-  for (const v of rule34videoData as Array<{ slug: string; date: string }>) {
-    entries.push({ slug: v.slug, date: v.date || "" });
-  }
-  for (const v of wpHentaiData) {
-    entries.push({ slug: v.slug, date: v.date || "" });
-  }
+  const danbooru = require("@/data/videos.json") as Array<{ slug: string; createdAt: string }>;
+  for (const v of danbooru) entries.push({ slug: v.slug, date: v.createdAt || "" });
+
+  const gelbooru = require("@/data/gelbooru-videos.json") as Array<{ slug: string; createdAt: string }>;
+  for (const v of gelbooru) entries.push({ slug: v.slug, date: v.createdAt || "" });
+
+  const rule34 = require("@/data/rule34-videos.json") as Array<{ slug: string; createdAt: string }>;
+  for (const v of rule34) entries.push({ slug: v.slug, date: v.createdAt || "" });
+
+  const rule34video = require("@/data/rule34video-videos.json") as Array<{ slug: string; date: string }>;
+  for (const v of rule34video) entries.push({ slug: v.slug, date: v.date || "" });
+
+  try {
+    const wp = require("@/data/wp-hentai-videos.json") as Array<{ slug: string; date: string }>;
+    for (const v of wp) entries.push({ slug: v.slug, date: v.date || "" });
+  } catch {}
 
   return entries;
 }
 
-const allEntries = buildAllEntries();
-const totalSitemaps = Math.ceil(allEntries.length / MAX_PER_SITEMAP);
-
-/** Tell Next.js how many sitemap files to generate */
 export async function generateSitemaps() {
-  return Array.from({ length: totalSitemaps }, (_, i) => ({ id: i }));
+  const total = loadAllEntries().length;
+  const count = Math.ceil(total / MAX_PER_SITEMAP);
+  return Array.from({ length: count }, (_, i) => ({ id: i }));
 }
 
-/** Generate one sitemap chunk */
-export default function sitemap({ id }: { id: number }): MetadataRoute.Sitemap {
+export default async function sitemap({ id }: { id: number }): Promise<MetadataRoute.Sitemap> {
+  const all = loadAllEntries();
   const start = id * MAX_PER_SITEMAP;
-  const chunk = allEntries.slice(start, start + MAX_PER_SITEMAP);
+  const chunk = all.slice(start, start + MAX_PER_SITEMAP);
 
   return chunk.map((v) => ({
     url: `${SITE}/watch/${v.slug}`,
