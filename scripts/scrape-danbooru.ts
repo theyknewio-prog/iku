@@ -87,7 +87,7 @@ function mapPost(post: DanbooruPost): VideoEntry | null {
   if (!url) return null;
 
   // Skip banned content (loli, shota, underage, etc.)
-  const allTags = [post.tag_string_general, post.tag_string_character, post.tag_string_copyright, post.tag_string_meta].join(" ");
+  const allTags = [post.tag_string_general, post.tag_string_character, post.tag_string_copyright].join(" ");
   if (hasBannedTagString(allTags)) return null;
 
   const thumbnail = post.preview_file_url ?? "";
