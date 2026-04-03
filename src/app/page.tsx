@@ -8,7 +8,7 @@ import { getVideos } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai Videos | Stream Animated Hentai Online",
-  description: "Stream 65,000+ free hentai videos on iku.gg. Watch trending animated hentai clips. Browse by character, tag, and score.",
+  description: "Stream 57,000+ free hentai videos on iku.gg. Watch trending animated hentai clips. Browse by character, tag, and score.",
   other: { rating: "adult" },
 };
 

@@ -19,8 +19,8 @@ export async function generateMetadata(props: {
   return {
     title: page > 1
       ? `Explore Hentai Videos — Page ${page} | iku.gg`
-      : "Explore All Hentai Videos — 65,000+ Free Animated Clips | iku.gg",
-    description: "Explore the largest collection of free hentai videos. 65,000+ animated hentai clips sorted by score, newest, and favorites. Stream hentai online.",
+      : "Explore All Hentai Videos — 57,000+ Free Animated Clips | iku.gg",
+    description: "Explore the largest collection of free hentai videos. 57,000+ animated hentai clips sorted by score, newest, and favorites. Stream hentai online.",
     other: { rating: "adult" },
     alternates: {
       canonical,
@@ -73,7 +73,7 @@ export default async function ExplorePage(props: {
               Explore Hentai
             </h1>
             <p className="explore-header__sub">
-              {page === 1 ? "65,000+" : `Page ${page} ·`} free animated hentai videos
+              {page === 1 ? "57,000+" : `Page ${page} ·`} free animated hentai videos
             </p>
           </div>
 
