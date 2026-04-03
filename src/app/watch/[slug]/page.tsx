@@ -7,7 +7,8 @@ import { WatchPlayer } from "@/components/WatchPlayer";
 import { WatchActions } from "@/components/WatchActions";
 import { getPost, getRelatedPosts } from "@/lib/danbooru";
 import { getGelbooruPost } from "@/lib/gelbooru";
-import { extractIdFromSlug, isGelbooruSlug } from "@/lib/slugify";
+import { getRule34Post } from "@/lib/rule34";
+import { extractIdFromSlug, isGelbooruSlug, isRule34Slug } from "@/lib/slugify";
 import type { Video } from "@/types/video";
 import {
   generateVideoDescription,
@@ -72,7 +73,11 @@ export async function generateMetadata({
   let video: Video;
   try {
     const id = extractIdFromSlug(slug);
-    if (isGelbooruSlug(slug)) {
+    if (isRule34Slug(slug)) {
+      const rv = await getRule34Post(id);
+      if (!rv) return { title: "Hentai Video | iku.gg", robots: { index: false } };
+      video = rv;
+    } else if (isGelbooruSlug(slug)) {
       const gv = await getGelbooruPost(id);
       if (!gv) return { title: "Hentai Video | iku.gg", robots: { index: false } };
       video = gv;
@@ -161,7 +166,11 @@ export default async function WatchPage({ params }: WatchPageProps) {
   let video: Video;
   try {
     const id = extractIdFromSlug(slug);
-    if (isGelbooruSlug(slug)) {
+    if (isRule34Slug(slug)) {
+      const rv = await getRule34Post(id);
+      if (!rv) notFound();
+      video = rv;
+    } else if (isGelbooruSlug(slug)) {
       const gv = await getGelbooruPost(id);
       if (!gv) notFound();
       video = gv;
@@ -425,7 +434,9 @@ export default async function WatchPage({ params }: WatchPageProps) {
                     href={
                       video.source === "gelbooru"
                         ? `https://gelbooru.com/index.php?page=post&s=view&id=${video.id}`
-                        : `https://danbooru.donmai.us/posts/${video.id}`
+                        : video.source === "rule34"
+                          ? `https://rule34.xxx/index.php?page=post&s=view&id=${video.id}`
+                          : `https://danbooru.donmai.us/posts/${video.id}`
                     }
                     target="_blank"
                     rel="noopener noreferrer"

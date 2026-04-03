@@ -34,6 +34,10 @@ export function isGelbooruSlug(slug: string): boolean {
   return slug.startsWith("gel-");
 }
 
+export function isRule34Slug(slug: string): boolean {
+  return slug.startsWith("r34-");
+}
+
 /**
  * Sanitize a Danbooru tag string into a URL-safe segment.
  * - Takes only the first tag if multiple are present (space-separated)

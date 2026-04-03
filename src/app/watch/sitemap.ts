@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import danbooruData from "@/data/videos.json";
 import gelbooruData from "@/data/gelbooru-videos.json";
+import rule34Data from "@/data/rule34-videos.json";
 
 const SITE = "https://iku.gg";
 
@@ -20,5 +21,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  return [...danbooru, ...gelbooru];
+  const rule34 = (rule34Data as Array<{ slug: string; createdAt: string }>).map((v) => ({
+    url: `${SITE}/watch/${v.slug}`,
+    lastModified: v.createdAt || new Date().toISOString(),
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
+
+  return [...danbooru, ...gelbooru, ...rule34];
 }
