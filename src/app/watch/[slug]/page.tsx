@@ -422,7 +422,11 @@ export default async function WatchPage({ params }: WatchPageProps) {
                   </button>
 
                   <a
-                    href={`https://danbooru.donmai.us/posts/${video.id}`}
+                    href={
+                      video.source === "gelbooru"
+                        ? `https://gelbooru.com/index.php?page=post&s=view&id=${video.id}`
+                        : `https://danbooru.donmai.us/posts/${video.id}`
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn btn-ghost btn-sm"

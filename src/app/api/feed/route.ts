@@ -25,9 +25,9 @@ export async function GET(request: NextRequest) {
       source,
     });
 
-    // Filter for lightweight videos (< 15MB) for fast loading in feed
+    // Filter out broken videos and large files for fast loading in feed
     const videos = data
-      .filter((v) => v.fileSize < 15_000_000)
+      .filter((v) => v.url && v.fileSize < 15_000_000)
       .map((v) => ({
         id: v.id,
         slug: v.slug,

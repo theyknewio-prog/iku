@@ -145,7 +145,10 @@ function buildGelbooruSlug(id: number, tags: string): string {
 // Type mapper: GelbooruPost -> Video
 // ---------------------------------------------------------------------------
 
-export function mapGelbooruToVideo(post: GelbooruPost): Video {
+export function mapGelbooruToVideo(post: GelbooruPost): Video | null {
+  const url = post.file_url ?? "";
+  if (!url) return null; // Skip posts with no video URL
+
   const tagList = post.tags
     ? post.tags
         .trim()
@@ -156,7 +159,7 @@ export function mapGelbooruToVideo(post: GelbooruPost): Video {
   return {
     id: post.id,
     slug: buildGelbooruSlug(post.id, post.tags),
-    url: post.file_url ?? "",
+    url,
     thumbnail: post.preview_url ?? "",
     // Gelbooru does not have a separate "720p preview" — use sample_url when available
     preview: post.sample_url || post.preview_url || "",
@@ -241,7 +244,8 @@ export async function searchGelbooru(
         (p) =>
           p.file_url?.endsWith(".mp4") || p.file_url?.endsWith(".webm")
       )
-      .map(mapGelbooruToVideo);
+      .map(mapGelbooruToVideo)
+      .filter((v): v is Video => v !== null);
 
     data = {
       data: videos,
@@ -267,7 +271,8 @@ export async function getGelbooruPost(id: number): Promise<Video | null> {
     if (!json) return null;
     const posts = normalisePosts(json.post);
     if (posts.length === 0) return null;
-    return mapGelbooruToVideo(posts[0]);
+    const video = mapGelbooruToVideo(posts[0]);
+    return video;
   } catch {
     return null;
   }

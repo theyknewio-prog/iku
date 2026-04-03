@@ -81,7 +81,9 @@ function buildPreviewUrl(thumbnailUrl: string | null): string {
     .replace(/\.jpg$/, ".webp");
 }
 
-export function mapPostToVideo(post: DanbooruPost): Video {
+export function mapPostToVideo(post: DanbooruPost): Video | null {
+  const url = post.file_url ?? post.large_file_url ?? "";
+  if (!url) return null; // Skip posts with no video URL (deleted/removed)
   return {
     id: post.id,
     slug: generateSlug(
@@ -89,7 +91,7 @@ export function mapPostToVideo(post: DanbooruPost): Video {
       post.tag_string_character,
       post.tag_string_copyright
     ),
-    url: post.file_url ?? post.large_file_url ?? "",
+    url,
     thumbnail: post.preview_file_url ?? "",
     preview: buildPreviewUrl(post.preview_file_url),
     score: post.score,
@@ -125,7 +127,9 @@ export async function getPost(id: number): Promise<Video> {
     {},
     REVALIDATE_POST
   );
-  return mapPostToVideo(post);
+  const video = mapPostToVideo(post);
+  if (!video) throw new Error(`Post ${id} has no video URL`);
+  return video;
 }
 
 /**
@@ -189,7 +193,7 @@ export async function searchPosts(
     : posts;
 
   return {
-    data: filtered.map(mapPostToVideo),
+    data: filtered.map(mapPostToVideo).filter((v): v is Video => v !== null),
     hasMore: posts.length === clampedLimit,
   };
 }
@@ -299,5 +303,6 @@ export async function getRelatedPosts(
   return posts
     .filter((p) => p.id !== postId && (p.file_url?.endsWith(".mp4") || p.file_url?.endsWith(".webm")))
     .slice(0, limit)
-    .map(mapPostToVideo);
+    .map(mapPostToVideo)
+    .filter((v): v is Video => v !== null);
 }

@@ -197,6 +197,7 @@ export function WatchPlayer({ src, poster }: WatchPlayerProps) {
   /* UI state */
   const [controlsVisible, setControlsVisible] = useState(true);
   const [buffering, setBuffering] = useState(false);
+  const [error, setError] = useState(false);
   const [theaterMode, setTheaterMode] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [seekOverlay, setSeekOverlay] = useState<SeekOverlay | null>(null);
@@ -273,6 +274,7 @@ export function WatchPlayer({ src, poster }: WatchPlayerProps) {
 
   const handleWaiting = useCallback(() => setBuffering(true), []);
   const handleCanPlay = useCallback(() => setBuffering(false), []);
+  const handleError = useCallback(() => setError(true), []);
 
   const handleVolumeChange = useCallback(() => {
     const v = videoRef.current;
@@ -509,6 +511,7 @@ export function WatchPlayer({ src, poster }: WatchPlayerProps) {
           onDurationChange={handleDurationChange}
           onWaiting={handleWaiting}
           onCanPlay={handleCanPlay}
+          onError={handleError}
           onVolumeChange={handleVolumeChange}
           onClick={handleVideoClick}
           style={{
@@ -536,6 +539,28 @@ export function WatchPlayer({ src, poster }: WatchPlayerProps) {
             <div style={{ width: 44, height: 44, color: "rgba(255,255,255,0.75)" }}>
               <IconSpinner />
             </div>
+          </div>
+        )}
+
+        {/* Error state */}
+        {error && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "rgba(0,0,0,0.8)",
+              zIndex: 6,
+              gap: 8,
+            }}
+          >
+            <span style={{ fontSize: 32 }}>⚠</span>
+            <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 14, fontWeight: 500 }}>
+              Video unavailable
+            </span>
           </div>
         )}
 
