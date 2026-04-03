@@ -26,13 +26,16 @@ jobs:
       - name: Install tsx
         run: npm install -g tsx
 
-      - name: Run scraper
+      - name: Scrape Danbooru
         run: tsx scripts/scrape-danbooru.ts
+
+      - name: Scrape Gelbooru
+        run: tsx scripts/scrape-gelbooru.ts
 
       - name: Check for changes
         id: changes
         run: |
-          if git diff --quiet src/data/videos.json 2>/dev/null; then
+          if git diff --quiet src/data/videos.json src/data/gelbooru-videos.json 2>/dev/null; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -42,16 +45,17 @@ jobs:
         if: steps.changes.outputs.changed == 'true'
         id: count
         run: |
-          COUNT=$(node -e "console.log(require('./src/data/videos.json').length)")
-          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          DAN=$(node -e "console.log(require('./src/data/videos.json').length)")
+          GEL=$(node -e "console.log(require('./src/data/gelbooru-videos.json').length)")
+          echo "count=$((DAN + GEL))" >> "$GITHUB_OUTPUT"
 
       - name: Commit and push
         if: steps.changes.outputs.changed == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add src/data/videos.json
-          git commit -m "data: update videos.json (${{ steps.count.outputs.count }} videos) [skip ci]"
+          git add src/data/videos.json src/data/gelbooru-videos.json
+          git commit -m "data: update video index (${{ steps.count.outputs.count }} total videos) [skip ci]"
           git push
 
       - name: Trigger Coolify deploy
