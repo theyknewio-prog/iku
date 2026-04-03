@@ -1,29 +1,37 @@
 import type { MetadataRoute } from "next";
+import fs from "fs";
+import path from "path";
 
 const SITE = "https://iku.gg";
 const MAX_PER_SITEMAP = 45000;
+const DATA_DIR = path.join(process.cwd(), "src/data");
 
 type Entry = { slug: string; date: string };
 
 function loadAllEntries(): Entry[] {
   const entries: Entry[] = [];
 
-  const danbooru = require("@/data/videos.json") as Array<{ slug: string; createdAt: string }>;
-  for (const v of danbooru) entries.push({ slug: v.slug, date: v.createdAt || "" });
+  const readJSON = (file: string) => {
+    try {
+      return JSON.parse(fs.readFileSync(path.join(DATA_DIR, file), "utf-8"));
+    } catch { return []; }
+  };
 
-  const gelbooru = require("@/data/gelbooru-videos.json") as Array<{ slug: string; createdAt: string }>;
-  for (const v of gelbooru) entries.push({ slug: v.slug, date: v.createdAt || "" });
-
-  const rule34 = require("@/data/rule34-videos.json") as Array<{ slug: string; createdAt: string }>;
-  for (const v of rule34) entries.push({ slug: v.slug, date: v.createdAt || "" });
-
-  const rule34video = require("@/data/rule34video-videos.json") as Array<{ slug: string; date: string }>;
-  for (const v of rule34video) entries.push({ slug: v.slug, date: v.date || "" });
-
-  try {
-    const wp = require("@/data/wp-hentai-videos.json") as Array<{ slug: string; date: string }>;
-    for (const v of wp) entries.push({ slug: v.slug, date: v.date || "" });
-  } catch {}
+  for (const v of readJSON("videos.json") as Array<{ slug: string; createdAt: string }>) {
+    entries.push({ slug: v.slug, date: v.createdAt || "" });
+  }
+  for (const v of readJSON("gelbooru-videos.json") as Array<{ slug: string; createdAt: string }>) {
+    entries.push({ slug: v.slug, date: v.createdAt || "" });
+  }
+  for (const v of readJSON("rule34-videos.json") as Array<{ slug: string; createdAt: string }>) {
+    entries.push({ slug: v.slug, date: v.createdAt || "" });
+  }
+  for (const v of readJSON("rule34video-videos.json") as Array<{ slug: string; date: string }>) {
+    entries.push({ slug: v.slug, date: v.date || "" });
+  }
+  for (const v of readJSON("wp-hentai-videos.json") as Array<{ slug: string; date: string }>) {
+    entries.push({ slug: v.slug, date: v.date || "" });
+  }
 
   return entries;
 }
