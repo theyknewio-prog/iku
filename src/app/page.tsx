@@ -67,8 +67,8 @@ export default async function HomePage() {
               The largest free <span className="v2-site-hero__accent">animated hentai</span> library
             </h1>
             <p className="v2-site-hero__sub">
-              57,000+ videos from Danbooru, Gelbooru &amp; Rule34 — updated daily.
-              Stream hentai by character, tag, or trending score. No account needed.
+              57,000+ animated clips updated daily.
+              Stream by character, tag, or trending score. Free, no account needed.
             </p>
             <div className="v2-site-hero__stats">
               <div className="v2-site-hero__stat">
@@ -80,12 +80,12 @@ export default async function HomePage() {
                 <span className="v2-site-hero__stat-label">Characters</span>
               </div>
               <div className="v2-site-hero__stat">
-                <span className="v2-site-hero__stat-num">3</span>
-                <span className="v2-site-hero__stat-label">Sources</span>
+                <span className="v2-site-hero__stat-num">Daily</span>
+                <span className="v2-site-hero__stat-label">Updates</span>
               </div>
               <div className="v2-site-hero__stat">
-                <span className="v2-site-hero__stat-num">24h</span>
-                <span className="v2-site-hero__stat-label">Fresh content</span>
+                <span className="v2-site-hero__stat-num">Free</span>
+                <span className="v2-site-hero__stat-label">Forever</span>
               </div>
             </div>
             <div className="v2-site-hero__actions">
