@@ -1,64 +1,49 @@
 /**
- * rule34video.ts — Data layer for rule34video.com videos
+ * rule34video.ts — Data layer for rule34video.com videos (PostgreSQL)
  *
- * Videos are loaded from the static JSON scraped from sitemaps.
  * Video stream URLs are resolved on-demand via yt-dlp (see /api/resolve-video).
  */
 
+import pool from "@/lib/db";
 import type { Video, PaginatedResult } from "@/types/video";
-import data from "@/data/rule34video-videos.json";
 
-interface R34VEntry {
-  id: number;
-  slug: string;
-  title: string;
-  pageUrl: string;
-  thumbnail: string;
-  duration: number;
-  date: string;
-}
-
-const videos = data as R34VEntry[];
-
-function toVideo(entry: R34VEntry): Video {
-  // Extract tags from the slug/title
-  const titleWords = entry.title
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, "")
-    .split(/\s+/)
-    .filter((w) => w.length > 2);
-
+function rowToVideo(row: Record<string, unknown>): Video {
   return {
-    id: entry.id,
-    slug: entry.slug,
-    // No direct video URL — resolved at play time via /api/resolve-video
-    url: "",
-    thumbnail: entry.thumbnail,
-    preview: entry.thumbnail,
-    score: 0,
-    favorites: 0,
-    tags: titleWords.slice(0, 15),
-    characters: [],
-    copyrights: [],
-    artists: [],
-    width: 1280,
-    height: 720,
-    fileSize: 0,
-    duration: entry.duration || null,
-    createdAt: entry.date ? new Date(entry.date) : new Date(0),
+    id: row.source_id as number,
+    slug: row.slug as string,
+    url: row.url as string,
+    thumbnail: row.thumbnail as string,
+    preview: row.preview as string,
+    score: row.score as number,
+    favorites: row.favorites as number,
+    tags: (row.tags as string[]) || [],
+    characters: (row.characters as string[]) || [],
+    copyrights: (row.copyrights as string[]) || [],
+    artists: (row.artists as string[]) || [],
+    width: row.width as number,
+    height: row.height as number,
+    fileSize: row.file_size as number,
+    duration: row.duration as number | null,
+    createdAt: new Date(row.created_at as string),
     source: "rule34video",
   };
 }
 
-export function getRule34VideoPost(id: number): Video | null {
-  const entry = videos.find((v) => v.id === id);
-  if (!entry) return null;
-  return toVideo(entry);
+export async function getRule34VideoPost(id: number): Promise<Video | null> {
+  const { rows } = await pool.query(
+    "SELECT * FROM videos WHERE source = 'rule34video' AND source_id = $1 LIMIT 1",
+    [id]
+  );
+  if (rows.length === 0) return null;
+  return rowToVideo(rows[0]);
 }
 
-export function getRule34VideoPageUrl(id: number): string | null {
-  const entry = videos.find((v) => v.id === id);
-  return entry?.pageUrl ?? null;
+export async function getRule34VideoPageUrl(id: number): Promise<string | null> {
+  const { rows } = await pool.query(
+    "SELECT page_url FROM videos WHERE source = 'rule34video' AND source_id = $1 LIMIT 1",
+    [id]
+  );
+  return rows[0]?.page_url ?? null;
 }
 
 export interface Rule34VideoSearchOptions {
@@ -68,36 +53,35 @@ export interface Rule34VideoSearchOptions {
   order?: "score" | "date" | "favcount";
 }
 
-export function searchRule34Video(
+export async function searchRule34Video(
   options: Rule34VideoSearchOptions = {}
-): PaginatedResult<Video> {
+): Promise<PaginatedResult<Video>> {
   const { tags = "", page = 1, limit = 20, order = "date" } = options;
+  const offset = (page - 1) * limit;
 
-  let filtered = videos;
+  const conditions = ["source = 'rule34video'"];
+  const params: unknown[] = [];
+  let paramIndex = 1;
 
-  // Filter by tags (search in title)
   if (tags) {
     const searchTerms = tags.toLowerCase().split(/\s+/);
-    filtered = filtered.filter((v) => {
-      const titleLower = v.title.toLowerCase();
-      return searchTerms.every((term) => titleLower.includes(term));
-    });
+    for (const term of searchTerms) {
+      conditions.push(`(title ILIKE '%' || $${paramIndex} || '%' OR $${paramIndex} = ANY(tags))`);
+      params.push(term);
+      paramIndex++;
+    }
   }
 
-  // Sort
-  if (order === "date") {
-    filtered = [...filtered].sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
-  }
-  // score/favcount: no data, keep as-is
+  const orderClause = order === "date" ? "ORDER BY created_at DESC" : "ORDER BY score DESC";
 
-  const start = (page - 1) * limit;
-  const slice = filtered.slice(start, start + limit);
-  const hasMore = start + limit < filtered.length;
+  params.push(limit + 1, offset);
+  const query = `SELECT * FROM videos WHERE ${conditions.join(" AND ")} ${orderClause} LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+
+  const { rows } = await pool.query(query, params);
+  const hasMore = rows.length > limit;
 
   return {
-    data: slice.map(toVideo),
+    data: rows.slice(0, limit).map(rowToVideo),
     hasMore,
   };
 }
