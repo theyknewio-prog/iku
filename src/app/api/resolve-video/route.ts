@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { execFile } from "child_process";
 import { promisify } from "util";
 import pool from "@/lib/db";
+import { startWarmup } from "@/lib/url-warmup";
+
+// Kick off the background warmup loop on first module load.
+// Singleton inside, safe to call repeatedly.
+startWarmup();
 
 const execFileAsync = promisify(execFile);
 

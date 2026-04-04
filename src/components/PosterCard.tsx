@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import type { Video } from "@/types/video";
 import { isWatched } from "@/lib/history";
+import { prefetchVideoUrl, cancelPrefetch } from "@/lib/prefetch-video";
 
 /* ── Gradient palette for fallback backgrounds ─────────────── */
 const GRADIENTS = [
@@ -71,6 +72,9 @@ export function PosterCard({ video, rank, badge, priority = false }: PosterCardP
       className="poster-card"
       prefetch={false}
       style={watched ? { opacity: 0.7 } : undefined}
+      onMouseEnter={() => prefetchVideoUrl(video.slug)}
+      onMouseLeave={() => cancelPrefetch(video.slug)}
+      onFocus={() => prefetchVideoUrl(video.slug)}
     >
       <div className="poster-card__image" style={{ background: gradient }}>
         {/* Real thumbnail */}

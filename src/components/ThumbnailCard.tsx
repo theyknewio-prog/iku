@@ -6,6 +6,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import type { Video } from "@/types/video";
 import { isFavorite, toggleFavorite } from "@/lib/favorites";
 import { isWatched } from "@/lib/history";
+import { prefetchVideoUrl, cancelPrefetch } from "@/lib/prefetch-video";
 
 /* ── Helpers ─────────────────────────────────────────────── */
 
@@ -83,6 +84,9 @@ export function ThumbnailCard({
   const canPreview = !!video.url;
 
   const handleMouseEnter = useCallback(() => {
+    // Warm the resolved URL cache on hover — by the time the user clicks,
+    // the /api/resolve-video result is already in L1/L2 cache.
+    prefetchVideoUrl(video.slug);
     if (!canPreview) return;
     hoverTimerRef.current = setTimeout(() => {
       const el = videoRef.current;
@@ -94,9 +98,10 @@ export function ThumbnailCard({
       el.play().catch(() => {});
       setPreviewActive(true);
     }, 300);
-  }, [video.url, canPreview]);
+  }, [video.url, video.slug, canPreview]);
 
   const handleMouseLeave = useCallback(() => {
+    cancelPrefetch(video.slug);
     if (hoverTimerRef.current) {
       clearTimeout(hoverTimerRef.current);
       hoverTimerRef.current = null;
@@ -108,7 +113,7 @@ export function ThumbnailCard({
     }
     setPreviewActive(false);
     setProgress(0);
-  }, []);
+  }, [video.slug]);
 
   const handleTimeUpdate = useCallback(() => {
     const el = videoRef.current;

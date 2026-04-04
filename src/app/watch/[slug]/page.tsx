@@ -18,6 +18,7 @@ import {
   generateBreadcrumbs,
 } from "@/lib/content-generator";
 import { containsBannedContent } from "@/lib/content";
+import { getCachedResolvedUrl } from "@/lib/resolved-urls";
 
 export const revalidate = 86400;
 
@@ -183,6 +184,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
   let video: Video;
   let resolvePageUrl: string | null = null;
+  let preresolvedUrl: string | null = null;
   try {
     const id = extractIdFromSlug(slug);
     if (isWPHentaiSlug(slug)) {
@@ -190,11 +192,13 @@ export default async function WatchPage({ params }: WatchPageProps) {
       if (!wv) notFound();
       video = wv;
       resolvePageUrl = await getWPHentaiPageUrl(id);
+      if (resolvePageUrl) preresolvedUrl = await getCachedResolvedUrl(resolvePageUrl);
     } else if (isRule34VideoSlug(slug)) {
       const rv = await getRule34VideoPost(id);
       if (!rv) notFound();
       video = rv;
       resolvePageUrl = await getRule34VideoPageUrl(id);
+      if (resolvePageUrl) preresolvedUrl = await getCachedResolvedUrl(resolvePageUrl);
     } else if (isRule34Slug(slug)) {
       const rv = await getRule34Post(id);
       if (!rv) notFound();
@@ -353,10 +357,22 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 ))}
               </nav>
 
+              {/* Preload hint — if we have a pre-resolved URL (cached from
+                  a previous visit or warmup), the browser starts fetching
+                  the video before the JS bundle even runs. */}
+              {preresolvedUrl && (
+                <link
+                  rel="preload"
+                  as="video"
+                  href={preresolvedUrl}
+                  type="video/mp4"
+                />
+              )}
+
               {/* Video player — Gelbooru URLs are proxied through /api/proxy */}
               <div className="player-video-wrap">
                 <WatchPlayer
-                  src={video.url}
+                  src={video.url || preresolvedUrl || ""}
                   poster={video.thumbnail || undefined}
                   resolveUrl={resolvePageUrl || undefined}
                   relatedVideos={relatedForPlayer}

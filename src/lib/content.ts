@@ -6,6 +6,7 @@
  */
 
 import pool from "@/lib/db";
+import { memoize } from "@/lib/memo";
 import type { Video, PaginatedResult } from "@/types/video";
 
 // ---------------------------------------------------------------------------
@@ -38,7 +39,7 @@ export function containsBannedContent(video: { tags: string[] }): boolean {
 // ---------------------------------------------------------------------------
 
 /** Get the best thumbnail for a tag (character name, series name, etc.) from database */
-export async function getThumbnailForTag(tag: string): Promise<string> {
+async function _getThumbnailForTag(tag: string): Promise<string> {
   try {
     const { rows } = await pool.query(
       `SELECT thumbnail FROM videos
@@ -59,6 +60,8 @@ export async function getThumbnailForTag(tag: string): Promise<string> {
     return "";
   }
 }
+// Memoize — tag→thumbnail mapping is very stable, 1h TTL is safe
+export const getThumbnailForTag = memoize("thumb-for-tag", _getThumbnailForTag, 60 * 60 * 1000);
 
 /** Get thumbnails for multiple tags at once (batch) */
 export async function getThumbnailsForTags(tags: string[]): Promise<Record<string, string>> {
@@ -110,7 +113,7 @@ function rowToVideo(row: Record<string, unknown>): Video {
  * Fetch videos from PostgreSQL with filtering, sorting, and pagination.
  * Banned content is excluded at the SQL level (never leaves the database).
  */
-export async function getVideos(
+async function _getVideos(
   options: GetVideosOptions = {}
 ): Promise<PaginatedResult<Video>> {
   const {
@@ -185,3 +188,7 @@ export async function getVideos(
     return { data: [], hasMore: false };
   }
 }
+
+// Memoize — 5 min TTL. Short enough to still feel fresh, long enough
+// to absorb bursts from ISR regeneration + warmup pings.
+export const getVideos = memoize("videos", _getVideos, 5 * 60 * 1000);
