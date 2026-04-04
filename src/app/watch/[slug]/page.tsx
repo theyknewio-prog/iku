@@ -20,6 +20,13 @@ import {
 import { containsBannedContent } from "@/lib/content";
 
 export const revalidate = 86400;
+// Enable ISR for dynamic slugs: no pre-built params, but cache on-demand
+// renders for 86400s (1 day). Without this, Next.js treats the route as
+// fully dynamic and skips ISR — every hit does a fresh PG query + render.
+export const dynamicParams = true;
+export async function generateStaticParams() {
+  return [];
+}
 
 /* ─────────────────────────────────────────────────────────────
    Types

@@ -50,3 +50,8 @@ src/data/gelbooru-videos.json
 src/data/rule34-videos.json
 src/data/rule34video-videos.json
 src/data/wp-hentai-videos.json
+
+# Audit output from skill explorations
+/audit/
+# Local agent skill installs (they're per-machine symlinks)
+/.agents/

@@ -1,6 +1,66 @@
 {
   "version": 1,
   "skills": {
+    "accessibility": {
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "github",
+      "computedHash": "494d59fffe67c87b485f4ee2fb1abd73fc9d0d508c4c8bd9c43a9edd3242f730"
+    },
+    "best-practices": {
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "github",
+      "computedHash": "f5d58f0adf9cc9646b35daf2241377e1ad7b8ab094e54c9792a826af1e0dca5b"
+    },
+    "core-web-vitals": {
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "github",
+      "computedHash": "466ba01941037ddc0b519273035eae1e1f591019bdeb0fd83cd8786c53a07f89"
+    },
+    "database-optimizer": {
+      "source": "jeffallan/claude-skills",
+      "sourceType": "github",
+      "computedHash": "c7be77ec61941a7a86bde9e5277f629c4b64b36116f5f3a73da0db226aed9ef1"
+    },
+    "gdpr-data-handling": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "38f10132530bbf4397577ce7c5327ab93d98554f5341b6b89e60bc8569f25b83"
+    },
+    "ghost-proxy": {
+      "source": "ghostsecurity/skills",
+      "sourceType": "github",
+      "computedHash": "3fc72d8c8115c56460eefe0c1521870eab82b61e97e4fea8f115d89ce6a90043"
+    },
+    "ghost-repo-context": {
+      "source": "ghostsecurity/skills",
+      "sourceType": "github",
+      "computedHash": "16535115965e7272c46f5f4e6ad85653c5255d7ca824b1c74576d61735c09102"
+    },
+    "ghost-report": {
+      "source": "ghostsecurity/skills",
+      "sourceType": "github",
+      "computedHash": "bba83bf211f745c2f4673c4f50b4e920be26b192b6dea50271e4d66ee9916102"
+    },
+    "ghost-scan-code": {
+      "source": "ghostsecurity/skills",
+      "sourceType": "github",
+      "computedHash": "74966232bac2a45ba565811701b194a818c4d5290d204b9735044f078b0ec6c4"
+    },
+    "ghost-scan-deps": {
+      "source": "ghostsecurity/skills",
+      "sourceType": "github",
+      "computedHash": "82d972451f1eaa72e83f89874be8a5db5cf9e89989c776b244a1bfe83311f40f"
+    },
+    "ghost-scan-secrets": {
+      "source": "ghostsecurity/skills",
+      "sourceType": "github",
+      "computedHash": "9158ddc61203621906ff29417bdce065ed60ac69368068f043ac2e7a35d29da9"
+    },
+    "ghost-validate": {
+      "source": "ghostsecurity/skills",
+      "sourceType": "github",
+      "computedHash": "31d7b5aa6926fc7035146c2ae5515e58c1e9a1b2363207dea6090d05d3916429"
+    },
     "harden": {
       "source": "pbakaus/impeccable",
       "sourceType": "github",
@@ -11,15 +71,80 @@
       "sourceType": "github",
       "computedHash": "db85045827ebeb83ac8dbc992b69188755eeb74dcf01cbf5e694d58aa494a106"
     },
+    "next-cache-components": {
+      "source": "vercel-labs/next-skills",
+      "sourceType": "github",
+      "computedHash": "f835d8226c28abf012cc013928e2627c8a7a046de61127ef229be1711bd1f255"
+    },
+    "next-upgrade": {
+      "source": "vercel-labs/next-skills",
+      "sourceType": "github",
+      "computedHash": "e3aeb1f9e8a68d24df0c1c2e3c8ab97ede09a7251a2c76988318d02254346979"
+    },
+    "nextjs-app-router-patterns": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "04c1df896cc2c9ef824d618b95d21686c5b8e24e5cb32b3d6fe9d97d4b661536"
+    },
     "optimize": {
       "source": "pbakaus/impeccable",
       "sourceType": "github",
       "computedHash": "2bf9726227fcfc9fdaf14799574feb3c551994146eb50bb4fecae45ace425eff"
     },
+    "performance": {
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "github",
+      "computedHash": "9e0e29b7919bacfd2d0caae0f841fa53ae3d7b7427d27f4fdbacc76643d7d138"
+    },
+    "postgres-patterns": {
+      "source": "affaan-m/everything-claude-code",
+      "sourceType": "github",
+      "computedHash": "8056467956521c8f4b58caefa9f91584be64e4bcccdaa8090a147c0b81f88aeb"
+    },
+    "postgres-pro": {
+      "source": "jeffallan/claude-skills",
+      "sourceType": "github",
+      "computedHash": "f932cd62b30ec4f18514fae84f3c826341d2f02e52e8536070599c75ff4c157f"
+    },
+    "postgresql-optimization": {
+      "source": "github/awesome-copilot",
+      "sourceType": "github",
+      "computedHash": "8022448de70ba9a485e3b5bce34c5bbc644f93eb39b68431c9f7dabcf03aeb09"
+    },
+    "postgresql-table-design": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "d7d040ee506a300c08a64b9ef6de9aa677b6d7251e33c3c87e0608f821a9506d"
+    },
     "programmatic-seo": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
       "computedHash": "c6384f24bb0203f8aa98b23b55d35b9e6721b94532a0e7965215c340ae96f1e0"
+    },
+    "security-review": {
+      "source": "affaan-m/everything-claude-code",
+      "sourceType": "github",
+      "computedHash": "ea603d81b60a1d14d19e33895a33a540837a0470e33105c1024557937ac01704"
+    },
+    "security-reviewer": {
+      "source": "jeffallan/claude-skills",
+      "sourceType": "github",
+      "computedHash": "a01a68ffc92548e79041495b3dc345ec7ac2ff7489a75c8ed4eaacfdfb689748"
+    },
+    "seo": {
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "github",
+      "computedHash": "680cc12a17e9308b4592a2751db51615c618993f75362cb8e64207f6355a8c63"
+    },
+    "sql-optimization": {
+      "source": "github/awesome-copilot",
+      "sourceType": "github",
+      "computedHash": "47c930907f25d67454ac8c2d155785eae3dce72242960d0c0e9ebf2ced9cd231"
+    },
+    "sql-optimization-patterns": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "7d20c24c6f52da9697d3e1c7d2f25cc560150de643d044a5f45e300bb78884fd"
     },
     "systematic-debugging": {
       "source": "obra/superpowers",
@@ -30,6 +155,16 @@
       "source": "obra/superpowers",
       "sourceType": "github",
       "computedHash": "9b446f0c7fe1cfb560b1d34439523b1a76d5f177290007b2c053a1c749a4a8ba"
+    },
+    "verify": {
+      "source": "facebook/react",
+      "sourceType": "github",
+      "computedHash": "574405a87621e4e16e60bb136dbefa05bd6a2c67bf30848e4583ff2158b17d71"
+    },
+    "web-quality-audit": {
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "github",
+      "computedHash": "04aeec0ff9071fc9cfb5b848a25946f8ca8586c842e50da4c1abbba8ceeaec40"
     }
   }
 }
