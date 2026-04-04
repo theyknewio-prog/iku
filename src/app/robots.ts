@@ -1,42 +1,24 @@
 import type { MetadataRoute } from "next";
-import fs from "fs";
-import path from "path";
+import pool from "@/lib/db";
 
-// Count total videos to generate the right number of sitemap references
-function getWatchSitemapCount(): number {
-  const DATA_DIR = path.join(process.cwd(), "src/data");
+async function getWatchSitemapCount(): Promise<number> {
   const MAX_PER_SITEMAP = 45000;
-  let total = 0;
-
-  const countJSON = (file: string) => {
-    try {
-      return JSON.parse(fs.readFileSync(path.join(DATA_DIR, file), "utf-8")).length;
-    } catch { return 0; }
-  };
-
-  total += countJSON("videos.json");
-  total += countJSON("gelbooru-videos.json");
-  total += countJSON("rule34-videos.json");
-  total += countJSON("rule34video-videos.json");
-  total += countJSON("wp-hentai-videos.json");
-
+  const { rows } = await pool.query("SELECT COUNT(*) as total FROM videos");
+  const total = parseInt(rows[0].total, 10);
   return Math.ceil(total / MAX_PER_SITEMAP);
 }
 
-export default function robots(): MetadataRoute.Robots {
-  const sitemapCount = getWatchSitemapCount();
+export default async function robots(): Promise<MetadataRoute.Robots> {
+  const sitemapCount = await getWatchSitemapCount();
 
-  // Build dynamic sitemap list
   const sitemaps: string[] = [
     "https://iku.gg/sitemap.xml",
   ];
 
-  // Add all watch sitemap chunks dynamically
   for (let i = 0; i < sitemapCount; i++) {
     sitemaps.push(`https://iku.gg/watch/sitemap/${i}.xml`);
   }
 
-  // Add other section sitemaps
   sitemaps.push(
     "https://iku.gg/tag/sitemap.xml",
     "https://iku.gg/character/sitemap.xml",
