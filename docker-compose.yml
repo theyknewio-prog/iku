@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: iku
+      POSTGRES_USER: iku
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U iku"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://iku:${PG_PASSWORD}@postgres:5432/iku
+      GELBOORU_API_KEY: ${GELBOORU_API_KEY}
+      GELBOORU_USER_ID: ${GELBOORU_USER_ID}
+      RULE34_API_KEY: ${RULE34_API_KEY}
+      RULE34_USER_ID: ${RULE34_USER_ID}
+
+volumes:
+  pgdata:

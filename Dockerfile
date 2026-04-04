@@ -46,8 +46,7 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends wget && \
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
-# Copy data JSONs needed at runtime
-COPY --from=builder /app/src/data ./src/data
+# NOTE: Video data is in PostgreSQL now — no JSON files needed at runtime
 # Copy warmup script
 COPY scripts/warmup.sh ./warmup.sh
 RUN chmod +x warmup.sh

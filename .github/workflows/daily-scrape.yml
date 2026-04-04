@@ -2,18 +2,15 @@ name: Daily Scrape & Content
 
 on:
   schedule:
-    # Every day at 4:00 AM UTC
     - cron: "0 4 * * *"
-  workflow_dispatch: # Manual trigger
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  scrape:
+  publish-content:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
-
     steps:
       - uses: actions/checkout@v4
         with:
@@ -26,7 +23,6 @@ jobs:
       - name: Install tsx
         run: npm install -g tsx
 
-      # ── Scheduled content publishing ──────────────────────
       - name: Publish scheduled content
         run: tsx scripts/publish-scheduled.ts
 
@@ -39,78 +35,57 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Commit published content
+      - name: Commit and push
         if: steps.content_changes.outputs.changed == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add src/data/blog.ts src/data/glossary.ts src/data/content-queue.json
-          git commit -m "content: publish scheduled articles and glossary terms [skip ci]"
+          git commit -m "content: publish scheduled articles [skip ci]"
+          git push
 
-      # ── Scrape all video sources ──────────────────────────
+  scrape-videos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Scrape Danbooru
-        run: tsx scripts/scrape-danbooru.ts
+        run: npx tsx scripts/scrape-danbooru.ts
         continue-on-error: true
 
       - name: Scrape Gelbooru
-        run: tsx scripts/scrape-gelbooru.ts
+        run: npx tsx scripts/scrape-gelbooru.ts
         continue-on-error: true
 
       - name: Scrape Rule34.xxx
-        run: tsx scripts/scrape-rule34.ts
+        run: npx tsx scripts/scrape-rule34.ts
         continue-on-error: true
 
       - name: Scrape Rule34Video.com
-        run: tsx scripts/scrape-rule34video.ts
+        run: npx tsx scripts/scrape-rule34video.ts
         continue-on-error: true
 
       - name: Scrape WordPress hentai sites
-        run: tsx scripts/scrape-wp-sites.ts
+        run: npx tsx scripts/scrape-wp-sites.ts
         continue-on-error: true
 
       - name: Enrich WP thumbnails
-        run: tsx scripts/enrich-wp-thumbnails.ts
+        run: npx tsx scripts/enrich-wp-thumbnails.ts
         timeout-minutes: 10
         continue-on-error: true
 
-      # ── Commit & deploy ───────────────────────────────────
-      - name: Check for video changes
-        id: changes
-        run: |
-          if git diff --quiet src/data/*.json 2>/dev/null; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Count total videos
-        if: steps.changes.outputs.changed == 'true'
-        id: count
-        run: |
-          TOTAL=$(node -e "
-            const d = require('./src/data/videos.json').length;
-            const g = require('./src/data/gelbooru-videos.json').length;
-            const r = require('./src/data/rule34-videos.json').length;
-            const rv = require('./src/data/rule34video-videos.json').length;
-            const wp = require('./src/data/wp-hentai-videos.json').length;
-            console.log(d + g + r + rv + wp);
-          ")
-          echo "count=$TOTAL" >> "$GITHUB_OUTPUT"
-
-      - name: Commit video changes
-        if: steps.changes.outputs.changed == 'true'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add src/data/*.json
-          git commit -m "data: daily scrape update (${{ steps.count.outputs.count }} total videos) [skip ci]"
-
-      - name: Push all changes
-        if: steps.content_changes.outputs.changed == 'true' || steps.changes.outputs.changed == 'true'
-        run: git push
-
       - name: Trigger Coolify deploy
-        if: steps.content_changes.outputs.changed == 'true' || steps.changes.outputs.changed == 'true'
         run: |
           curl -s -X POST \
             -H "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}" \
