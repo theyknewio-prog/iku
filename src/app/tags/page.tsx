@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 };
 
 export const revalidate = 86400;
+export const dynamic = "force-dynamic";
 
 export default async function TagsPage() {
   const [popularTags, popularCharacters] = await Promise.all([

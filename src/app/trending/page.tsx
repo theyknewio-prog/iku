@@ -20,6 +20,7 @@ export const metadata: Metadata = {
 };
 
 export const revalidate = 1800;
+export const dynamic = "force-dynamic";
 
 const CATEGORY_TAGS = [
   { label: "School Uniform", tag: "school_uniform" },
