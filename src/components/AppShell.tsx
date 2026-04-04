@@ -144,10 +144,10 @@ const SIDEBAR_ITEMS = [
 
 /* Mobile bottom — Industry standard 5-tab pattern */
 const BOTTOM_ITEMS = [
-  { href: "/",         label: "Home",     Icon: IconHome },
-  { href: "/explore",  label: "Search",   Icon: IconSearch },
-  { href: "/feed",     label: "Feed",     Icon: IconFeed, featured: true },
-  { href: "/trending", label: "Trending", Icon: IconTrending },
+  { href: "/",         label: "Home",     Icon: IconHome,     featured: false },
+  { href: "/explore",  label: "Search",   Icon: IconSearch,   featured: false },
+  { href: "/feed",     label: "Feed",     Icon: IconFeed,     featured: true },
+  { href: "/trending", label: "Trending", Icon: IconTrending, featured: false },
 ] as const;
 
 const MORE_ITEMS = [
