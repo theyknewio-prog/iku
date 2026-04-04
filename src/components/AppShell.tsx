@@ -268,7 +268,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <aside className="v2-sidebar" aria-label="Main navigation">
 
         {/* Logo */}
-        <Link href="/" className="v2-sidebar-logo" aria-label="iku home">
+        <Link href="/" prefetch={true} className="v2-sidebar-logo" aria-label="iku home">
           <span className="v2-sidebar-logo__icon">iku</span>
           <span className="v2-sidebar-logo__text-wrap">
             <span className="v2-sidebar-logo__text">iku.gg</span>
@@ -316,7 +316,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <header className={`v2-topbar${scrolled ? " v2-topbar--scrolled" : ""}`}>
 
         {/* Mobile logo */}
-        <Link href="/" className="v2-topbar__logo" aria-label="iku home">
+        <Link href="/" prefetch={true} className="v2-topbar__logo" aria-label="iku home">
           <span className="v2-topbar__logo-text">iku</span>
         </Link>
 
@@ -354,6 +354,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <Link
           key={href}
           href={href}
+          prefetch={true}
           className={`v2-bottom-nav__item${isActive(href) ? " v2-bottom-nav__item--active" : ""}${featured ? " v2-bottom-nav__item--shorts" : ""}`}
           aria-current={isActive(href) ? "page" : undefined}
         >

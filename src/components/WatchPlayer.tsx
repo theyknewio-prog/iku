@@ -523,7 +523,13 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
   const toggleMute = useCallback(() => {
     const v = videoRef.current;
     if (!v) return;
+    const willUnmute = v.muted;
     v.muted = !v.muted;
+    // Browser autoplay policy: after unmuting, re-trigger play()
+    // so the browser allows audio output on the current user gesture.
+    if (willUnmute) {
+      v.play().catch(() => {});
+    }
   }, []);
 
   const handleVolumeSlider = useCallback(

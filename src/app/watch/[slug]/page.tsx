@@ -20,7 +20,6 @@ import {
 import { containsBannedContent } from "@/lib/content";
 
 export const revalidate = 86400;
-export const dynamic = "force-dynamic";
 
 /* ─────────────────────────────────────────────────────────────
    Types
