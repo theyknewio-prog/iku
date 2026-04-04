@@ -6009,7 +6009,7 @@ body {
   background: linear-gradient(135deg, #1e1533 0%, #231e30 50%, #1a1625 100%);
   border-radius: 24px;
   overflow: hidden;
-  min-height: 360px;
+  min-height: 480px;
   position: relative;
   border: 1px solid rgba(255,255,255,0.06);
 }
@@ -6170,7 +6170,7 @@ body {
 .hp-hero-illustration {
   width: 100%;
   height: 100%;
-  min-height: 300px;
+  min-height: 380px;
   background: linear-gradient(135deg,
     rgba(192,132,252,0.2) 0%,
     rgba(255,107,157,0.15) 30%,
@@ -6190,22 +6190,22 @@ body {
   animation: hp-orb-float ease-in-out infinite;
 }
 .hp-hero-orb--1 {
-  width: 180px; height: 180px;
+  width: 260px; height: 260px;
   background: rgba(255,107,157,0.35);
-  top: 20%; left: 20%;
+  top: 15%; left: 15%;
   animation-duration: 8s;
 }
 .hp-hero-orb--2 {
-  width: 140px; height: 140px;
+  width: 210px; height: 210px;
   background: rgba(192,132,252,0.4);
-  top: 40%; right: 20%;
+  top: 35%; right: 12%;
   animation-duration: 10s;
   animation-delay: 2s;
 }
 .hp-hero-orb--3 {
-  width: 100px; height: 100px;
+  width: 160px; height: 160px;
   background: rgba(103,232,249,0.35);
-  bottom: 20%; left: 35%;
+  bottom: 15%; left: 30%;
   animation-duration: 7s;
   animation-delay: 1s;
 }
@@ -6218,35 +6218,36 @@ body {
 /* Floating badges in hero right */
 .hp-hero-badge-float {
   position: absolute;
-  background: rgba(35,30,48,0.9);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  padding: 8px 12px;
+  background: rgba(35,30,48,0.92);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  padding: 10px 16px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
+  gap: 8px;
+  font-size: 14px;
   font-weight: 700;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
   z-index: 3;
+  white-space: nowrap;
 }
 .hp-hero-badge-float--1 {
-  top: 16px; left: 16px;
+  top: 20px; left: 20px;
   color: #4ade80;
-  border-color: rgba(74,222,128,0.3);
+  border-color: rgba(74,222,128,0.35);
   animation: hp-badge-bob 5s ease-in-out infinite;
 }
 .hp-hero-badge-float--2 {
-  bottom: 16px; right: 16px;
+  bottom: 20px; right: 20px;
   color: #fbbf24;
-  border-color: rgba(251,191,36,0.3);
+  border-color: rgba(251,191,36,0.35);
   animation: hp-badge-bob 6s ease-in-out infinite 1s;
 }
 .hp-hero-badge-float--3 {
-  top: 50%; left: 12px;
+  top: 50%; left: 16px;
   transform: translateY(-50%);
   color: #67e8f9;
-  border-color: rgba(103,232,249,0.3);
+  border-color: rgba(103,232,249,0.35);
   animation: hp-badge-bob-mid 7s ease-in-out infinite 0.5s;
 }
 @keyframes hp-badge-bob {
@@ -6266,9 +6267,9 @@ body {
   backdrop-filter: blur(16px);
   border: 1px solid rgba(255,255,255,0.15);
   border-radius: 20px;
-  padding: 24px;
+  padding: 20px;
   text-align: center;
-  width: 200px;
+  width: clamp(200px, 22vw, 280px);
   text-decoration: none;
   transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
 }
@@ -6287,7 +6288,7 @@ body {
   position: relative;
 }
 .hp-hero-play-card__title {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: #f0e6ff;
   margin-bottom: 8px;
@@ -6297,7 +6298,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-size: 11px;
+  font-size: 12px;
   color: #8b7fa8;
 }
 .hp-hero-play-card__stars {
@@ -6535,7 +6536,7 @@ body {
 .hp-char-avatar__initials {
   font-size: 16px;
   font-weight: 800;
-  color: #8b7fa8;
+  color: #f0e6ff;
 }
 
 .hp-char-name {
@@ -6608,6 +6609,42 @@ body {
 .hp-footer__logo { font-family: var(--font-righteous), cursive; font-size: 20px; background: linear-gradient(135deg, #ff6b9d, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .hp-footer__copy { font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 8px; }
 
+/* ── Mobile hero stats bar (shown only when hero-right is hidden) ── */
+.hp-hero-mobile-stats {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  background: rgba(35,30,48,0.85);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  font-weight: 700;
+  backdrop-filter: blur(8px);
+  gap: 0;
+}
+.hp-hero-mobile-stats__item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+}
+.hp-hero-mobile-stats__item:not(:last-child) {
+  border-right: 1px solid rgba(255,255,255,0.12);
+}
+.hp-hero-mobile-stats__dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #4ade80;
+  flex-shrink: 0;
+  animation: hp-pulse 2s ease infinite;
+}
+.hp-hero-mobile-stats__online { color: #4ade80; }
+.hp-hero-mobile-stats__rating { color: #fbbf24; }
+.hp-hero-mobile-stats__new    { color: #67e8f9; }
+
 /* ── Responsive — Hero + Grid ─────────────────────────── */
 @media (max-width: 1200px) {
   .hp-video-grid { grid-template-columns: repeat(3, 1fr); }
@@ -6616,15 +6653,26 @@ body {
   .hp-hero { grid-template-columns: 1fr; min-height: auto; }
   .hp-hero-right { display: none; }
   .hp-hero-left { padding: 36px 24px; }
+  .hp-hero-mobile-stats { display: flex; }
   .hp-video-grid { grid-template-columns: repeat(2, 1fr); }
+  /* Keep "See all" link always visible on section headers */
+  .hp-section-header { flex-wrap: wrap; gap: 8px; }
 }
 @media (max-width: 600px) {
-  .hp-hero-stats { gap: 16px; }
+  .hp-hero-stats { gap: 16px; flex-wrap: wrap; }
   .hp-hero-stat__num { font-size: 18px; }
   .hp-video-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .hp-section-title { font-size: 18px; }
+  .hp-section-header { margin-bottom: 14px; }
+  .hp-section-link { font-size: 12px; white-space: nowrap; }
   .hp-hero-left { padding: 28px 16px; }
   .hp-hero-title { font-size: clamp(24px, 5vw, 36px); }
+  /* Tags cloud: reduce pill padding on small screens */
+  .hp-genre-tag { padding: 6px 14px; font-size: 12px; }
+  /* Characters scroll: tighter gap on small screens */
+  .hp-chars-scroll { gap: 14px; }
+  /* Mobile stats bar: stack to 2 items per row on very small screens */
+  .hp-hero-mobile-stats__item { padding: 3px 10px; font-size: 12px; }
 }
 
 /* ============================================================
@@ -6659,4 +6707,39 @@ body {
   10%  { opacity: 0.6; }
   90%  { opacity: 0.3; }
   100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+}
+
+/* ── Online Counter ──────────────────────────────────────────── */
+/* Petit point vert animé + compteur "X online now" */
+.hp-online-dot {
+  width: 8px;
+  height: 8px;
+  background: #4ade80;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  animation: pulse-dot 2s ease-in-out infinite;
+  margin-right: 6px;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+  50%       { box-shadow: 0 0 0 5px rgba(74, 222, 128, 0); }
+}
+
+/* Stat item "online now" dans hp-hero-stats (visible sur mobile) */
+.hp-hero-stat--online .hp-hero-stat__num--online {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  color: #4ade80;
+  white-space: nowrap;
+}
+
+/* Sur mobile le stat online est visible ; sur desktop il est déjà
+   présent dans le floating badge — on le masque pour éviter la répétition */
+@media (min-width: 768px) {
+  .hp-hero-stat--online {
+    display: none;
+  }
 }

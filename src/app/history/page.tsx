@@ -96,13 +96,29 @@ export default function HistoryPage() {
   );
 }
 
+/* ── Gradient palette for cards without a thumbnail ─────────── */
+const CARD_GRADIENTS = [
+  "linear-gradient(135deg,#2d1b4e,#1a0a2e)",
+  "linear-gradient(135deg,#1a2744,#0d1a3a)",
+  "linear-gradient(135deg,#2a1040,#180830)",
+  "linear-gradient(135deg,#1e1040,#2a0040)",
+  "linear-gradient(135deg,#0d2030,#0a1525)",
+  "linear-gradient(135deg,#301020,#1a0815)",
+  "linear-gradient(135deg,#1a2030,#0f1520)",
+  "linear-gradient(135deg,#280a3a,#150520)",
+];
+
 /* ── History card — lightweight version using stored slug ──── */
 
 function HistoryCard({ item }: { item: HistoryItem }) {
+  // Derive a stable gradient index from the video id so every card has
+  // its own colour while remaining consistent across re-renders.
+  const gradientBg = CARD_GRADIENTS[item.id % CARD_GRADIENTS.length];
+
   return (
     <Link href={`/watch/${item.slug}`} className="video-card" prefetch={false}>
-      <div className="video-card__media" style={{ background: "#141414" }}>
-        {/* Watched overlay */}
+      <div className="video-card__media" style={{ background: gradientBg }}>
+        {/* Watched check-mark overlay */}
         <div style={{
           position: "absolute",
           inset: 0,

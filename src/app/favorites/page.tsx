@@ -1,9 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { getFavorites, clearFavorites, toggleFavorite, type FavoriteItem } from "@/lib/favorites";
+
+/* ── Gradient palette for broken/missing thumbnails ─────────── */
+const CARD_GRADIENTS = [
+  "linear-gradient(135deg,#2d1b4e,#1a0a2e)",
+  "linear-gradient(135deg,#1a2744,#0d1a3a)",
+  "linear-gradient(135deg,#2a1040,#180830)",
+  "linear-gradient(135deg,#1e1040,#2a0040)",
+  "linear-gradient(135deg,#0d2030,#0a1525)",
+  "linear-gradient(135deg,#301020,#1a0815)",
+  "linear-gradient(135deg,#1a2030,#0f1520)",
+  "linear-gradient(135deg,#280a3a,#150520)",
+];
 
 export default function FavoritesPage() {
   const [items, setItems] = useState<FavoriteItem[]>([]);
@@ -97,10 +109,17 @@ function FavoriteCard({
   item: FavoriteItem;
   onRemove: (id: number) => void;
 }) {
+  // Track whether the stored thumbnail URL failed to load.
+  const [imgBroken, setImgBroken] = useState(false);
+  const handleImgError = useCallback(() => setImgBroken(true), []);
+
+  // Stable gradient derived from the video id for broken/missing thumbnails.
+  const gradientBg = CARD_GRADIENTS[item.id % CARD_GRADIENTS.length];
+
   return (
     <Link href={`/watch/${item.slug}`} className="video-card" prefetch={false}>
       <div className="video-card__media">
-        {item.thumbnail ? (
+        {item.thumbnail && !imgBroken ? (
           <Image
             src={item.thumbnail}
             alt={item.title}
@@ -109,9 +128,10 @@ function FavoriteCard({
             className="video-card__thumbnail"
             loading="lazy"
             unoptimized
+            onError={handleImgError}
           />
         ) : (
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg,#141414,#0f0f0f)" }} />
+          <div style={{ position: "absolute", inset: 0, background: gradientBg }} />
         )}
 
         {/* Remove button */}

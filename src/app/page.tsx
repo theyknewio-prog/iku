@@ -7,6 +7,7 @@ import { Carousel } from "@/components/Carousel";
 import { getPopularTags, getPopularCharacters } from "@/lib/danbooru";
 import { getVideos, getThumbnailsForTags } from "@/lib/content";
 import { SERIES } from "@/data/series";
+import { OnlineCounter } from "@/components/OnlineCounter";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai Videos | Stream Animated Hentai Online",
@@ -84,7 +85,9 @@ function formatViews(score: number): string {
 
 export default async function HomePage() {
   const trending = await getVideos({ limit: 20, order: "score", source: "all" });
-  const newest = await getVideos({ limit: 10, order: "date", source: "all" });
+  // Random offset (pages 1–5) so "New Releases" shows different content on each load.
+  const newReleasesPage = Math.floor(Math.random() * 5) + 1;
+  const newest = await getVideos({ limit: 10, page: newReleasesPage, order: "date", source: "all" });
   const topRated = await getVideos({ limit: 8, order: "favcount", source: "all" });
   const [tags, characters] = await Promise.all([
     getPopularTags(24),
@@ -101,6 +104,20 @@ export default async function HomePage() {
     <AgeGate>
       <main className="v2-page">
         <div className="v2-content">
+
+          {/* ── Mobile stats bar — visible only when hero-right is hidden (<960px) ── */}
+          <div className="hp-hero-mobile-stats" aria-label="Live stats">
+            <div className="hp-hero-mobile-stats__item">
+              <span className="hp-hero-mobile-stats__dot" />
+              <span className="hp-hero-mobile-stats__online">1,247 online</span>
+            </div>
+            <div className="hp-hero-mobile-stats__item">
+              <span className="hp-hero-mobile-stats__rating">&#9733; 4.8 rating</span>
+            </div>
+            <div className="hp-hero-mobile-stats__item">
+              <span className="hp-hero-mobile-stats__new">+847 today</span>
+            </div>
+          </div>
 
           {/* ================================================================
               HERO -- Split layout (left text + right gradient orbs)
@@ -146,6 +163,12 @@ export default async function HomePage() {
                   <span className="hp-hero-stat__num">Free</span>
                   <span className="hp-hero-stat__label">Always</span>
                 </div>
+                <div className="hp-hero-stat hp-hero-stat--online">
+                  <span className="hp-hero-stat__num hp-hero-stat__num--online">
+                    <OnlineCounter />
+                  </span>
+                  <span className="hp-hero-stat__label">Right now</span>
+                </div>
               </div>
             </div>
 
@@ -158,7 +181,7 @@ export default async function HomePage() {
 
                 {/* Floating badges */}
                 <div className="hp-hero-badge-float hp-hero-badge-float--1">
-                  <span>&#9679;</span> 1,247 online now
+                  <OnlineCounter />
                 </div>
                 <div className="hp-hero-badge-float hp-hero-badge-float--2">
                   4.8 avg rating
