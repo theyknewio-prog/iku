@@ -2049,7 +2049,7 @@ body {
   background: #000;
   border-radius: var(--radius-xl);
   overflow: hidden;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.8);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.8), 0 0 0 1px var(--color-border-subtle);
 }
 
 .player-video-wrap video,
@@ -2162,7 +2162,7 @@ body {
     max-height: calc(100vh - 100px);
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: #2e2e2e transparent;
+    scrollbar-color: var(--color-border-strong) transparent;
   }
 }
 
