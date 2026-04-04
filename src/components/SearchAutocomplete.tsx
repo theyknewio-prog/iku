@@ -176,14 +176,12 @@ export function SearchAutocomplete() {
         role="search"
         autoComplete="off"
       >
-        <span className="v2-topbar__search-icon">
-          <IconSearch size={15} />
-        </span>
+        <span className="v2-topbar__search-icon" aria-hidden="true">🔍</span>
         <input
           ref={inputRef}
           type="search"
           className="v2-topbar__search-input"
-          placeholder="Search"
+          placeholder="Search characters, series, tags..."
           aria-label="Search"
           aria-autocomplete="list"
           aria-expanded={showDropdown}

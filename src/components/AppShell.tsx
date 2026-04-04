@@ -328,8 +328,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         {/* Stats chip */}
         <div className="v2-stats-chip">
-          <span className="v2-stats-chip__sparkle">&#10024;</span>
-          <span>353K+ Videos</span>
+          <span className="v2-stats-chip__sparkle">✨</span>
+          <span>353,247 videos</span>
         </div>
 
         <div className="v2-topbar__actions">
