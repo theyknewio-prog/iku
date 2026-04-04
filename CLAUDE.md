@@ -18,7 +18,8 @@ Sab — débutant en code. Toujours expliquer les changements de manière pédag
 - **Styling** : CSS vanilla via `globals.css` (pas de Tailwind, pas de CSS Modules)
 - **Fonts** : Inter (body), Poppins (headings), Righteous (logo/branding)
 - **Video player** : Custom `<WatchPlayer>` avec HLS.js, double-tap seek, PiP, theater mode
-- **Déploiement** : Docker multi-stage (build 6GB heap + runtime 3GB heap) → Coolify → Hetzner CX33
+- **Database** : PostgreSQL 16 (Alpine) — 351K+ vidéos, container Docker `iku-postgres` sur le réseau Coolify
+- **Déploiement** : Docker multi-stage (runtime 3GB heap) + PostgreSQL 16 → Coolify → Hetzner CX33
 - **CI/CD** : GitHub Actions — daily scrape à 4h UTC (5 scrapers + thumbnail enrichment)
 - **Output** : `standalone` (image Docker optimisée)
 
@@ -26,19 +27,22 @@ Sab — débutant en code. Toujours expliquer les changements de manière pédag
 
 ## Architecture des données
 
-### Sources de contenu (4 APIs live + 2 sources statiques)
+### Base de données PostgreSQL
 
-| Source | Type | Fichier JSON local | Taille | Slug prefix |
-|--------|------|-------------------|--------|-------------|
-| Danbooru | API live + JSON cache | `src/data/videos.json` | 12MB | `{id}-{char}-{copy}` |
-| Gelbooru | API live + JSON cache | `src/data/gelbooru-videos.json` | 9.9MB | `gel-{id}-{tag}` |
-| Rule34.xxx | API live + JSON cache | `src/data/rule34-videos.json` | 11MB | `r34-{id}-{tag}` |
-| Rule34Video | JSON statique (sitemap scrape) | `src/data/rule34video-videos.json` | 85MB (Git LFS) | `r34v-{id}-{slug}` |
-| Sites WordPress | JSON statique (sitemap scrape) | `src/data/wp-hentai-videos.json` | 4.2MB | `hmm-`/`htv-`/`aid-`/`wh-`/`hw-`/`hg-` |
-| Content queue | Articles programmés | `src/data/content-queue.json` | 304KB | — |
+Toutes les vidéos sont stockées dans une table `videos` dans PostgreSQL (351K+ entrées).
+
+| Source | Vidéos | Score moyen | Slug prefix |
+|--------|--------|------------|-------------|
+| Danbooru | ~17K | 922 | `{id}-{char}-{copy}` |
+| Gelbooru | ~20K | 1,035 | `gel-{id}-{tag}` |
+| Rule34.xxx | ~20K | 6,291 | `r34-{id}-{tag}` |
+| Rule34Video | ~277K | 497 | `r34v-{id}-{slug}` |
+| Sites WordPress | ~18K | 266 | `hmm-`/`htv-`/`aid-`/`wh-`/`hw-`/`hg-` |
+
+**Connexion** : `src/lib/db.ts` (singleton pool via `pg`). Variable d'env `DATABASE_URL`.
 
 ### Couche unifiée
-Tout passe par `src/lib/content.ts` → `getVideos()` qui fusionne les 4 sources, interleave, déduplique, filtre le contenu banni et trie.
+Tout passe par `src/lib/content.ts` → `getVideos()` qui requête PostgreSQL avec filtrage des tags bannis au niveau SQL (`NOT (tags && $1::text[])`).
 
 ### Type central : `Video` (`src/types/video.ts`)
 ```ts
@@ -49,7 +53,7 @@ interface Video {
   tags: string[]; characters: string[]; copyrights: string[]; artists: string[];
   width: number; height: number; fileSize: number;
   duration: number | null; createdAt: Date;
-  source: "danbooru" | "gelbooru" | "rule34" | "rule34video";
+  source: "danbooru" | "gelbooru" | "rule34" | "rule34video" | "wp";
 }
 ```
 
@@ -142,8 +146,9 @@ GELBOORU_API_KEY=...
 GELBOORU_USER_ID=...
 RULE34_API_KEY=...
 RULE34_USER_ID=...
+DATABASE_URL=postgresql://iku:PASSWORD@iku-postgres:5432/iku
 ```
-Fichier `.env.example` fourni. En prod, configurées dans Coolify (env vars application).
+Fichier `.env.example` fourni. En prod, configurées dans Coolify (env vars application). `DATABASE_URL` est également requis dans les GitHub Actions secrets pour les scrapers.
 
 ---
 
@@ -160,6 +165,8 @@ Fichier `.env.example` fourni. En prod, configurées dans Coolify (env vars appl
 | `publish-scheduled.ts` | Publie articles programmés | `npx tsx scripts/publish-scheduled.ts` |
 
 Le cron GitHub Actions (`.github/workflows/daily-scrape.yml`) exécute tous les scrapers + enrichissement thumbnails quotidiennement à 4h UTC. Timeout 45 min. Chaque scraper a `continue-on-error: true` pour la résilience.
+
+**Les scrapers écrivent désormais directement dans PostgreSQL** via `scripts/db.ts` (fonction `upsertVideos`). La variable `DATABASE_URL` est requise dans les GitHub Actions secrets pour que le cron puisse écrire en base.
 
 ---
 
@@ -224,8 +231,14 @@ Le cron GitHub Actions (`.github/workflows/daily-scrape.yml`) exécute tous les 
 # Dev
 npm run dev
 
-# Build (nécessite 6GB RAM)
-NODE_OPTIONS='--max-old-space-size=6144' npm run build
+# Build
+npm run build
+
+# Base de données (démarrer PostgreSQL)
+docker-compose up -d postgres
+
+# Migration initiale (une seule fois)
+DATABASE_URL=postgresql://iku:PASSWORD@localhost:5432/iku npx tsx scripts/migrate-json-to-pg.ts
 
 # Scrapers
 npx tsx scripts/scrape-danbooru.ts
@@ -251,8 +264,9 @@ docker run -p 3000:3000 iku
 - **SSL** : Let's Encrypt (auto-renew via Coolify)
 - **CI** : GitHub Actions (daily scrape + auto-deploy via webhook Coolify)
 - **Monitoring** : `/api/health` endpoint (uptime, RAM)
-- **Docker** : Multi-stage build (build=6GB heap, runtime=3GB heap, standalone output)
-- **Git LFS** : `rule34video-videos.json` (85MB) tracké en LFS
+- **Docker** : Multi-stage build (runtime=3GB heap, standalone output)
+- **PostgreSQL** : Container `iku-postgres` sur réseau Coolify, volume `iku_pgdata`, port 5432
+- **docker-compose.yml** : Définit les services postgres + app
 
 ---
 
@@ -279,22 +293,18 @@ src/
 │   ├── AppShell.tsx        # Layout global (sidebar + topbar + bottom nav)
 │   └── WatchPlayer.tsx     # Player vidéo custom
 ├── lib/
-│   ├── content.ts          # Couche unifiée — POINT D'ENTRÉE pour les vidéos
+│   ├── content.ts          # Couche unifiée — requêtes PostgreSQL
+│   ├── db.ts               # Pool de connexions PostgreSQL (singleton)
 │   ├── danbooru.ts         # API Danbooru
 │   ├── gelbooru.ts         # API Gelbooru (API key via env var)
 │   ├── rule34-search.ts    # API Rule34.xxx (API key via env var)
 │   ├── rule34.ts           # API Rule34 single post (API key via env var)
-│   ├── rule34video.ts      # Données Rule34Video (JSON statique)
-│   ├── wp-hentai.ts        # Données WP sites (JSON statique)
+│   ├── rule34video.ts      # Requêtes PostgreSQL (was JSON statique)
+│   ├── wp-hentai.ts        # Requêtes PostgreSQL (was JSON statique)
 │   ├── slugify.ts          # Génération et parsing de slugs
 │   ├── seo.ts              # Metadata builders
 │   └── content-generator.ts # Descriptions, FAQ, breadcrumbs auto-générés
-├── data/                   # JSONs statiques (NE PAS ÉDITER MANUELLEMENT)
-│   ├── videos.json         # Danbooru (12MB)
-│   ├── gelbooru-videos.json # Gelbooru (9.9MB)
-│   ├── rule34-videos.json  # Rule34 (11MB)
-│   ├── rule34video-videos.json # Rule34Video (85MB, Git LFS)
-│   ├── wp-hentai-videos.json # WordPress sites (4.2MB)
+├── data/                   # Données statiques (JSONs vidéos supprimés — données en PostgreSQL)
 │   ├── blog.ts             # Articles de blog
 │   ├── glossary.ts         # Termes du glossaire
 │   ├── characters.ts       # Données personnages
@@ -307,11 +317,14 @@ src/
     └── useLocalStorage.ts   # Hook localStorage
 scripts/
 ├── banned-tags.ts          # Tags/mots bannis partagés par TOUS les scrapers (CRITIQUE)
-├── scrape-danbooru.ts      # Scraper Danbooru (filtre banned-tags)
-├── scrape-gelbooru.ts      # Scraper Gelbooru (filtre banned-tags)
-├── scrape-rule34.ts        # Scraper Rule34 (filtre banned-tags)
-├── scrape-rule34video.ts   # Scraper Rule34Video (filtre banned-tags par titre)
-├── scrape-wp-sites.ts      # Scraper sites WordPress (filtre banned-tags par titre)
+├── db.ts                   # Helpers PostgreSQL pour les scrapers (upsertVideos)
+├── init-db.sql             # Schéma initial de la base de données (table videos, index)
+├── migrate-json-to-pg.ts   # Script de migration one-shot JSON → PostgreSQL
+├── scrape-danbooru.ts      # Scraper Danbooru (filtre banned-tags, écrit en PG)
+├── scrape-gelbooru.ts      # Scraper Gelbooru (filtre banned-tags, écrit en PG)
+├── scrape-rule34.ts        # Scraper Rule34 (filtre banned-tags, écrit en PG)
+├── scrape-rule34video.ts   # Scraper Rule34Video (filtre banned-tags par titre, écrit en PG)
+├── scrape-wp-sites.ts      # Scraper sites WordPress (filtre banned-tags par titre, écrit en PG)
 ├── enrich-wp-thumbnails.ts # Enrichissement thumbnails WP
 └── publish-scheduled.ts    # Publication articles programmés
 ```
@@ -356,6 +369,7 @@ scripts/
 - **Coolify UI** : `http://204.168.233.29:8000`
 - **Container app** : `hjta50cv9nfem56atjtwmlx1-*` (nom dynamique, chercher avec `docker ps`)
 - **Container IP interne** : `10.0.1.x` (réseau Docker Coolify)
+- **Container PostgreSQL** : `iku-postgres` (réseau Coolify, volume `iku_pgdata`)
 - **yt-dlp en prod** : installé et fonctionnel (`/usr/local/bin/yt-dlp`, v2026.03.17)
 
 ---
@@ -371,6 +385,8 @@ Toutes les pages utilisent l'ISR (Incremental Static Regeneration) pour réduire
 | `/watch/*`, `/tags`, `/character`, `/series`, `/blog`, `/glossary` | 24h | Contenu quasi-statique |
 
 Avant : SSR complet à chaque requête. Maintenant : première visite = génération + cache, visites suivantes = réponse instantanée depuis le disque.
+
+**Note PostgreSQL** : Les pages utilisant PostgreSQL ont `export const dynamic = 'force-dynamic'` — pas de pré-rendu au build (PG pas disponible dans Docker build), première requête runtime génère la page puis l'ISR cache prend le relais.
 
 ---
 
@@ -483,15 +499,12 @@ Home | Search | Shorts (pulse glow quand inactif, gradient quand actif) | Trendi
 38. ~~Character links fixés~~ — /tag/ → /character/
 39. ~~Ad zone underplayer~~ — placeholder prêt pour ExoClick
 
-### PROCHAIN : Migration PostgreSQL
-- **Migrer les 5 JSONs (120MB+) vers PostgreSQL** — build passe de 5min à ~1min, RAM réduite, requêtes en temps réel
-- Meilleur moment : maintenant, avant d'avoir du trafic
-- Chantier : schéma DB, réécriture data layer (content.ts, danbooru.ts, gelbooru.ts, rule34video.ts, wp-hentai.ts), migration scrapers, suppression JSONs du repo
+**Migration PostgreSQL (2026-04-04) :**
+40. ~~Migration PostgreSQL~~ — 351K vidéos migrées, RAM -83%, build simplifié, scrapers écrivent en PG
 
 ### Court terme
-- Ajouter Redis pour cache partagé
 - Intégrer ExoClick pour la monétisation
-- SEO : soumettre sitemaps à Google Search Console, vérifier indexation
+- Google Search Console — sitemaps soumis, en attente d'indexation
 
 ### Moyen terme (scale à 200K daily users)
 - CDN pour les vidéos (Bunny CDN ou Cloudflare Stream)
@@ -502,15 +515,17 @@ Home | Search | Shorts (pulse glow quand inactif, gradient quand actif) | Trendi
 ## Notes pour Claude Code
 
 - **JAMAIS affaiblir le filtrage de contenu banni** — `content.ts` et `scripts/banned-tags.ts` sont critiques. Tolérance zéro.
-- **Ne jamais éditer les fichiers JSON dans `src/data/`** — ils sont générés par les scrapers
-- **Toujours tester avec `npm run build`** avant de push — le build nécessite 6GB de RAM et peut OOM
+- **Toujours tester avec `npm run build`** avant de push
 - **Les clés API sont dans `.env.local` et Coolify** — NE PLUS les hardcoder dans le code
+- **DATABASE_URL** est requis — en dev dans `.env.local`, en prod dans Coolify, dans GitHub Actions secrets
+- **Le container PostgreSQL** `iku-postgres` doit tourner pour que le site fonctionne. Schéma dans `scripts/init-db.sql`
+- **Les pages PG-dépendantes** ont `dynamic = 'force-dynamic'` pour éviter le pré-rendu vide au build
 - **Le CSS est monolithique** dans `globals.css` — chercher par préfixe de classe (`v2-`, `wp-`, `player-`, etc.)
 - **Pour ajouter une nouvelle source de vidéos** : consulter le skill `iku-scraping-pipeline` pour le guide pas-à-pas
 - **Next.js 16 a des breaking changes** par rapport aux versions précédentes — lire les docs dans `node_modules/next/dist/docs/` avant de modifier le routing ou les APIs
 - **Consulter le skill approprié** avant toute modification importante — chaque skill contient les conventions, contraintes et patterns spécifiques à son domaine
 - **Toute nouvelle route API doit avoir un rate limit** — voir les patterns dans les routes existantes
-- **Le Dockerfile est multi-stage** — le runtime n'a que 3GB de heap, pas 6GB
+- **Le Dockerfile est multi-stage** — le runtime n'a que 3GB de heap
 - **Le player custom fait ~1500 lignes** (`WatchPlayer.tsx`) — pas de librairie externe (Video.js, Plyr), tout est maison. Bon choix tant qu'on agrège du contenu externe (MP4 direct). Migration vers Video.js seulement si on héberge nos propres vidéos HLS multi-bitrate
 - **Deploy Coolify** se fait via `docker exec coolify php artisan tinker` avec `queue_application_deployment()` — le webhook GitHub ne déclenche pas toujours le deploy automatiquement
 - **Repo GitHub est PRIVÉ** — Coolify clone via token HTTPS (pas SSH). Le token est dans la config Coolify DB
