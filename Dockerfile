@@ -38,14 +38,21 @@ ENV HOSTNAME="0.0.0.0"
 # Runtime heap: 3GB max (not 6GB) — leave room for OS + yt-dlp on 8GB server
 ENV NODE_OPTIONS="--max-old-space-size=3072"
 
+# Install wget for cache warmup script
+RUN apt-get update -qq && apt-get install -y --no-install-recommends wget && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
 # Copy standalone output (much smaller than full node_modules)
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 # Copy data JSONs needed at runtime
 COPY --from=builder /app/src/data ./src/data
+# Copy warmup script
+COPY scripts/warmup.sh ./warmup.sh
+RUN chmod +x warmup.sh
 
 EXPOSE 3000
 
-# Use node directly instead of npm (faster startup, less overhead)
-CMD ["node", "server.js"]
+# Start server + run warmup in background to pre-populate ISR cache
+CMD sh -c "node server.js & sh warmup.sh & wait"
