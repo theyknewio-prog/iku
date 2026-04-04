@@ -105,14 +105,23 @@ export async function GET(request: NextRequest) {
       .map((v) => ({
         id: v.id,
         slug: v.slug,
+        // Both field names for compatibility (HomeFeed uses `url`, SwipeFeed uses `videoUrl`)
         url: v.url,
+        videoUrl: v.url,
         thumbnail: v.thumbnail,
         score: v.score,
         tags: v.tags.slice(0, 6),
+        // Both formats: arrays for HomeFeed, singular for SwipeFeed/VideoCard
         characters: v.characters.slice(0, 3),
         artists: v.artists.slice(0, 2),
         copyrights: v.copyrights.slice(0, 2),
+        character: v.characters[0] || "",
+        artist: v.artists[0] || "",
+        copyright: v.copyrights[0] || "",
         duration: v.duration,
+        width: v.width || 0,
+        height: v.height || 0,
+        size: v.fileSize || 0,
       }));
 
     return NextResponse.json({ videos, page, hasMore, offset: sessionOffset });
