@@ -283,7 +283,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <Link
           key={href}
           href={href}
-          className={`v2-bottom-nav__item${isActive(href) ? " v2-bottom-nav__item--active" : ""}${featured && isActive(href) ? " v2-bottom-nav__item--featured" : ""}`}
+          className={`v2-bottom-nav__item${isActive(href) ? " v2-bottom-nav__item--active" : ""}${featured && isActive(href) ? " v2-bottom-nav__item--featured" : ""}${featured && !isActive(href) ? " v2-bottom-nav__item--shorts-hint" : ""}`}
           aria-current={isActive(href) ? "page" : undefined}
         >
           <Icon size={22} />
