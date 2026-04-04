@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iku.gg — 353K+ Free Animated Hentai</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #141414;
+    --surface: #1a1a1a;
+    --surface-2: #222222;
+    --red: #e50914;
+    --white: #ffffff;
+    --text: #e5e5e5;
+    --muted: #808080;
+    --hover-overlay: rgba(255,255,255,0.08);
+    --nav-h: 68px;
+    --card-radius: 4px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ─── SCROLLBAR ───────────────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+  /* ─── TOP NAV ─────────────────────────────────────── */
+  .nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--nav-h);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    padding: 0 4%;
+    gap: 32px;
+    transition: background 0.3s;
+  }
+  .nav.scrolled {
+    background: #141414;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .nav-gradient {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, rgba(20,20,20,0.95) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* Logo */
+  .logo {
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    color: var(--white);
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+  .logo .dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--red);
+    border-radius: 50%;
+    margin-left: 1px;
+    vertical-align: super;
+    position: relative;
+    top: -3px;
+  }
+
+  /* Primary nav links */
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    transition: color 0.15s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a.active { color: var(--white); font-weight: 600; }
+
+  /* Search */
+  .nav-search {
+    flex: 1;
+    max-width: 360px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .nav-search input {
+    width: 100%;
+    height: 36px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    color: var(--white);
+    font-size: 14px;
+    padding: 0 36px 0 12px;
+    outline: none;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .nav-search input::placeholder { color: var(--muted); }
+  .nav-search input:focus {
+    background: rgba(255,255,255,0.14);
+    border-color: rgba(255,255,255,0.35);
+  }
+  .nav-search svg {
+    position: absolute;
+    right: 10px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+  }
+
+  /* Nav right actions */
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  .nav-btn {
+    background: none;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    padding: 4px;
+    transition: color 0.15s;
+    border-radius: 4px;
+  }
+  .nav-btn:hover { color: var(--white); }
+  .nav-btn-primary {
+    background: var(--red);
+    color: var(--white);
+    padding: 7px 16px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 13px;
+    transition: background 0.15s;
+  }
+  .nav-btn-primary:hover { background: #f40612; color: var(--white); }
+
+  /* ─── BILLBOARD HERO ──────────────────────────────── */
+  .hero {
+    position: relative;
+    width: 100%;
+    height: 80vh;
+    min-height: 540px;
+    max-height: 720px;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to right, rgba(20,20,20,0.92) 35%, rgba(20,20,20,0.2) 65%, rgba(20,20,20,0.05) 100%),
+      linear-gradient(to top, rgba(20,20,20,1) 0%, rgba(20,20,20,0.4) 30%, transparent 60%);
+    z-index: 1;
+  }
+  .hero-img {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+  /* Placeholder hero image using CSS */
+  .hero-img-placeholder {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(135deg, #1a0a1e 0%, #0d1a2e 40%, #1a1a2e 70%, #2a0a1e 100%);
+  }
+  .hero-img-placeholder::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 70% at 70% 40%, rgba(180,60,80,0.25) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 60% 60%, rgba(60,80,180,0.15) 0%, transparent 50%);
+  }
+  /* Simulated anime figure silhouette */
+  .hero-figure {
+    position: absolute;
+    right: 15%;
+    bottom: 0;
+    width: 45%;
+    max-width: 580px;
+    height: 90%;
+    background: linear-gradient(to bottom, rgba(200,120,150,0.1) 0%, rgba(140,100,180,0.08) 50%, transparent 100%);
+    border-radius: 50% 50% 0 0 / 30% 30% 0 0;
+    opacity: 0.6;
+    overflow: hidden;
+  }
+  .hero-figure::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 600'%3E%3Cellipse cx='200' cy='120' rx='80' ry='100' fill='rgba(220,180,200,0.15)'/%3E%3Crect x='140' y='200' width='120' height='300' rx='20' fill='rgba(200,160,180,0.1)'/%3E%3C/svg%3E") center/contain no-repeat;
+  }
+
+  .hero-content {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 0 4% 80px;
+    z-index: 2;
+    max-width: 560px;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--red);
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 4px 10px;
+    border-radius: 3px;
+    margin-bottom: 14px;
+  }
+  .hero-title {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.05;
+    color: var(--white);
+    margin-bottom: 14px;
+    letter-spacing: -0.5px;
+  }
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .hero-meta .score {
+    color: #46d369;
+    font-weight: 600;
+  }
+  .hero-meta .tag {
+    background: rgba(255,255,255,0.12);
+    padding: 2px 8px;
+    border-radius: 3px;
+    color: var(--text);
+    font-size: 12px;
+  }
+  .hero-desc {
+    font-size: 15px;
+    color: #b3b3b3;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    max-width: 440px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .btn-play {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--white);
+    color: #141414;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 26px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .btn-play:hover { background: rgba(255,255,255,0.85); transform: scale(1.02); }
+  .btn-more {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(109,109,110,0.7);
+    color: var(--white);
+    border: none;
+    border-radius: 4px;
+    padding: 12px 22px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+    backdrop-filter: blur(4px);
+  }
+  .btn-more:hover { background: rgba(109,109,110,0.5); }
+
+  /* ─── MAIN CONTENT AREA ───────────────────────────── */
+  .main {
+    position: relative;
+    z-index: 2;
+    margin-top: -80px;
+    padding-bottom: 60px;
+  }
+
+  /* ─── SECTION ROW ─────────────────────────────────── */
+  .section {
+    padding: 0 0 24px;
+    overflow: hidden;
+  }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 0 4%;
+    margin-bottom: 10px;
+  }
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text);
+  }
+  .section-see-all {
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .section-see-all:hover { color: var(--white); }
+
+  /* ─── CAROUSEL ────────────────────────────────────── */
+  .carousel-wrap {
+    position: relative;
+  }
+  .carousel {
+    display: flex;
+    gap: 6px;
+    padding: 8px 4%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .carousel::-webkit-scrollbar { display: none; }
+  .carousel-arrow {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 4%;
+    min-width: 40px;
+    background: rgba(20,20,20,0.7);
+    border: none;
+    color: var(--white);
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+    font-size: 20px;
+  }
+  .carousel-arrow.left { left: 0; border-radius: 0 4px 4px 0; }
+  .carousel-arrow.right { right: 0; border-radius: 4px 0 0 4px; }
+  .carousel-wrap:hover .carousel-arrow { opacity: 1; }
+  .carousel-arrow:hover { background: rgba(20,20,20,0.95); }
+
+  /* ─── VIDEO CARD ──────────────────────────────────── */
+  .card {
+    flex-shrink: 0;
+    width: calc((100vw - 8%) / 5.5);
+    min-width: 180px;
+    max-width: 260px;
+    scroll-snap-align: start;
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), z-index 0s;
+    transform-origin: center center;
+  }
+  .card:first-child { transform-origin: left center; }
+  .card:last-child { transform-origin: right center; }
+
+  .card:hover {
+    transform: scale(1.28);
+    z-index: 50;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+  }
+  .card:hover .card-info { opacity: 1; transform: translateY(0); }
+  .card:hover .card-thumb::after { opacity: 1; }
+
+  .card-thumb {
+    position: relative;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .card-thumb::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.85) 100%);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .card-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Placeholder thumbs */
+  .thumb-placeholder {
+    width: 100%; height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+  }
+
+  .card-play-icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 2;
+  }
+  .card:hover .card-play-icon { opacity: 1; }
+  .card-play-icon svg {
+    width: 36px; height: 36px;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.6));
+  }
+
+  .card-duration {
+    position: absolute;
+    bottom: 6px; right: 6px;
+    background: rgba(0,0,0,0.75);
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 5px;
+    border-radius: 3px;
+    z-index: 3;
+  }
+
+  .card-score {
+    position: absolute;
+    top: 6px; left: 6px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    background: rgba(0,0,0,0.65);
+    color: #46d369;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 3px;
+    z-index: 3;
+    backdrop-filter: blur(4px);
+  }
+
+  .card-info {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 8px 10px;
+    z-index: 4;
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 100%);
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .card-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.3;
+    margin-bottom: 5px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .card-tag {
+    font-size: 10px;
+    color: #b3b3b3;
+    background: rgba(255,255,255,0.1);
+    padding: 1px 5px;
+    border-radius: 2px;
+  }
+  .card-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .card-action-btn {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.5);
+    background: transparent;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    font-size: 11px;
+  }
+  .card-action-btn:hover {
+    border-color: var(--white);
+    background: rgba(255,255,255,0.15);
+  }
+
+  /* ─── CONTINUE WATCHING CARDS (wider) ────────────── */
+  .continue-card {
+    width: calc((100vw - 8%) / 4.2);
+    min-width: 200px;
+    max-width: 320px;
+  }
+  .continue-card .card-thumb {
+    position: relative;
+  }
+  .progress-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: rgba(255,255,255,0.2);
+    z-index: 5;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--red);
+    border-radius: 0 2px 2px 0;
+  }
+
+  /* ─── TAG FILTER STRIP ────────────────────────────── */
+  .tag-strip {
+    display: flex;
+    gap: 8px;
+    padding: 0 4% 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tag-strip::-webkit-scrollbar { display: none; }
+  .tag-pill {
+    flex-shrink: 0;
+    padding: 6px 16px;
+    border-radius: 20px;
+    background: var(--surface-2);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid rgba(255,255,255,0.08);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .tag-pill:hover, .tag-pill.active {
+    background: var(--white);
+    color: #141414;
+    border-color: var(--white);
+  }
+
+  /* ─── LARGE TITLE CARD (rank style) ──────────────── */
+  .rank-card {
+    flex-shrink: 0;
+    width: calc((100vw - 8%) / 4.5);
+    min-width: 200px;
+    max-width: 300px;
+    scroll-snap-align: start;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 0;
+  }
+  .rank-number {
+    font-size: clamp(60px, 10vw, 120px);
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 2px rgba(255,255,255,0.2);
+    line-height: 1;
+    margin-right: -16px;
+    z-index: 1;
+    flex-shrink: 0;
+    align-self: flex-end;
+  }
+  .rank-thumb {
+    flex: 1;
+    aspect-ratio: 2/3;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+    transition: transform 0.2s;
+  }
+  .rank-card:hover .rank-thumb { transform: scale(1.05); }
+  .rank-thumb .thumb-placeholder {
+    height: 100%;
+    aspect-ratio: unset;
+  }
+
+  /* ─── FOOTER ──────────────────────────────────────── */
+  footer {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 40px 4%;
+    color: var(--muted);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    margin-bottom: 32px;
+  }
+  .footer-col h4 {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+  .footer-col a {
+    display: block;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    line-height: 2;
+    transition: color 0.15s;
+  }
+  .footer-col a:hover { color: var(--white); }
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    font-size: 12px;
+  }
+  .footer-logo {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  /* ─── MOBILE BOTTOM NAV ───────────────────────────── */
+  .mobile-nav {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 60px;
+    background: rgba(20,20,20,0.97);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    z-index: 200;
+    backdrop-filter: blur(12px);
+  }
+  .mobile-nav-inner {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 8px;
+  }
+  .mobile-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    cursor: pointer;
+    padding: 8px 0;
+    border: none;
+    background: none;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 500;
+    min-height: 48px;
+    transition: color 0.15s;
+  }
+  .mobile-nav-item.active { color: var(--white); }
+  .mobile-nav-item svg { width: 22px; height: 22px; }
+  .shorts-btn {
+    background: var(--red);
+    border-radius: 12px;
+    color: var(--white) !important;
+    padding: 8px 16px;
+    margin: 0 4px;
+  }
+
+  /* ─── DIVIDER ─────────────────────────────────────── */
+  .section-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+    margin: 8px 4% 24px;
+  }
+
+  /* ─── SPOTLIGHT SECTION (wide cards) ─────────────── */
+  .spotlight-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    padding: 0 4%;
+    margin-bottom: 8px;
+  }
+  .spotlight-card {
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    aspect-ratio: 16/7;
+    background: var(--surface);
+    transition: transform 0.2s;
+  }
+  .spotlight-card:hover { transform: scale(1.02); }
+  .spotlight-card:first-child {
+    grid-column: span 2;
+    aspect-ratio: 16/6;
+  }
+  .spotlight-card .thumb-placeholder {
+    height: 100%;
+  }
+  .spotlight-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 16px;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+  }
+  .spotlight-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+  .spotlight-meta {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* ─── PLACEHOLDER COLORS ──────────────────────────── */
+  .ph-1 { background: linear-gradient(135deg, #1a0a2e 0%, #2d1245 100%); }
+  .ph-2 { background: linear-gradient(135deg, #0d1a2e 0%, #1a2d45 100%); }
+  .ph-3 { background: linear-gradient(135deg, #2e0d1a 0%, #451a2d 100%); }
+  .ph-4 { background: linear-gradient(135deg, #1a2e0d 0%, #2d451a 100%); }
+  .ph-5 { background: linear-gradient(135deg, #2e1a0d 0%, #452d1a 100%); }
+  .ph-6 { background: linear-gradient(135deg, #0d2e2e 0%, #1a4545 100%); }
+  .ph-7 { background: linear-gradient(135deg, #2e2e0d 0%, #45451a 100%); }
+  .ph-8 { background: linear-gradient(135deg, #1a0d2e 0%, #2d1a45 100%); }
+  .ph-9 { background: linear-gradient(135deg, #2e0d0d 0%, #45201a 100%); }
+
+  /* ─── RESPONSIVE ──────────────────────────────────── */
+  @media (max-width: 900px) {
+    .nav-links { display: none; }
+    .footer-grid { grid-template-columns: repeat(2, 1fr); }
+    .spotlight-grid { grid-template-columns: 1fr 1fr; }
+    .spotlight-card:first-child { grid-column: span 2; }
+  }
+
+  @media (max-width: 640px) {
+    :root { --nav-h: 56px; }
+    .nav { padding: 0 16px; gap: 12px; }
+    .nav-search { max-width: 200px; }
+    .logo { font-size: 22px; }
+
+    .hero { height: 70vw; min-height: 300px; max-height: 480px; }
+    .hero-content { padding: 0 16px 60px; }
+    .hero-title { font-size: 1.6rem; }
+    .hero-desc { display: none; }
+    .btn-play, .btn-more { padding: 10px 18px; font-size: 14px; }
+
+    .main { margin-top: -60px; }
+    .section { padding-bottom: 16px; }
+    .carousel { padding: 8px 16px; gap: 8px; }
+    .section-header { padding: 0 16px; }
+    .tag-strip { padding: 0 16px 16px; }
+
+    .card {
+      width: calc((100vw - 48px) / 2.4);
+      min-width: 130px;
+    }
+    .continue-card {
+      width: calc((100vw - 32px) / 1.8);
+      min-width: 200px;
+    }
+    .rank-card {
+      width: calc((100vw - 32px) / 2.5);
+      min-width: 140px;
+    }
+
+    .spotlight-grid {
+      grid-template-columns: 1fr;
+      padding: 0 16px;
+    }
+    .spotlight-card:first-child { grid-column: span 1; }
+
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 20px; padding-bottom: 80px; }
+    .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+
+    .mobile-nav { display: block; }
+    body { padding-bottom: 60px; }
+  }
+
+  /* ─── NOTIFICATION TOAST ─────────────────────────── */
+  .toast {
+    position: fixed;
+    bottom: 80px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(30,30,30,0.95);
+    color: var(--white);
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+    z-index: 500;
+    white-space: nowrap;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── TOAST ─────────────────────────────────────── -->
+<div class="toast" id="toast">Added to favorites</div>
+
+<!-- ─── TOP NAV ───────────────────────────────────── -->
+<nav class="nav scrolled" id="nav">
+  <a href="#" class="logo">iku<span class="dot"></span></a>
+
+  <ul class="nav-links">
+    <li><a href="#" class="active">Home</a></li>
+    <li><a href="#">Trending</a></li>
+    <li><a href="#">New</a></li>
+    <li><a href="#">Characters</a></li>
+    <li><a href="#">Series</a></li>
+    <li><a href="#">Tags</a></li>
+  </ul>
+
+  <div class="nav-search">
+    <input type="text" placeholder="Search 353K+ videos...">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+  </div>
+
+  <div class="nav-right">
+    <button class="nav-btn" onclick="showToast('Added to favorites')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
+    </button>
+    <button class="nav-btn" title="History">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/>
+      </svg>
+    </button>
+    <button class="nav-btn-primary nav-btn">Sign In</button>
+  </div>
+</nav>
+
+<!-- ─── HERO BILLBOARD ────────────────────────────── -->
+<section class="hero">
+  <div class="hero-img-placeholder"></div>
+  <div class="hero-figure"></div>
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Featured Today
+    </div>
+    <h1 class="hero-title">Kaguya-sama:<br>Love is War</h1>
+    <div class="hero-meta">
+      <span class="score">97% Match</span>
+      <span>2024</span>
+      <span class="tag">Romance</span>
+      <span class="tag">Comedy</span>
+      <span class="tag">4K</span>
+    </div>
+    <p class="hero-desc">
+      A stunning animated adaptation featuring Kaguya and Shirogane in their most passionate encounter yet. Beautifully animated with fluid motion and expressive character art. Premium quality, uncensored.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-play" onclick="showToast('Playing...')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+        Play
+      </button>
+      <button class="btn-more">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+        </svg>
+        More Info
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ─── MAIN CONTENT ──────────────────────────────── -->
+<main class="main">
+
+  <!-- Continue Watching -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-title">Continue Watching</span>
+      <a href="#" class="section-see-all">See All <span>›</span></a>
+    </div>
+    <div class="carousel-wrap">
+      <button class="carousel-arrow left" onclick="scrollLeft(this)">‹</button>
+      <div class="carousel">
+
+        <!-- Continue Card 1 -->
+        <div class="card continue-card" onclick="showToast('Resuming...')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder ph-1" style="font-size:32px; display:flex; align-items:center; justify-content:center;">🌸</div>
+            <div class="card-play-icon">
+              <svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+            </div>
+            <span class="card-duration">12:43</span>
+            <div class="progress-bar"><div class="progress-fill" style="width:65%"></div></div>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Yotsuba — Summer Scene</div>
+            <div class="card-tags">
+              <span class="card-tag">romance</span>
+              <span class="card-tag">summer</span>
+            </div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Added to favorites')">♡</button>
+              <button class="card-action-btn" onclick="event.stopPropagation()">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Continue Card 2 -->
+        <div class="card continue-card" onclick="showToast('Resuming...')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder ph-3" style="display:flex; align-items:center; justify-content:center; font-size:32px;">⚔️</div>
+            <div class="card-play-icon">
+              <svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+            </div>
+            <span class="card-duration">8:21</span>
+            <div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Asuna — Solo Mission</div>
+            <div class="card-tags">
+              <span class="card-tag">action</span>
+            </div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Added to favorites')">♡</button>
+              <button class="card-action-btn">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Continue Card 3 -->
+        <div class="card continue-card" onclick="showToast('Resuming...')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder ph-2" style="display:flex; align-items:center; justify-content:center; font-size:32px;">🌙</div>
+            <div class="card-play-icon">
+              <svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+            </div>
+            <span class="card-duration">5:08</span>
+            <div class="progress-bar"><div class="progress-fill" style="width:88%"></div></div>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Rem — Midnight Visit</div>
+            <div class="card-tags">
+              <span class="card-tag">fantasy</span>
+            </div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Added to favorites')">♡</button>
+              <button class="card-action-btn">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Continue Card 4 -->
+        <div class="card continue-card" onclick="showToast('Resuming...')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder ph-5" style="display:flex; align-items:center; justify-content:center; font-size:32px;">🔥</div>
+            <div class="card-play-icon">
+              <svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+            </div>
+            <span class="card-duration">18:55</span>
+            <div class="progress-bar"><div class="progress-fill" style="width:15%"></div></div>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Maki — Training Arc</div>
+            <div class="card-tags">
+              <span class="card-tag">jjk</span>
+            </div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Added to favorites')">♡</button>
+              <button class="card-action-btn">+</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <button class="carousel-arrow right" onclick="scrollRight(this)">›</button>
+    </div>
+  </section>
+
+  <!-- Tag filter strip -->
+  <div class="tag-strip">
+    <button class="tag-pill active">All</button>
+    <button class="tag-pill">Uncensored</button>
+    <button class="tag-pill">4K</button>
+    <button class="tag-pill">Doujin</button>
+    <button class="tag-pill">Long (20min+)</button>
+    <button class="tag-pill">Shorts</button>
+    <button class="tag-pill">New Today</button>
+    <button class="tag-pill">Top Rated</button>
+    <button class="tag-pill">3D Animated</button>
+    <button class="tag-pill">Sound</button>
+  </div>
+
+  <!-- Trending Now -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-title">Trending Now</span>
+      <a href="#" class="section-see-all">See All ›</a>
+    </div>
+    <div class="carousel-wrap">
+      <button class="carousel-arrow left" onclick="scrollLeft(this)">‹</button>
+      <div class="carousel">
+        <!-- 10 cards -->
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb ph-1">
+            <div class="thumb-placeholder ph-1" style="display:flex;align-items:center;justify-content:center;font-size:26px;">🌸</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score">★ 97</span>
+            <span class="card-duration">8:12</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Kaguya — Confession Scene</div>
+            <div class="card-tags"><span class="card-tag">romance</span><span class="card-tag">4K</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn" onclick="event.stopPropagation()">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb ph-3">
+            <div class="thumb-placeholder ph-3" style="display:flex;align-items:center;justify-content:center;font-size:26px;">⚡</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score">★ 95</span>
+            <span class="card-duration">15:44</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Mikasa — After Battle</div>
+            <div class="card-tags"><span class="card-tag">aot</span><span class="card-tag">uncensored</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb ph-2">
+            <div class="thumb-placeholder ph-2" style="display:flex;align-items:center;justify-content:center;font-size:26px;">🌊</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score">★ 94</span>
+            <span class="card-duration">6:30</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Nami — Treasure Hunt</div>
+            <div class="card-tags"><span class="card-tag">one piece</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb ph-6">
+            <div class="thumb-placeholder ph-6" style="display:flex;align-items:center;justify-content:center;font-size:26px;">🏮</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score">★ 93</span>
+            <span class="card-duration">22:15</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Hinata — Graduation Night</div>
+            <div class="card-tags"><span class="card-tag">naruto</span><span class="card-tag">long</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb ph-7">
+            <div class="thumb-placeholder ph-7" style="display:flex;align-items:center;justify-content:center;font-size:26px;">🌟</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score">★ 92</span>
+            <span class="card-duration">4:58</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Zero Two — Wild Dance</div>
+            <div class="card-tags"><span class="card-tag">darling</span><span class="card-tag">3D</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb ph-8">
+            <div class="thumb-placeholder ph-8" style="display:flex;align-items:center;justify-content:center;font-size:26px;">🌺</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score">★ 91</span>
+            <span class="card-duration">11:02</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Boa Hancock — Empress</div>
+            <div class="card-tags"><span class="card-tag">one piece</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb ph-9">
+            <div class="thumb-placeholder ph-9" style="display:flex;align-items:center;justify-content:center;font-size:26px;">🎋</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score">★ 90</span>
+            <span class="card-duration">9:35</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Erza Scarlet — S-Class</div>
+            <div class="card-tags"><span class="card-tag">fairy tail</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb ph-4">
+            <div class="thumb-placeholder ph-4" style="display:flex;align-items:center;justify-content:center;font-size:26px;">🍃</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score">★ 89</span>
+            <span class="card-duration">7:14</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Bulma — Dragon Ball Z</div>
+            <div class="card-tags"><span class="card-tag">dbz</span><span class="card-tag">4K</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb ph-5">
+            <div class="thumb-placeholder ph-5" style="display:flex;align-items:center;justify-content:center;font-size:26px;">🔮</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score">★ 88</span>
+            <span class="card-duration">3:45</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Megumin — Explosion</div>
+            <div class="card-tags"><span class="card-tag">konosuba</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb ph-6">
+            <div class="thumb-placeholder ph-6" style="display:flex;align-items:center;justify-content:center;font-size:26px;">💎</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score">★ 87</span>
+            <span class="card-duration">13:22</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Violet Evergarden — Letters</div>
+            <div class="card-tags"><span class="card-tag">romance</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <button class="carousel-arrow right" onclick="scrollRight(this)">›</button>
+    </div>
+  </section>
+
+  <!-- Top Rated (rank style) -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-title">Top Rated All Time</span>
+      <a href="#" class="section-see-all">See All ›</a>
+    </div>
+    <div class="carousel-wrap">
+      <button class="carousel-arrow left" onclick="scrollLeft(this)">‹</button>
+      <div class="carousel" style="align-items:flex-end; padding-bottom:16px;">
+
+        <div class="rank-card" onclick="showToast('Opening #1...')">
+          <span class="rank-number">1</span>
+          <div class="rank-thumb">
+            <div class="thumb-placeholder ph-1" style="height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;">🏆</div>
+          </div>
+        </div>
+
+        <div class="rank-card" onclick="showToast('Opening #2...')">
+          <span class="rank-number">2</span>
+          <div class="rank-thumb">
+            <div class="thumb-placeholder ph-3" style="height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;">🥈</div>
+          </div>
+        </div>
+
+        <div class="rank-card" onclick="showToast('Opening #3...')">
+          <span class="rank-number">3</span>
+          <div class="rank-thumb">
+            <div class="thumb-placeholder ph-2" style="height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;">🥉</div>
+          </div>
+        </div>
+
+        <div class="rank-card" onclick="showToast('Opening #4...')">
+          <span class="rank-number">4</span>
+          <div class="rank-thumb">
+            <div class="thumb-placeholder ph-7" style="height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;">⭐</div>
+          </div>
+        </div>
+
+        <div class="rank-card" onclick="showToast('Opening #5...')">
+          <span class="rank-number">5</span>
+          <div class="rank-thumb">
+            <div class="thumb-placeholder ph-8" style="height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;">✨</div>
+          </div>
+        </div>
+
+        <div class="rank-card" onclick="showToast('Opening #6...')">
+          <span class="rank-number">6</span>
+          <div class="rank-thumb">
+            <div class="thumb-placeholder ph-5" style="height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;">💫</div>
+          </div>
+        </div>
+
+        <div class="rank-card" onclick="showToast('Opening #7...')">
+          <span class="rank-number">7</span>
+          <div class="rank-thumb">
+            <div class="thumb-placeholder ph-9" style="height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;">🌟</div>
+          </div>
+        </div>
+
+      </div>
+      <button class="carousel-arrow right" onclick="scrollRight(this)">›</button>
+    </div>
+  </section>
+
+  <!-- Spotlight: Popular Series -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-title">Popular Series</span>
+      <a href="#" class="section-see-all">Browse Series ›</a>
+    </div>
+    <div class="spotlight-grid">
+      <div class="spotlight-card" onclick="showToast('Opening series...')">
+        <div class="thumb-placeholder ph-1" style="height:100%;display:flex;align-items:center;justify-content:center;font-size:48px;">🌸</div>
+        <div class="spotlight-overlay">
+          <div class="spotlight-title">Sword Art Online</div>
+          <div class="spotlight-meta">48 videos · 97% match</div>
+        </div>
+      </div>
+      <div class="spotlight-card" onclick="showToast('Opening series...')">
+        <div class="thumb-placeholder ph-3" style="height:100%;display:flex;align-items:center;justify-content:center;font-size:40px;">⚔️</div>
+        <div class="spotlight-overlay">
+          <div class="spotlight-title">Attack on Titan</div>
+          <div class="spotlight-meta">32 videos · 95% match</div>
+        </div>
+      </div>
+      <div class="spotlight-card" onclick="showToast('Opening series...')">
+        <div class="thumb-placeholder ph-7" style="height:100%;display:flex;align-items:center;justify-content:center;font-size:40px;">🌊</div>
+        <div class="spotlight-overlay">
+          <div class="spotlight-title">One Piece</div>
+          <div class="spotlight-meta">61 videos · 93% match</div>
+        </div>
+      </div>
+      <div class="spotlight-card" onclick="showToast('Opening series...')">
+        <div class="thumb-placeholder ph-2" style="height:100%;display:flex;align-items:center;justify-content:center;font-size:40px;">🌙</div>
+        <div class="spotlight-overlay">
+          <div class="spotlight-title">Re:Zero</div>
+          <div class="spotlight-meta">27 videos · 92% match</div>
+        </div>
+      </div>
+      <div class="spotlight-card" onclick="showToast('Opening series...')">
+        <div class="thumb-placeholder ph-6" style="height:100%;display:flex;align-items:center;justify-content:center;font-size:40px;">🔥</div>
+        <div class="spotlight-overlay">
+          <div class="spotlight-title">Jujutsu Kaisen</div>
+          <div class="spotlight-meta">19 videos · 91% match</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular in: Romance -->
+  <section class="section" style="padding-top:8px;">
+    <div class="section-header">
+      <span class="section-title">Popular in <span style="color:var(--red)">Romance</span></span>
+      <a href="#" class="section-see-all">See All ›</a>
+    </div>
+    <div class="carousel-wrap">
+      <button class="carousel-arrow left" onclick="scrollLeft(this)">‹</button>
+      <div class="carousel">
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder ph-1" style="display:flex;align-items:center;justify-content:center;font-size:26px;">💗</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score">★ 96</span>
+            <span class="card-duration">16:08</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Komi-San — First Love</div>
+            <div class="card-tags"><span class="card-tag">romance</span><span class="card-tag">school</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder ph-8" style="display:flex;align-items:center;justify-content:center;font-size:26px;">💞</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score">★ 94</span>
+            <span class="card-duration">11:30</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Marin Kitagawa — Cosplay</div>
+            <div class="card-tags"><span class="card-tag">romance</span><span class="card-tag">4K</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder ph-4" style="display:flex;align-items:center;justify-content:center;font-size:26px;">🌷</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score">★ 93</span>
+            <span class="card-duration">9:17</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Tohru — Dragon Maid</div>
+            <div class="card-tags"><span class="card-tag">romance</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder ph-2" style="display:flex;align-items:center;justify-content:center;font-size:26px;">🌹</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score">★ 91</span>
+            <span class="card-duration">7:44</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Akane — Date Night</div>
+            <div class="card-tags"><span class="card-tag">romance</span><span class="card-tag">new</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder ph-9" style="display:flex;align-items:center;justify-content:center;font-size:26px;">🫶</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score">★ 90</span>
+            <span class="card-duration">14:55</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Nino — The Quintessential</div>
+            <div class="card-tags"><span class="card-tag">romance</span><span class="card-tag">twin</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder ph-5" style="display:flex;align-items:center;justify-content:center;font-size:26px;">💝</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score">★ 89</span>
+            <span class="card-duration">5:23</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Hori-san — After School</div>
+            <div class="card-tags"><span class="card-tag">romance</span><span class="card-tag">horimiya</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder ph-6" style="display:flex;align-items:center;justify-content:center;font-size:26px;">💓</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score">★ 88</span>
+            <span class="card-duration">10:01</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Yui — After Hours</div>
+            <div class="card-tags"><span class="card-tag">romance</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder ph-7" style="display:flex;align-items:center;justify-content:center;font-size:26px;">💖</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score">★ 87</span>
+            <span class="card-duration">8:39</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Shinobu — Butterfly</div>
+            <div class="card-tags"><span class="card-tag">kimetsu</span><span class="card-tag">romance</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <button class="carousel-arrow right" onclick="scrollRight(this)">›</button>
+    </div>
+  </section>
+
+  <!-- New Releases -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-title">New Releases</span>
+      <a href="#" class="section-see-all">See All ›</a>
+    </div>
+    <div class="carousel-wrap">
+      <button class="carousel-arrow left" onclick="scrollLeft(this)">‹</button>
+      <div class="carousel">
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder ph-9" style="display:flex;align-items:center;justify-content:center;font-size:26px;">🆕</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score" style="background:rgba(229,9,20,0.85);color:white;">NEW</span>
+            <span class="card-duration">18:24</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Frieren — Beyond Journey's End</div>
+            <div class="card-tags"><span class="card-tag">adventure</span><span class="card-tag">magic</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder ph-4" style="display:flex;align-items:center;justify-content:center;font-size:26px;">✨</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score" style="background:rgba(229,9,20,0.85);color:white;">NEW</span>
+            <span class="card-duration">6:15</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Anya — Spy x Family</div>
+            <div class="card-tags"><span class="card-tag">comedy</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder ph-6" style="display:flex;align-items:center;justify-content:center;font-size:26px;">🌙</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score" style="background:rgba(229,9,20,0.85);color:white;">NEW</span>
+            <span class="card-duration">12:40</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Suzume — Door</div>
+            <div class="card-tags"><span class="card-tag">miyazaki</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder ph-2" style="display:flex;align-items:center;justify-content:center;font-size:26px;">⚡</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score" style="background:rgba(229,9,20,0.85);color:white;">NEW</span>
+            <span class="card-duration">4:50</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Nezuko — Demon Slayer</div>
+            <div class="card-tags"><span class="card-tag">kimetsu</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder ph-3" style="display:flex;align-items:center;justify-content:center;font-size:26px;">🌸</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score" style="background:rgba(229,9,20,0.85);color:white;">NEW</span>
+            <span class="card-duration">21:10</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Mitsuri — Love Pillar</div>
+            <div class="card-tags"><span class="card-tag">kimetsu</span><span class="card-tag">long</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder ph-5" style="display:flex;align-items:center;justify-content:center;font-size:26px;">🔮</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score" style="background:rgba(229,9,20,0.85);color:white;">NEW</span>
+            <span class="card-duration">7:33</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Power — Chainsaw Man</div>
+            <div class="card-tags"><span class="card-tag">csm</span><span class="card-tag">action</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="showToast('Opening...')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder ph-8" style="display:flex;align-items:center;justify-content:center;font-size:26px;">💎</div>
+            <div class="card-play-icon"><svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
+            <span class="card-score" style="background:rgba(229,9,20,0.85);color:white;">NEW</span>
+            <span class="card-duration">9:48</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Makima — Control Devil</div>
+            <div class="card-tags"><span class="card-tag">csm</span></div>
+            <div class="card-actions">
+              <button class="card-action-btn" onclick="event.stopPropagation();showToast('Favorited')">♡</button>
+              <button class="card-action-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <button class="carousel-arrow right" onclick="scrollRight(this)">›</button>
+    </div>
+  </section>
+
+  <!-- Stats bar -->
+  <div style="
+    margin: 16px 4% 32px;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  ">
+    <div style="display:flex;align-items:center;gap:32px;flex-wrap:wrap;">
+      <div>
+        <div style="font-size:24px;font-weight:800;color:var(--white);letter-spacing:-0.5px;">353,000+</div>
+        <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;">Free Videos</div>
+      </div>
+      <div style="width:1px;height:36px;background:rgba(255,255,255,0.08);"></div>
+      <div>
+        <div style="font-size:24px;font-weight:800;color:var(--white);letter-spacing:-0.5px;">4K</div>
+        <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;">Ultra HD</div>
+      </div>
+      <div style="width:1px;height:36px;background:rgba(255,255,255,0.08);"></div>
+      <div>
+        <div style="font-size:24px;font-weight:800;color:var(--white);letter-spacing:-0.5px;">Daily</div>
+        <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;">Updated</div>
+      </div>
+      <div style="width:1px;height:36px;background:rgba(255,255,255,0.08);"></div>
+      <div>
+        <div style="font-size:24px;font-weight:800;color:var(--white);letter-spacing:-0.5px;">Free</div>
+        <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;">No Account Needed</div>
+      </div>
+    </div>
+    <button onclick="showToast('Exploring 353K+ videos...')" style="
+      background:var(--red);
+      color:white;
+      border:none;
+      padding:10px 24px;
+      border-radius:4px;
+      font-size:14px;
+      font-weight:700;
+      cursor:pointer;
+      white-space:nowrap;
+      transition:background 0.15s;
+    " onmouseover="this.style.background='#f40612'" onmouseout="this.style.background='#e50914'">
+      Explore All Videos
+    </button>
+  </div>
+
+</main>
+
+<!-- ─── FOOTER ─────────────────────────────────────── -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h4>Browse</h4>
+      <a href="#">Trending Now</a>
+      <a href="#">New Releases</a>
+      <a href="#">Top Rated</a>
+      <a href="#">Most Viewed</a>
+      <a href="#">Shorts (30s-3min)</a>
+      <a href="#">Uncensored</a>
+      <a href="#">4K Ultra HD</a>
+    </div>
+    <div class="footer-col">
+      <h4>Characters</h4>
+      <a href="#">Asuna Yuuki</a>
+      <a href="#">Zero Two</a>
+      <a href="#">Mikasa Ackerman</a>
+      <a href="#">Hinata Hyuga</a>
+      <a href="#">Rem</a>
+      <a href="#">Nami</a>
+      <a href="#">All Characters →</a>
+    </div>
+    <div class="footer-col">
+      <h4>Series</h4>
+      <a href="#">Sword Art Online</a>
+      <a href="#">Attack on Titan</a>
+      <a href="#">Naruto</a>
+      <a href="#">One Piece</a>
+      <a href="#">Demon Slayer</a>
+      <a href="#">Re:Zero</a>
+      <a href="#">All Series →</a>
+    </div>
+    <div class="footer-col">
+      <h4>About</h4>
+      <a href="#">About iku.gg</a>
+      <a href="#">DMCA / Report</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+      <a href="#">Content Policy</a>
+      <a href="#">Advertise</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <a href="#" class="footer-logo">iku<span style="display:inline-block;width:5px;height:5px;background:var(--red);border-radius:50%;margin-left:2px;vertical-align:super;position:relative;top:-2px;"></span></a>
+    <span>This site is intended for adults 18+ only. All characters depicted are fictional adults.</span>
+    <span>© 2026 iku.gg</span>
+  </div>
+</footer>
+
+<!-- ─── MOBILE BOTTOM NAV ─────────────────────────── -->
+<nav class="mobile-nav">
+  <div class="mobile-nav-inner">
+    <button class="mobile-nav-item active">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      Home
+    </button>
+    <button class="mobile-nav-item" onclick="showToast('Search coming soon')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      Search
+    </button>
+    <button class="mobile-nav-item shorts-btn" onclick="showToast('Opening Shorts...')">
+      <svg viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px;"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+      Shorts
+    </button>
+    <button class="mobile-nav-item" onclick="showToast('Trending page')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      Trending
+    </button>
+    <button class="mobile-nav-item" onclick="showToast('More options')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
+      More
+    </button>
+  </div>
+</nav>
+
+<!-- ─── SCRIPTS ────────────────────────────────────── -->
+<script>
+  // Nav scroll behavior
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 60) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  }, { passive: true });
+
+  // Toast notification
+  let toastTimer = null;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  // Carousel scroll helpers
+  function scrollRight(btn) {
+    const carousel = btn.closest('.carousel-wrap').querySelector('.carousel');
+    const card = carousel.querySelector('.card, .rank-card, .continue-card');
+    const scrollAmount = card ? (card.offsetWidth + 6) * 4 : carousel.offsetWidth * 0.8;
+    carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  }
+  function scrollLeft(btn) {
+    const carousel = btn.closest('.carousel-wrap').querySelector('.carousel');
+    const card = carousel.querySelector('.card, .rank-card, .continue-card');
+    const scrollAmount = card ? (card.offsetWidth + 6) * 4 : carousel.offsetWidth * 0.8;
+    carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+  }
+
+  // Tag pill toggle
+  document.querySelectorAll('.tag-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.tag-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      showToast('Filtering by: ' + pill.textContent.trim());
+    });
+  });
+
+  // Mobile nav tab switching
+  document.querySelectorAll('.mobile-nav-item').forEach(item => {
+    item.addEventListener('click', function() {
+      document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  // Card hover: ensure z-index resets on cards at edges of viewport
+  document.querySelectorAll('.carousel').forEach(carousel => {
+    carousel.addEventListener('mouseover', e => {
+      const card = e.target.closest('.card, .rank-card, .continue-card');
+      if (!card) return;
+      const cards = [...carousel.querySelectorAll('.card, .rank-card, .continue-card')];
+      const idx = cards.indexOf(card);
+      if (idx === 0) {
+        card.style.transformOrigin = 'left center';
+      } else if (idx === cards.length - 1) {
+        card.style.transformOrigin = 'right center';
+      } else {
+        card.style.transformOrigin = 'center center';
+      }
+    });
+  });
+
+  // Search input interaction
+  const searchInput = document.querySelector('.nav-search input');
+  if (searchInput) {
+    searchInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && searchInput.value.trim()) {
+        showToast('Searching: ' + searchInput.value.trim());
+      }
+    });
+  }
+</script>
+</body>
+</html>

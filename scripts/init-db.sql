@@ -35,3 +35,14 @@ CREATE INDEX IF NOT EXISTS idx_videos_tags ON videos USING GIN(tags);
 CREATE INDEX IF NOT EXISTS idx_videos_characters ON videos USING GIN(characters);
 CREATE INDEX IF NOT EXISTS idx_videos_copyrights ON videos USING GIN(copyrights);
 CREATE INDEX IF NOT EXISTS idx_videos_source_score ON videos(source, score DESC);
+
+-- Persistent cache for resolved video URLs (rule34video, WP sites).
+-- Survives container restarts and unlimited size.
+CREATE TABLE IF NOT EXISTS resolved_urls (
+  page_url    TEXT PRIMARY KEY,
+  video_url   TEXT NOT NULL,
+  expires_at  TIMESTAMPTZ NOT NULL,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_resolved_urls_expires ON resolved_urls(expires_at);

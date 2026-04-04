@@ -1,0 +1,2424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iku.gg — 353K+ Free Animated Hentai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       DESIGN TOKENS
+    ============================================================ */
+    :root {
+      --bg:          #1a1625;
+      --surface:     #231e30;
+      --card:        #2d2640;
+      --card-hover:  #352f4d;
+
+      --pink:        #ff6b9d;
+      --purple:      #c084fc;
+      --cyan:        #67e8f9;
+      --gold:        #fbbf24;
+      --green:       #4ade80;
+      --orange:      #fb923c;
+      --red:         #f87171;
+
+      --text:        #f0e6ff;
+      --text-muted:  #8b7fa8;
+      --text-dim:    #6b5f82;
+
+      --radius-card: 12px;
+      --radius-pill: 99px;
+      --radius-lg:   16px;
+      --radius-xl:   24px;
+
+      --sidebar-w:   220px;
+      --topbar-h:    64px;
+    }
+
+    /* ============================================================
+       RESET + BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Nunito', 'Quicksand', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; outline: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ============================================================
+       FLOATING SPARKLES (CSS only)
+    ============================================================ */
+    .sparkles-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .sparkle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0;
+      animation: sparkle-float linear infinite;
+    }
+    .sparkle:nth-child(1)  { width: 4px;  height: 4px;  background: var(--pink);   left: 8%;   animation-duration: 12s; animation-delay: 0s;   }
+    .sparkle:nth-child(2)  { width: 3px;  height: 3px;  background: var(--purple); left: 18%;  animation-duration: 9s;  animation-delay: 2s;   }
+    .sparkle:nth-child(3)  { width: 5px;  height: 5px;  background: var(--cyan);   left: 28%;  animation-duration: 14s; animation-delay: 4s;   }
+    .sparkle:nth-child(4)  { width: 3px;  height: 3px;  background: var(--gold);   left: 42%;  animation-duration: 10s; animation-delay: 1s;   }
+    .sparkle:nth-child(5)  { width: 4px;  height: 4px;  background: var(--pink);   left: 56%;  animation-duration: 11s; animation-delay: 3s;   }
+    .sparkle:nth-child(6)  { width: 6px;  height: 6px;  background: var(--purple); left: 68%;  animation-duration: 13s; animation-delay: 5s;   }
+    .sparkle:nth-child(7)  { width: 3px;  height: 3px;  background: var(--cyan);   left: 78%;  animation-duration: 8s;  animation-delay: 0.5s; }
+    .sparkle:nth-child(8)  { width: 5px;  height: 5px;  background: var(--gold);   left: 88%;  animation-duration: 15s; animation-delay: 6s;   }
+    .sparkle:nth-child(9)  { width: 3px;  height: 3px;  background: var(--green);  left: 35%;  animation-duration: 10s; animation-delay: 7s;   }
+    .sparkle:nth-child(10) { width: 4px;  height: 4px;  background: var(--orange); left: 60%;  animation-duration: 12s; animation-delay: 2.5s; }
+
+    @keyframes sparkle-float {
+      0%   { transform: translateY(100vh) rotate(0deg);   opacity: 0; }
+      10%  { opacity: 0.6; }
+      90%  { opacity: 0.3; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* ============================================================
+       LAYOUT SHELL
+    ============================================================ */
+    .layout {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ============================================================
+       SIDEBAR
+    ============================================================ */
+    .sidebar {
+      width: var(--sidebar-w);
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      overflow-y: auto;
+      z-index: 100;
+      padding-bottom: 24px;
+    }
+
+    .sidebar::-webkit-scrollbar { width: 0; }
+
+    /* Logo */
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 20px 20px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 900;
+      color: #fff;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(255,107,157,0.4);
+    }
+
+    .logo-text {
+      font-size: 22px;
+      font-weight: 900;
+      background: linear-gradient(90deg, var(--pink), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+    }
+
+    .logo-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    /* Nav sections */
+    .sidebar-section {
+      padding: 16px 12px 8px;
+    }
+
+    .sidebar-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-dim);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0 8px 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 14px;
+      position: relative;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+    }
+
+    .nav-item.active {
+      background: linear-gradient(135deg, rgba(255,107,157,0.2), rgba(192,132,252,0.2));
+      color: var(--text);
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 60%;
+      background: linear-gradient(to bottom, var(--pink), var(--purple));
+      border-radius: var(--radius-pill);
+    }
+
+    .nav-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .nav-item.active .nav-icon {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      box-shadow: 0 2px 8px rgba(255,107,157,0.3);
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      background: var(--pink);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: var(--radius-pill);
+    }
+
+    /* Sidebar tags */
+    .sidebar-tags {
+      padding: 8px 12px 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .sidebar-tag {
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .sidebar-tag:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    /* ============================================================
+       MAIN CONTENT
+    ============================================================ */
+    .main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ============================================================
+       TOPBAR
+    ============================================================ */
+    .topbar {
+      height: var(--topbar-h);
+      background: rgba(26,22,37,0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 16px;
+    }
+
+    /* Search bar */
+    .search-wrap {
+      flex: 1;
+      max-width: 480px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--card);
+      border: 1.5px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-pill);
+      padding: 10px 20px 10px 44px;
+      color: var(--text);
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--pink);
+      box-shadow: 0 0 0 3px rgba(255,107,157,0.15);
+    }
+
+    .search-input::placeholder { color: var(--text-dim); }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+    }
+
+    .topbar-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--card);
+      border: 1.5px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .topbar-btn:hover {
+      background: var(--card-hover);
+      transform: scale(1.05);
+    }
+
+    .topbar-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 16px;
+      height: 16px;
+      background: var(--pink);
+      border-radius: 50%;
+      font-size: 9px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--bg);
+    }
+
+    .topbar-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .topbar-avatar:hover {
+      border-color: var(--pink);
+    }
+
+    /* Stats chip */
+    .stats-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, rgba(255,107,157,0.15), rgba(192,132,252,0.15));
+      border: 1px solid rgba(255,107,157,0.25);
+      border-radius: var(--radius-pill);
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--purple);
+      white-space: nowrap;
+    }
+
+    /* ============================================================
+       SCROLL AREA
+    ============================================================ */
+    .scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 24px 100px;
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+
+    .scroll-area::-webkit-scrollbar { width: 6px; }
+    .scroll-area::-webkit-scrollbar-track { background: transparent; }
+    .scroll-area::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+    }
+
+    /* ============================================================
+       HERO — SPLIT LAYOUT
+    ============================================================ */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      background: linear-gradient(135deg, #1e1533 0%, #231e30 50%, #1a1625 100%);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      min-height: 360px;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    /* Gradient mesh behind hero */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -10%;
+      width: 60%;
+      height: 200%;
+      background: radial-gradient(ellipse, rgba(255,107,157,0.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 48px 40px 48px 48px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,107,157,0.15);
+      border: 1px solid rgba(255,107,157,0.3);
+      color: var(--pink);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      margin-bottom: 20px;
+      width: fit-content;
+      animation: bounce-in 0.5s ease both;
+    }
+
+    .hero-title {
+      font-size: clamp(28px, 3.5vw, 42px);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      animation: slide-up 0.5s 0.1s ease both;
+    }
+
+    .hero-title .gradient-text {
+      background: linear-gradient(90deg, var(--pink), var(--purple), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      color: var(--text-muted);
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 28px;
+      line-height: 1.6;
+      max-width: 380px;
+      animation: slide-up 0.5s 0.2s ease both;
+    }
+
+    .hero-sub strong {
+      color: var(--cyan);
+      font-weight: 700;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      animation: slide-up 0.5s 0.3s ease both;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 15px;
+      padding: 12px 24px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 20px rgba(255,107,157,0.4);
+      border: none;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 28px rgba(255,107,157,0.5);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      padding: 12px 24px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      border: 1.5px solid rgba(255,255,255,0.12);
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.12);
+      transform: translateY(-2px);
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 24px;
+      margin-top: 28px;
+      animation: slide-up 0.5s 0.4s ease both;
+    }
+
+    .hero-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .hero-stat-num {
+      font-size: 22px;
+      font-weight: 900;
+      background: linear-gradient(90deg, var(--pink), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Hero right — illustration area */
+    .hero-right {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-illustration {
+      width: 100%;
+      height: 100%;
+      min-height: 300px;
+      background: linear-gradient(135deg,
+        rgba(192,132,252,0.2) 0%,
+        rgba(255,107,157,0.15) 30%,
+        rgba(103,232,249,0.1) 60%,
+        rgba(251,191,36,0.1) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* Animated orbs inside hero illustration */
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(40px);
+      animation: orb-float ease-in-out infinite;
+    }
+
+    .hero-orb-1 {
+      width: 180px; height: 180px;
+      background: rgba(255,107,157,0.35);
+      top: 20%; left: 20%;
+      animation-duration: 8s;
+      animation-delay: 0s;
+    }
+
+    .hero-orb-2 {
+      width: 140px; height: 140px;
+      background: rgba(192,132,252,0.4);
+      top: 40%; right: 20%;
+      animation-duration: 10s;
+      animation-delay: 2s;
+    }
+
+    .hero-orb-3 {
+      width: 100px; height: 100px;
+      background: rgba(103,232,249,0.35);
+      bottom: 20%; left: 35%;
+      animation-duration: 7s;
+      animation-delay: 1s;
+    }
+
+    @keyframes orb-float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%       { transform: translate(15px, -20px) scale(1.05); }
+      66%       { transform: translate(-10px, 10px) scale(0.95); }
+    }
+
+    .hero-play-card {
+      position: relative;
+      z-index: 2;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      width: 200px;
+    }
+
+    .hero-play-thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--pink), var(--purple), var(--cyan));
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+    }
+
+    .hero-play-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .hero-play-meta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Floating badges */
+    .hero-badge-float {
+      position: absolute;
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+      z-index: 3;
+      animation: badge-bob ease-in-out infinite;
+    }
+
+    .hero-badge-float-1 {
+      top: 16px; left: 16px;
+      color: var(--green);
+      border-color: rgba(74,222,128,0.3);
+      animation-duration: 5s;
+      animation-delay: 0s;
+    }
+
+    .hero-badge-float-2 {
+      bottom: 16px; right: 16px;
+      color: var(--gold);
+      border-color: rgba(251,191,36,0.3);
+      animation-duration: 6s;
+      animation-delay: 1s;
+    }
+
+    .hero-badge-float-3 {
+      top: 50%; left: 12px;
+      transform: translateY(-50%);
+      color: var(--cyan);
+      border-color: rgba(103,232,249,0.3);
+      animation-duration: 7s;
+      animation-delay: 0.5s;
+    }
+
+    @keyframes badge-bob {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-6px); }
+    }
+
+    .hero-badge-float-1 { animation-name: badge-bob; }
+    .hero-badge-float-2 { animation-name: badge-bob; }
+    .hero-badge-float-3 {
+      animation-name: badge-bob-mid;
+    }
+    @keyframes badge-bob-mid {
+      0%, 100% { transform: translateY(-50%); }
+      50%       { transform: translateY(calc(-50% - 6px)); }
+    }
+
+    /* ============================================================
+       SECTION HEADER
+    ============================================================ */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-link {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--pink);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .section-link:hover { opacity: 0.7; }
+
+    /* ============================================================
+       VIDEO CARDS — POSTER STYLE (trending)
+    ============================================================ */
+    .cards-scroll {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.1) transparent;
+    }
+
+    .cards-scroll::-webkit-scrollbar { height: 4px; }
+    .cards-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.12);
+      border-radius: 2px;
+    }
+
+    .poster-card {
+      flex-shrink: 0;
+      width: 180px;
+      border-radius: var(--radius-card);
+      background: var(--card);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .poster-card:hover {
+      transform: translateY(-6px) scale(1.02);
+    }
+
+    .poster-card:hover .poster-thumb {
+      filter: brightness(1.1);
+    }
+
+    .poster-card.featured {
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      position: relative;
+    }
+
+    /* Gradient border for featured */
+    .poster-card.featured::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      padding: 2px;
+      border-radius: var(--radius-card);
+      background: linear-gradient(135deg, var(--pink), var(--purple), var(--cyan));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .poster-thumb {
+      width: 100%;
+      aspect-ratio: 2/3;
+      position: relative;
+      overflow: hidden;
+      transition: filter 0.25s;
+    }
+
+    .poster-thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Gradient thumbnail placeholders */
+    .thumb-grad-1  { background: linear-gradient(160deg, #ff6b9d 0%, #c084fc 50%, #67e8f9 100%); }
+    .thumb-grad-2  { background: linear-gradient(160deg, #f87171 0%, #fb923c 50%, #fbbf24 100%); }
+    .thumb-grad-3  { background: linear-gradient(160deg, #4ade80 0%, #67e8f9 50%, #c084fc 100%); }
+    .thumb-grad-4  { background: linear-gradient(160deg, #c084fc 0%, #818cf8 50%, #38bdf8 100%); }
+    .thumb-grad-5  { background: linear-gradient(160deg, #fbbf24 0%, #f87171 50%, #ff6b9d 100%); }
+    .thumb-grad-6  { background: linear-gradient(160deg, #67e8f9 0%, #4ade80 50%, #fbbf24 100%); }
+    .thumb-grad-7  { background: linear-gradient(160deg, #ff6b9d 0%, #fbbf24 50%, #4ade80 100%); }
+    .thumb-grad-8  { background: linear-gradient(160deg, #818cf8 0%, #c084fc 50%, #ff6b9d 100%); }
+    .thumb-grad-9  { background: linear-gradient(160deg, #fb923c 0%, #fbbf24 50%, #67e8f9 100%); }
+    .thumb-grad-10 { background: linear-gradient(160deg, #38bdf8 0%, #818cf8 50%, #f87171 100%); }
+    .thumb-grad-11 { background: linear-gradient(160deg, #4ade80 0%, #c084fc 50%, #fb923c 100%); }
+    .thumb-grad-12 { background: linear-gradient(160deg, #ff6b9d 0%, #c084fc 40%, #4ade80 100%); }
+
+    .thumb-placeholder-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 40px;
+      opacity: 0.6;
+    }
+
+    /* Duration badge */
+    .duration-badge {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.75);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Trending rank */
+    .rank-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 900;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(255,107,157,0.5);
+      z-index: 2;
+    }
+
+    .poster-info {
+      padding: 10px 12px 12px;
+    }
+
+    .poster-tag {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      font-size: 10px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .poster-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+      margin-bottom: 6px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .poster-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .stars {
+      display: flex;
+      gap: 1px;
+      font-size: 11px;
+    }
+
+    .star-filled { color: var(--gold); }
+    .star-empty  { color: var(--text-dim); }
+
+    .poster-views {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Play overlay on hover */
+    .play-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 1;
+    }
+
+    .poster-card:hover .play-overlay { opacity: 1; }
+
+    .play-btn-overlay {
+      width: 52px;
+      height: 52px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      transform: scale(0.8);
+      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    .poster-card:hover .play-btn-overlay { transform: scale(1); }
+
+    /* ============================================================
+       VIDEO GRID — TOP RATED
+    ============================================================ */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .grid-card {
+      border-radius: var(--radius-card);
+      background: var(--card);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s;
+      border: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+    }
+
+    .grid-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(255,107,157,0.15);
+    }
+
+    .grid-thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .grid-thumb-inner {
+      width: 100%;
+      height: 100%;
+    }
+
+    .grid-card:hover .grid-thumb-inner {
+      filter: brightness(1.08);
+    }
+
+    .grid-info {
+      padding: 10px 12px 12px;
+    }
+
+    .grid-category {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      font-size: 10px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .grid-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+      margin-bottom: 6px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .grid-char {
+      font-size: 12px;
+      color: var(--purple);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .grid-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .rating-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .rating-num {
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .views-count {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* NEW badge */
+    .new-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: var(--green);
+      color: #0a1a0a;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.05em;
+      z-index: 2;
+    }
+
+    .hot-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: linear-gradient(90deg, #ff6b9d, #fb923c);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.05em;
+      z-index: 2;
+    }
+
+    /* ============================================================
+       CHARACTERS
+    ============================================================ */
+    .chars-scroll {
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scrollbar-width: none;
+    }
+
+    .chars-scroll::-webkit-scrollbar { display: none; }
+
+    .char-item {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    .char-item:hover { transform: translateY(-4px); }
+
+    .char-avatar-wrap {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      padding: 3px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .char-avatar-wrap.grad-pink     { background: linear-gradient(135deg, var(--pink), var(--purple)); }
+    .char-avatar-wrap.grad-cyan     { background: linear-gradient(135deg, var(--cyan), var(--green)); }
+    .char-avatar-wrap.grad-gold     { background: linear-gradient(135deg, var(--gold), var(--orange)); }
+    .char-avatar-wrap.grad-purple   { background: linear-gradient(135deg, var(--purple), #818cf8); }
+    .char-avatar-wrap.grad-green    { background: linear-gradient(135deg, var(--green), var(--cyan)); }
+    .char-avatar-wrap.grad-red      { background: linear-gradient(135deg, var(--red), var(--orange)); }
+    .char-avatar-wrap.grad-rainbow  { background: linear-gradient(135deg, var(--pink), var(--gold), var(--cyan)); }
+
+    .char-avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      border: 3px solid var(--bg);
+    }
+
+    .char-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      text-align: center;
+      max-width: 80px;
+      line-height: 1.2;
+    }
+
+    .char-count {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* ============================================================
+       GENRE TAG PILLS
+    ============================================================ */
+    .tags-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .genre-tag {
+      padding: 8px 18px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), filter 0.2s;
+      border: none;
+    }
+
+    .genre-tag:hover {
+      transform: scale(1.05) translateY(-2px);
+      filter: brightness(1.15);
+    }
+
+    /* Pastel variants */
+    .gt-pink   { background: rgba(255,107,157,0.18); color: #ff9dbf; border: 1px solid rgba(255,107,157,0.3); }
+    .gt-purple { background: rgba(192,132,252,0.18); color: #d4adff; border: 1px solid rgba(192,132,252,0.3); }
+    .gt-cyan   { background: rgba(103,232,249,0.18); color: #8ef4ff; border: 1px solid rgba(103,232,249,0.3); }
+    .gt-gold   { background: rgba(251,191,36,0.18);  color: #ffcf5c; border: 1px solid rgba(251,191,36,0.3); }
+    .gt-green  { background: rgba(74,222,128,0.18);  color: #86efad; border: 1px solid rgba(74,222,128,0.3); }
+    .gt-red    { background: rgba(248,113,113,0.18); color: #fca5a5; border: 1px solid rgba(248,113,113,0.3); }
+    .gt-orange { background: rgba(251,146,60,0.18);  color: #fdba74; border: 1px solid rgba(251,146,60,0.3); }
+    .gt-blue   { background: rgba(96,165,250,0.18);  color: #93c5fd; border: 1px solid rgba(96,165,250,0.3); }
+
+    /* ============================================================
+       AD PLACEHOLDER
+    ============================================================ */
+    .ad-placeholder {
+      width: 100%;
+      height: 90px;
+      border-radius: var(--radius-card);
+      border: 2px dashed rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--text-dim);
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(255,255,255,0.02);
+    }
+
+    /* ============================================================
+       ANIMATIONS
+    ============================================================ */
+    @keyframes bounce-in {
+      0%   { opacity: 0; transform: scale(0.8); }
+      60%  { transform: scale(1.05); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes slide-up {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================================
+       MOBILE BOTTOM NAV
+    ============================================================ */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background: rgba(35,30,48,0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      z-index: 1000;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .mobile-nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      height: 64px;
+      padding: 0 8px;
+    }
+
+    .mobile-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      flex: 1;
+      padding: 8px 0;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .mobile-nav-icon {
+      font-size: 22px;
+      line-height: 1;
+      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    .mobile-nav-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+
+    .mobile-nav-item.active .mobile-nav-label {
+      color: var(--pink);
+    }
+
+    .mobile-nav-item.active .mobile-nav-icon {
+      transform: scale(1.15);
+    }
+
+    /* Active pill indicator */
+    .mobile-nav-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--pink), var(--purple));
+      border-radius: var(--radius-pill);
+    }
+
+    /* Shorts button special */
+    .mobile-nav-item.shorts-btn {
+      position: relative;
+    }
+
+    .shorts-icon-wrap {
+      width: 48px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 2px 12px rgba(255,107,157,0.45);
+      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    .mobile-nav-item.shorts-btn:hover .shorts-icon-wrap,
+    .mobile-nav-item.shorts-btn.active .shorts-icon-wrap {
+      transform: scale(1.1);
+    }
+
+    /* Pulse glow on inactive shorts */
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 2px 12px rgba(255,107,157,0.45); }
+      50%       { box-shadow: 0 2px 24px rgba(255,107,157,0.75), 0 0 40px rgba(192,132,252,0.3); }
+    }
+
+    .mobile-nav-item.shorts-btn:not(.active) .shorts-icon-wrap {
+      animation: pulse-glow 3s ease-in-out infinite;
+    }
+
+    /* ============================================================
+       LOADING DOTS ANIMATION
+    ============================================================ */
+    .loading-dots {
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .loading-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      animation: dot-bounce 0.8s ease-in-out infinite;
+    }
+
+    .loading-dot:nth-child(1) { background: var(--pink);   animation-delay: 0s; }
+    .loading-dot:nth-child(2) { background: var(--purple); animation-delay: 0.15s; }
+    .loading-dot:nth-child(3) { background: var(--cyan);   animation-delay: 0.3s; }
+
+    @keyframes dot-bounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40%           { transform: translateY(-6px); }
+    }
+
+    /* ============================================================
+       FOOTER NOTE
+    ============================================================ */
+    .footer-note {
+      background: var(--surface);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-brand {
+      font-size: 16px;
+      font-weight: 900;
+      background: linear-gradient(90deg, var(--pink), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 16px;
+    }
+
+    .footer-links a {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--pink); }
+
+    .footer-disclaimer {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1200px) {
+      .video-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 960px) {
+      .sidebar { display: none; }
+      .scroll-area { padding: 20px 16px 80px; gap: 36px; }
+      .topbar { padding: 0 16px; }
+      .mobile-nav { display: block; }
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-right { display: none; }
+      .hero-left { padding: 36px 24px; }
+      .video-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 600px) {
+      .stats-chip { display: none; }
+      .hero-stats { gap: 16px; }
+      .hero-stat-num { font-size: 18px; }
+      .video-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .section-title { font-size: 18px; }
+      .poster-card { width: 150px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating sparkles -->
+  <div class="sparkles-bg" aria-hidden="true">
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+  </div>
+
+  <div class="layout">
+
+    <!-- ============================================================
+         SIDEBAR
+    ============================================================ -->
+    <aside class="sidebar" role="navigation" aria-label="Main navigation">
+
+      <!-- Logo -->
+      <div class="sidebar-logo">
+        <div class="logo-icon">iku</div>
+        <div>
+          <div class="logo-text">iku.gg ✨</div>
+          <div class="logo-sub">353K+ free videos</div>
+        </div>
+      </div>
+
+      <!-- Main nav -->
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Discover</div>
+
+        <div class="nav-item active">
+          <div class="nav-icon">🏠</div>
+          <span>Home</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">🔥</div>
+          <span>Trending</span>
+          <span class="nav-badge">Hot</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">🆕</div>
+          <span>New Releases</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">⭐</div>
+          <span>Top Rated</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">⚡</div>
+          <span>Shorts</span>
+          <span class="nav-badge" style="background: linear-gradient(90deg,var(--pink),var(--purple));">New</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">🔎</div>
+          <span>Explore</span>
+        </div>
+      </div>
+
+      <!-- Library -->
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">My Library</div>
+        <div class="nav-item">
+          <div class="nav-icon">❤️</div>
+          <span>Favorites</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">🕐</div>
+          <span>History</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">⚙️</div>
+          <span>Settings</span>
+        </div>
+      </div>
+
+      <!-- Browse by type -->
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Browse</div>
+        <div class="nav-item">
+          <div class="nav-icon">👤</div>
+          <span>Characters</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">📺</div>
+          <span>Series</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">🏷️</div>
+          <span>Tags</span>
+        </div>
+      </div>
+
+      <!-- Quick tags -->
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Quick Tags</div>
+        <div class="sidebar-tags">
+          <span class="sidebar-tag gt-pink">animated</span>
+          <span class="sidebar-tag gt-purple">3D</span>
+          <span class="sidebar-tag gt-cyan">fantasy</span>
+          <span class="sidebar-tag gt-gold">uncensored</span>
+          <span class="sidebar-tag gt-green">vanilla</span>
+          <span class="sidebar-tag gt-red">monster</span>
+          <span class="sidebar-tag gt-orange">elf</span>
+          <span class="sidebar-tag gt-blue">schoolgirl</span>
+          <span class="sidebar-tag gt-pink">catgirl</span>
+          <span class="sidebar-tag gt-purple">demon</span>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- ============================================================
+         MAIN
+    ============================================================ -->
+    <main class="main">
+
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input class="search-input" type="search" placeholder="Search characters, series, tags..." aria-label="Search">
+        </div>
+
+        <div class="stats-chip">
+          <span>✨</span>
+          <span>353,247 videos</span>
+        </div>
+
+        <div class="topbar-actions">
+          <div class="topbar-btn" title="Notifications" aria-label="Notifications">
+            🔔
+            <span class="topbar-badge">3</span>
+          </div>
+          <div class="topbar-btn" title="Favorites" aria-label="Favorites">❤️</div>
+          <div class="topbar-avatar" title="Account" aria-label="Account">👤</div>
+        </div>
+      </header>
+
+      <!-- SCROLL AREA -->
+      <div class="scroll-area">
+
+        <!-- ======================================================
+             HERO — SPLIT
+        ====================================================== -->
+        <section class="hero" aria-label="Featured content">
+
+          <div class="hero-left">
+            <div class="hero-eyebrow">
+              <span>🎌</span> #1 Anime Hentai Platform
+            </div>
+            <h1 class="hero-title">
+              The largest<br>
+              <span class="gradient-text">free hentai</span><br>
+              collection online
+            </h1>
+            <p class="hero-sub">
+              <strong>353,000+</strong> animated clips from your favourite series, characters and artists — updated daily. No account needed.
+            </p>
+            <div class="hero-ctas">
+              <button class="btn-primary">
+                <span>▶</span> Browse Now
+              </button>
+              <button class="btn-secondary">
+                <span>⚡</span> Try Shorts
+              </button>
+            </div>
+            <div class="hero-stats">
+              <div class="hero-stat">
+                <span class="hero-stat-num">353K+</span>
+                <span class="hero-stat-label">Videos</span>
+              </div>
+              <div class="hero-stat">
+                <span class="hero-stat-num">12K+</span>
+                <span class="hero-stat-label">Characters</span>
+              </div>
+              <div class="hero-stat">
+                <span class="hero-stat-num">Free</span>
+                <span class="hero-stat-label">Always</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-right">
+            <div class="hero-illustration">
+              <!-- Animated orbs -->
+              <div class="hero-orb hero-orb-1"></div>
+              <div class="hero-orb hero-orb-2"></div>
+              <div class="hero-orb hero-orb-3"></div>
+
+              <!-- Floating stats badges -->
+              <div class="hero-badge-float hero-badge-float-1">
+                <span>●</span> 1,247 online now
+              </div>
+              <div class="hero-badge-float hero-badge-float-2">
+                ⭐ 4.8 avg rating
+              </div>
+              <div class="hero-badge-float hero-badge-float-3">
+                🆕 +847 today
+              </div>
+
+              <!-- Preview card -->
+              <div class="hero-play-card">
+                <div class="hero-play-thumb thumb-grad-1">
+                  <span style="font-size:36px;">▶</span>
+                </div>
+                <div class="hero-play-title">Trending right now</div>
+                <div class="hero-play-meta">
+                  <span>⭐⭐⭐⭐⭐</span>
+                  <span>24K views</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ======================================================
+             AD PLACEHOLDER — Leaderboard
+        ====================================================== -->
+        <div class="ad-placeholder" aria-label="Advertisement">
+          <span>📢</span>
+          <span>Advertisement — 728×90 Leaderboard</span>
+        </div>
+
+        <!-- ======================================================
+             TRENDING NOW
+        ====================================================== -->
+        <section aria-label="Trending Now">
+          <div class="section-header">
+            <h2 class="section-title">🔥 Trending Now</h2>
+            <a class="section-link" href="#" aria-label="See all trending">See all →</a>
+          </div>
+
+          <div class="cards-scroll" role="list">
+
+            <!-- Card 1 — Featured -->
+            <div class="poster-card featured" role="listitem" tabindex="0">
+              <div class="poster-thumb thumb-grad-1">
+                <div class="play-overlay" aria-hidden="true">
+                  <div class="play-btn-overlay">▶</div>
+                </div>
+                <span class="rank-badge">1</span>
+                <span class="duration-badge">12:34</span>
+              </div>
+              <div class="poster-info">
+                <span class="poster-tag gt-pink">Animated</span>
+                <div class="poster-title">Asuna — Forest Spirit Dance (Uncensored)</div>
+                <div class="poster-meta">
+                  <div class="stars">⭐⭐⭐⭐⭐</div>
+                  <span class="poster-views">42K views</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="poster-card" role="listitem" tabindex="0">
+              <div class="poster-thumb thumb-grad-2">
+                <div class="play-overlay" aria-hidden="true">
+                  <div class="play-btn-overlay">▶</div>
+                </div>
+                <span class="rank-badge">2</span>
+                <span class="duration-badge">8:22</span>
+              </div>
+              <div class="poster-info">
+                <span class="poster-tag gt-purple">3D</span>
+                <div class="poster-title">Rem — Blue Night Fantasy</div>
+                <div class="poster-meta">
+                  <div class="stars">⭐⭐⭐⭐⭐</div>
+                  <span class="poster-views">38K views</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="poster-card" role="listitem" tabindex="0">
+              <div class="poster-thumb thumb-grad-3">
+                <div class="play-overlay" aria-hidden="true">
+                  <div class="play-btn-overlay">▶</div>
+                </div>
+                <span class="rank-badge">3</span>
+                <span class="duration-badge">5:47</span>
+              </div>
+              <div class="poster-info">
+                <span class="poster-tag gt-cyan">Fantasy</span>
+                <div class="poster-title">Zelda — Sacred Grove Ritual</div>
+                <div class="poster-meta">
+                  <div class="stars">⭐⭐⭐⭐<span class="star-empty">★</span></div>
+                  <span class="poster-views">31K views</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="poster-card" role="listitem" tabindex="0">
+              <div class="poster-thumb thumb-grad-4">
+                <div class="play-overlay" aria-hidden="true">
+                  <div class="play-btn-overlay">▶</div>
+                </div>
+                <span class="rank-badge">4</span>
+                <span class="duration-badge">15:00</span>
+              </div>
+              <div class="poster-info">
+                <span class="poster-tag gt-gold">Uncensored</span>
+                <div class="poster-title">Darkness — Crimson Knight Oath</div>
+                <div class="poster-meta">
+                  <div class="stars">⭐⭐⭐⭐<span class="star-empty">★</span></div>
+                  <span class="poster-views">27K views</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 5 -->
+            <div class="poster-card" role="listitem" tabindex="0">
+              <div class="poster-thumb thumb-grad-5">
+                <div class="play-overlay" aria-hidden="true">
+                  <div class="play-btn-overlay">▶</div>
+                </div>
+                <span class="rank-badge">5</span>
+                <span class="duration-badge">3:15</span>
+              </div>
+              <div class="poster-info">
+                <span class="poster-tag gt-red">Monster</span>
+                <div class="poster-title">Albedo — Demon Lord's Bride</div>
+                <div class="poster-meta">
+                  <div class="stars">⭐⭐⭐⭐⭐</div>
+                  <span class="poster-views">25K views</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 6 -->
+            <div class="poster-card" role="listitem" tabindex="0">
+              <div class="poster-thumb thumb-grad-6">
+                <div class="play-overlay" aria-hidden="true">
+                  <div class="play-btn-overlay">▶</div>
+                </div>
+                <span class="rank-badge">6</span>
+                <span class="duration-badge">9:50</span>
+              </div>
+              <div class="poster-info">
+                <span class="poster-tag gt-green">Vanilla</span>
+                <div class="poster-title">Mikasa — Warrior's Rest</div>
+                <div class="poster-meta">
+                  <div class="stars">⭐⭐⭐⭐<span class="star-empty">★</span></div>
+                  <span class="poster-views">22K views</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 7 -->
+            <div class="poster-card" role="listitem" tabindex="0">
+              <div class="poster-thumb thumb-grad-7">
+                <div class="play-overlay" aria-hidden="true">
+                  <div class="play-btn-overlay">▶</div>
+                </div>
+                <span class="rank-badge">7</span>
+                <span class="duration-badge">7:11</span>
+              </div>
+              <div class="poster-info">
+                <span class="poster-tag gt-orange">Elf</span>
+                <div class="poster-title">Elf Archer — Ancient Forest Spell</div>
+                <div class="poster-meta">
+                  <div class="stars">⭐⭐⭐⭐⭐</div>
+                  <span class="poster-views">20K views</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ======================================================
+             TOP RATED THIS WEEK — GRID
+        ====================================================== -->
+        <section aria-label="Top Rated This Week">
+          <div class="section-header">
+            <h2 class="section-title">⭐ Top Rated This Week</h2>
+            <a class="section-link" href="#" aria-label="See all top rated">See all →</a>
+          </div>
+
+          <div class="video-grid" role="list">
+
+            <!-- Grid card 1 -->
+            <div class="grid-card" role="listitem" tabindex="0">
+              <div class="grid-thumb">
+                <div class="grid-thumb-inner thumb-grad-8" style="height:100%;position:relative;">
+                  <span class="hot-badge">🔥 Hot</span>
+                  <span class="duration-badge">11:22</span>
+                  <div class="play-overlay" aria-hidden="true">
+                    <div class="play-btn-overlay">▶</div>
+                  </div>
+                </div>
+              </div>
+              <div class="grid-info">
+                <span class="grid-category gt-purple">3D</span>
+                <div class="grid-title">Hinata — Autumn Rain Scene</div>
+                <div class="grid-char">👤 Hinata Hyuga</div>
+                <div class="grid-foot">
+                  <div class="rating-row">
+                    <span>⭐</span>
+                    <span class="rating-num">4.9</span>
+                    <span>(2.1K)</span>
+                  </div>
+                  <span class="views-count">55K views</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grid card 2 -->
+            <div class="grid-card" role="listitem" tabindex="0">
+              <div class="grid-thumb">
+                <div class="grid-thumb-inner thumb-grad-9" style="height:100%;position:relative;">
+                  <span class="new-badge">New</span>
+                  <span class="duration-badge">4:30</span>
+                  <div class="play-overlay" aria-hidden="true">
+                    <div class="play-btn-overlay">▶</div>
+                  </div>
+                </div>
+              </div>
+              <div class="grid-info">
+                <span class="grid-category gt-gold">Uncensored</span>
+                <div class="grid-title">Tohru Dragon Maid — Playful Afternoon</div>
+                <div class="grid-char">👤 Tohru</div>
+                <div class="grid-foot">
+                  <div class="rating-row">
+                    <span>⭐</span>
+                    <span class="rating-num">4.8</span>
+                    <span>(1.8K)</span>
+                  </div>
+                  <span class="views-count">48K views</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grid card 3 -->
+            <div class="grid-card" role="listitem" tabindex="0">
+              <div class="grid-thumb">
+                <div class="grid-thumb-inner thumb-grad-10" style="height:100%;position:relative;">
+                  <span class="duration-badge">19:00</span>
+                  <div class="play-overlay" aria-hidden="true">
+                    <div class="play-btn-overlay">▶</div>
+                  </div>
+                </div>
+              </div>
+              <div class="grid-info">
+                <span class="grid-category gt-cyan">Fantasy</span>
+                <div class="grid-title">Erza Scarlet — Titanfall Armor Scene</div>
+                <div class="grid-char">👤 Erza Scarlet</div>
+                <div class="grid-foot">
+                  <div class="rating-row">
+                    <span>⭐</span>
+                    <span class="rating-num">4.7</span>
+                    <span>(1.5K)</span>
+                  </div>
+                  <span class="views-count">44K views</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grid card 4 -->
+            <div class="grid-card" role="listitem" tabindex="0">
+              <div class="grid-thumb">
+                <div class="grid-thumb-inner thumb-grad-11" style="height:100%;position:relative;">
+                  <span class="hot-badge">🔥 Hot</span>
+                  <span class="duration-badge">6:15</span>
+                  <div class="play-overlay" aria-hidden="true">
+                    <div class="play-btn-overlay">▶</div>
+                  </div>
+                </div>
+              </div>
+              <div class="grid-info">
+                <span class="grid-category gt-green">Vanilla</span>
+                <div class="grid-title">Rias Gremory — High School Confession</div>
+                <div class="grid-char">👤 Rias Gremory</div>
+                <div class="grid-foot">
+                  <div class="rating-row">
+                    <span>⭐</span>
+                    <span class="rating-num">4.9</span>
+                    <span>(2.3K)</span>
+                  </div>
+                  <span class="views-count">62K views</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grid card 5 -->
+            <div class="grid-card" role="listitem" tabindex="0">
+              <div class="grid-thumb">
+                <div class="grid-thumb-inner thumb-grad-12" style="height:100%;position:relative;">
+                  <span class="new-badge">New</span>
+                  <span class="duration-badge">8:40</span>
+                  <div class="play-overlay" aria-hidden="true">
+                    <div class="play-btn-overlay">▶</div>
+                  </div>
+                </div>
+              </div>
+              <div class="grid-info">
+                <span class="grid-category gt-red">Monster</span>
+                <div class="grid-title">Saber — Holy Grail War Aftermath</div>
+                <div class="grid-char">👤 Artoria Pendragon</div>
+                <div class="grid-foot">
+                  <div class="rating-row">
+                    <span>⭐</span>
+                    <span class="rating-num">4.6</span>
+                    <span>(990)</span>
+                  </div>
+                  <span class="views-count">33K views</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grid card 6 -->
+            <div class="grid-card" role="listitem" tabindex="0">
+              <div class="grid-thumb">
+                <div class="grid-thumb-inner thumb-grad-1" style="height:100%;position:relative;">
+                  <span class="duration-badge">14:55</span>
+                  <div class="play-overlay" aria-hidden="true">
+                    <div class="play-btn-overlay">▶</div>
+                  </div>
+                </div>
+              </div>
+              <div class="grid-info">
+                <span class="grid-category gt-pink">Animated</span>
+                <div class="grid-title">Android 18 — Tournament Recovery</div>
+                <div class="grid-char">👤 Android 18</div>
+                <div class="grid-foot">
+                  <div class="rating-row">
+                    <span>⭐</span>
+                    <span class="rating-num">4.7</span>
+                    <span>(1.2K)</span>
+                  </div>
+                  <span class="views-count">39K views</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grid card 7 -->
+            <div class="grid-card" role="listitem" tabindex="0">
+              <div class="grid-thumb">
+                <div class="grid-thumb-inner thumb-grad-2" style="height:100%;position:relative;">
+                  <span class="hot-badge">🔥 Hot</span>
+                  <span class="duration-badge">3:01</span>
+                  <div class="play-overlay" aria-hidden="true">
+                    <div class="play-btn-overlay">▶</div>
+                  </div>
+                </div>
+              </div>
+              <div class="grid-info">
+                <span class="grid-category gt-orange">Elf</span>
+                <div class="grid-title">Megumin — Explosion Magic Scene</div>
+                <div class="grid-char">👤 Megumin</div>
+                <div class="grid-foot">
+                  <div class="rating-row">
+                    <span>⭐</span>
+                    <span class="rating-num">4.8</span>
+                    <span>(1.7K)</span>
+                  </div>
+                  <span class="views-count">58K views</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grid card 8 -->
+            <div class="grid-card" role="listitem" tabindex="0">
+              <div class="grid-thumb">
+                <div class="grid-thumb-inner thumb-grad-3" style="height:100%;position:relative;">
+                  <span class="new-badge">New</span>
+                  <span class="duration-badge">10:17</span>
+                  <div class="play-overlay" aria-hidden="true">
+                    <div class="play-btn-overlay">▶</div>
+                  </div>
+                </div>
+              </div>
+              <div class="grid-info">
+                <span class="grid-category gt-blue">Catgirl</span>
+                <div class="grid-title">Neko Idol — Stage After Party</div>
+                <div class="grid-char">👤 Neko-chan</div>
+                <div class="grid-foot">
+                  <div class="rating-row">
+                    <span>⭐</span>
+                    <span class="rating-num">4.5</span>
+                    <span>(830)</span>
+                  </div>
+                  <span class="views-count">28K views</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ======================================================
+             POPULAR CHARACTERS
+        ====================================================== -->
+        <section aria-label="Popular Characters">
+          <div class="section-header">
+            <h2 class="section-title">💖 Popular Characters</h2>
+            <a class="section-link" href="#" aria-label="See all characters">See all →</a>
+          </div>
+
+          <div class="chars-scroll" role="list">
+
+            <div class="char-item" role="listitem" tabindex="0">
+              <div class="char-avatar-wrap grad-pink">
+                <div class="char-avatar">⚔️</div>
+              </div>
+              <span class="char-name">Asuna</span>
+              <span class="char-count">1.2K clips</span>
+            </div>
+
+            <div class="char-item" role="listitem" tabindex="0">
+              <div class="char-avatar-wrap grad-cyan">
+                <div class="char-avatar">🌸</div>
+              </div>
+              <span class="char-name">Rem</span>
+              <span class="char-count">980 clips</span>
+            </div>
+
+            <div class="char-item" role="listitem" tabindex="0">
+              <div class="char-avatar-wrap grad-purple">
+                <div class="char-avatar">🧙</div>
+              </div>
+              <span class="char-name">Megumin</span>
+              <span class="char-count">870 clips</span>
+            </div>
+
+            <div class="char-item" role="listitem" tabindex="0">
+              <div class="char-avatar-wrap grad-gold">
+                <div class="char-avatar">🐉</div>
+              </div>
+              <span class="char-name">Tohru</span>
+              <span class="char-count">760 clips</span>
+            </div>
+
+            <div class="char-item" role="listitem" tabindex="0">
+              <div class="char-avatar-wrap grad-green">
+                <div class="char-avatar">🏹</div>
+              </div>
+              <span class="char-name">Erza</span>
+              <span class="char-count">720 clips</span>
+            </div>
+
+            <div class="char-item" role="listitem" tabindex="0">
+              <div class="char-avatar-wrap grad-red">
+                <div class="char-avatar">😈</div>
+              </div>
+              <span class="char-name">Albedo</span>
+              <span class="char-count">680 clips</span>
+            </div>
+
+            <div class="char-item" role="listitem" tabindex="0">
+              <div class="char-avatar-wrap grad-rainbow">
+                <div class="char-avatar">👹</div>
+              </div>
+              <span class="char-name">Rias</span>
+              <span class="char-count">640 clips</span>
+            </div>
+
+            <div class="char-item" role="listitem" tabindex="0">
+              <div class="char-avatar-wrap grad-purple">
+                <div class="char-avatar">🌙</div>
+              </div>
+              <span class="char-name">Darkness</span>
+              <span class="char-count">590 clips</span>
+            </div>
+
+            <div class="char-item" role="listitem" tabindex="0">
+              <div class="char-avatar-wrap grad-cyan">
+                <div class="char-avatar">🤖</div>
+              </div>
+              <span class="char-name">Android 18</span>
+              <span class="char-count">540 clips</span>
+            </div>
+
+            <div class="char-item" role="listitem" tabindex="0">
+              <div class="char-avatar-wrap grad-pink">
+                <div class="char-avatar">🌿</div>
+              </div>
+              <span class="char-name">Mikasa</span>
+              <span class="char-count">510 clips</span>
+            </div>
+
+            <div class="char-item" role="listitem" tabindex="0">
+              <div class="char-avatar-wrap grad-gold">
+                <div class="char-avatar">⚗️</div>
+              </div>
+              <span class="char-name">Zelda</span>
+              <span class="char-count">480 clips</span>
+            </div>
+
+            <div class="char-item" role="listitem" tabindex="0">
+              <div class="char-avatar-wrap grad-green">
+                <div class="char-avatar">🐱</div>
+              </div>
+              <span class="char-name">Neko-chan</span>
+              <span class="char-count">420 clips</span>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ======================================================
+             GENRE TAGS
+        ====================================================== -->
+        <section aria-label="Browse by Genre">
+          <div class="section-header">
+            <h2 class="section-title">🏷️ Browse by Genre</h2>
+          </div>
+
+          <div class="tags-cloud" role="list">
+            <button class="genre-tag gt-pink" role="listitem">✨ Animated</button>
+            <button class="genre-tag gt-purple" role="listitem">🎮 3D</button>
+            <button class="genre-tag gt-cyan" role="listitem">🧚 Fantasy</button>
+            <button class="genre-tag gt-gold" role="listitem">🔓 Uncensored</button>
+            <button class="genre-tag gt-green" role="listitem">💚 Vanilla</button>
+            <button class="genre-tag gt-red" role="listitem">👹 Monster</button>
+            <button class="genre-tag gt-orange" role="listitem">🌿 Elf</button>
+            <button class="genre-tag gt-blue" role="listitem">📚 Schoolgirl</button>
+            <button class="genre-tag gt-pink" role="listitem">🐱 Catgirl</button>
+            <button class="genre-tag gt-purple" role="listitem">😈 Demon</button>
+            <button class="genre-tag gt-cyan" role="listitem">⚔️ Action</button>
+            <button class="genre-tag gt-gold" role="listitem">🏠 Harem</button>
+            <button class="genre-tag gt-green" role="listitem">🌸 Romance</button>
+            <button class="genre-tag gt-red" role="listitem">🧛 Vampire</button>
+            <button class="genre-tag gt-orange" role="listitem">🤖 Mecha</button>
+            <button class="genre-tag gt-blue" role="listitem">🧜 Mermaid</button>
+            <button class="genre-tag gt-pink" role="listitem">🦊 Fox Girl</button>
+            <button class="genre-tag gt-purple" role="listitem">⚡ Superpower</button>
+            <button class="genre-tag gt-cyan" role="listitem">🏯 Feudal</button>
+            <button class="genre-tag gt-gold" role="listitem">🎤 Idol</button>
+            <button class="genre-tag gt-green" role="listitem">🍃 Outdoor</button>
+            <button class="genre-tag gt-red" role="listitem">💥 Action</button>
+            <button class="genre-tag gt-orange" role="listitem">🌙 Night</button>
+            <button class="genre-tag gt-blue" role="listitem">💧 Wet</button>
+          </div>
+        </section>
+
+        <!-- ======================================================
+             NEW RELEASES
+        ====================================================== -->
+        <section aria-label="New Releases">
+          <div class="section-header">
+            <h2 class="section-title">🆕 New Releases</h2>
+            <a class="section-link" href="#" aria-label="See all new releases">See all →</a>
+          </div>
+
+          <div class="cards-scroll" role="list">
+
+            <div class="poster-card" role="listitem" tabindex="0">
+              <div class="poster-thumb thumb-grad-5">
+                <div class="play-overlay" aria-hidden="true"><div class="play-btn-overlay">▶</div></div>
+                <span class="duration-badge">6:00</span>
+              </div>
+              <div class="poster-info">
+                <span class="poster-tag gt-pink">New</span>
+                <div class="poster-title">Ochaco — Zero Gravity Training</div>
+                <div class="poster-meta">
+                  <div class="stars">⭐⭐⭐⭐<span class="star-empty">★</span></div>
+                  <span class="poster-views">8K views</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="poster-card" role="listitem" tabindex="0">
+              <div class="poster-thumb thumb-grad-6">
+                <div class="play-overlay" aria-hidden="true"><div class="play-btn-overlay">▶</div></div>
+                <span class="duration-badge">4:45</span>
+              </div>
+              <div class="poster-info">
+                <span class="poster-tag gt-green">New</span>
+                <div class="poster-title">Nezuko — Bamboo Bloom</div>
+                <div class="poster-meta">
+                  <div class="stars">⭐⭐⭐⭐⭐</div>
+                  <span class="poster-views">12K views</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="poster-card" role="listitem" tabindex="0">
+              <div class="poster-thumb thumb-grad-7">
+                <div class="play-overlay" aria-hidden="true"><div class="play-btn-overlay">▶</div></div>
+                <span class="duration-badge">9:20</span>
+              </div>
+              <div class="poster-info">
+                <span class="poster-tag gt-cyan">New</span>
+                <div class="poster-title">Power — Chainsaw Scene</div>
+                <div class="poster-meta">
+                  <div class="stars">⭐⭐⭐⭐⭐</div>
+                  <span class="poster-views">15K views</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="poster-card" role="listitem" tabindex="0">
+              <div class="poster-thumb thumb-grad-8">
+                <div class="play-overlay" aria-hidden="true"><div class="play-btn-overlay">▶</div></div>
+                <span class="duration-badge">7:33</span>
+              </div>
+              <div class="poster-info">
+                <span class="poster-tag gt-gold">New</span>
+                <div class="poster-title">Makima — Control Sequence</div>
+                <div class="poster-meta">
+                  <div class="stars">⭐⭐⭐⭐<span class="star-empty">★</span></div>
+                  <span class="poster-views">9K views</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="poster-card" role="listitem" tabindex="0">
+              <div class="poster-thumb thumb-grad-9">
+                <div class="play-overlay" aria-hidden="true"><div class="play-btn-overlay">▶</div></div>
+                <span class="duration-badge">11:05</span>
+              </div>
+              <div class="poster-info">
+                <span class="poster-tag gt-purple">New</span>
+                <div class="poster-title">Marin — Cosplay Fitting Room</div>
+                <div class="poster-meta">
+                  <div class="stars">⭐⭐⭐⭐⭐</div>
+                  <span class="poster-views">18K views</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="poster-card" role="listitem" tabindex="0">
+              <div class="poster-thumb thumb-grad-10">
+                <div class="play-overlay" aria-hidden="true"><div class="play-btn-overlay">▶</div></div>
+                <span class="duration-badge">5:12</span>
+              </div>
+              <div class="poster-info">
+                <span class="poster-tag gt-red">New</span>
+                <div class="poster-title">Ai Hoshino — Idol Backstage</div>
+                <div class="poster-meta">
+                  <div class="stars">⭐⭐⭐⭐⭐</div>
+                  <span class="poster-views">21K views</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ======================================================
+             AD PLACEHOLDER — Medium Rect
+        ====================================================== -->
+        <div class="ad-placeholder" style="height:250px;flex-direction:column;gap:4px;" aria-label="Advertisement">
+          <span style="font-size:24px;">📢</span>
+          <span>Advertisement — 300×250 Medium Rectangle</span>
+          <span style="font-size:11px;color:var(--text-dim);">ExoClick / JuicyAds</span>
+        </div>
+
+        <!-- Loading indicator demo -->
+        <div style="display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 0;">
+          <div class="loading-dots" aria-label="Loading more videos">
+            <div class="loading-dot"></div>
+            <div class="loading-dot"></div>
+            <div class="loading-dot"></div>
+          </div>
+          <span style="font-size:13px;color:var(--text-muted);font-weight:600;">Loading more...</span>
+        </div>
+
+      </div><!-- /scroll-area -->
+
+      <!-- Footer -->
+      <footer class="footer-note">
+        <div class="footer-brand">iku.gg ✨</div>
+        <div class="footer-links">
+          <a href="#">DMCA</a>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">18 U.S.C. 2257</a>
+        </div>
+        <div class="footer-disclaimer">All models are 18+. Content is fantasy and animated.</div>
+      </footer>
+
+    </main>
+
+  </div><!-- /layout -->
+
+  <!-- ============================================================
+       MOBILE BOTTOM NAV
+  ============================================================ -->
+  <nav class="mobile-nav" aria-label="Mobile navigation">
+    <div class="mobile-nav-inner">
+
+      <div class="mobile-nav-item active">
+        <div class="mobile-nav-icon">🏠</div>
+        <div class="mobile-nav-label">Home</div>
+      </div>
+
+      <div class="mobile-nav-item">
+        <div class="mobile-nav-icon">🔍</div>
+        <div class="mobile-nav-label">Search</div>
+      </div>
+
+      <!-- Shorts — special pill button -->
+      <div class="mobile-nav-item shorts-btn">
+        <div class="shorts-icon-wrap">⚡</div>
+        <div class="mobile-nav-label" style="color:var(--pink);font-weight:800;">Shorts</div>
+      </div>
+
+      <div class="mobile-nav-item">
+        <div class="mobile-nav-icon">🔥</div>
+        <div class="mobile-nav-label">Trending</div>
+      </div>
+
+      <div class="mobile-nav-item">
+        <div class="mobile-nav-icon">☰</div>
+        <div class="mobile-nav-label">More</div>
+      </div>
+
+    </div>
+  </nav>
+
+  <script>
+    // ── Interactive nav tabs (sidebar) ─────────────────────────
+    document.querySelectorAll('.nav-item').forEach(function(item) {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+        this.classList.add('active');
+      });
+    });
+
+    // ── Interactive mobile nav ──────────────────────────────────
+    document.querySelectorAll('.mobile-nav-item').forEach(function(item) {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.mobile-nav-item').forEach(function(n) { n.classList.remove('active'); });
+        this.classList.add('active');
+      });
+    });
+
+    // ── Card hover color shadow per gradient ────────────────────
+    var shadowMap = {
+      'thumb-grad-1':  '0 12px 32px rgba(255,107,157,0.25)',
+      'thumb-grad-2':  '0 12px 32px rgba(248,113,113,0.25)',
+      'thumb-grad-3':  '0 12px 32px rgba(74,222,128,0.2)',
+      'thumb-grad-4':  '0 12px 32px rgba(192,132,252,0.25)',
+      'thumb-grad-5':  '0 12px 32px rgba(251,191,36,0.25)',
+      'thumb-grad-6':  '0 12px 32px rgba(103,232,249,0.2)',
+      'thumb-grad-7':  '0 12px 32px rgba(255,107,157,0.2)',
+      'thumb-grad-8':  '0 12px 32px rgba(192,132,252,0.25)',
+      'thumb-grad-9':  '0 12px 32px rgba(251,146,60,0.25)',
+      'thumb-grad-10': '0 12px 32px rgba(56,189,248,0.2)',
+      'thumb-grad-11': '0 12px 32px rgba(74,222,128,0.2)',
+      'thumb-grad-12': '0 12px 32px rgba(255,107,157,0.2)',
+    };
+
+    function getGradClass(card) {
+      var thumb = card.querySelector('[class*="thumb-grad-"]');
+      if (!thumb) return null;
+      for (var i = 1; i <= 12; i++) {
+        if (thumb.classList.contains('thumb-grad-' + i)) return 'thumb-grad-' + i;
+      }
+      return null;
+    }
+
+    document.querySelectorAll('.poster-card, .grid-card').forEach(function(card) {
+      card.addEventListener('mouseenter', function() {
+        var cls = getGradClass(this);
+        if (cls && shadowMap[cls]) this.style.boxShadow = shadowMap[cls];
+      });
+      card.addEventListener('mouseleave', function() {
+        this.style.boxShadow = '';
+      });
+    });
+
+    // ── Genre tag active toggle ─────────────────────────────────
+    document.querySelectorAll('.genre-tag').forEach(function(tag) {
+      tag.addEventListener('click', function() {
+        this.style.transform = this.style.transform ? '' : 'scale(0.97)';
+        this.style.opacity   = this.style.opacity   ? '' : '0.7';
+        setTimeout(function(t) {
+          t.style.transform = '';
+          t.style.opacity   = '';
+        }, 150, this);
+      });
+    });
+  </script>
+
+</body>
+</html>
