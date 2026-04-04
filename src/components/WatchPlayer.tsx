@@ -34,6 +34,12 @@ interface SeekOverlay {
   id: number;
 }
 
+interface HeartBurst {
+  x: number;
+  y: number;
+  id: number;
+}
+
 /* ─────────────────────────────────────────────────────────────
    Helpers
 ───────────────────────────────────────────────────────────── */
@@ -149,6 +155,14 @@ function IconReplay() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" />
+    </svg>
+  );
+}
+
+function IconShare() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" />
     </svg>
   );
 }
@@ -406,6 +420,10 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
   const [theaterMode, setTheaterMode] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [seekOverlay, setSeekOverlay] = useState<SeekOverlay | null>(null);
+  const [heartBursts, setHeartBursts] = useState<HeartBurst[]>([]);
+  const [shareToast, setShareToast] = useState(false);
+  const lastClickRef = useRef<{ x: number; y: number; time: number }>({ x: 0, y: 0, time: 0 });
+  const shareToastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [seekTooltip, setSeekTooltip] = useState<{
     visible: boolean;
     time: number;
@@ -450,6 +468,7 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
       if (countdownRef.current) clearInterval(countdownRef.current);
       if (unmuteHintTimerRef.current) clearTimeout(unmuteHintTimerRef.current);
       if (volumeLabelTimerRef.current) clearTimeout(volumeLabelTimerRef.current);
+      if (shareToastTimerRef.current) clearTimeout(shareToastTimerRef.current);
     };
   }, []);
 
@@ -562,6 +581,38 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
     overlayTimerRef.current = setTimeout(() => setSeekOverlay(null), 700);
   }, []);
 
+  /* ── Heart burst (center double-tap) ─────────────────────── */
+
+  const triggerHeartBurst = useCallback((x: number, y: number) => {
+    const burst: HeartBurst = { x, y, id: Date.now() };
+    setHeartBursts((prev) => [...prev, burst]);
+    setTimeout(() => {
+      setHeartBursts((prev) => prev.filter((b) => b.id !== burst.id));
+    }, 700);
+  }, []);
+
+  /* ── Share handler ────────────────────────────────────────── */
+
+  const handleShare = useCallback(async () => {
+    const url = window.location.href;
+    try {
+      if (navigator.share) {
+        await navigator.share({ url });
+        return;
+      }
+    } catch {
+      /* User cancelled or API unavailable */
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      /* Clipboard blocked — silent fail */
+    }
+    setShareToast(true);
+    if (shareToastTimerRef.current) clearTimeout(shareToastTimerRef.current);
+    shareToastTimerRef.current = setTimeout(() => setShareToast(false), 2000);
+  }, []);
+
   /* ── Double-tap: seek ±10s / single-tap: play-pause ─────── */
 
   const { handleClick: handleVideoClick } = useDoubleTap({
@@ -570,6 +621,22 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
       if (!v || !side) return;
       // Don't fire double-tap seek if a volume gesture was in progress
       if (touchStartRef.current.isVolumeGesture) return;
+
+      // Check if the tap landed in the center third of the player
+      const container = containerRef.current;
+      if (container) {
+        const rect = container.getBoundingClientRect();
+        const relX = lastClickRef.current.x - rect.left;
+        const centerStart = rect.width * 0.3;
+        const centerEnd = rect.width * 0.7;
+        if (relX >= centerStart && relX <= centerEnd) {
+          // Center third — heart burst, no seek
+          const relY = lastClickRef.current.y - rect.top;
+          triggerHeartBurst(relX, relY);
+          return;
+        }
+      }
+
       if (side === "left") {
         v.currentTime = Math.max(0, v.currentTime - 10);
       } else {
@@ -584,6 +651,14 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
       showControls();
     },
   });
+
+  /* Track click position for center-tap detection */
+  const handleContainerClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      lastClickRef.current = { x: e.clientX, y: e.clientY, time: Date.now() };
+    },
+    []
+  );
 
   /* ── Progress bar ─────────────────────────────────────── */
 
@@ -687,6 +762,41 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
         }
         .wp-progress-track:hover { height: 6px !important; }
         .wp-end-thumb:hover { opacity: 0.8; }
+        @keyframes wp-heart-main {
+          0%   { opacity: 1; transform: translate(-50%, -50%) scale(0.3); }
+          50%  { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+          100% { opacity: 0; transform: translate(-50%, -50%) scale(1.4); }
+        }
+        @keyframes wp-heart-burst-0 {
+          0%   { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+          100% { opacity: 0; transform: translate(10px, -40px) scale(0.8); }
+        }
+        @keyframes wp-heart-burst-1 {
+          0%   { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+          100% { opacity: 0; transform: translate(-30px, -35px) scale(0.7); }
+        }
+        @keyframes wp-heart-burst-2 {
+          0%   { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+          100% { opacity: 0; transform: translate(28px, -22px) scale(0.9); }
+        }
+        @keyframes wp-heart-burst-3 {
+          0%   { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+          100% { opacity: 0; transform: translate(-22px, 18px) scale(0.6); }
+        }
+        @keyframes wp-heart-burst-4 {
+          0%   { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+          100% { opacity: 0; transform: translate(38px, 12px) scale(0.8); }
+        }
+        @keyframes wp-heart-burst-5 {
+          0%   { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+          100% { opacity: 0; transform: translate(-14px, -52px) scale(0.7); }
+        }
+        @keyframes wp-share-toast {
+          0%   { opacity: 0; transform: translateX(-50%) translateY(6px); }
+          15%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+          75%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+          100% { opacity: 0; transform: translateX(-50%) translateY(-4px); }
+        }
         @media (prefers-reduced-motion: reduce) {
           .wp-seek-indicator,
           .wp-center-play,
@@ -701,6 +811,7 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
         onMouseMove={showControls}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
+        onClickCapture={handleContainerClick}
         onClick={() => { setSpeedOpen(false); setVolumeSliderOpen(false); }}
         onWheel={handleWheel}
         style={{
@@ -873,6 +984,78 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
             }}
           >
             {seekOverlay.side === "left" ? "◄◄ 10s" : "10s ►►"}
+          </div>
+        )}
+
+        {/* Heart burst overlays (center double-tap like) */}
+        {heartBursts.map((burst) => (
+          <div
+            key={burst.id}
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              left: burst.x,
+              top: burst.y,
+              zIndex: 9,
+              pointerEvents: "none",
+            }}
+          >
+            {/* Main heart */}
+            <div
+              style={{
+                position: "absolute",
+                color: "#e8467c",
+                fontSize: 40,
+                lineHeight: 1,
+                animation: "wp-heart-main 0.6s ease forwards",
+              }}
+            >
+              ♥
+            </div>
+            {/* Radiating mini hearts */}
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <div
+                key={i}
+                style={{
+                  position: "absolute",
+                  color: "#e8467c",
+                  fontSize: 16,
+                  lineHeight: 1,
+                  opacity: 0.85,
+                  animation: `wp-heart-burst-${i} 0.5s ease forwards`,
+                }}
+              >
+                ♥
+              </div>
+            ))}
+          </div>
+        ))}
+
+        {/* Share toast */}
+        {shareToast && (
+          <div
+            aria-live="polite"
+            style={{
+              position: "absolute",
+              bottom: 64,
+              left: "50%",
+              transform: "translateX(-50%)",
+              background: "rgba(12,12,12,0.92)",
+              backdropFilter: "blur(8px)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              color: "#fff",
+              fontSize: 12,
+              fontWeight: 600,
+              padding: "7px 16px",
+              borderRadius: 20,
+              whiteSpace: "nowrap",
+              pointerEvents: "none",
+              zIndex: 11,
+              animation: "wp-share-toast 2s ease forwards",
+              letterSpacing: "0.02em",
+            }}
+          >
+            Link copied!
           </div>
         )}
 
@@ -1070,36 +1253,28 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
           </div>
         )}
 
-        {/* Controls overlay */}
-        <div
-          className="wp-controls"
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            background:
-              "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%)",
-            padding: "40px 12px 10px",
-            transition: "opacity 0.28s ease, transform 0.28s ease",
-            opacity: controlsVisible && !ended ? 1 : 0,
-            transform: controlsVisible && !ended ? "translateY(0)" : "translateY(6px)",
-            pointerEvents: controlsVisible && !ended ? "auto" : "none",
-            zIndex: 5,
-          }}
-          onMouseEnter={() => {
-            if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
-          }}
-          onMouseLeave={scheduleHide}
-        >
-          {/* Progress bar */}
-          <div style={{ position: "relative", marginBottom: 6 }}>
+        {/* Always-visible progress bar — sits at the very bottom, never hides */}
+        {!ended && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              zIndex: 6,
+              padding: "0 0 0 0",
+            }}
+            onMouseEnter={() => {
+              if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+            }}
+            onMouseLeave={scheduleHide}
+          >
             {/* Timestamp tooltip */}
             {seekTooltip.visible && duration > 0 && (
               <div
                 style={{
                   position: "absolute",
-                  bottom: "calc(100% + 8px)",
+                  bottom: "calc(100% + 4px)",
                   left: seekTooltip.x,
                   transform: "translateX(-50%)",
                   background: "rgba(10,10,10,0.9)",
@@ -1127,7 +1302,7 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
               style={{
                 height: 16,
                 display: "flex",
-                alignItems: "center",
+                alignItems: "flex-end",
                 cursor: "pointer",
               }}
             >
@@ -1138,7 +1313,7 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
                   width: "100%",
                   height: 3,
                   background: "rgba(255,255,255,0.18)",
-                  borderRadius: 99,
+                  borderRadius: "99px 99px 0 0",
                   overflow: "hidden",
                   transition: "height 0.12s ease",
                 }}
@@ -1185,6 +1360,30 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
               </div>
             </div>
           </div>
+        )}
+
+        {/* Controls overlay */}
+        <div
+          className="wp-controls"
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            background:
+              "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%)",
+            padding: "40px 12px 18px",
+            transition: "opacity 0.28s ease, transform 0.28s ease",
+            opacity: controlsVisible && !ended ? 1 : 0,
+            transform: controlsVisible && !ended ? "translateY(0)" : "translateY(6px)",
+            pointerEvents: controlsVisible && !ended ? "auto" : "none",
+            zIndex: 5,
+          }}
+          onMouseEnter={() => {
+            if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+          }}
+          onMouseLeave={scheduleHide}
+        >
 
           {/* Bottom controls row */}
           <div
@@ -1355,6 +1554,11 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
                 </div>
               )}
             </div>
+
+            {/* Share */}
+            <ControlBtn onClick={handleShare} label="Share / Copy link">
+              <IconShare />
+            </ControlBtn>
 
             {/* PiP (feature-detect at runtime to avoid SSR mismatch) */}
             <PiPButton onClick={togglePiP} />
