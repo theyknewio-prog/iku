@@ -5970,6 +5970,16 @@ body {
 }
 .hp-btn-secondary:hover { background: rgba(255,255,255,0.14); }
 .hp-hero__sub { font-size: 13px; color: rgba(255,255,255,0.4); margin: 0; }
+.hp-hero__tagline {
+  font-size: clamp(15px, 2.5vw, 20px);
+  font-weight: 700;
+  background: linear-gradient(135deg, #e8467c, #7b2ff7, #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  letter-spacing: 0.01em;
+}
 
 /* ============================================================
    HOMEPAGE — AD ZONES (hp-ad-zone)

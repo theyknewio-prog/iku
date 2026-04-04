@@ -116,7 +116,7 @@ export default async function HomePage() {
                 Trending Now
               </Link>
             </div>
-            <p className="hp-hero__sub">
+            <p className="hp-hero__tagline">
               353,000+ free animated hentai clips · Updated daily
             </p>
           </div>
