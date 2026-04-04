@@ -144,11 +144,11 @@
   --shadow-xl: 0 16px 48px rgba(10,5,20,0.7);
 
   /* Glow effects */
-  --glow-pink:       0 0 20px rgba(255,32,128,0.4), 0 0 44px rgba(255,32,128,0.16);
-  --glow-pink-sm:    0 0 10px rgba(255,32,128,0.45);
-  --glow-purple:     0 0 20px rgba(124,58,255,0.4), 0 0 44px rgba(124,58,255,0.16);
-  --glow-purple-sm:  0 0 10px rgba(124,58,255,0.45);
-  --glow-card:       0 0 0 1px rgba(255,32,128,0.18), 0 8px 32px rgba(0,0,0,0.65);
+  --glow-pink:       0 0 20px rgba(255,107,157,0.4), 0 0 44px rgba(255,107,157,0.16);
+  --glow-pink-sm:    0 0 10px rgba(255,107,157,0.45);
+  --glow-purple:     0 0 20px rgba(192,132,252,0.4), 0 0 44px rgba(192,132,252,0.16);
+  --glow-purple-sm:  0 0 10px rgba(192,132,252,0.45);
+  --glow-card:       0 0 0 1px rgba(255,107,157,0.18), 0 8px 32px rgba(0,0,0,0.5);
 
   /* Animation durations */
   --dur-instant: 50ms;
@@ -190,7 +190,7 @@ html {
 }
 
 body {
-  background-color: #000000;
+  background-color: var(--color-bg-base);
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: var(--text-base);
