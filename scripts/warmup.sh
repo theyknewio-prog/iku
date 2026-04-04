@@ -8,10 +8,22 @@ sleep 5
 # Wait until server responds
 for i in 1 2 3 4 5 6 7 8 9 10; do
   if wget -qO /dev/null --timeout=5 http://localhost:3000/ 2>/dev/null; then
-    echo "[warmup] Server is ready, warming up cache..."
+    echo "[warmup] Server is ready"
     break
   fi
   echo "[warmup] Server not ready yet, retrying in 5s..."
+  sleep 5
+done
+
+# Wait until PostgreSQL is accessible (feed API returns videos)
+echo "[warmup] Checking database connection..."
+for i in 1 2 3 4 5 6 7 8 9 10 11 12; do
+  VIDEOS=$(wget -qO- --timeout=10 "http://localhost:3000/api/feed?page=1" 2>/dev/null | grep -o '"slug"' | wc -l)
+  if [ "$VIDEOS" -gt 0 ]; then
+    echo "[warmup] Database connected ($VIDEOS videos), warming up cache..."
+    break
+  fi
+  echo "[warmup] Database not ready yet ($VIDEOS videos), retrying in 5s..."
   sleep 5
 done
 
