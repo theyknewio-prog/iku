@@ -44,7 +44,7 @@ export interface Video {
   fileSize: number;
   duration: number | null;
   createdAt: Date;
-  source: "danbooru" | "gelbooru" | "rule34" | "rule34video";
+  source: "danbooru" | "gelbooru" | "rule34" | "rule34video" | "wp";
 }
 
 export interface SearchOptions {
