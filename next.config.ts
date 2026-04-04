@@ -14,7 +14,7 @@ const securityHeaders = [
       "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
-      "img-src 'self' data: blob: https://cdn.donmai.us https://*.gelbooru.com https://*.rule34.xxx",
+      "img-src 'self' data: blob: https://cdn.donmai.us https://*.gelbooru.com https://*.rule34.xxx https://rule34video.com https://*.rule34video.com https://hentaimama.io https://hentai.tv https://animeidhentai.com https://watchhentai.net https://hentaiworld.tv https://hentaigasm.com https://hentaicity.com",
       "media-src 'self' blob: https://cdn.donmai.us https://*.gelbooru.com https://*.rule34.xxx https://rule34video.com https://*.rule34video.com",
       "connect-src 'self' https://cdn.donmai.us https://*.gelbooru.com https://*.rule34.xxx https://rule34video.com https://*.rule34video.com",
       "frame-ancestors 'none'",
