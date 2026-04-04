@@ -449,6 +449,128 @@ export const GLOSSARY: GlossaryTerm[] = [
     seoTitle: "What is Threesome Hentai? 3-Way Tag Explained | iku.gg",
     seoDescription: "Learn about threesome hentai — FFM, MMF, and mixed configurations. Why it's one of the most searched tags and how to browse it on iku.gg.",
   },
+
+  // ─── 10 NEW SEO TERMS ─────────────────────────────────────────────────────────
+
+  {
+    slug: "yaoi",
+    title: "Yaoi",
+    category: "Genre",
+    definition: "Yaoi (やおい), also called Boys Love (BL), is the genre featuring romantic and sexual relationships between male characters, primarily created for and consumed by female audiences. The term 'yaoi' is an acronym from the Japanese phrase 'Yama nashi, ochi nashi, imi nashi' — 'no climax, no resolution, no meaning' — a self-deprecating label from early doujinshi culture that stuck. In hentai, yaoi content features bishonen (beautiful boy) male characters in romantic or explicit scenarios. Major gaming franchises like Genshin Impact and Final Fantasy generate significant yaoi doujinshi, driven by the games' substantial female fanbases. Yaoi is distinct from Western gay adult content in its visual aesthetic (bishonen art style), narrative conventions (romance-heavy, emotionally driven), and primary audience demographics. The mainstream BL manga and anime industry (Junjou Romantica, Given, No. 6) has a direct pipeline into explicit yaoi doujinshi.",
+    relatedTags: ["yaoi", "bl", "boys_love", "male_on_male"],
+    relatedTerms: ["yuri", "femboy", "doujinshi"],
+    relatedArticles: ["understanding-hentai-tags", "what-is-hentai"],
+    seoTitle: "What is Yaoi? Boys Love Hentai Genre | iku.gg Glossary",
+    seoDescription: "Learn what yaoi means — the Boys Love genre featuring male-male relationships in hentai, its female-audience origins, popular pairings, and how it differs from Western gay content.",
+  },
+
+  {
+    slug: "succubus",
+    title: "Succubus",
+    category: "Archetype",
+    definition: "The succubus is a supernatural female demon archetype that appears in mythology as a creature who visits men in their sleep to feed on their life energy through sexual activity. In hentai, the succubus has become one of the most beloved fantasy archetypes — a confident, magically powerful female character defined by insatiable desire. Key visual markers: wings (bat-like or feathered), a tail, horns, and typically dark or purple color schemes. The personality is universally confident, playful, and sexually aggressive in a non-threatening way. The flagship modern succubus hentai is Itadaki! Seieki (2013) from Pink Pineapple — a comedy about a succubus girl who falls for a human. Its combination of humor, charm, and explicit content made it one of the most culturally memorable hentai productions and introduced the succubus archetype to an enormous audience. Succubus content consistently ranks in the top fantasy searches on hentai platforms.",
+    relatedTags: ["succubus", "demon_girl", "wings", "tail"],
+    relatedTerms: ["demon-girl", "milf", "onee-san"],
+    relatedArticles: ["elf-hentai-fantasy-races-adult-anime", "best-animated-hentai-2026"],
+    seoTitle: "What is a Succubus in Hentai? The Demon Girl Archetype | iku.gg",
+    seoDescription: "Learn about the succubus archetype in hentai — the confident demon girl character type, Itadaki! Seieki explained, visual markers, and top succubus content.",
+  },
+
+  {
+    slug: "swimsuit",
+    title: "Swimsuit",
+    category: "Context",
+    definition: "Swimsuit hentai features characters in various types of swimwear — school swimsuits (sukumizu), bikinis, competitive swimsuits, and themed swimwear. The swimsuit is one of the most consistently popular context tags in hentai, with school swimsuit (sukumizu) content in particular occupying a culturally specific Japanese aesthetic niche. The school swimsuit — navy blue one-piece with white trim — has become strongly associated with anime fanservice culture and generates substantial hentai content. Summer beach and pool settings provide natural framing for swimsuit scenarios. The tag appears across virtually all character types and genres, functioning as a costume modifier rather than a standalone genre. Annual 'beach episode' equivalents in hentai production are a reliable content category. Competition swimsuit (competitive one-piece) designs, associated with swimming athlete characters, are a distinct high-interest subtype with dedicated fans.",
+    relatedTags: ["swimsuit", "bikini", "sukumizu", "school_swimsuit"],
+    relatedTerms: ["fan-service", "schoolgirl", "waifu"],
+    relatedArticles: ["understanding-hentai-tags", "hentai-art-styles-explained"],
+    seoTitle: "What is Swimsuit Hentai? The Beach Episode Category | iku.gg",
+    seoDescription: "Learn about swimsuit hentai — school swimsuits, bikinis, beach episodes, and why the swimsuit tag is one of the most popular context modifiers in hentai.",
+  },
+
+  {
+    slug: "shrine-maiden",
+    title: "Shrine Maiden (Miko)",
+    category: "Archetype",
+    definition: "The shrine maiden (巫女, miko) is a uniquely Japanese archetype — a young woman who serves at a Shinto shrine, wearing the distinctive red hakama and white haori robes. In anime and hentai, the miko archetype combines spiritual authority, traditional Japanese aesthetics, and an accessible, grounded personality type. The contrast between sacred setting and explicit content is a deliberate aesthetic choice that the genre exploits. Famous miko characters include Reimu Hakurei (Touhou Project), who has generated one of the largest doujinshi catalogs of any character, and Yae Miko from Genshin Impact (a kitsune shrine maiden whose combination of fox-girl and miko aesthetics generated enormous content on release). The miko archetype overlaps significantly with the kitsune (fox girl) archetype in both fan art and doujinshi, as fox spirits are traditionally associated with Shinto shrines.",
+    relatedTags: ["miko", "shrine_maiden", "japanese_clothes"],
+    relatedTerms: ["kemonomimi", "schoolgirl", "tsundere"],
+    relatedArticles: ["elf-hentai-fantasy-races-adult-anime", "most-popular-hentai-characters-2026"],
+    seoTitle: "What is Shrine Maiden (Miko) Hentai? The Shinto Archetype | iku.gg",
+    seoDescription: "Learn about the miko shrine maiden archetype in hentai — the distinctive red and white robes, famous miko characters like Reimu and Yae Miko, and popular content.",
+  },
+
+  {
+    slug: "muscle-girl",
+    title: "Muscle Girl",
+    category: "Archetype",
+    definition: "Muscle girl hentai (also known as 'amazon' or 'strong girl' content) features female characters with visibly athletic or muscular physiques. This is a niche archetype with a dedicated and passionate fanbase. The appeal centers on strength, capability, and confidence — physical power expressed through character design. The archetype often intersects with warrior/fighter character types in fantasy and isekai settings, where a powerful female knight or arena fighter provides the character framework. Mainstream anime has given the archetype increased visibility: Noi from Dorohedoro, Mirko from My Hero Academia, and Caulifla from Dragon Ball Super have generated substantial fan content, exposing a larger audience to the aesthetic. The muscle girl archetype is one of the most underserved in mainstream hentai production relative to its fanbase size, making community-produced 3D content and doujinshi the primary sources.",
+    relatedTags: ["muscle_girl", "muscular_female", "amazon", "abs"],
+    relatedTerms: ["femdom", "dark-skin", "tomboy"],
+    relatedArticles: ["understanding-hentai-tags", "hentai-art-styles-explained"],
+    seoTitle: "What is Muscle Girl Hentai? The Strong Woman Archetype | iku.gg",
+    seoDescription: "Learn about muscle girl hentai — the amazon archetype, why it has a passionate niche fanbase, famous characters, and where to find strong woman hentai.",
+  },
+
+  {
+    slug: "lactation",
+    title: "Lactation",
+    category: "Genre",
+    definition: "Lactation is a specific hentai tag and content category featuring breast milk scenarios. It is more prevalent in hentai than in any other adult content format for the same structural reason as futanari — animation can portray this naturally without the production requirements of live-action. The tag frequently intersects with MILF and mature female character content, as the scenario often involves mothers or nursing-adjacent characters. It is one of the more commonly searched specific act tags in Japanese hentai communities, appearing in both studio OVA production and doujinshi. Bunnywalker's series 'Ane wa Yanmama Junyuu-chuu' (the title literally references nursing) is one of the most viewed hentai productions ever made and is directly responsible for a significant increase in the tag's global search volume.",
+    relatedTags: ["lactation", "breast_milk", "milf"],
+    relatedTerms: ["milf", "oppai", "paizuri"],
+    relatedArticles: ["understanding-hentai-tags", "best-animated-hentai-2026"],
+    seoTitle: "What is Lactation in Hentai? Tag Explained | iku.gg",
+    seoDescription: "Learn about the lactation tag in hentai — why this category is uniquely suited to animation, its connection to MILF content, and the most famous production in the genre.",
+  },
+
+  {
+    slug: "public",
+    title: "Public (Public Sex)",
+    category: "Genre",
+    definition: "The public tag in hentai refers to sexual scenarios in public settings — on trains (chikan), in parks, on streets, in classrooms, or any location where discovery is a risk. The exhibitionism and risk-of-discovery element is central to the appeal. In Japanese hentai specifically, the 'chikan' (train groping) subgenre is one of the most produced and searched domestic categories, reflecting a specific urban fantasy in Japanese adult content. The scenario framework — cramped public transport, forced proximity, risk of being seen — is efficiently constructed for hentai purposes. The public tag also includes outdoor scenarios (parks, beaches, alleyways) and semi-public locations (changing rooms, school bathrooms, elevators). Content using this tag spans from mild to highly explicit, with the situational tension often as important as the explicit content itself.",
+    relatedTags: ["public", "public_sex", "exhibitionism", "outdoor"],
+    relatedTerms: ["schoolgirl", "bondage", "vanilla"],
+    relatedArticles: ["understanding-hentai-tags"],
+    seoTitle: "What is Public Hentai? Exhibitionism & Risk Scenarios | iku.gg",
+    seoDescription: "Learn about the public tag in hentai — exhibitionism, train scenarios, outdoor content, and why the risk-of-discovery element is central to this popular genre.",
+  },
+
+  {
+    slug: "netorare-vs-netori",
+    title: "Netorare vs Netori",
+    category: "Genre",
+    definition: "Netorare (NTR) and Netori are closely related hentai genres that are frequently confused — but they describe opposite perspectives. Both terms come from the Japanese verb 'netoru' (to steal a lover). Netorare (寝取られ) means 'to have one stolen from you' — the viewer's perspective is that of the person whose partner is taken by someone else. The emotional experience is jealousy, loss, and humiliation. Netori (寝取り) means 'to steal' — the viewer identifies with the person doing the taking. The emotional experience is conquest and dominance. They are mirror images of the same scenario. NTR content is prolific in Japanese studio hentai and doujinshi. Netori content is less common in studio production but exists in significant volume in doujinshi. Both tags are among the most searched terms in hentai, driven partly by the intense community debate around them — few hentai topics generate more online discussion.",
+    relatedTags: ["ntr", "netorare", "netori"],
+    relatedTerms: ["ntr", "netori", "vanilla"],
+    relatedArticles: ["understanding-hentai-tags", "what-is-hentai"],
+    seoTitle: "Netorare vs Netori: What's the Difference? | iku.gg",
+    seoDescription: "Learn the difference between netorare (NTR) and netori in hentai — opposite perspectives of the same infidelity scenario, why they're so divisive, and how to find each.",
+  },
+
+  {
+    slug: "hentai-tags",
+    title: "Hentai Tags",
+    category: "Technical",
+    definition: "Hentai tags are the descriptive labels applied to adult anime content that allow viewers to search, filter, and discover content precisely. Unlike most adult content platforms that use broad categories, hentai uses a multi-dimensional tag system derived from platforms like Danbooru and Gelbooru, where thousands of community contributors apply detailed tags to every piece of content. Tags describe characters (by name, archetype, physical features), source material (anime series, game franchise), artists, content type (acts, scenarios), art style (3D, animated, manga), and context (setting, costume). A single hentai video typically has 15-30 tags. The tag system is what enables searching for something as specific as 'raiden_shogun + animated + uncensored + vanilla' and getting precise results. Understanding tags is the most important skill for hentai discovery. On iku.gg, the blacklist feature in Settings uses the same tag system — adding a tag to the blacklist removes all content with that tag from your browsing experience.",
+    relatedTags: ["animated", "uncensored", "vanilla"],
+    relatedTerms: ["hentai", "rule34", "doujinshi"],
+    relatedArticles: ["understanding-hentai-tags", "hentai-for-beginners-guide"],
+    seoTitle: "What are Hentai Tags? The Complete Guide to the Tag System | iku.gg",
+    seoDescription: "Learn how hentai tags work — the multi-dimensional tag system from Danbooru and Gelbooru, how to search effectively, and how to use the blacklist for better discovery.",
+  },
+
+  {
+    slug: "eroge",
+    title: "Eroge",
+    category: "Cultural",
+    definition: "Eroge (エロゲ) is a portmanteau of 'ero' (erotic) and 'game' — the Japanese term for adult video games that feature explicit sexual content. The most common format is the visual novel (VN), where players navigate branching story paths leading to different 'routes' and explicit scenes. Major eroge visual novels — CLANNAD, Fate/stay night, Steins;Gate, Nekopara — began as eroge before releasing all-ages versions that became mainstream anime. The eroge industry is significant: companies like Key (Clannad, Little Busters), TYPE-MOON (Fate/stay night), and Nitroplus produce titles with production values exceeding many anime series. Understanding eroge matters for hentai because many beloved anime series originated as adult games — the character designs, story structures, and character archetypes that define modern hentai were refined in the eroge industry across the 1990s-2000s.",
+    relatedTags: ["visual_novel", "game"],
+    relatedTerms: ["doujinshi", "hentai", "waifu"],
+    relatedArticles: ["best-free-hentai-games-2026", "what-is-hentai"],
+    seoTitle: "What is Eroge? Japanese Adult Games Explained | iku.gg",
+    seoDescription: "Learn what eroge means — Japanese adult visual novel games, their influence on anime and hentai culture, major studios, and famous titles that became mainstream anime.",
+  },
 ];
 
 export function getTermBySlug(slug: string): GlossaryTerm | undefined {

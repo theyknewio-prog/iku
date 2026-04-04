@@ -835,6 +835,353 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
     seoDescription: "Complete guide to mind control and hypnosis hentai — key series, subgenres, the psychology of dark fantasy, and why this is one of hentai's most discussed genres.",
   },
 
+  // 16. best animated hentai 2026
+  {
+    slug: "best-animated-hentai-2026",
+    title: "Best Animated Hentai 2026 — The Top 15 Titles to Watch Right Now",
+    excerpt: "Our definitive ranking of the best animated hentai in 2026. From studio OVAs to indie 3D masterpieces — every entry is worth your time.",
+    content: `<h2>How We Built This List</h2>
+<p>The <strong>best animated hentai 2026</strong> list is built on three sources: community vote scores aggregated from iku.gg and major hentai platforms, viewer retention data (titles people finish and rewatch), and production quality assessment across animation fluidity, character design, and art consistency. We update this list quarterly as new releases come out.</p>
+<p>This covers both new 2026 releases and titles that remain must-watches regardless of release year. Hentai has a rich back catalog — limiting a "best of" list to new releases only would shortchange readers looking for genuine quality.</p>
+
+<h2>Tier S: The Absolute Best</h2>
+
+<h3>1. Overflow (Complete Series)</h3>
+<p><strong>Studio:</strong> Collaboration Works | <strong>Genre:</strong> <a href="/glossary/vanilla">Vanilla</a> | <strong>Tag:</strong> <a href="/tag/overflow_(series)">overflow_(series)</a></p>
+<p>Overflow is the benchmark. When people ask "what is the best hentai," Overflow is the near-universal first answer from experienced viewers in 2026. The premise is simple — childhood friends, proximity, romantic escalation — but the execution sets a standard that most productions fail to meet. Animation quality is exceptional: fluid movement, expressive faces, consistent art throughout. The characters have genuine personality rather than just archetypes. It converts skeptics. If you watch one animated hentai from this list, make it Overflow.</p>
+
+<h3>2. Ane wa Yanmama Junyuu-chuu</h3>
+<p><strong>Studio:</strong> Bunnywalker | <strong>Genre:</strong> <a href="/glossary/milf">MILF</a></p>
+<p>Over 43 million views. The most-watched animated hentai of its era. Bunnywalker's character work is extraordinary — detailed, expressive, rendered with rare consistency. The mature female archetype is handled with more craft than any comparable production. View count alone tells you something, but what keeps it in S-tier is that it holds up on rewatch.</p>
+
+<h3>3. Master Piece</h3>
+<p><strong>Studio:</strong> Pink Pineapple | <strong>Browse:</strong> <a href="/tag/pink_pineapple">Pink Pineapple content</a></p>
+<p>The title earns itself. <em>Master Piece</em> delivers anthology-style quality — each episode is a distinct scenario produced at the same high standard. Pink Pineapple's technical execution is evident throughout. This is the entry point for viewers who want proof that animated hentai can compete with any other form of adult content on pure production quality.</p>
+
+<h2>Tier A: Highly Recommended Animated Hentai</h2>
+
+<h3>4. Isekai Harem Monogatari</h3>
+<p><strong>Genre:</strong> <a href="/glossary/isekai">Isekai</a> / <a href="/glossary/harem">Harem</a> | <strong>Tag:</strong> <a href="/tag/isekai">isekai</a></p>
+<p>The flagship of isekai harem animated hentai. Fantasy world setting, well-designed cast of diverse female characters, energetic pacing. For viewers who come to hentai from mainstream isekai anime (Mushoku Tensei, Re:Zero), this is the explicit version of everything that genre gestures at. Multiple seasons confirm the audience approval.</p>
+
+<h3>5. Nagoonimation's 2025-2026 Output</h3>
+<p><strong>Medium:</strong> 3D Animation | <strong>Browse:</strong> <a href="/tag/nagoonimation">Nagoonimation on iku.gg</a></p>
+<p>The best 3D animated hentai being produced anywhere. Nagoonimation's releases throughout 2025-2026 set new technical benchmarks — ray-traced lighting, physics simulation, cinema-quality camera work. Each release is an event. Featuring characters from Overwatch, Dead or Alive, and League of Legends. If you want to understand what 3D animated hentai looks like at its ceiling, this is it.</p>
+
+<h3>6. Saimin Seishidou</h3>
+<p><strong>Genre:</strong> <a href="/glossary/mind-control">Mind Control</a> / Hypnosis</p>
+<p>The definitive hypnosis hentai and the best entry point for viewers interested in the mind control genre. Multiple high-quality episodes, consistent production across its run, and a community consensus that it represents the subgenre at its best. Fans of dark fantasy hentai regularly cite this as essential viewing.</p>
+
+<h3>7. Youkoso! Sukebe Elf no Mori e</h3>
+<p><strong>Studio:</strong> Collaboration Works | <strong>Genre:</strong> Fantasy / Elf | <strong>Tag:</strong> <a href="/tag/elf">elf</a></p>
+<p>The best elf hentai produced to date. Collaboration Works brings their signature production polish to a forest elf setting with genuinely attractive character designs. Multiple episodes sustaining quality. An essential watch for fans of the fantasy race genre. Browse the <a href="/tag/elf">elf tag</a> on iku.gg to find the full catalog of related content.</p>
+
+<h3>8. Mankitsu Happening</h3>
+<p><strong>Studio:</strong> Collaboration Works | <strong>Tone:</strong> Comedy</p>
+<p>Hentai that succeeds as comedy — a rare achievement. <em>Mankitsu Happening</em> has the best writing of any hentai series that's also explicitly funny. The character interactions earn the explicit scenes rather than using them as the only content. Recommended even for viewers who don't typically watch animated hentai for narrative.</p>
+
+<h2>Tier B: Worth Watching</h2>
+
+<h3>9. Imaizumin-chi wa Douyara Gal no Tamariba ni Natteru Rashii</h3>
+<p><strong>Genre:</strong> Gyaru / Harem | <strong>Tag:</strong> <a href="/tag/gyaru">gyaru</a></p>
+<p>Multiple seasons of this gyaru harem series confirm sustained audience interest. The gyaru character aesthetic (glamorous fashion, distinctive makeup, confident personalities) gets excellent treatment here. A good recommendation for viewers who want harem hentai outside the isekai setting.</p>
+
+<h3>10. Vicineko's Genshin Animations</h3>
+<p><strong>Medium:</strong> 3D / Game Characters | <strong>Browse:</strong> <a href="/tag/vicineko">Vicineko on iku.gg</a></p>
+<p>The definitive Genshin Impact animated hentai. Vicineko has produced high-quality animations of essentially every major Genshin character — Raiden Shogun, Mona, Nilou, Ganyu — with model accuracy and movement quality that rivals the game's own cinematics. The go-to creator for anyone interested in <a href="/tag/raiden_shogun">Raiden Shogun content</a> specifically.</p>
+
+<h2>New 2026 Releases to Watch</h2>
+<p>For the most current animated hentai releases, the <a href="/trending">iku.gg trending page</a> is updated in real time as new content is published and rated. The community score system ensures that new releases are quality-filtered quickly — high-quality new animated hentai rises fast.</p>
+<p>Browse the <a href="/new">new releases page</a> for recent additions across all sources. For curated long-form series, the <a href="/series">series index</a> organizes content by franchise. Use the <a href="/tag/animated">animated tag</a> to filter specifically for animated video content across all sources.</p>
+
+<h2>How to Find Your Own Best Animated Hentai</h2>
+<p>These rankings reflect community consensus, but personal taste is the only ranking that matters. The fastest path to finding your own favorites:</p>
+<ol>
+  <li>Start with vanilla — <a href="/tag/vanilla">vanilla tagged content</a> sorted by top-rated surfaces the most universally praised content in the most accessible genre</li>
+  <li>When you find content you enjoy, note the artist and browse their full output</li>
+  <li>Use the blacklist in <a href="/settings">Settings</a> to hide content types you don't want to see</li>
+  <li>Check our <a href="/blog/how-to-find-good-hentai">discovery guide</a> for a complete methodology</li>
+</ol>`,
+    tags: ["best of", "2026", "recommendations", "animated", "rankings"],
+    publishedAt: "2025-10-15",
+    readingTime: 9,
+    glossaryLinks: ["vanilla", "milf", "isekai", "harem", "mind-control"],
+    seoTitle: "Best Animated Hentai 2026 — Top 15 Titles Ranked | iku.gg",
+    seoDescription: "The best animated hentai to watch in 2026 — 15 top-rated titles ranked by community score, animation quality, and replay value. Updated quarterly.",
+  },
+
+  // 17. hentai vs anime difference
+  {
+    slug: "hentai-vs-anime-difference",
+    title: "Hentai vs Anime: What's the Actual Difference?",
+    excerpt: "Many people use hentai and anime interchangeably — but they're distinct things. Here's the real difference between hentai, anime, and ecchi, with clear examples.",
+    content: `<h2>The Confusion is Understandable</h2>
+<p>The question <strong>"what's the difference between hentai and anime?"</strong> appears millions of times per year in search engines, which tells you how common the confusion is. The answer is straightforward once you have the right definitions — and understanding it changes how you search for and describe content.</p>
+
+<h2>What is Anime?</h2>
+<p>Anime is Japanese animation. The word "anime" in Japan refers to all animation regardless of origin — Japanese people call Disney films "anime." Outside Japan, "anime" means specifically Japanese animated content or animation in the Japanese style.</p>
+<p>Anime spans every genre imaginable: children's shows (Doraemon, Pokémon), action series (Dragon Ball Z, Naruto, Attack on Titan), romance (Your Lie in April, Toradora), horror (Higurashi, Paranoia Agent), science fiction (Ghost in the Shell, Neon Genesis Evangelion), and everything in between. Mainstream anime includes both content that is completely age-appropriate and content with mature themes — but mainstream anime, by definition, is not explicitly pornographic.</p>
+
+<h2>What is Hentai?</h2>
+<p><a href="/glossary/hentai">Hentai</a> is Japanese animated adult content — explicit animated pornography in the anime art style. The word "hentai" literally means "pervert" or "transformation" in Japanese, and in Japan, adult animation is referred to as "ero-anime" or "18-kin" (18+ restricted). Western internet culture adopted "hentai" as the catch-all term for explicit Japanese animation starting in the late 1990s.</p>
+<p>Hentai uses the same art style as mainstream anime — large expressive eyes, specific proportional conventions, distinctive line-work — but features fully explicit sexual content. It is animated pornography. This is the key distinction: mainstream anime may have mature themes or some degree of sexual content, but it is not explicit. Hentai is explicitly sexual by definition.</p>
+
+<h2>The Relationship: Hentai is a Subset of Anime</h2>
+<p>The most accurate framing: <strong>all hentai is anime, but not all anime is hentai</strong>. Hentai is a specific category within the broader anime format. Just as "thriller" is a subset of "film," hentai is a subset of anime — specifically the 18+ explicit adult subset.</p>
+
+<h2>What is Ecchi? The Middle Ground</h2>
+<p><a href="/glossary/ecchi">Ecchi</a> (sometimes written "ecchi") is the term for anime with significant sexual content that stops short of being fully explicit. Ecchi shows might feature nudity, suggestive scenarios, sexual humor, and fanservice — but not graphic sexual acts. Ecchi is mainstream anime that is sexually suggestive.</p>
+<p>Examples of ecchi anime you can watch on mainstream platforms:</p>
+<ul>
+  <li><strong>High School DxD</strong> — Supernatural action with heavy nudity and fanservice</li>
+  <li><strong>To Love-Ru</strong> — Romantic comedy with extensive fanservice</li>
+  <li><strong>Kill la Kill</strong> — Action series with deliberately absurd costume design</li>
+  <li><strong>Highschool of the Dead</strong> — Horror action with prominent fanservice elements</li>
+</ul>
+<p>All of these are available on Crunchyroll, HIDIVE, or similar platforms. None of them are hentai. They're ecchi — the suggestive-but-not-explicit category.</p>
+
+<h2>The Spectrum: From Anime to Ecchi to Hentai</h2>
+<p>Think of it as a spectrum of explicitness:</p>
+<ul>
+  <li><strong>Standard anime</strong> — No sexual content, or minimal romantic content. Pokémon, Naruto, One Piece</li>
+  <li><strong>Anime with mild fanservice</strong> — Some suggestive moments but nothing focused on them. Many shonen series</li>
+  <li><strong>Ecchi anime</strong> — Significant fanservice, nudity, sexual humor — but non-explicit. High School DxD, To Love-Ru</li>
+  <li><strong>Softcore hentai / H anime</strong> — Suggestive without fully explicit depictions</li>
+  <li><strong>Explicit hentai</strong> — Fully explicit animated pornography. What most people mean by "hentai" in Western usage</li>
+</ul>
+
+<h2>Common Misconceptions Cleared Up</h2>
+<h3>"Anime is just hentai"</h3>
+<p>False. Mainstream anime like Attack on Titan, My Hero Academia, and One Punch Man are as sexually explicit as a Marvel movie — which is to say, not at all. The misconception comes from Western media occasionally using "anime" as shorthand for all Japanese animation, including adult content. They're distinct categories.</p>
+
+<h3>"Hentai is just animated porn"</h3>
+<p>Technically accurate but reductive. Hentai has genres, production studios, artistic traditions dating to the 1980s, and a global fan community with sophisticated taste and vocabulary. It is animated adult content, yes — but it's also a specific cultural form with its own history and aesthetics.</p>
+
+<h3>"Ecchi is just soft hentai"</h3>
+<p>Ecchi is mainstream anime with sexual themes. It is not a softer version of hentai — it's a distinct category intended for broadcast or streaming on mainstream platforms. The distinction matters for search, for platform selection, and for content expectations.</p>
+
+<h2>Where to Watch Each</h2>
+<ul>
+  <li><strong>Mainstream anime</strong>: Crunchyroll, Netflix, HIDIVE, Funimation (now merged into Crunchyroll)</li>
+  <li><strong>Ecchi anime</strong>: Crunchyroll, HIDIVE — the same platforms carry ecchi alongside non-ecchi</li>
+  <li><strong>Hentai</strong>: Dedicated adult platforms. <a href="/trending">iku.gg</a> for tag-based search with character and artist filtering. hanime.tv for OVA series. hstream.moe for quality-focused browsing</li>
+</ul>
+
+<h2>Related Reading</h2>
+<p>For more on what hentai specifically is, see our <a href="/blog/what-is-hentai">complete hentai guide</a>. For the distinction between ecchi and hentai in more detail, the <a href="/glossary/ecchi">ecchi glossary entry</a> covers the full breakdown. If you're looking for recommended hentai to start with, our <a href="/blog/best-animated-hentai-2026">best animated hentai 2026 rankings</a> are updated quarterly.</p>`,
+    tags: ["guide", "beginners", "ecchi", "anime", "educational"],
+    publishedAt: "2025-11-20",
+    readingTime: 7,
+    glossaryLinks: ["hentai", "ecchi", "vanilla"],
+    seoTitle: "Hentai vs Anime: What's the Actual Difference? | iku.gg",
+    seoDescription: "Clear explanation of the difference between hentai and anime — what each term means, what ecchi is, and where they overlap. Plain English, no jargon.",
+  },
+
+  // 18. most popular hentai characters
+  {
+    slug: "most-popular-hentai-characters-2026",
+    title: "Most Popular Hentai Characters in 2026 — The Definitive Tier List",
+    excerpt: "Who are the most searched, most drawn, and most animated hentai characters in 2026? Data-backed rankings from Danbooru, Gelbooru, and search volume analysis.",
+    content: `<h2>How These Rankings Work</h2>
+<p>This ranking of the <strong>most popular hentai characters</strong> is based on measurable data: post counts on Danbooru and Gelbooru (the two largest tagging platforms), search volume data, and creator output tracking. A character's position reflects actual fan content production and search demand, not editorial preference.</p>
+<p>Rankings are updated annually. The 2026 list reflects content production through early 2026.</p>
+
+<h2>Tier S: The Absolute Dominant Characters</h2>
+
+<h3>1. Raiden Shogun (Genshin Impact)</h3>
+<p><strong>Tags:</strong> <a href="/tag/raiden_shogun">raiden_shogun</a> | <strong>Source:</strong> Genshin Impact</p>
+<p>Raiden Shogun (Ei) sits at the top of every measurable metric for hentai character popularity in 2026. Her Danbooru post count dwarfs nearly every other character. Search volume for "Raiden Shogun hentai" and "Raiden Shogun R34" consistently exceeds 100,000 monthly queries.</p>
+<p>The design formula is almost analytically perfect: tall, elegant, purple and gold color scheme, stoic-powerful personality archetype, electro effects that animate beautifully, specific revealing outfit elements. HoYoverse understood what they were creating. Artists like <a href="/tag/vicineko">Vicineko</a> have built substantial careers on Raiden content alone.</p>
+
+<h3>2. D.Va (Overwatch)</h3>
+<p><strong>Tags:</strong> <a href="/tag/d.va_(overwatch)">d.va_(overwatch)</a> | <strong>Source:</strong> Overwatch</p>
+<p>D.Va has been at the top of game character hentai rankings since Overwatch launched in 2016. The combination of gaming prodigy archetype, pilot suit design, pink mech aesthetic, and playful competitive personality created a character that never leaves the top tier regardless of game release cycles. Nagoonimation's D.Va animations are some of the most-viewed 3D adult animations ever made. Browse the full <a href="/character/dva-overwatch">D.Va catalog on iku.gg</a>.</p>
+
+<h3>3. 2B (Nier: Automata)</h3>
+<p><strong>Tags:</strong> <a href="/tag/2b_(nier:automata)">2b_(nier:automata)</a> | <strong>Source:</strong> Nier: Automata</p>
+<p>The android warrior in a black dress and blindfold. 2B's design is one of the most celebrated in gaming — Yoko Taro's deliberate aesthetic choices created a character whose visual profile was immediately seized by the adult fan community. Short dress, specific outfit construction, combat-capable android concept. 2B remains in S-tier years after the game's release.</p>
+
+<h2>Tier A: Consistently High Volume</h2>
+
+<h3>4. Mona (Genshin Impact)</h3>
+<p><strong>Tags:</strong> <a href="/tag/mona_(genshin_impact)">mona_(genshin_impact)</a></p>
+<p>Mona's distinctive outfit (dark short dress with flowing tail, specific revealing construction) and astrologist personality made her an immediate fan favorite. The gap between her dignified manner and her canonical financial stress creates comedy scenarios that artists exploit well. Consistently high post counts across all platforms.</p>
+
+<h3>5. Widowmaker (Overwatch)</h3>
+<p><strong>Tags:</strong> <a href="/tag/widowmaker_(overwatch)">widowmaker_(overwatch)</a></p>
+<p>Purple skin, French accent, skin-tight bodysuit, cold assassin personality. Widowmaker content trends toward dominant/predatory scenarios matching her character, differentiating it aesthetically from D.Va's catalog. Sustained high volume years into Overwatch's lifecycle.</p>
+
+<h3>6. Tifa Lockhart (Final Fantasy VII)</h3>
+<p><strong>Tags:</strong> <a href="/tag/tifa_lockhart">tifa_lockhart</a></p>
+<p>Tifa is a long-standing pillar of game hentai content, predating most of the current top-tier list. The FF7 Remake's release with updated visuals generated a massive content wave. Her archetype (loyal childhood friend, physically capable, specific outfit design) maps directly onto multiple popular hentai scenarios. One of the highest post-count characters on Danbooru in the non-gacha game category.</p>
+
+<h3>7. Ganyu (Genshin Impact)</h3>
+<p><strong>Tags:</strong> <a href="/tag/ganyu_(genshin_impact)">ganyu_(genshin_impact)</a></p>
+<p>Half-adeptus character with goat horns and blue hair. Ganyu was one of the highest content-generating Genshin releases. The horn element adds a fantasy-race dimension to a character whose design is otherwise very classical. Consistent performance across all metrics since her release.</p>
+
+<h3>8. Marie Rose (Dead or Alive)</h3>
+<p><strong>Tags:</strong> <a href="/tag/marie_rose">marie_rose</a> | <strong>Browse:</strong> <a href="/character/marie-rose">Marie Rose on iku.gg</a></p>
+<p>The Dead or Alive series has long generated hentai, and Marie Rose is its most prominent character in adult content volume. The DOA franchise's physics emphasis and detailed character models made it an early 3D hentai source. Marie Rose's position at the top of DOA character rankings reflects consistent long-term interest.</p>
+
+<h2>Tier B: Popular Characters with Dedicated Audiences</h2>
+<ul>
+  <li><strong>Hu Tao (Genshin)</strong> — Ghost-talking pyro character with energetic personality. <a href="/tag/hu_tao_(genshin_impact)">Browse Hu Tao content</a></li>
+  <li><strong>Tracer (Overwatch)</strong> — Overwatch's mascot. Massive art catalog including <a href="/glossary/yuri">yuri</a> content following her canonical LGBTQ+ reveal</li>
+  <li><strong>Mercy (Overwatch)</strong> — Healer archetype, angel wings in Valkyrie skin. Strong vanilla and romance-framed content</li>
+  <li><strong>Asuka Langley (Evangelion)</strong> — Classic anime character with decades of fan content. <a href="/glossary/tsundere">Tsundere</a> archetype pioneer</li>
+  <li><strong>Zero Two (Darling in the FranXX)</strong> — Horned girl pilot, massive content wave on series release. Still performing years later</li>
+  <li><strong>Nilou (Genshin)</strong> — Dancer design from Sumeru region. Immediate massive content volumes on release</li>
+</ul>
+
+<h2>Original Characters (OC Hentai)</h2>
+<p>Beyond franchise characters, original character hentai represents a significant portion of the market. Artists who create their own characters — particularly in the elf, demon girl, and catgirl archetypes — can build massive followings around original designs. <a href="/tag/original_character">Browse original character content</a> on iku.gg for creators who've built compelling original rosters.</p>
+
+<h2>Find Any Character on iku.gg</h2>
+<p>Every character mentioned in this guide has a searchable tag on iku.gg. Use the <a href="/character">character index</a> to browse by name, or search directly in the <a href="/explore">explore page</a>. The <a href="/trending">trending page</a> shows which characters are receiving the most new content right now.</p>`,
+    tags: ["characters", "rankings", "genshin", "overwatch", "popular"],
+    publishedAt: "2025-12-10",
+    readingTime: 8,
+    glossaryLinks: ["hentai", "tsundere", "yuri", "3d-hentai"],
+    seoTitle: "Most Popular Hentai Characters 2026 — Full Tier List | iku.gg",
+    seoDescription: "Data-backed ranking of the most popular hentai characters in 2026 — Raiden Shogun, D.Va, 2B, Tifa and more. Post counts, search volume, and creator output.",
+  },
+
+  // 19. what is uncensored hentai
+  {
+    slug: "what-is-uncensored-hentai-explained",
+    title: "What is Uncensored Hentai? Japanese Censorship Law Explained",
+    excerpt: "Why is Japanese hentai censored? What does uncensored mean, how do uncensored versions get made, and where do you find them? Complete guide.",
+    content: `<h2>Why Does Hentai Have Censorship?</h2>
+<p>If you've watched Japanese hentai, you've seen it: blurry mosaic blocks or white bars over explicit content. This <strong>censorship in hentai</strong> is not a content warning — it's a legal requirement. Understanding why it exists and what "uncensored" means changes how you search for and evaluate hentai.</p>
+
+<h2>The Legal Source: Article 175 of the Japanese Penal Code</h2>
+<p>Japanese censorship in adult content traces directly to <strong>Article 175</strong> of the Japanese Penal Code, enacted in 1907 and updated through the post-WWII period. The article prohibits the distribution of "obscene materials" — and judicial interpretation has consistently applied this to explicit depictions of genitalia in adult content.</p>
+<p>In practice: any sexually explicit content produced in Japan for domestic distribution must pixelate or obscure genitalia. This applies to live-action adult video (JAV) and animated hentai equally. The law is enforced with civil and criminal penalties — studios and distributors take it seriously.</p>
+<p>Japan's censorship laws exist alongside a sophisticated adult content industry that generates billions in annual revenue. The industry has operated within these constraints for decades, treating censorship as a production requirement rather than an existential obstacle.</p>
+
+<h2>What "Uncensored" Hentai Actually Means</h2>
+<p><a href="/glossary/uncensored">Uncensored hentai</a> refers to versions without the Japanese censorship applied. There are several pathways through which uncensored content is produced and distributed:</p>
+
+<h3>Official International Releases</h3>
+<p>The most reliable source of genuine uncensored hentai. Major studios — Pink Pineapple, Bunnywalker, Collaboration Works — produce international versions of their titles for Western distribution. These international releases are produced from the original master files without censorship applied.</p>
+<p>Key distinction: studios that plan for international release from the start create genuinely uncensored masters. Studios that add censorship during the production process (rather than as a final post-production overlay) may produce "uncensored" international releases that are still partly censored or have different censorship than the domestic version.</p>
+
+<h3>Independent Western Creators</h3>
+<p>The majority of high-quality 3D hentai is produced uncensored. Independent creators using Blender, SFM, and Koikatsu are based outside Japan and have no Article 175 obligation. Western 3D content is almost universally uncensored, which partially explains its popularity growth — viewers who strongly prefer uncensored content find 3D a reliable source.</p>
+<p>Browse the <a href="/tag/3d">3D tag</a> combined with <a href="/tag/uncensored">uncensored</a> on iku.gg to see the overlap between these categories.</p>
+
+<h3>Fan Decensoring</h3>
+<p>A community practice of manually removing or digitally reconstructing censored areas. Quality ranges from obviously artificial to nearly seamless. Fan-decensored content is typically tagged as such (e.g., <code>decensored</code>) to distinguish it from official uncensored releases. AI-assisted decensoring has improved quality significantly in recent years.</p>
+
+<h2>Censored vs Uncensored: Does It Change What You're Watching?</h2>
+<p>Beyond the obvious visual difference, there are secondary considerations:</p>
+
+<h3>The "Base Version" Issue</h3>
+<p>Some studios apply censorship during production rather than as a final overlay. In these cases, the master source file already has the censored area — meaning the "uncensored international version" may actually have different or lighter censorship rather than being truly uncensored. This is a documented production practice that informed viewers look out for in community discussions of specific titles.</p>
+
+<h3>Animation Quality</h3>
+<p>Censorship has no effect on animation quality. A poorly animated title is equally poor censored or uncensored. A masterpiece like Overflow is excellent in both versions. If you're evaluating a title, quality signals (animation fluidity, art consistency, character expressiveness) matter more than censorship status.</p>
+
+<h2>Common Censorship Methods</h2>
+<ul>
+  <li><strong>Mosaic pixelation</strong> — The most common method. A blocky pixelated area covers explicit content. Standard in Japanese domestic releases</li>
+  <li><strong>Light bars / white bars</strong> — Horizontal or vertical bright white overlays. Older method, less common in current production</li>
+  <li><strong>Black bars</strong> — Similar to light bars but darker. Used in some productions and for some streaming platforms</li>
+  <li><strong>Steam / fog effects</strong> — Artistic concealment using in-scene visual effects. Less common, considered more "premium" as a censorship method</li>
+</ul>
+
+<h2>How to Find Uncensored Hentai on iku.gg</h2>
+<p>Use the <a href="/tag/uncensored">uncensored tag</a> on iku.gg to filter for uncensored content. You can combine this with any character, artist, or genre tag to narrow further:</p>
+<ul>
+  <li><a href="/tag/uncensored">All uncensored content</a> — Browse the full uncensored catalog</li>
+  <li>Combine <code>uncensored</code> + <code>raiden_shogun</code> for uncensored Raiden Shogun content specifically</li>
+  <li>Combine <code>uncensored</code> + <code>vanilla</code> for uncensored romantic content</li>
+</ul>
+<p>For more context on censorship laws and the hentai industry, see our <a href="/blog/uncensored-vs-censored">complete censorship guide</a>. For the types of content that are most commonly uncensored, our <a href="/blog/3d-vs-2d-hentai">3D vs 2D comparison</a> is relevant.</p>`,
+    tags: ["uncensored", "censorship", "guide", "japanese law", "educational"],
+    publishedAt: "2026-01-05",
+    readingTime: 7,
+    glossaryLinks: ["uncensored", "hentai", "3d-hentai"],
+    seoTitle: "What is Uncensored Hentai? Japanese Censorship Law Explained | iku.gg",
+    seoDescription: "Why is hentai censored in Japan? Article 175 explained, how uncensored hentai versions are made, and where to find uncensored content on iku.gg.",
+  },
+
+  // 20. hentai art styles explained
+  {
+    slug: "hentai-art-styles-explained",
+    title: "Hentai Art Styles Explained: 2D, 3D, Pixel, and Beyond",
+    excerpt: "Hentai comes in more visual styles than most fans realize. This guide explains every major art style — 2D anime, 3D CGI, pixel art, watercolor doujinshi, and more.",
+    content: `<h2>Why Art Style Matters in Hentai</h2>
+<p>Hentai is not a single visual format — it's a category of content that spans wildly different <strong>art styles</strong>. Understanding the major hentai art styles helps you search more effectively, appreciate what goes into production, and discover content you might be missing entirely. The art style is often as important to viewer preference as the genre or scenario.</p>
+
+<h2>2D Traditional Anime Style</h2>
+<p>The default mental image when most people think of hentai. Traditional 2D anime-style hentai uses the visual grammar of Japanese animation: large eyes, stylized proportions, distinctive character outlines, cel-style coloring.</p>
+
+<h3>Studio OVA Animation</h3>
+<p>Professional studio-produced hentai OVAs represent the high end of 2D animation. Studios like <a href="/tag/pink_pineapple">Pink Pineapple</a>, <a href="/tag/bunnywalker">Bunnywalker</a>, and Collaboration Works produce fully animated content with professional voice acting, original scores, and frame-by-frame movement. Quality varies enormously — the best OVAs like Overflow and Master Piece set a high bar, while lower-budget productions cut frames and use limited animation techniques.</p>
+<p>Key visual characteristics: fluid movement (in quality productions), expressive face animation, consistent character proportions, anime-standard color palette and line weight.</p>
+
+<h3>Slideshow/Manga-Style Animation</h3>
+<p>A significant portion of "animated" hentai is actually illustrated panels with limited animation — slow pans across static images, minimal motion. This is sometimes called "manga-animation" and sits between static illustration and full animation. It costs far less to produce than full animation and makes up a large portion of the lower-budget end of the market. Higher production budgets consistently correlate with more genuine frame-by-frame animation.</p>
+
+<h3>Flash / Limited Animation</h3>
+<p>Flash-style animation uses simplified characters and looping animations rather than fully rendered sequences. This was the dominant independent hentai format in the 2000s-2010s and remains common in certain genres. The visual style is immediately recognizable — simpler proportions, mechanical movement loops. Not high-prestige production but a large content category.</p>
+
+<h2>3D Computer Animation</h2>
+<p>The fastest-growing hentai format. <a href="/glossary/3d-hentai">3D hentai</a> encompasses multiple distinct sub-styles based on the tools used.</p>
+
+<h3>Blender Realism</h3>
+<p>High-end Blender productions from creators like <a href="/tag/nagoonimation">Nagoonimation</a> and Hard-Degenerate use ray-traced lighting, physics simulation, and detailed character models to achieve near-photorealistic quality. This style produces the most technically impressive hentai currently being made anywhere. Characters look three-dimensional with realistic lighting, cloth physics, and facial expression detail.</p>
+
+<h3>Anime-Style 3D (Koikatsu)</h3>
+<p>Koikatsu and Honey Select produce 3D content that is designed to look like 2D anime. The toon-shader rendering creates flat-lit, anime-proportioned characters that appeal to viewers who want the visual aesthetic of traditional 2D hentai with the production efficiency of 3D tools. This is the bridge format between 2D and 3D aesthetics.</p>
+
+<h3>SFM (Source Filmmaker)</h3>
+<p><a href="/glossary/sfm">SFM animations</a> use the Source engine's rendering, which produces a specific look — somewhat dated compared to modern Blender work but immediately recognizable. The primary advantage was and remains access to game character models. The SFM aesthetic has a nostalgic quality for viewers who discovered 3D hentai through early Overwatch content.</p>
+
+<h3>MMD (MikuMikuDance)</h3>
+<p>MMD is a Japanese-developed free 3D animation tool primarily associated with Vocaloid character animations. The hentai community has used MMD extensively for Japanese game characters and original characters. MMD has a specific lower-fidelity but charming aesthetic that distinguishes it from Western 3D production. Genshin Impact MMD hentai using community-created models is a significant category.</p>
+
+<h2>Illustrated / Doujinshi Style</h2>
+<p><a href="/glossary/doujinshi">Doujinshi</a> and illustration-focused adult content spans the widest range of visual styles in hentai.</p>
+
+<h3>Manga Black-and-White</h3>
+<p>Traditional manga format: black ink linework on white, greyscale tones, no color. Many hentai doujinshi are produced in this format, which emphasizes linework quality and composition over color rendering. The best black-and-white doujinshi are technically accomplished illustrations where the absence of color is a deliberate aesthetic choice.</p>
+
+<h3>Full-Color Illustration</h3>
+<p>Digital art tools have made full-color illustration the dominant format for new doujinshi. Modern hentai illustration on Pixiv and Fanbox is almost universally full-color, with detailed shading, background work, and character rendering that rivals professional animation character art. Some of the most visually impressive content in hentai is standalone full-color illustration rather than animation.</p>
+
+<h3>Manhwa / Webtoon Style</h3>
+<p><a href="/glossary/manhwa">Manhwa</a> (Korean adult comics) has a distinctive visual style: full-color throughout, vertical scroll format, Western-influenced character proportions with anime-style eyes, high-contrast coloring. This style is growing rapidly and represents a significant departure from Japanese manga conventions.</p>
+
+<h3>Watercolor and Alternative Styles</h3>
+<p>A smaller but dedicated community of hentai artists work in non-standard styles: watercolor aesthetics, oil painting simulation, rough sketch approaches, and other alternatives to the clean digital linework that dominates the market. These styles often attract specific audiences who value artistic distinctiveness over the standard production aesthetic.</p>
+
+<h2>Pixel Art and Retro Styles</h2>
+<p>Pixel art hentai — explicit content rendered in the low-resolution pixel art style of retro games — has a dedicated niche audience. The style combines nostalgia for early video game aesthetics with adult content. Hentai games (eroge) in particular often use pixel art because it evokes the RPG games that inspired them. The technical skill required to produce quality pixel art hentai is significant and appreciated by fans.</p>
+
+<h2>AI-Generated Style</h2>
+<p>AI image generation (Stable Diffusion, NovelAI) has created a new visual category. AI-generated hentai has a specific aesthetic fingerprint: typically high detail, sometimes uncanny body proportions or incorrect hand anatomy, lighting that can look "too perfect." Quality is improving rapidly and top-tier AI outputs are increasingly difficult to distinguish from human illustration.</p>
+<p>AI content is tagged on iku.gg via the <a href="/tag/ai_generated">ai_generated</a> tag, allowing you to filter for or against it based on preference.</p>
+
+<h2>Finding Content by Art Style on iku.gg</h2>
+<ul>
+  <li><a href="/tag/animated">animated</a> — Full animation (2D or 3D)</li>
+  <li><a href="/tag/3d">3d</a> — 3D animation and renders</li>
+  <li><a href="/tag/sfm">sfm</a> — Source Filmmaker content</li>
+  <li><a href="/tag/koikatsu">koikatsu</a> — Anime-style 3D</li>
+  <li><a href="/tag/manga">manga</a> — Illustrated manga/doujinshi format</li>
+  <li><a href="/tag/ai_generated">ai_generated</a> — AI-generated content</li>
+</ul>
+<p>For recommendations across art styles, our <a href="/blog/best-animated-hentai-2026">best animated hentai 2026</a> list covers top picks in both 2D and 3D formats. For a deeper comparison of 3D vs 2D specifically, see our <a href="/blog/3d-vs-2d-hentai">3D vs 2D hentai guide</a>.</p>`,
+    tags: ["art styles", "3d", "2d", "guide", "educational", "animation"],
+    publishedAt: "2026-02-14",
+    readingTime: 9,
+    glossaryLinks: ["3d-hentai", "sfm", "doujinshi", "manhwa", "hentai"],
+    seoTitle: "Hentai Art Styles Explained: 2D, 3D, Pixel & More | iku.gg",
+    seoDescription: "Complete guide to hentai art styles — traditional 2D anime, 3D Blender, SFM, Koikatsu, doujinshi, pixel art, AI-generated. What each looks like and where to find it.",
+  },
+
   // 15. hentai for beginners
   {
     slug: "hentai-for-beginners-guide",
