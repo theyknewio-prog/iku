@@ -4,8 +4,9 @@ import { AgeGate } from "@/components/AgeGate";
 import { PosterCard } from "@/components/PosterCard";
 import { Carousel } from "@/components/Carousel";
 import { getPopularTags, getPopularCharacters } from "@/lib/danbooru";
-import { getVideos } from "@/lib/content";
+import { getVideos, getThumbnailForTag } from "@/lib/content";
 import { SERIES } from "@/data/series";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai Videos | Stream Animated Hentai Online",
@@ -151,15 +152,15 @@ export default async function HomePage() {
           <Carousel title="Popular Series" seeAllHref="/series">
             {SERIES.slice(0, 12).map((series, i) => {
               const gradient = CHAR_GRADIENTS[i % CHAR_GRADIENTS.length];
-              const initials = series.name
-                .split(" ")
-                .map((w) => w[0]?.toUpperCase() ?? "")
-                .slice(0, 2)
-                .join("");
+              const thumb = getThumbnailForTag(series.tags[0] || series.name.toLowerCase());
               return (
                 <Link key={series.slug} href={`/series/${series.slug}`} className="v2-char-card">
                   <div className="v2-char-card__avatar" style={{ background: gradient }}>
-                    <span className="v2-char-card__initials">{initials}</span>
+                    {thumb ? (
+                      <Image src={thumb} alt={series.name} fill sizes="120px" style={{ objectFit: "cover" }} unoptimized />
+                    ) : (
+                      <span className="v2-char-card__initials">{series.name.split(" ").map(w => w[0]?.toUpperCase() ?? "").slice(0,2).join("")}</span>
+                    )}
                   </div>
                   <div className="v2-char-card__name">{series.name}</div>
                   <div className="v2-char-card__count">{series.characters.length} characters</div>
@@ -188,12 +189,7 @@ export default async function HomePage() {
           <Carousel title="Popular Characters" seeAllHref="/tags">
             {characters.map((char, i) => {
               const gradient = CHAR_GRADIENTS[i % CHAR_GRADIENTS.length];
-              const initials = char.name
-                .replace(/_/g, " ")
-                .split(" ")
-                .map((w) => w[0]?.toUpperCase() ?? "")
-                .slice(0, 2)
-                .join("");
+              const thumb = getThumbnailForTag(char.name);
               return (
                 <Link
                   key={char.name}
@@ -201,7 +197,11 @@ export default async function HomePage() {
                   className="v2-char-card"
                 >
                   <div className="v2-char-card__avatar" style={{ background: gradient }}>
-                    <span className="v2-char-card__initials">{initials}</span>
+                    {thumb ? (
+                      <Image src={thumb} alt={char.name.replace(/_/g, " ")} fill sizes="120px" style={{ objectFit: "cover" }} unoptimized />
+                    ) : (
+                      <span className="v2-char-card__initials">{char.name.replace(/_/g," ").split(" ").map(w=>w[0]?.toUpperCase()??"").slice(0,2).join("")}</span>
+                    )}
                   </div>
                   <div className="v2-char-card__name">
                     {char.name.replace(/_/g, " ")}

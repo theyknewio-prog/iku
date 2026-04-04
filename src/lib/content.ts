@@ -11,6 +11,10 @@ import { searchRule34 } from "@/lib/rule34-search";
 import { searchRule34Video } from "@/lib/rule34video";
 import type { Video, PaginatedResult } from "@/types/video";
 
+// Local JSON data for thumbnail lookups (loaded once, cached in memory)
+import danbooruData from "@/data/videos.json";
+import gelbooruData from "@/data/gelbooru-videos.json";
+
 // ---------------------------------------------------------------------------
 // Global server-side content filter — CANNOT be bypassed by users.
 // Removes illegal/underage content before it reaches any page or API.
@@ -42,6 +46,62 @@ function filterBannedContent(videos: Video[]): Video[] {
 /** Check if a single video contains banned content */
 export function containsBannedContent(video: { tags: string[] }): boolean {
   return video.tags.some((t) => BANNED_TAGS.has(t.toLowerCase()));
+}
+
+// ---------------------------------------------------------------------------
+// Thumbnail lookup from local JSON data (no API calls)
+// ---------------------------------------------------------------------------
+
+interface LocalVideo {
+  id: number;
+  thumbnail?: string;
+  score?: number;
+  characters?: string[];
+  copyrights?: string[];
+  tags?: string[];
+}
+
+const allLocalVideos: LocalVideo[] = [
+  ...(danbooruData as LocalVideo[]),
+  ...(gelbooruData as LocalVideo[]),
+];
+
+/** Get the best thumbnail for a tag (character name, series name, etc.) from local data */
+export function getThumbnailForTag(tag: string): string {
+  const normalizedTag = tag.toLowerCase();
+  let best: LocalVideo | null = null;
+  let bestScore = -1;
+
+  for (const v of allLocalVideos) {
+    if (!v.thumbnail) continue;
+    const allTags = [
+      ...(v.characters || []),
+      ...(v.copyrights || []),
+      ...(v.tags || []),
+    ];
+    if (allTags.some((t) => t.toLowerCase() === normalizedTag)) {
+      const score = v.score || 0;
+      if (score > bestScore) {
+        bestScore = score;
+        best = v;
+      }
+    }
+  }
+
+  if (!best?.thumbnail) return "";
+  // Upgrade 180px thumbnail to 720px preview for better quality
+  return best.thumbnail
+    .replace("/180x180/", "/720x720/")
+    .replace(/\.jpg$/, ".webp");
+}
+
+/** Get thumbnails for multiple tags at once (batch, more efficient) */
+export function getThumbnailsForTags(tags: string[]): Record<string, string> {
+  const result: Record<string, string> = {};
+  for (const tag of tags) {
+    result[tag] = getThumbnailForTag(tag);
+  }
+  return result;
 }
 
 export interface GetVideosOptions {
