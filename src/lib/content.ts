@@ -39,21 +39,25 @@ export function containsBannedContent(video: { tags: string[] }): boolean {
 
 /** Get the best thumbnail for a tag (character name, series name, etc.) from database */
 export async function getThumbnailForTag(tag: string): Promise<string> {
-  const { rows } = await pool.query(
-    `SELECT thumbnail FROM videos
-     WHERE (source = 'danbooru' OR source = 'gelbooru')
-       AND thumbnail != ''
-       AND ($1 = ANY(characters) OR $1 = ANY(copyrights) OR $1 = ANY(tags))
-       AND NOT (tags && $2::text[])
-     ORDER BY score DESC
-     LIMIT 1`,
-    [tag.toLowerCase(), BANNED_TAGS_ARRAY]
-  );
+  try {
+    const { rows } = await pool.query(
+      `SELECT thumbnail FROM videos
+       WHERE (source = 'danbooru' OR source = 'gelbooru')
+         AND thumbnail != ''
+         AND ($1 = ANY(characters) OR $1 = ANY(copyrights) OR $1 = ANY(tags))
+         AND NOT (tags && $2::text[])
+       ORDER BY score DESC
+       LIMIT 1`,
+      [tag.toLowerCase(), BANNED_TAGS_ARRAY]
+    );
 
-  if (rows.length === 0 || !rows[0].thumbnail) return "";
-  return rows[0].thumbnail
-    .replace("/180x180/", "/720x720/")
-    .replace(/\.jpg$/, ".webp");
+    if (rows.length === 0 || !rows[0].thumbnail) return "";
+    return rows[0].thumbnail
+      .replace("/180x180/", "/720x720/")
+      .replace(/\.jpg$/, ".webp");
+  } catch {
+    return "";
+  }
 }
 
 /** Get thumbnails for multiple tags at once (batch) */
@@ -171,9 +175,13 @@ export async function getVideos(
   `;
   params.push(clampedLimit + 1, offset);
 
-  const { rows } = await pool.query(query, params);
-  const hasMore = rows.length > clampedLimit;
-  const data = rows.slice(0, clampedLimit).map(rowToVideo);
-
-  return { data, hasMore };
+  try {
+    const { rows } = await pool.query(query, params);
+    const hasMore = rows.length > clampedLimit;
+    const data = rows.slice(0, clampedLimit).map(rowToVideo);
+    return { data, hasMore };
+  } catch (err) {
+    console.error("getVideos PG error:", err);
+    return { data: [], hasMore: false };
+  }
 }

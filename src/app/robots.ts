@@ -3,9 +3,14 @@ import pool from "@/lib/db";
 
 async function getWatchSitemapCount(): Promise<number> {
   const MAX_PER_SITEMAP = 45000;
-  const { rows } = await pool.query("SELECT COUNT(*) as total FROM videos");
-  const total = parseInt(rows[0].total, 10);
-  return Math.ceil(total / MAX_PER_SITEMAP);
+  try {
+    const { rows } = await pool.query("SELECT COUNT(*) as total FROM videos");
+    const total = parseInt(rows[0].total, 10);
+    return Math.ceil(total / MAX_PER_SITEMAP);
+  } catch {
+    // During build, PG may not be available — return safe default
+    return 8;
+  }
 }
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
