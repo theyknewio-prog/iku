@@ -215,6 +215,21 @@ export default async function WatchPage({ params }: WatchPageProps) {
     notFound();
   }
 
+  // Fetch related for autoplay-next (small set, no suspense needed)
+  let relatedForPlayer: { slug: string; thumbnail: string; title: string }[] = [];
+  try {
+    const related = await getRelatedPosts(video.id, 4);
+    relatedForPlayer = related.map((v) => ({
+      slug: v.slug,
+      thumbnail: v.thumbnail || v.preview || "",
+      title: v.characters[0]
+        ? `${v.characters[0].replace(/_/g, " ")}${v.copyrights[0] ? ` — ${v.copyrights[0].replace(/_/g, " ")}` : ""}`
+        : v.tags.slice(0, 3).map((t) => t.replace(/_/g, " ")).join(", "),
+    }));
+  } catch {
+    // Related fetch failed, autoplay won't work but video still plays
+  }
+
   const pageTitle = buildTitle(video);
   const description = buildDescription(video);
   const canonicalUrl = `https://iku.gg/watch/${video.slug}`;
@@ -344,8 +359,12 @@ export default async function WatchPage({ params }: WatchPageProps) {
                   src={video.url}
                   poster={video.thumbnail || undefined}
                   resolveUrl={resolvePageUrl || undefined}
+                  relatedVideos={relatedForPlayer}
                 />
               </div>
+
+              {/* Ad zone — under player, above title */}
+              <div className="hp-ad-zone hp-ad-zone--leaderboard" data-ad-slot="watch-underplayer" aria-hidden="true" />
 
               {/* H1 — must contain "hentai" for SEO */}
               <h1 className="player-title">
@@ -364,7 +383,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
                   {video.characters.map((c) => (
                     <Link
                       key={c}
-                      href={`/tag/${c}`}
+                      href={`/character/${encodeURIComponent(c)}`}
                       className="character-pill"
                     >
                       {fmt(c)}
