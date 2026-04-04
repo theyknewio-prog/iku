@@ -11,15 +11,13 @@
  * Then a second pass for webm.
  */
 
-import fs from "fs";
-import path from "path";
 import { hasBannedTagString } from "./banned-tags";
+import { pool, upsertVideos } from "./db";
 
 const BASE_URL = "https://danbooru.donmai.us";
 const USER_AGENT = "IkuScraper/1.0 (bulk index)";
 const LIMIT = 200; // max per page
 const DELAY = 250; // 250ms between requests = 4/sec (safe)
-const OUTPUT = path.resolve(__dirname, "../src/data/videos.json");
 
 interface DanbooruPost {
   id: number;
@@ -214,12 +212,24 @@ async function main() {
   console.log(`  Newest: ${all.reduce((a, b) => a.id > b.id ? a : b).createdAt?.slice(0, 10)}`);
   console.log(`═══════════════════════════════════════════`);
 
-  // Write to file
-  fs.mkdirSync(path.dirname(OUTPUT), { recursive: true });
-  fs.writeFileSync(OUTPUT, JSON.stringify(all, null, 0));
-
-  const sizeMB = (fs.statSync(OUTPUT).size / 1_000_000).toFixed(1);
-  console.log(`\n💾 Written to ${OUTPUT} (${sizeMB} MB)`);
+  console.log(`\n  Upserting ${all.length} videos to PostgreSQL...`);
+  const BATCH = 500;
+  let upserted = 0;
+  for (let i = 0; i < all.length; i += BATCH) {
+    const batch = all.slice(i, i + BATCH).map((v) => ({
+      source: "danbooru", source_id: v.id, slug: v.slug, url: v.url,
+      thumbnail: v.thumbnail,
+      preview: v.thumbnail ? v.thumbnail.replace("/180x180/", "/720x720/").replace(/\.jpg$/, ".webp") : "",
+      score: v.score, favorites: v.favorites,
+      tags: v.tags, characters: v.characters, copyrights: v.copyrights, artists: v.artists,
+      width: v.width, height: v.height, file_size: v.fileSize,
+      duration: v.duration, created_at: v.createdAt,
+    }));
+    upserted += await upsertVideos(batch);
+    process.stdout.write(`  ${Math.min(i + BATCH, all.length)}/${all.length} upserted\r`);
+  }
+  console.log(`\n  ${upserted} videos upserted to PostgreSQL`);
+  await pool.end();
 }
 
 main().catch(console.error);

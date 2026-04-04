@@ -15,11 +15,9 @@
  * Usage: npx tsx scripts/scrape-wp-sites.ts
  */
 
-import fs from "fs";
-import path from "path";
 import { hasBannedTitle } from "./banned-tags";
+import { pool, upsertVideos } from "./db";
 
-const OUTPUT = path.resolve(process.cwd(), "src/data/wp-hentai-videos.json");
 const DELAY = 800;
 const USER_AGENT = "Mozilla/5.0 (compatible; IkuBot/1.0)";
 
@@ -238,11 +236,21 @@ async function main() {
   }
   console.log("═══════════════════════════════════════════");
 
-  fs.mkdirSync(path.dirname(OUTPUT), { recursive: true });
-  fs.writeFileSync(OUTPUT, JSON.stringify(allEntries, null, 0));
-
-  const sizeMB = (fs.statSync(OUTPUT).size / 1_000_000).toFixed(2);
-  console.log(`  Written to ${OUTPUT} (${sizeMB} MB)`);
+  console.log(`\n  Upserting ${allEntries.length} videos to PostgreSQL...`);
+  const BATCH = 500;
+  let upserted = 0;
+  for (let i = 0; i < allEntries.length; i += BATCH) {
+    const batch = allEntries.slice(i, i + BATCH).map((v) => ({
+      source: "wp", source_id: v.id, slug: v.slug,
+      title: v.title, page_url: v.pageUrl, site: v.site,
+      created_at: v.date,
+      tags: v.title ? v.title.toLowerCase().replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter((w: string) => w.length > 2).slice(0, 15) : [],
+    }));
+    upserted += await upsertVideos(batch);
+    process.stdout.write(`  ${Math.min(i + BATCH, allEntries.length)}/${allEntries.length} upserted\r`);
+  }
+  console.log(`\n  ${upserted} videos upserted`);
+  await pool.end();
 }
 
 main().catch(console.error);

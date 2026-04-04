@@ -9,16 +9,14 @@
  * Gelbooru: 1 req/sec rate limit, 100 results max per page, 0-based pid
  */
 
-import fs from "fs";
-import path from "path";
 import { hasBannedTagString } from "./banned-tags";
+import { pool, upsertVideos } from "./db";
 
 const BASE_URL = "https://gelbooru.com/index.php";
 const API_KEY = "3ed16caf49d543883a94b9e8beeb56804c4bbdd577bbb22697579e11d84aca13c755ad81e6c3caf03c8b158f07b92097466280dfec9ea35313b61efd3bcc1a41";
 const USER_ID = "1943515";
 const DELAY = 1100; // 1.1s between requests
 const LIMIT = 100;
-const OUTPUT = path.resolve(__dirname, "../src/data/gelbooru-videos.json");
 
 interface GelbooruPost {
   id: number;
@@ -162,11 +160,21 @@ async function main() {
   console.log(`  Top score: ${unique[0]?.score}`);
   console.log(`═══════════════════════════════════════════`);
 
-  fs.mkdirSync(path.dirname(OUTPUT), { recursive: true });
-  fs.writeFileSync(OUTPUT, JSON.stringify(unique, null, 0));
-
-  const sizeMB = (fs.statSync(OUTPUT).size / 1_000_000).toFixed(1);
-  console.log(`\n💾 Written to ${OUTPUT} (${sizeMB} MB)`);
+  console.log(`\n  Upserting ${unique.length} videos to PostgreSQL...`);
+  const BATCH = 500;
+  let upserted = 0;
+  for (let i = 0; i < unique.length; i += BATCH) {
+    const batch = unique.slice(i, i + BATCH).map((v) => ({
+      source: "gelbooru", source_id: v.id, slug: v.slug, url: v.url,
+      thumbnail: v.thumbnail, score: v.score,
+      tags: v.tags, width: v.width, height: v.height,
+      file_size: v.fileSize, created_at: v.createdAt,
+    }));
+    upserted += await upsertVideos(batch);
+    process.stdout.write(`  ${Math.min(i + BATCH, unique.length)}/${unique.length} upserted\r`);
+  }
+  console.log(`\n  ${upserted} videos upserted`);
+  await pool.end();
 }
 
 main().catch(console.error);

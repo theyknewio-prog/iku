@@ -10,16 +10,14 @@
  * Limit: ~20K results per search (like Gelbooru). We split by score ranges to get more.
  */
 
-import fs from "fs";
-import path from "path";
 import { hasBannedTagString } from "./banned-tags";
+import { pool, upsertVideos } from "./db";
 
 const API_KEY = "f230feb40110c4e896f9cb32fd4d8c08c13c476f4bf83d64036ad23887e482510b1a391cefab9dacdde28b51cd64c9695ed1fd06ad327753074c494d528f1790";
 const USER_ID = "6053223";
 const BASE_URL = "https://api.rule34.xxx/index.php";
 const DELAY = 500; // 500ms between requests
 const LIMIT = 100;
-const OUTPUT = path.resolve(process.cwd(), "src/data/rule34-videos.json");
 
 interface R34Post {
   id: number;
@@ -186,11 +184,21 @@ async function main() {
   console.log(`  Lowest score: ${unique[unique.length - 1]?.score}`);
   console.log(`═══════════════════════════════════════════`);
 
-  fs.mkdirSync(path.dirname(OUTPUT), { recursive: true });
-  fs.writeFileSync(OUTPUT, JSON.stringify(unique, null, 0));
-
-  const sizeMB = (fs.statSync(OUTPUT).size / 1_000_000).toFixed(1);
-  console.log(`\n  Written to ${OUTPUT} (${sizeMB} MB)`);
+  console.log(`\n  Upserting ${unique.length} videos to PostgreSQL...`);
+  const BATCH = 500;
+  let upserted = 0;
+  for (let i = 0; i < unique.length; i += BATCH) {
+    const batch = unique.slice(i, i + BATCH).map((v) => ({
+      source: "rule34", source_id: v.id, slug: v.slug, url: v.url,
+      thumbnail: v.thumbnail, preview: v.preview, score: v.score,
+      tags: v.tags, width: v.width, height: v.height,
+      created_at: v.createdAt,
+    }));
+    upserted += await upsertVideos(batch);
+    process.stdout.write(`  ${Math.min(i + BATCH, unique.length)}/${unique.length} upserted\r`);
+  }
+  console.log(`\n  ${upserted} videos upserted`);
+  await pool.end();
 }
 
 main().catch(console.error);
