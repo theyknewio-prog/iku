@@ -1,19 +1,12 @@
 /**
- * content.ts — Unified content layer
+ * content.ts — Unified content layer (PostgreSQL)
  *
- * Merges Danbooru and Gelbooru results into a single Video feed.
- * All pages should import from here instead of calling danbooru.ts directly.
+ * All pages should import from here instead of calling source-specific modules.
+ * Videos are queried from PostgreSQL instead of calling external APIs.
  */
 
-import { searchPosts } from "@/lib/danbooru";
-import { searchGelbooru } from "@/lib/gelbooru";
-import { searchRule34 } from "@/lib/rule34-search";
-import { searchRule34Video } from "@/lib/rule34video";
+import pool from "@/lib/db";
 import type { Video, PaginatedResult } from "@/types/video";
-
-// Local JSON data for thumbnail lookups (loaded once, cached in memory)
-import danbooruData from "@/data/videos.json";
-import gelbooruData from "@/data/gelbooru-videos.json";
 
 // ---------------------------------------------------------------------------
 // Global server-side content filter — CANNOT be bypassed by users.
@@ -21,27 +14,19 @@ import gelbooruData from "@/data/gelbooru-videos.json";
 // ---------------------------------------------------------------------------
 
 const BANNED_TAGS = new Set([
-  // Underage characters / pedo content
   "loli", "lolicon", "lolidom", "loli_focus",
   "shota", "shotacon", "shotadom", "shota_focus",
   "child", "children", "minor", "underage",
   "toddler", "toddlercon", "infant",
   "young_girl", "young_boy",
   "child_on_child",
-  // Cub / baby
   "cub", "baby",
-  // Explicit loli/shota variants
   "oppai_loli", "legal_loli",
-  // School-age specific
   "elementary_school", "kindergarten",
-  "randoseru", // Japanese school bag for young children
+  "randoseru",
 ]);
 
-function filterBannedContent(videos: Video[]): Video[] {
-  return videos.filter(
-    (v) => !v.tags.some((t) => BANNED_TAGS.has(t.toLowerCase()))
-  );
-}
+const BANNED_TAGS_ARRAY = Array.from(BANNED_TAGS);
 
 /** Check if a single video contains banned content */
 export function containsBannedContent(video: { tags: string[] }): boolean {
@@ -49,60 +34,42 @@ export function containsBannedContent(video: { tags: string[] }): boolean {
 }
 
 // ---------------------------------------------------------------------------
-// Thumbnail lookup from local JSON data (no API calls)
+// Thumbnail lookup from PostgreSQL
 // ---------------------------------------------------------------------------
 
-interface LocalVideo {
-  id: number;
-  thumbnail?: string;
-  score?: number;
-  characters?: string[];
-  copyrights?: string[];
-  tags?: string[];
-}
+/** Get the best thumbnail for a tag (character name, series name, etc.) from database */
+export async function getThumbnailForTag(tag: string): Promise<string> {
+  const { rows } = await pool.query(
+    `SELECT thumbnail FROM videos
+     WHERE (source = 'danbooru' OR source = 'gelbooru')
+       AND thumbnail != ''
+       AND ($1 = ANY(characters) OR $1 = ANY(copyrights) OR $1 = ANY(tags))
+       AND NOT (tags && $2::text[])
+     ORDER BY score DESC
+     LIMIT 1`,
+    [tag.toLowerCase(), BANNED_TAGS_ARRAY]
+  );
 
-const allLocalVideos: LocalVideo[] = [
-  ...(danbooruData as LocalVideo[]),
-  ...(gelbooruData as LocalVideo[]),
-];
-
-/** Get the best thumbnail for a tag (character name, series name, etc.) from local data */
-export function getThumbnailForTag(tag: string): string {
-  const normalizedTag = tag.toLowerCase();
-  let best: LocalVideo | null = null;
-  let bestScore = -1;
-
-  for (const v of allLocalVideos) {
-    if (!v.thumbnail) continue;
-    const allTags = [
-      ...(v.characters || []),
-      ...(v.copyrights || []),
-      ...(v.tags || []),
-    ];
-    if (allTags.some((t) => t.toLowerCase() === normalizedTag)) {
-      const score = v.score || 0;
-      if (score > bestScore) {
-        bestScore = score;
-        best = v;
-      }
-    }
-  }
-
-  if (!best?.thumbnail) return "";
-  // Upgrade 180px thumbnail to 720px preview for better quality
-  return best.thumbnail
+  if (rows.length === 0 || !rows[0].thumbnail) return "";
+  return rows[0].thumbnail
     .replace("/180x180/", "/720x720/")
     .replace(/\.jpg$/, ".webp");
 }
 
-/** Get thumbnails for multiple tags at once (batch, more efficient) */
-export function getThumbnailsForTags(tags: string[]): Record<string, string> {
+/** Get thumbnails for multiple tags at once (batch) */
+export async function getThumbnailsForTags(tags: string[]): Promise<Record<string, string>> {
   const result: Record<string, string> = {};
-  for (const tag of tags) {
-    result[tag] = getThumbnailForTag(tag);
-  }
+  await Promise.all(
+    tags.map(async (tag) => {
+      result[tag] = await getThumbnailForTag(tag);
+    })
+  );
   return result;
 }
+
+// ---------------------------------------------------------------------------
+// Main query interface
+// ---------------------------------------------------------------------------
 
 export interface GetVideosOptions {
   limit?: number;
@@ -112,74 +79,32 @@ export interface GetVideosOptions {
   source?: "all" | "danbooru" | "gelbooru";
 }
 
-// ---------------------------------------------------------------------------
-// Deduplication helpers
-// ---------------------------------------------------------------------------
-
-/** Remove duplicates — a Danbooru and Gelbooru post can never share a slug
- *  (gel- prefix), but we guard against the same source returning dupes. */
-function deduplicate(videos: Video[]): Video[] {
-  const seen = new Set<string>();
-  return videos.filter((v) => {
-    if (seen.has(v.slug)) return false;
-    seen.add(v.slug);
-    return true;
-  });
+/** Map a database row to a Video object */
+function rowToVideo(row: Record<string, unknown>): Video {
+  return {
+    id: row.source_id as number,
+    slug: row.slug as string,
+    url: row.url as string,
+    thumbnail: row.thumbnail as string,
+    preview: row.preview as string,
+    score: row.score as number,
+    favorites: row.favorites as number,
+    tags: (row.tags as string[]) || [],
+    characters: (row.characters as string[]) || [],
+    copyrights: (row.copyrights as string[]) || [],
+    artists: (row.artists as string[]) || [],
+    width: row.width as number,
+    height: row.height as number,
+    fileSize: row.file_size as number,
+    duration: row.duration as number | null,
+    createdAt: new Date(row.created_at as string),
+    source: row.source as Video["source"],
+  };
 }
-
-// ---------------------------------------------------------------------------
-// Interleave: spread Gelbooru items into the Danbooru list for variety.
-// Every 3rd position gets a Gelbooru item (when available).
-// ---------------------------------------------------------------------------
-
-function interleave(primary: Video[], secondary: Video[]): Video[] {
-  if (secondary.length === 0) return primary;
-  if (primary.length === 0) return secondary;
-
-  const result: Video[] = [];
-  let si = 0;
-  for (let i = 0; i < primary.length; i++) {
-    result.push(primary[i]);
-    // Insert a Gelbooru item every 3 Danbooru items
-    if ((i + 1) % 3 === 0 && si < secondary.length) {
-      result.push(secondary[si++]);
-    }
-  }
-  // Append remaining secondary items at the end
-  while (si < secondary.length) {
-    result.push(secondary[si++]);
-  }
-  return result;
-}
-
-// ---------------------------------------------------------------------------
-// Sort merged results
-// ---------------------------------------------------------------------------
-
-function sortVideos(
-  videos: Video[],
-  order: "score" | "date" | "favcount"
-): Video[] {
-  return [...videos].sort((a, b) => {
-    if (order === "score") return b.score - a.score;
-    if (order === "favcount") return b.favorites - a.favorites;
-    // date: newest first
-    return b.createdAt.getTime() - a.createdAt.getTime();
-  });
-}
-
-// ---------------------------------------------------------------------------
-// Main export
-// ---------------------------------------------------------------------------
 
 /**
- * Fetch videos from one or both sources and return a merged, sorted feed.
- *
- * - source="all"       : fetch from both Danbooru + Gelbooru, interleave
- * - source="danbooru"  : Danbooru only
- * - source="gelbooru"  : Gelbooru only
- *
- * Gelbooru failures are silent — the feed degrades to Danbooru-only.
+ * Fetch videos from PostgreSQL with filtering, sorting, and pagination.
+ * Banned content is excluded at the SQL level (never leaves the database).
  */
 export async function getVideos(
   options: GetVideosOptions = {}
@@ -192,72 +117,63 @@ export async function getVideos(
     source = "all",
   } = options;
 
+  const clampedLimit = Math.min(limit, 200);
+  const offset = (page - 1) * clampedLimit;
+
+  const conditions: string[] = [];
+  const params: unknown[] = [];
+  let paramIndex = 1;
+
+  // Banned content filter (always applied)
+  conditions.push(`NOT (tags && $${paramIndex}::text[])`);
+  params.push(BANNED_TAGS_ARRAY);
+  paramIndex++;
+
+  // Source filter
   if (source === "danbooru") {
-    const result = await searchPosts({ limit, page, order, tags: tags || undefined });
-    return { ...result, data: filterBannedContent(result.data) };
+    conditions.push(`source = $${paramIndex}`);
+    params.push("danbooru");
+    paramIndex++;
+  } else if (source === "gelbooru") {
+    conditions.push(`source = $${paramIndex}`);
+    params.push("gelbooru");
+    paramIndex++;
   }
 
-  if (source === "gelbooru") {
-    const result = await searchGelbooru({ limit, page, order, tags: tags || undefined });
-    return { ...result, data: filterBannedContent(result.data) };
+  // Tag search
+  if (tags) {
+    const searchTerms = tags.toLowerCase().split(/\s+/).filter(Boolean);
+    for (const term of searchTerms) {
+      conditions.push(
+        `($${paramIndex} = ANY(tags) OR $${paramIndex} = ANY(characters) OR $${paramIndex} = ANY(copyrights) OR (title IS NOT NULL AND title ILIKE '%' || $${paramIndex} || '%'))`
+      );
+      params.push(term);
+      paramIndex++;
+    }
   }
 
-  // source === "all": fetch all 4 sources concurrently
-  const danbooruLimit = limit;
-  const gelbooruLimit = Math.ceil(limit / 3);
-  const rule34Limit = Math.ceil(limit / 3);
-  const rule34videoLimit = Math.ceil(limit / 4);
+  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
 
-  const [danbooruResult, gelbooruResult, rule34Result, rule34videoResult] = await Promise.allSettled([
-    searchPosts({
-      limit: danbooruLimit,
-      page,
-      order,
-      tags: tags || undefined,
-    }),
-    searchGelbooru({
-      limit: gelbooruLimit,
-      page,
-      order,
-      tags: tags || undefined,
-    }),
-    searchRule34({
-      limit: rule34Limit,
-      page,
-      order,
-      tags: tags || undefined,
-    }),
-    Promise.resolve(searchRule34Video({
-      limit: rule34videoLimit,
-      page,
-      order,
-      tags: tags || undefined,
-    })),
-  ]);
+  const orderClause =
+    order === "score" ? "ORDER BY score DESC, created_at DESC"
+    : order === "favcount" ? "ORDER BY favorites DESC, score DESC"
+    : "ORDER BY created_at DESC";
 
-  const danbooruVideos =
-    danbooruResult.status === "fulfilled" ? danbooruResult.value.data : [];
-  const gelbooruVideos =
-    gelbooruResult.status === "fulfilled" ? gelbooruResult.value.data : [];
-  const rule34Videos =
-    rule34Result.status === "fulfilled" ? rule34Result.value.data : [];
-  const rule34videoVideos =
-    rule34videoResult.status === "fulfilled" ? rule34videoResult.value.data : [];
+  const query = `
+    SELECT source, source_id, slug, url, page_url, site, title,
+           thumbnail, preview, score, favorites,
+           tags, characters, copyrights, artists,
+           width, height, file_size, duration, created_at
+    FROM videos
+    ${whereClause}
+    ${orderClause}
+    LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
+  `;
+  params.push(clampedLimit + 1, offset);
 
-  // Interleave: Danbooru primary, Gelbooru + Rule34 + Rule34Video mixed in
-  const secondary = [...gelbooruVideos, ...rule34Videos, ...rule34videoVideos];
-  const merged = interleave(danbooruVideos, secondary);
-  const sorted = sortVideos(merged, order);
-  const unique = deduplicate(sorted);
+  const { rows } = await pool.query(query, params);
+  const hasMore = rows.length > clampedLimit;
+  const data = rows.slice(0, clampedLimit).map(rowToVideo);
 
-  const hasMore =
-    (danbooruResult.status === "fulfilled" && danbooruResult.value.hasMore) ||
-    (gelbooruResult.status === "fulfilled" && gelbooruResult.value.hasMore) ||
-    (rule34Result.status === "fulfilled" && rule34Result.value.hasMore) ||
-    (rule34videoResult.status === "fulfilled" && rule34videoResult.value.hasMore);
-
-  // Remove illegal/underage content — server-side, non-bypassable
-  const safe = filterBannedContent(unique);
-
-  return { data: safe, hasMore };
+  return { data, hasMore };
 }
