@@ -253,6 +253,7 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
   const [muted, setMuted] = useState(true);
   const [speed, setSpeed] = useState<Speed>(1);
   const [speedOpen, setSpeedOpen] = useState(false);
+  const [volumeSliderOpen, setVolumeSliderOpen] = useState(false);
 
   /* ── Feature 1: Loop toggle ────────────────────────────── */
   const [looping, setLooping] = useState(true);
@@ -700,7 +701,7 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
         onMouseMove={showControls}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
-        onClick={() => setSpeedOpen(false)}
+        onClick={() => { setSpeedOpen(false); setVolumeSliderOpen(false); }}
         onWheel={handleWheel}
         style={{
           position: theaterMode ? "fixed" : "relative",
@@ -1199,22 +1200,57 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
               {playing ? <IconPause /> : <IconPlay />}
             </ControlBtn>
 
-            {/* Volume */}
-            <ControlBtn onClick={toggleMute} label={muted ? "Unmute" : "Mute"}>
-              {muted || volume === 0 ? <IconVolumeMuted /> : <IconVolumeFull />}
-            </ControlBtn>
-            <div style={{ width: 68, display: "flex", alignItems: "center" }}>
-              <input
-                className="wp-range"
-                type="range"
-                min={0}
-                max={1}
-                step={0.02}
-                value={muted ? 0 : volume}
-                onChange={handleVolumeSlider}
-                aria-label="Volume"
-                style={{ width: "100%" }}
-              />
+            {/* Volume — tap toggles popup slider, long press mutes */}
+            <div style={{ position: "relative" }}>
+              <ControlBtn onClick={() => setVolumeSliderOpen((o) => !o)} label={muted ? "Unmute" : "Mute"}>
+                {muted || volume === 0 ? <IconVolumeMuted /> : <IconVolumeFull />}
+              </ControlBtn>
+              {volumeSliderOpen && (
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: "calc(100% + 8px)",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    background: "rgba(12,12,12,0.95)",
+                    backdropFilter: "blur(8px)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 10,
+                    padding: "14px 10px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 8,
+                    zIndex: 10,
+                    boxShadow: "0 8px 28px rgba(0,0,0,0.6)",
+                    animation: "wp-fade-in 0.15s ease",
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <span style={{ fontSize: 10, color: "rgba(255,255,255,0.5)", fontWeight: 600 }}>
+                    {Math.round((muted ? 0 : volume) * 100)}%
+                  </span>
+                  <input
+                    className="wp-range wp-range-vertical"
+                    type="range"
+                    min={0}
+                    max={1}
+                    step={0.02}
+                    value={muted ? 0 : volume}
+                    onChange={handleVolumeSlider}
+                    aria-label="Volume"
+                    style={{
+                      writingMode: "vertical-lr",
+                      direction: "rtl",
+                      width: 28,
+                      height: 100,
+                    }}
+                  />
+                  <ControlBtn onClick={() => { toggleMute(); }} label={muted ? "Unmute" : "Mute"}>
+                    {muted || volume === 0 ? <IconVolumeMuted /> : <IconVolumeFull />}
+                  </ControlBtn>
+                </div>
+              )}
             </div>
 
             {/* Time */}
