@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { AgeGate } from "@/components/AgeGate";
 import { PosterCard } from "@/components/PosterCard";
 import { Carousel } from "@/components/Carousel";
 import { getPopularTags, getPopularCharacters } from "@/lib/danbooru";
 import { getVideos, getThumbnailsForTags } from "@/lib/content";
 import { SERIES } from "@/data/series";
-import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai Videos | Stream Animated Hentai Online",
@@ -18,25 +18,39 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 export const dynamic = "force-dynamic";
 
-/* ── Tag chip colours — round-robin ────────────────────────── */
-const TAG_GRADIENTS = [
-  "linear-gradient(160deg, #1a0a2e 0%, #e8467c 100%)",
-  "linear-gradient(160deg, #0d1a2e 0%, #7b2ff7 100%)",
-  "linear-gradient(160deg, #2e0d0d 0%, #e8467c 60%, #ff9a44 100%)",
-  "linear-gradient(160deg, #0a2e1a 0%, #22c55e 100%)",
-  "linear-gradient(160deg, #2e1a0a 0%, #f59e0b 100%)",
-  "linear-gradient(160deg, #1a0a2e 0%, #06b6d4 100%)",
-  "linear-gradient(160deg, #2e0a1a 0%, #f43f5e 100%)",
-  "linear-gradient(160deg, #0a1a2e 0%, #3b82f6 100%)",
+/* ── Genre tag color classes — round-robin ─────────────── */
+const TAG_COLORS = [
+  "hp-gt-pink",
+  "hp-gt-purple",
+  "hp-gt-cyan",
+  "hp-gt-gold",
+  "hp-gt-green",
+  "hp-gt-red",
+  "hp-gt-orange",
+  "hp-gt-blue",
 ];
 
-const CHAR_GRADIENTS = [
-  "radial-gradient(circle at 40% 30%, #e8467c 0%, #7b2ff7 100%)",
-  "radial-gradient(circle at 40% 30%, #7b2ff7 0%, #06b6d4 100%)",
-  "radial-gradient(circle at 40% 30%, #f59e0b 0%, #e8467c 100%)",
-  "radial-gradient(circle at 40% 30%, #22c55e 0%, #06b6d4 100%)",
-  "radial-gradient(circle at 40% 30%, #e8467c 0%, #fb923c 100%)",
-  "radial-gradient(circle at 40% 30%, #3b82f6 0%, #e879f9 100%)",
+/* ── Character gradient ring classes — round-robin ─────── */
+const CHAR_RING_CLASSES = [
+  "hp-grad-pink",
+  "hp-grad-cyan",
+  "hp-grad-purple",
+  "hp-grad-gold",
+  "hp-grad-green",
+  "hp-grad-red",
+  "hp-grad-rainbow",
+];
+
+/* ── Grid card category color classes ──────────────────── */
+const GRID_CATEGORY_COLORS = [
+  "hp-gt-purple",
+  "hp-gt-gold",
+  "hp-gt-cyan",
+  "hp-gt-green",
+  "hp-gt-red",
+  "hp-gt-pink",
+  "hp-gt-orange",
+  "hp-gt-blue",
 ];
 
 function AdZone({ id, size }: { id: string; size: "leaderboard" | "medium-rect" }) {
@@ -45,129 +59,293 @@ function AdZone({ id, size }: { id: string; size: "leaderboard" | "medium-rect" 
   );
 }
 
+function formatDuration(seconds: number | null): string {
+  if (!seconds) return "";
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${m}:${s.toString().padStart(2, "0")}`;
+}
+
+function scoreToRating(score: number): number {
+  // Map score to 1-5 rating scale
+  if (score >= 500) return 5;
+  if (score >= 200) return 4.8;
+  if (score >= 100) return 4.5;
+  if (score >= 50) return 4.2;
+  if (score >= 20) return 4.0;
+  return 3.8;
+}
+
+function formatViews(score: number): string {
+  if (score >= 10000) return `${(score / 1000).toFixed(0)}K`;
+  if (score >= 1000) return `${(score / 1000).toFixed(1)}K`;
+  return String(score);
+}
+
 export default async function HomePage() {
-  // Fetch sequentially to respect rate limits across both sources
-  // Both sources — Gelbooru videos proxied through /api/proxy
   const trending = await getVideos({ limit: 20, order: "score", source: "all" });
   const newest = await getVideos({ limit: 10, order: "date", source: "all" });
-  const topRated = await getVideos({ limit: 10, order: "favcount", source: "all" });
+  const topRated = await getVideos({ limit: 8, order: "favcount", source: "all" });
   const [tags, characters] = await Promise.all([
-    getPopularTags(20),
+    getPopularTags(24),
     getPopularCharacters(12),
   ]);
 
-  /* Pre-fetch thumbnails for Series and Characters carousels */
   const seriesTags = SERIES.slice(0, 12).map((s) => s.tags[0] || s.name.toLowerCase());
   const characterTags = characters.map((c) => c.name);
   const thumbnailMap = await getThumbnailsForTags([...seriesTags, ...characterTags]);
 
-  /* Hero video — pick highest scored */
   const hero = trending.data[0];
-  const heroName = hero
-    ? (hero.characters[0]
-        ? hero.characters[0].replace(/_/g, " ")
-        : hero.copyrights[0]
-          ? hero.copyrights[0].replace(/_/g, " ")
-          : "Trending")
-    : "Trending";
-  const heroTitle = `${heroName} Hentai`;
-  const heroTags = hero ? hero.tags.slice(0, 4) : [];
 
   return (
     <AgeGate>
       <main className="v2-page">
-
-        {/* ══ HERO — Featured Video + Brand ═══════════════════ */}
-        <section
-          className="hp-hero"
-          style={
-            hero?.preview
-              ? {
-                  backgroundImage: `url(${hero.preview})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center 30%",
-                }
-              : undefined
-          }
-        >
-          <div className="hp-hero__overlay" />
-          <div className="hp-hero__content">
-            <span className="hp-hero__badge">
-              <span className="hp-hero__badge-dot" />
-              Trending #1
-            </span>
-            <h1 className="hp-hero__title">
-              {heroTitle}<span className="hp-hero__title-dot">.</span>
-            </h1>
-            <div className="hp-hero__meta">
-              <span>{new Date().getFullYear()}</span>
-              <span className="hp-hero__meta-sep">·</span>
-              <span>HD 1080P</span>
-              <span className="hp-hero__meta-sep">·</span>
-              {hero && <span className="hp-hero__score">★ {hero.score.toLocaleString()}</span>}
-            </div>
-            <div className="hp-hero__tags">
-              {heroTags.map((tag) => (
-                <span key={tag} className="hp-hero__tag">
-                  {tag.replace(/_/g, " ")}
-                </span>
-              ))}
-            </div>
-            <div className="hp-hero__actions">
-              {hero && (
-                <Link href={`/watch/${hero.slug}`} className="hp-btn-primary">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21" /></svg>
-                  Watch Now
-                </Link>
-              )}
-              <Link href="/trending" className="hp-btn-secondary">
-                Trending Now
-              </Link>
-            </div>
-            <p className="hp-hero__tagline">
-              353,000+ free animated hentai clips · Updated daily
-            </p>
-          </div>
-        </section>
-
-        {/* ══ CONTENT AREA ═══════════════════════════════════════ */}
         <div className="v2-content">
 
+          {/* ================================================================
+              HERO -- Split layout (left text + right gradient orbs)
+          ================================================================ */}
+          <section className="hp-hero" aria-label="Featured content">
+            <div className="hp-hero-left">
+              <div className="hp-hero-eyebrow">
+                <span className="hp-hero-eyebrow__dot" />
+                #1 Anime Hentai Platform
+              </div>
+
+              <h1 className="hp-hero-title">
+                The largest<br />
+                <span className="hp-hero-gradient-text">free hentai</span><br />
+                collection online
+              </h1>
+
+              <p className="hp-hero-sub">
+                <strong>353,000+</strong> animated clips from your favourite series,
+                characters and artists — updated daily. No account needed.
+              </p>
+
+              <div className="hp-hero-ctas">
+                <Link href="/explore" className="hp-btn-primary">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21" /></svg>
+                  Browse Now
+                </Link>
+                <Link href="/feed" className="hp-btn-secondary">
+                  Shorts
+                </Link>
+              </div>
+
+              <div className="hp-hero-stats">
+                <div className="hp-hero-stat">
+                  <span className="hp-hero-stat__num">353K+</span>
+                  <span className="hp-hero-stat__label">Videos</span>
+                </div>
+                <div className="hp-hero-stat">
+                  <span className="hp-hero-stat__num">12K+</span>
+                  <span className="hp-hero-stat__label">Characters</span>
+                </div>
+                <div className="hp-hero-stat">
+                  <span className="hp-hero-stat__num">Free</span>
+                  <span className="hp-hero-stat__label">Always</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="hp-hero-right">
+              <div className="hp-hero-illustration">
+                {/* Animated orbs */}
+                <div className="hp-hero-orb hp-hero-orb--1" />
+                <div className="hp-hero-orb hp-hero-orb--2" />
+                <div className="hp-hero-orb hp-hero-orb--3" />
+
+                {/* Floating badges */}
+                <div className="hp-hero-badge-float hp-hero-badge-float--1">
+                  <span>&#9679;</span> 1,247 online now
+                </div>
+                <div className="hp-hero-badge-float hp-hero-badge-float--2">
+                  4.8 avg rating
+                </div>
+                <div className="hp-hero-badge-float hp-hero-badge-float--3">
+                  +847 today
+                </div>
+
+                {/* Preview card */}
+                {hero && (
+                  <Link href={`/watch/${hero.slug}`} className="hp-hero-play-card">
+                    <div className="hp-hero-play-card__thumb">
+                      {hero.preview ? (
+                        <Image
+                          src={hero.preview}
+                          alt="Trending now"
+                          fill
+                          sizes="160px"
+                          style={{ objectFit: "cover" }}
+                          unoptimized
+                        />
+                      ) : (
+                        <span style={{ fontSize: 36 }}>&#9654;</span>
+                      )}
+                    </div>
+                    <div className="hp-hero-play-card__title">Trending right now</div>
+                    <div className="hp-hero-play-card__meta">
+                      <span className="hp-hero-play-card__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                      <span>{formatViews(hero.score)} views</span>
+                    </div>
+                  </Link>
+                )}
+              </div>
+            </div>
+          </section>
+
+          {/* ── Ad zone — Leaderboard ──────────────────────────── */}
           <AdZone id="hp-leaderboard-1" size="leaderboard" />
 
-          {/* Tags filter row */}
-          <div className="v2-tags-row" role="list" aria-label="Browse by tag">
-            <Link href="/explore" className="v2-tag-chip v2-tag-chip--active">All</Link>
-            {tags.slice(0, 14).map((tag) => (
-              <Link
-                key={tag.name}
-                href={`/tag/${encodeURIComponent(tag.name)}`}
-                className="v2-tag-chip"
-              >
-                {tag.name.replace(/_/g, " ")}
-              </Link>
-            ))}
-          </div>
-
-          {/* ── Trending This Week ──────────────────────────────── */}
-          <Carousel title="Trending This Week" badge="HOT" seeAllHref="/trending">
+          {/* ================================================================
+              TRENDING NOW -- Horizontal poster scroll
+          ================================================================ */}
+          <Carousel title="Trending Now" badge="HOT" seeAllHref="/trending">
             {trending.data.map((video, i) => (
-              <PosterCard key={video.id} video={video} priority={i < 5} />
+              <PosterCard key={video.id} video={video} rank={i < 8 ? i + 1 : undefined} priority={i < 5} />
             ))}
           </Carousel>
 
-          {/* ── Popular Series ─────────────────────────────────── */}
+          {/* ================================================================
+              TOP RATED THIS WEEK -- 4-column grid
+          ================================================================ */}
+          <section aria-label="Top Rated This Week">
+            <div className="hp-section-header">
+              <h2 className="hp-section-title">Top Rated This Week</h2>
+              <Link href="/explore" className="hp-section-link">See all &#8594;</Link>
+            </div>
+
+            <div className="hp-video-grid" role="list">
+              {topRated.data.map((video, i) => {
+                const charName = video.characters[0]
+                  ? video.characters[0].replace(/_/g, " ")
+                  : video.copyrights[0]
+                    ? video.copyrights[0].replace(/_/g, " ")
+                    : null;
+                const categoryColor = GRID_CATEGORY_COLORS[i % GRID_CATEGORY_COLORS.length];
+                const tag = video.tags[0]?.replace(/_/g, " ") || "animated";
+                const rating = scoreToRating(video.score);
+                const isHot = video.score >= 200;
+                const isNew = (Date.now() - new Date(video.createdAt).getTime()) < 72 * 60 * 60 * 1000;
+
+                return (
+                  <Link
+                    key={video.id}
+                    href={`/watch/${video.slug}`}
+                    className="hp-grid-card"
+                    role="listitem"
+                  >
+                    <div className="hp-grid-card__thumb">
+                      <div className="hp-grid-card__thumb-inner">
+                        {video.preview ? (
+                          <Image
+                            src={video.preview}
+                            alt={charName || tag}
+                            fill
+                            sizes="(max-width: 600px) 50vw, (max-width: 960px) 33vw, 25vw"
+                            style={{ objectFit: "cover" }}
+                            unoptimized
+                          />
+                        ) : (
+                          <div className={`hp-thumb-grad hp-thumb-grad--${(i % 12) + 1}`} />
+                        )}
+                      </div>
+                      {isHot && <span className="hp-hot-badge">Hot</span>}
+                      {!isHot && isNew && <span className="hp-new-badge">New</span>}
+                      {video.duration && (
+                        <span className="hp-duration-badge">{formatDuration(video.duration)}</span>
+                      )}
+                    </div>
+                    <div className="hp-grid-card__info">
+                      <span className={`hp-grid-card__category ${categoryColor}`}>{tag}</span>
+                      <div className="hp-grid-card__title">
+                        {charName ? `${charName} — ${tag}` : tag}
+                      </div>
+                      {charName && (
+                        <div className="hp-grid-card__char">{charName}</div>
+                      )}
+                      <div className="hp-grid-card__foot">
+                        <div className="hp-rating-row">
+                          <span className="hp-star-filled">&#9733;</span>
+                          <span className="hp-rating-num">{rating.toFixed(1)}</span>
+                          <span>({formatViews(video.favorites)})</span>
+                        </div>
+                        <span className="hp-views-count">{formatViews(video.score)} views</span>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* ── Ad zone — Medium rect ──────────────────────────── */}
+          <AdZone id="hp-medium-1" size="medium-rect" />
+
+          {/* ================================================================
+              POPULAR CHARACTERS -- Circular avatars with gradient rings
+          ================================================================ */}
+          <section aria-label="Popular Characters">
+            <div className="hp-section-header">
+              <h2 className="hp-section-title">Popular Characters</h2>
+              <Link href="/tags" className="hp-section-link">See all &#8594;</Link>
+            </div>
+
+            <div className="hp-chars-scroll" role="list">
+              {characters.map((char, i) => {
+                const ringClass = CHAR_RING_CLASSES[i % CHAR_RING_CLASSES.length];
+                const thumb = thumbnailMap[char.name];
+                const displayName = char.name.replace(/_/g, " ");
+                const count = char.count >= 1000 ? `${(char.count / 1000).toFixed(1)}k` : String(char.count);
+
+                return (
+                  <Link
+                    key={char.name}
+                    href={`/character/${encodeURIComponent(char.name)}`}
+                    className="hp-char-item"
+                    role="listitem"
+                  >
+                    <div className={`hp-char-avatar-wrap ${ringClass}`}>
+                      <div className="hp-char-avatar">
+                        {thumb ? (
+                          <Image
+                            src={thumb}
+                            alt={displayName}
+                            fill
+                            sizes="66px"
+                            style={{ objectFit: "cover", borderRadius: "50%" }}
+                            unoptimized
+                          />
+                        ) : (
+                          <span className="hp-char-avatar__initials">
+                            {displayName.split(" ").map(w => w[0]?.toUpperCase() ?? "").slice(0, 2).join("")}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <span className="hp-char-name">{displayName}</span>
+                    <span className="hp-char-count">{count} clips</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* ================================================================
+              POPULAR SERIES -- Carousel
+          ================================================================ */}
           <Carousel title="Popular Series" seeAllHref="/series">
             {SERIES.slice(0, 12).map((series, i) => {
-              const gradient = CHAR_GRADIENTS[i % CHAR_GRADIENTS.length];
+              const ringClass = CHAR_RING_CLASSES[i % CHAR_RING_CLASSES.length];
               const thumb = thumbnailMap[series.tags[0] || series.name.toLowerCase()];
               return (
                 <Link key={series.slug} href={`/series/${series.slug}`} className="v2-char-card">
-                  <div className="v2-char-card__avatar" style={{ background: gradient }}>
+                  <div className="v2-char-card__avatar" style={{ background: `var(--${ringClass.replace("hp-grad-", "color-")}, #7b2ff7)` }}>
                     {thumb ? (
                       <Image src={thumb} alt={series.name} fill sizes="120px" style={{ objectFit: "cover" }} unoptimized />
                     ) : (
-                      <span className="v2-char-card__initials">{series.name.split(" ").map(w => w[0]?.toUpperCase() ?? "").slice(0,2).join("")}</span>
+                      <span className="v2-char-card__initials">{series.name.split(" ").map(w => w[0]?.toUpperCase() ?? "").slice(0, 2).join("")}</span>
                     )}
                   </div>
                   <div className="v2-char-card__name">{series.name}</div>
@@ -177,107 +355,80 @@ export default async function HomePage() {
             })}
           </Carousel>
 
-          {/* ── Top Rated ──────────────────────────────────────── */}
-          <Carousel title="Top Rated All Time" seeAllHref="/explore">
-            {topRated.data.map((video, i) => (
-              <PosterCard key={video.id} video={video} rank={i + 1} />
-            ))}
-          </Carousel>
-
-          <AdZone id="hp-medium-1" size="medium-rect" />
-
-          {/* ── New Releases ───────────────────────────────────── */}
+          {/* ================================================================
+              NEW RELEASES -- Horizontal poster scroll
+          ================================================================ */}
           <Carousel title="New Releases" badge="NEW" seeAllHref="/new">
             {newest.data.map((video) => (
               <PosterCard key={video.id} video={video} badge="NEW" />
             ))}
           </Carousel>
 
-          {/* ── Popular Characters ─────────────────────────────── */}
-          <Carousel title="Popular Characters" seeAllHref="/tags">
-            {characters.map((char, i) => {
-              const gradient = CHAR_GRADIENTS[i % CHAR_GRADIENTS.length];
-              const thumb = thumbnailMap[char.name];
-              return (
-                <Link
-                  key={char.name}
-                  href={`/character/${encodeURIComponent(char.name)}`}
-                  className="v2-char-card"
-                >
-                  <div className="v2-char-card__avatar" style={{ background: gradient }}>
-                    {thumb ? (
-                      <Image src={thumb} alt={char.name.replace(/_/g, " ")} fill sizes="120px" style={{ objectFit: "cover" }} unoptimized />
-                    ) : (
-                      <span className="v2-char-card__initials">{char.name.replace(/_/g," ").split(" ").map(w=>w[0]?.toUpperCase()??"").slice(0,2).join("")}</span>
-                    )}
-                  </div>
-                  <div className="v2-char-card__name">
-                    {char.name.replace(/_/g, " ")}
-                  </div>
-                  <div className="v2-char-card__count">
-                    {char.count >= 1000 ? `${(char.count / 1000).toFixed(1)}k` : char.count}
-                  </div>
-                </Link>
-              );
-            })}
-          </Carousel>
-
-          {/* ── Popular Tags ───────────────────────────────────── */}
-          <section className="v2-tags-section">
-            <div className="v2-tags-section__header">
-              <h2 className="v2-tags-section__title">Popular Tags</h2>
-              <Link href="/tags" className="v2-tags-section__link">See all</Link>
+          {/* ================================================================
+              BROWSE BY GENRE -- Colorful pastel pill tags
+          ================================================================ */}
+          <section aria-label="Browse by Genre">
+            <div className="hp-section-header">
+              <h2 className="hp-section-title">Browse by Genre</h2>
+              <Link href="/tags" className="hp-section-link">See all &#8594;</Link>
             </div>
-            <div className="v2-tags-cloud">
-              {tags.map((tag, i) => (
-                <Link
-                  key={tag.name}
-                  href={`/tag/${encodeURIComponent(tag.name)}`}
-                  className="v2-tag-pill"
-                  style={{ background: TAG_GRADIENTS[i % TAG_GRADIENTS.length] }}
-                >
-                  #{tag.name.replace(/_/g, " ")}
-                  <span className="v2-tag-pill__count">
-                    {tag.count >= 1000 ? `${(tag.count / 1000).toFixed(1)}k` : tag.count}
-                  </span>
-                </Link>
-              ))}
+
+            <div className="hp-tags-cloud" role="list">
+              {tags.map((tag, i) => {
+                const colorClass = TAG_COLORS[i % TAG_COLORS.length];
+                const count = tag.count >= 1000 ? `${(tag.count / 1000).toFixed(1)}k` : String(tag.count);
+                return (
+                  <Link
+                    key={tag.name}
+                    href={`/tag/${encodeURIComponent(tag.name)}`}
+                    className={`hp-genre-tag ${colorClass}`}
+                    role="listitem"
+                  >
+                    {tag.name.replace(/_/g, " ")}
+                    <span className="hp-genre-tag__count">{count}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* ================================================================
+              LEARN SECTION
+          ================================================================ */}
+          <section className="v2-learn-section">
+            <div className="v2-learn-header">
+              <h2 className="hp-section-title">Learn About Hentai</h2>
+              <Link href="/blog" className="hp-section-link">All guides &#8594;</Link>
+            </div>
+            <div className="v2-learn-grid">
+              <Link href="/blog/what-is-hentai" className="v2-learn-card">
+                <span className="v2-learn-card__icon">?</span>
+                <div className="v2-learn-card__title">What is Hentai?</div>
+                <div className="v2-learn-card__sub">History, genres &amp; culture</div>
+              </Link>
+              <Link href="/blog/understanding-hentai-tags" className="v2-learn-card">
+                <span className="v2-learn-card__icon">#</span>
+                <div className="v2-learn-card__title">Understanding Tags</div>
+                <div className="v2-learn-card__sub">How the tag system works</div>
+              </Link>
+              <Link href="/blog/best-hentai-anime-2025" className="v2-learn-card">
+                <span className="v2-learn-card__icon">&#9733;</span>
+                <div className="v2-learn-card__title">Best of 2025-2026</div>
+                <div className="v2-learn-card__sub">Top rated series to watch</div>
+              </Link>
+              <Link href="/glossary" className="v2-learn-card">
+                <span className="v2-learn-card__icon">A</span>
+                <div className="v2-learn-card__title">Hentai Glossary</div>
+                <div className="v2-learn-card__sub">20+ terms explained</div>
+              </Link>
             </div>
           </section>
 
         </div>
 
-        {/* ══ LEARN SECTION ═════════════════════════════════════ */}
-        <section className="v2-learn-section">
-          <div className="v2-learn-header">
-            <h2 className="v2-tags-section__title">Learn About Hentai</h2>
-            <Link href="/blog" className="v2-tags-section__link">All guides</Link>
-          </div>
-          <div className="v2-learn-grid">
-            <Link href="/blog/what-is-hentai" className="v2-learn-card">
-              <span className="v2-learn-card__icon">?</span>
-              <div className="v2-learn-card__title">What is Hentai?</div>
-              <div className="v2-learn-card__sub">History, genres &amp; culture</div>
-            </Link>
-            <Link href="/blog/understanding-hentai-tags" className="v2-learn-card">
-              <span className="v2-learn-card__icon">#</span>
-              <div className="v2-learn-card__title">Understanding Tags</div>
-              <div className="v2-learn-card__sub">How the tag system works</div>
-            </Link>
-            <Link href="/blog/best-hentai-anime-2025" className="v2-learn-card">
-              <span className="v2-learn-card__icon">★</span>
-              <div className="v2-learn-card__title">Best of 2025-2026</div>
-              <div className="v2-learn-card__sub">Top rated series to watch</div>
-            </Link>
-            <Link href="/glossary" className="v2-learn-card">
-              <span className="v2-learn-card__icon">A</span>
-              <div className="v2-learn-card__title">Hentai Glossary</div>
-              <div className="v2-learn-card__sub">20+ terms explained</div>
-            </Link>
-          </div>
-        </section>
-
-        {/* ══ FOOTER ════════════════════════════════════════════ */}
+        {/* ================================================================
+            FOOTER
+        ================================================================ */}
         <footer className="hp-footer">
           <div className="hp-footer__grid">
             <div className="hp-footer__col">
