@@ -6,6 +6,7 @@ import { VideoCard } from "./VideoCard";
 
 export interface FeedVideo {
   id: number;
+  slug?: string;
   videoUrl: string;
   thumbnail: string;
   score: number;
