@@ -5,6 +5,7 @@ import { PosterCard } from "@/components/PosterCard";
 import { Carousel } from "@/components/Carousel";
 import { getPopularTags, getPopularCharacters } from "@/lib/danbooru";
 import { getVideos } from "@/lib/content";
+import { SERIES } from "@/data/series";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai Videos | Stream Animated Hentai Online",
@@ -35,6 +36,12 @@ const CHAR_GRADIENTS = [
   "radial-gradient(circle at 40% 30%, #3b82f6 0%, #e879f9 100%)",
 ];
 
+function AdZone({ id, size }: { id: string; size: "leaderboard" | "medium-rect" }) {
+  return (
+    <div className={`hp-ad-zone hp-ad-zone--${size}`} data-ad-slot={id} aria-hidden="true" />
+  );
+}
+
 export default async function HomePage() {
   // Fetch sequentially to respect rate limits across both sources
   // Both sources — Gelbooru videos proxied through /api/proxy
@@ -61,50 +68,9 @@ export default async function HomePage() {
     <AgeGate>
       <main className="v2-page">
 
-        {/* ══ SITE HERO — Brand + Value Prop ═══════════════════ */}
-        <section className="v2-site-hero">
-          <div className="v2-site-hero__bg" />
-          <div className="v2-site-hero__content">
-            <h1 className="v2-site-hero__h1">
-              The largest free <span className="v2-site-hero__accent">animated hentai</span> library
-            </h1>
-            <p className="v2-site-hero__sub">
-              353,000+ animated clips updated daily.
-              Stream by character, tag, or trending score. Free, no account needed.
-            </p>
-            <div className="v2-site-hero__stats">
-              <div className="v2-site-hero__stat">
-                <span className="v2-site-hero__stat-num">353K+</span>
-                <span className="v2-site-hero__stat-label">Videos</span>
-              </div>
-              <div className="v2-site-hero__stat">
-                <span className="v2-site-hero__stat-num">50+</span>
-                <span className="v2-site-hero__stat-label">Characters</span>
-              </div>
-              <div className="v2-site-hero__stat">
-                <span className="v2-site-hero__stat-num">Daily</span>
-                <span className="v2-site-hero__stat-label">Updates</span>
-              </div>
-              <div className="v2-site-hero__stat">
-                <span className="v2-site-hero__stat-num">Free</span>
-                <span className="v2-site-hero__stat-label">Forever</span>
-              </div>
-            </div>
-            <div className="v2-site-hero__actions">
-              <Link href="/explore" className="v2-btn-play">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21" /></svg>
-                Start Watching
-              </Link>
-              <Link href="/trending" className="v2-btn-info">
-                Trending Now
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* ══ TRENDING HERO — Featured video ══════════════════ */}
+        {/* ══ HERO — Featured Video + Brand ═══════════════════ */}
         <section
-          className="v2-hero"
+          className="hp-hero"
           style={
             hero?.preview
               ? {
@@ -115,52 +81,50 @@ export default async function HomePage() {
               : undefined
           }
         >
-          <div className="v2-hero__bg" style={hero?.thumbnail ? { background: "none" } : undefined} />
-          <div className="v2-hero__gradient" />
-
-          <div className="v2-hero__content">
-            <span className="v2-hero__badge">Trending #1</span>
-
-            <div className="v2-hero__meta">
+          <div className="hp-hero__overlay" />
+          <div className="hp-hero__content">
+            <span className="hp-hero__badge">
+              <span className="hp-hero__badge-dot" />
+              Trending #1
+            </span>
+            <h1 className="hp-hero__title">
+              {heroTitle}<span className="hp-hero__title-dot">.</span>
+            </h1>
+            <div className="hp-hero__meta">
               <span>{new Date().getFullYear()}</span>
-              <span className="v2-hero__meta-dot" />
-              <span>HD 1080p</span>
-              <span className="v2-hero__meta-dot" />
-              {hero && <span className="v2-hero__meta-score">★ {hero.score.toLocaleString()}</span>}
+              <span className="hp-hero__meta-sep">·</span>
+              <span>HD 1080P</span>
+              <span className="hp-hero__meta-sep">·</span>
+              {hero && <span className="hp-hero__score">★ {hero.score.toLocaleString()}</span>}
             </div>
-
-            <h2 className="v2-hero__title">
-              {heroTitle}<span>.</span>
-            </h2>
-
-            <div className="v2-hero__tags">
+            <div className="hp-hero__tags">
               {heroTags.map((tag) => (
-                <span key={tag} className="v2-hero__tag">
+                <span key={tag} className="hp-hero__tag">
                   {tag.replace(/_/g, " ")}
                 </span>
               ))}
             </div>
-
-            <div className="v2-hero__actions">
+            <div className="hp-hero__actions">
               {hero && (
-                <Link href={`/watch/${hero.slug}`} className="v2-btn-play">
+                <Link href={`/watch/${hero.slug}`} className="hp-btn-primary">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21" /></svg>
                   Watch Now
                 </Link>
               )}
+              <Link href="/trending" className="hp-btn-secondary">
+                Trending Now
+              </Link>
             </div>
+            <p className="hp-hero__sub">
+              353,000+ free animated hentai clips · Updated daily
+            </p>
           </div>
-
-          {hero && (
-            <div className="v2-hero__poster">
-              <img src={hero.preview} alt={heroTitle} className="v2-hero__poster-img" />
-              <div className="v2-hero__poster-glow" />
-            </div>
-          )}
         </section>
 
         {/* ══ CONTENT AREA ═══════════════════════════════════════ */}
         <div className="v2-content">
+
+          <AdZone id="hp-leaderboard-1" size="leaderboard" />
 
           {/* Tags filter row */}
           <div className="v2-tags-row" role="list" aria-label="Browse by tag">
@@ -183,12 +147,35 @@ export default async function HomePage() {
             ))}
           </Carousel>
 
+          {/* ── Popular Series ─────────────────────────────────── */}
+          <Carousel title="Popular Series" seeAllHref="/series">
+            {SERIES.slice(0, 12).map((series, i) => {
+              const gradient = CHAR_GRADIENTS[i % CHAR_GRADIENTS.length];
+              const initials = series.name
+                .split(" ")
+                .map((w) => w[0]?.toUpperCase() ?? "")
+                .slice(0, 2)
+                .join("");
+              return (
+                <Link key={series.slug} href={`/series/${series.slug}`} className="v2-char-card">
+                  <div className="v2-char-card__avatar" style={{ background: gradient }}>
+                    <span className="v2-char-card__initials">{initials}</span>
+                  </div>
+                  <div className="v2-char-card__name">{series.name}</div>
+                  <div className="v2-char-card__count">{series.characters.length} characters</div>
+                </Link>
+              );
+            })}
+          </Carousel>
+
           {/* ── Top Rated ──────────────────────────────────────── */}
           <Carousel title="Top Rated All Time" seeAllHref="/explore">
             {topRated.data.map((video, i) => (
               <PosterCard key={video.id} video={video} rank={i + 1} />
             ))}
           </Carousel>
+
+          <AdZone id="hp-medium-1" size="medium-rect" />
 
           {/* ── New Releases ───────────────────────────────────── */}
           <Carousel title="New Releases" badge="NEW" seeAllHref="/new">
@@ -210,7 +197,7 @@ export default async function HomePage() {
               return (
                 <Link
                   key={char.name}
-                  href={`/tag/${encodeURIComponent(char.name)}`}
+                  href={`/character/${encodeURIComponent(char.name)}`}
                   className="v2-char-card"
                 >
                   <div className="v2-char-card__avatar" style={{ background: gradient }}>
@@ -283,13 +270,45 @@ export default async function HomePage() {
         </section>
 
         {/* ══ FOOTER ════════════════════════════════════════════ */}
-        <footer className="v2-footer">
-          <div className="v2-footer__links">
-            <a href="/terms"   className="v2-footer__link">Terms</a>
-            <a href="/privacy" className="v2-footer__link">Privacy</a>
-            <a href="/dmca"    className="v2-footer__link">DMCA</a>
+        <footer className="hp-footer">
+          <div className="hp-footer__grid">
+            <div className="hp-footer__col">
+              <h3 className="hp-footer__heading">Browse</h3>
+              <Link href="/trending" className="hp-footer__link">Trending</Link>
+              <Link href="/new" className="hp-footer__link">New Releases</Link>
+              <Link href="/explore" className="hp-footer__link">Explore All</Link>
+              <Link href="/tags" className="hp-footer__link">All Tags</Link>
+              <Link href="/feed" className="hp-footer__link">Video Feed</Link>
+            </div>
+            <div className="hp-footer__col">
+              <h3 className="hp-footer__heading">Characters</h3>
+              {characters.slice(0, 6).map((c) => (
+                <Link key={c.name} href={`/character/${encodeURIComponent(c.name)}`} className="hp-footer__link">
+                  {c.name.replace(/_/g, " ")}
+                </Link>
+              ))}
+            </div>
+            <div className="hp-footer__col">
+              <h3 className="hp-footer__heading">Series</h3>
+              {SERIES.slice(0, 6).map((s) => (
+                <Link key={s.slug} href={`/series/${s.slug}`} className="hp-footer__link">
+                  {s.name}
+                </Link>
+              ))}
+            </div>
+            <div className="hp-footer__col">
+              <h3 className="hp-footer__heading">About</h3>
+              <Link href="/blog" className="hp-footer__link">Blog</Link>
+              <Link href="/glossary" className="hp-footer__link">Glossary</Link>
+              <a href="/terms" className="hp-footer__link">Terms</a>
+              <a href="/privacy" className="hp-footer__link">Privacy</a>
+              <a href="/dmca" className="hp-footer__link">DMCA</a>
+            </div>
           </div>
-          <p className="v2-footer__copy">&copy; {new Date().getFullYear()} iku.gg — All rights reserved. 18+ only.</p>
+          <div className="hp-footer__bottom">
+            <span className="hp-footer__logo">iku</span>
+            <p className="hp-footer__copy">&copy; {new Date().getFullYear()} iku.gg — All rights reserved. 18+ only.</p>
+          </div>
         </footer>
 
       </main>
