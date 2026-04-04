@@ -325,6 +325,11 @@ export function VideoCard({
     if (!el) return;
     const next = !el.muted;
     el.muted = next;
+    if (!next) {
+      // Re-trigger play to satisfy browser autoplay policy for unmuting
+      el.volume = el.volume || 0.5;
+      el.play().catch(() => {});
+    }
     setMuted(next);
     setShowMuteHint(true);
     if (muteTimerRef.current) clearTimeout(muteTimerRef.current);
