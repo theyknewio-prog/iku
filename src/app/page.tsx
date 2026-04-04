@@ -19,6 +19,21 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 export const dynamic = "force-dynamic";
 
+/* ── Genre tag emoji map ─────────────────────────────────── */
+const TAG_EMOJIS: Record<string, string> = {
+  animated: "✨", "3d": "🎮", fantasy: "🧚", uncensored: "🔓",
+  vanilla: "💚", monster: "👹", elf: "🌿", schoolgirl: "📚",
+  catgirl: "🐱", cat_girl: "🐱", demon: "😈", action: "⚔️",
+  harem: "🏠", romance: "🌸", vampire: "🧛", mecha: "🤖",
+  mermaid: "🧜", fox_girl: "🦊", superpower: "⚡", idol: "🎤",
+  outdoor: "🍃", night: "🌙", wet: "💧", bondage: "⛓️",
+  tentacle: "🐙", nurse: "🏥", maid: "🧹", teacher: "📖",
+  swim: "🏊", dance: "💃", school: "🏫",
+  oral: "👄", anal: "🍑", big_breasts: "🍈", milf: "👩",
+  futanari: "⚧️", yuri: "👩‍❤️‍👩", yaoi: "👨‍❤️‍👨",
+  solo: "💎", group: "👥", threesome: "🔥",
+};
+
 /* ── Genre tag color classes — round-robin ─────────────── */
 const TAG_COLORS = [
   "hp-gt-pink",
@@ -94,9 +109,8 @@ export default async function HomePage() {
     getPopularCharacters(12),
   ]);
 
-  const seriesTags = SERIES.slice(0, 12).map((s) => s.tags[0] || s.name.toLowerCase());
   const characterTags = characters.map((c) => c.name);
-  const thumbnailMap = await getThumbnailsForTags([...seriesTags, ...characterTags]);
+  const thumbnailMap = await getThumbnailsForTags(characterTags);
 
   const hero = trending.data[0];
 
@@ -146,7 +160,7 @@ export default async function HomePage() {
                   Browse Now
                 </Link>
                 <Link href="/feed" className="hp-btn-secondary">
-                  Shorts
+                  <span>⚡</span> Try Shorts
                 </Link>
               </div>
 
@@ -224,7 +238,7 @@ export default async function HomePage() {
           {/* ================================================================
               TRENDING NOW -- Horizontal poster scroll
           ================================================================ */}
-          <Carousel title="Trending Now" badge="HOT" seeAllHref="/trending">
+          <Carousel title="🔥 Trending Now" badge="HOT" seeAllHref="/trending">
             {trending.data.map((video, i) => (
               <PosterCard key={video.id} video={video} rank={i < 8 ? i + 1 : undefined} priority={i < 5} />
             ))}
@@ -235,7 +249,7 @@ export default async function HomePage() {
           ================================================================ */}
           <section aria-label="Top Rated This Week">
             <div className="hp-section-header">
-              <h2 className="hp-section-title">Top Rated This Week</h2>
+              <h2 className="hp-section-title">⭐ Top Rated This Week</h2>
               <Link href="/explore" className="hp-section-link">See all &#8594;</Link>
             </div>
 
@@ -274,7 +288,7 @@ export default async function HomePage() {
                           <div className={`hp-thumb-grad hp-thumb-grad--${(i % 12) + 1}`} />
                         )}
                       </div>
-                      {isHot && <span className="hp-hot-badge">Hot</span>}
+                      {isHot && <span className="hp-hot-badge">🔥 Hot</span>}
                       {!isHot && isNew && <span className="hp-new-badge">New</span>}
                       {video.duration && (
                         <span className="hp-duration-badge">{formatDuration(video.duration)}</span>
@@ -286,7 +300,7 @@ export default async function HomePage() {
                         {charName ? `${charName} — ${tag}` : tag}
                       </div>
                       {charName && (
-                        <div className="hp-grid-card__char">{charName}</div>
+                        <div className="hp-grid-card__char">👤 {charName}</div>
                       )}
                       <div className="hp-grid-card__foot">
                         <div className="hp-rating-row">
@@ -311,7 +325,7 @@ export default async function HomePage() {
           ================================================================ */}
           <section aria-label="Popular Characters">
             <div className="hp-section-header">
-              <h2 className="hp-section-title">Popular Characters</h2>
+              <h2 className="hp-section-title">💖 Popular Characters</h2>
               <Link href="/tags" className="hp-section-link">See all &#8594;</Link>
             </div>
 
@@ -356,43 +370,11 @@ export default async function HomePage() {
           </section>
 
           {/* ================================================================
-              POPULAR SERIES -- Carousel
-          ================================================================ */}
-          <Carousel title="Popular Series" seeAllHref="/series">
-            {SERIES.slice(0, 12).map((series, i) => {
-              const ringClass = CHAR_RING_CLASSES[i % CHAR_RING_CLASSES.length];
-              const thumb = thumbnailMap[series.tags[0] || series.name.toLowerCase()];
-              return (
-                <Link key={series.slug} href={`/series/${series.slug}`} className="v2-char-card">
-                  <div className="v2-char-card__avatar" style={{ background: `var(--${ringClass.replace("hp-grad-", "color-")}, #7b2ff7)` }}>
-                    {thumb ? (
-                      <Image src={thumb} alt={series.name} fill sizes="120px" style={{ objectFit: "cover" }} unoptimized />
-                    ) : (
-                      <span className="v2-char-card__initials">{series.name.split(" ").map(w => w[0]?.toUpperCase() ?? "").slice(0, 2).join("")}</span>
-                    )}
-                  </div>
-                  <div className="v2-char-card__name">{series.name}</div>
-                  <div className="v2-char-card__count">{series.characters.length} characters</div>
-                </Link>
-              );
-            })}
-          </Carousel>
-
-          {/* ================================================================
-              NEW RELEASES -- Horizontal poster scroll
-          ================================================================ */}
-          <Carousel title="New Releases" badge="NEW" seeAllHref="/new">
-            {newest.data.map((video) => (
-              <PosterCard key={video.id} video={video} badge="NEW" />
-            ))}
-          </Carousel>
-
-          {/* ================================================================
               BROWSE BY GENRE -- Colorful pastel pill tags
           ================================================================ */}
           <section aria-label="Browse by Genre">
             <div className="hp-section-header">
-              <h2 className="hp-section-title">Browse by Genre</h2>
+              <h2 className="hp-section-title">🏷️ Browse by Genre</h2>
               <Link href="/tags" className="hp-section-link">See all &#8594;</Link>
             </div>
 
@@ -407,7 +389,7 @@ export default async function HomePage() {
                     className={`hp-genre-tag ${colorClass}`}
                     role="listitem"
                   >
-                    {tag.name.replace(/_/g, " ")}
+                    {TAG_EMOJIS[tag.name] ? `${TAG_EMOJIS[tag.name]} ` : ""}{tag.name.replace(/_/g, " ")}
                     <span className="hp-genre-tag__count">{count}</span>
                   </Link>
                 );
@@ -416,36 +398,14 @@ export default async function HomePage() {
           </section>
 
           {/* ================================================================
-              LEARN SECTION
+              NEW RELEASES -- Horizontal poster scroll
           ================================================================ */}
-          <section className="v2-learn-section">
-            <div className="v2-learn-header">
-              <h2 className="hp-section-title">Learn About Hentai</h2>
-              <Link href="/blog" className="hp-section-link">All guides &#8594;</Link>
-            </div>
-            <div className="v2-learn-grid">
-              <Link href="/blog/what-is-hentai" className="v2-learn-card">
-                <span className="v2-learn-card__icon">?</span>
-                <div className="v2-learn-card__title">What is Hentai?</div>
-                <div className="v2-learn-card__sub">History, genres &amp; culture</div>
-              </Link>
-              <Link href="/blog/understanding-hentai-tags" className="v2-learn-card">
-                <span className="v2-learn-card__icon">#</span>
-                <div className="v2-learn-card__title">Understanding Tags</div>
-                <div className="v2-learn-card__sub">How the tag system works</div>
-              </Link>
-              <Link href="/blog/best-hentai-anime-2025" className="v2-learn-card">
-                <span className="v2-learn-card__icon">&#9733;</span>
-                <div className="v2-learn-card__title">Best of 2025-2026</div>
-                <div className="v2-learn-card__sub">Top rated series to watch</div>
-              </Link>
-              <Link href="/glossary" className="v2-learn-card">
-                <span className="v2-learn-card__icon">A</span>
-                <div className="v2-learn-card__title">Hentai Glossary</div>
-                <div className="v2-learn-card__sub">20+ terms explained</div>
-              </Link>
-            </div>
-          </section>
+          <Carousel title="🆕 New Releases" badge="NEW" seeAllHref="/new">
+            {newest.data.map((video) => (
+              <PosterCard key={video.id} video={video} badge="NEW" />
+            ))}
+          </Carousel>
+
 
         </div>
 

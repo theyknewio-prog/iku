@@ -64,6 +64,14 @@ function IconNew({ size = 20 }: { size?: number }) {
   );
 }
 
+function IconStar({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+    </svg>
+  );
+}
+
 function IconFeed({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -94,14 +102,6 @@ function IconSettings({ size = 20 }: { size?: number }) {
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="3" />
       <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-    </svg>
-  );
-}
-
-function IconStar({ size = 20 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
     </svg>
   );
 }
@@ -159,8 +159,9 @@ const DISCOVER_ITEMS = [
   { href: "/",         label: "Home",         Icon: IconHome },
   { href: "/trending", label: "Trending",     Icon: IconTrending, badge: "Hot" },
   { href: "/new",      label: "New Releases", Icon: IconNew },
-  { href: "/explore",  label: "Explore",      Icon: IconBrowse },
+  { href: "/explore?sort=top", label: "Top Rated", Icon: IconStar },
   { href: "/feed",     label: "Shorts",       Icon: IconFeed,     badge: "New", badgeGradient: true },
+  { href: "/explore",  label: "Explore",      Icon: IconBrowse },
 ] as const;
 
 /* Library */
@@ -186,6 +187,7 @@ const QUICK_TAGS = [
   { label: "vanilla",    href: "/tag/vanilla",    color: "green" },
   { label: "monster",    href: "/tag/monster",    color: "red" },
   { label: "elf",        href: "/tag/elf",        color: "orange" },
+  { label: "schoolgirl", href: "/tag/schoolgirl", color: "blue" },
   { label: "catgirl",    href: "/tag/cat_girl",   color: "pink" },
   { label: "demon",      href: "/tag/demon",      color: "purple" },
 ] as const;
@@ -271,7 +273,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <Link href="/" prefetch={true} className="v2-sidebar-logo" aria-label="iku home">
           <span className="v2-sidebar-logo__icon">iku</span>
           <span className="v2-sidebar-logo__text-wrap">
-            <span className="v2-sidebar-logo__text">iku.gg</span>
+            <span className="v2-sidebar-logo__text">iku.gg ✨</span>
             <span className="v2-sidebar-logo__sub">353K+ free videos</span>
           </span>
         </Link>
