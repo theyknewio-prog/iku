@@ -136,7 +136,7 @@ const SIDEBAR_ITEMS = [
   { href: "/trending",  label: "Trending",  Icon: IconTrending },
   { href: "/new",       label: "New",       Icon: IconNew },
   { href: "/tags",      label: "Tags",      Icon: IconTag },
-  { href: "/feed",      label: "Feed",      Icon: IconFeed },
+  { href: "/feed",      label: "Shorts",    Icon: IconFeed },
   { href: "/history",   label: "History",   Icon: IconHistory },
   { href: "/favorites", label: "Favorites", Icon: IconHeart },
   { href: "/settings",  label: "Settings",  Icon: IconSettings },
@@ -146,7 +146,7 @@ const SIDEBAR_ITEMS = [
 const BOTTOM_ITEMS = [
   { href: "/",         label: "Home",     Icon: IconHome,     featured: false },
   { href: "/explore",  label: "Search",   Icon: IconSearch,   featured: false },
-  { href: "/feed",     label: "Feed",     Icon: IconFeed,     featured: true },
+  { href: "/feed",     label: "Shorts",   Icon: IconFeed,     featured: true },
   { href: "/trending", label: "Trending", Icon: IconTrending, featured: false },
 ] as const;
 
@@ -283,7 +283,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <Link
           key={href}
           href={href}
-          className={`v2-bottom-nav__item${isActive(href) ? " v2-bottom-nav__item--active" : ""}${featured ? " v2-bottom-nav__item--featured" : ""}`}
+          className={`v2-bottom-nav__item${isActive(href) ? " v2-bottom-nav__item--active" : ""}${featured && isActive(href) ? " v2-bottom-nav__item--featured" : ""}`}
           aria-current={isActive(href) ? "page" : undefined}
         >
           <Icon size={22} />
