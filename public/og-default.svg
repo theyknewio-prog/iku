@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0a"/>
+      <stop offset="100%" style="stop-color:#1a0a2e"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#e8467c"/>
+      <stop offset="50%" style="stop-color:#7b2ff7"/>
+      <stop offset="100%" style="stop-color:#06b6d4"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="0" y="580" width="1200" height="4" fill="url(#accent)"/>
+  <text x="600" y="260" text-anchor="middle" font-family="Arial,sans-serif" font-weight="900" font-size="120" fill="white" letter-spacing="-3">iku.gg</text>
+  <text x="600" y="360" text-anchor="middle" font-family="Arial,sans-serif" font-weight="400" font-size="36" fill="url(#accent)">353,000+ Free Animated Hentai Videos</text>
+  <text x="600" y="420" text-anchor="middle" font-family="Arial,sans-serif" font-weight="300" font-size="24" fill="#888">Stream by character, tag, and series</text>
+</svg>

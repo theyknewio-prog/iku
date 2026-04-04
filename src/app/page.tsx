@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "iku.gg — Free Hentai Videos | Stream Animated Hentai Online",
   description: "Stream 353,000+ free hentai videos on iku.gg. Watch trending animated hentai clips. Browse by character, tag, and score.",
   other: { rating: "adult" },
+  alternates: { canonical: "https://iku.gg" },
 };
 
 export const revalidate = 3600;
@@ -62,13 +63,14 @@ export default async function HomePage() {
 
   /* Hero video — pick highest scored */
   const hero = trending.data[0];
-  const heroTitle = hero
+  const heroName = hero
     ? (hero.characters[0]
         ? hero.characters[0].replace(/_/g, " ")
         : hero.copyrights[0]
           ? hero.copyrights[0].replace(/_/g, " ")
-          : "Trending Now")
-    : "Trending Now";
+          : "Trending")
+    : "Trending";
+  const heroTitle = `${heroName} Hentai`;
   const heroTags = hero ? hero.tags.slice(0, 4) : [];
 
   return (
