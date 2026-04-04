@@ -4101,6 +4101,22 @@ body {
 
 .v2-bottom-nav__item--active { color: var(--v2-accent-start); }
 
+.v2-bottom-nav__item--featured {
+  position: relative;
+  background: linear-gradient(135deg, #e8467c 0%, #7b2ff7 100%);
+  border-radius: 12px;
+  margin: 8px 6px;
+  height: auto;
+  padding: 12px 8px;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(232, 70, 124, 0.3);
+  color: #ffffff !important;
+}
+
+.v2-bottom-nav__item--featured:active {
+  transform: scale(0.98);
+}
+
 .v2-bottom-nav__label {
   font-size: 10px;
   font-weight: 600;

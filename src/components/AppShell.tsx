@@ -16,6 +16,15 @@ function IconHome({ size = 20 }: { size?: number }) {
   );
 }
 
+function IconSearch({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.35-4.35" />
+    </svg>
+  );
+}
+
 function IconBrowse({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -133,11 +142,11 @@ const SIDEBAR_ITEMS = [
   { href: "/settings",  label: "Settings",  Icon: IconSettings },
 ] as const;
 
-/* Mobile bottom — 4 primary + More button */
+/* Mobile bottom — Industry standard 5-tab pattern */
 const BOTTOM_ITEMS = [
   { href: "/",         label: "Home",     Icon: IconHome },
-  { href: "/explore",  label: "Browse",   Icon: IconBrowse },
-  { href: "/feed",     label: "Feed",     Icon: IconFeed },
+  { href: "/explore",  label: "Search",   Icon: IconSearch },
+  { href: "/feed",     label: "Feed",     Icon: IconFeed, featured: true },
   { href: "/trending", label: "Trending", Icon: IconTrending },
 ] as const;
 
@@ -270,11 +279,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
     {/* ══ MOBILE BOTTOM NAV ═══════════════════════════════════ */}
     <nav className="v2-bottom-nav" aria-label="Mobile navigation">
-      {BOTTOM_ITEMS.map(({ href, label, Icon }) => (
+      {BOTTOM_ITEMS.map(({ href, label, Icon, featured }) => (
         <Link
           key={href}
           href={href}
-          className={`v2-bottom-nav__item${isActive(href) ? " v2-bottom-nav__item--active" : ""}`}
+          className={`v2-bottom-nav__item${isActive(href) ? " v2-bottom-nav__item--active" : ""}${featured ? " v2-bottom-nav__item--featured" : ""}`}
           aria-current={isActive(href) ? "page" : undefined}
         >
           <Icon size={22} />
