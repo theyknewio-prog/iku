@@ -43,3 +43,10 @@ next-env.d.ts
 .playwright-mcp/
 .superpowers/
 prototypes/
+
+# Video data is now in PostgreSQL
+src/data/videos.json
+src/data/gelbooru-videos.json
+src/data/rule34-videos.json
+src/data/rule34video-videos.json
+src/data/wp-hentai-videos.json
