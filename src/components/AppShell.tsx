@@ -98,6 +98,41 @@ function IconSettings({ size = 20 }: { size?: number }) {
   );
 }
 
+function IconStar({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+    </svg>
+  );
+}
+
+function IconCharacter({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  );
+}
+
+function IconSeries({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="7" width="20" height="15" rx="2" ry="2" />
+      <polyline points="17 2 12 7 7 2" />
+    </svg>
+  );
+}
+
+function IconBell({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+      <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+    </svg>
+  );
+}
+
 function IconMore({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" stroke="none">
@@ -117,29 +152,42 @@ function IconClose({ size = 20 }: { size?: number }) {
   );
 }
 
-
-function IconHamburger({ size = 20 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-      <line x1="3" y1="6"  x2="21" y2="6" />
-      <line x1="3" y1="12" x2="21" y2="12" />
-      <line x1="3" y1="18" x2="21" y2="18" />
-    </svg>
-  );
-}
-
 /* ── Nav definitions ─────────────────────────────────────────── */
 
-const SIDEBAR_ITEMS = [
-  { href: "/",          label: "Home",      Icon: IconHome },
-  { href: "/explore",   label: "Browse",    Icon: IconBrowse },
-  { href: "/trending",  label: "Trending",  Icon: IconTrending },
-  { href: "/new",       label: "New",       Icon: IconNew },
-  { href: "/tags",      label: "Tags",      Icon: IconTag },
-  { href: "/feed",      label: "Shorts",    Icon: IconFeed },
-  { href: "/history",   label: "History",   Icon: IconHistory },
+/* Sidebar sections — Discover */
+const DISCOVER_ITEMS = [
+  { href: "/",         label: "Home",         Icon: IconHome },
+  { href: "/trending", label: "Trending",     Icon: IconTrending, badge: "Hot" },
+  { href: "/new",      label: "New Releases", Icon: IconNew },
+  { href: "/explore",  label: "Explore",      Icon: IconBrowse },
+  { href: "/feed",     label: "Shorts",       Icon: IconFeed,     badge: "New", badgeGradient: true },
+] as const;
+
+/* Library */
+const LIBRARY_ITEMS = [
   { href: "/favorites", label: "Favorites", Icon: IconHeart },
+  { href: "/history",   label: "History",   Icon: IconHistory },
   { href: "/settings",  label: "Settings",  Icon: IconSettings },
+] as const;
+
+/* Browse */
+const BROWSE_ITEMS = [
+  { href: "/character", label: "Characters", Icon: IconCharacter },
+  { href: "/series",    label: "Series",     Icon: IconSeries },
+  { href: "/tags",      label: "Tags",       Icon: IconTag },
+] as const;
+
+/* Quick tags for sidebar bottom */
+const QUICK_TAGS = [
+  { label: "animated",   href: "/tag/animated",   color: "pink" },
+  { label: "3D",         href: "/tag/3d",         color: "purple" },
+  { label: "fantasy",    href: "/tag/fantasy",    color: "cyan" },
+  { label: "uncensored", href: "/tag/uncensored", color: "gold" },
+  { label: "vanilla",    href: "/tag/vanilla",    color: "green" },
+  { label: "monster",    href: "/tag/monster",    color: "red" },
+  { label: "elf",        href: "/tag/elf",        color: "orange" },
+  { label: "catgirl",    href: "/tag/cat_girl",   color: "pink" },
+  { label: "demon",      href: "/tag/demon",      color: "purple" },
 ] as const;
 
 /* Mobile bottom — Industry standard 5-tab pattern */
@@ -176,6 +224,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   /* Close drawer on navigation */
   useEffect(() => {
     setMoreOpen(false);
+    setMenuOpen(false);
   }, [pathname]);
 
   if (pathname === "/feed") {
@@ -187,111 +236,139 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return pathname.startsWith(href);
   }
 
+  type NavItem = { href: string; label: string; Icon: React.ComponentType<{ size?: number }>; badge?: string; badgeGradient?: boolean };
+
+  function renderNavItem(item: NavItem) {
+    const active = isActive(item.href);
+    return (
+      <Link
+        key={item.href}
+        href={item.href}
+        className={`v2-nav-item${active ? " v2-nav-item--active" : ""}`}
+        aria-current={active ? "page" : undefined}
+      >
+        <span className="v2-nav-icon">
+          <item.Icon size={16} />
+        </span>
+        <span className="v2-nav-item__label">{item.label}</span>
+        {item.badge && (
+          <span className={`v2-nav-badge${item.badgeGradient ? " v2-nav-badge--gradient" : ""}`}>
+            {item.badge}
+          </span>
+        )}
+      </Link>
+    );
+  }
 
   return (
   <>
     <div className="v2-shell">
 
-      {/* ══ SIDEBAR (desktop, 60px icon-only) ═════════════════ */}
+      {/* SIDEBAR (desktop, 220px expanded) */}
       <aside className="v2-sidebar" aria-label="Main navigation">
 
-        <Link href="/" className="v2-sidebar__logo" aria-label="iku home">
-          IK
+        {/* Logo */}
+        <Link href="/" className="v2-sidebar-logo" aria-label="iku home">
+          <span className="v2-sidebar-logo__icon">iku</span>
+          <span className="v2-sidebar-logo__text-wrap">
+            <span className="v2-sidebar-logo__text">iku.gg</span>
+            <span className="v2-sidebar-logo__sub">353K+ free videos</span>
+          </span>
         </Link>
 
-        <nav className="v2-sidebar__nav">
-          {SIDEBAR_ITEMS.map(({ href, label, Icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`v2-sidebar__item${isActive(href) ? " v2-sidebar__item--active" : ""}`}
-              aria-current={isActive(href) ? "page" : undefined}
-            >
-              <Icon size={20} />
-              <span className="v2-sidebar__tooltip">{label}</span>
-            </Link>
-          ))}
-        </nav>
-
-        <div className="v2-sidebar__bottom">
-          <div className="v2-sidebar__divider" />
-          <div className="v2-sidebar__avatar" aria-hidden="true" />
+        {/* Nav: Discover */}
+        <div className="v2-sidebar-section">
+          <div className="v2-sidebar-section__label">Discover</div>
+          {(DISCOVER_ITEMS as unknown as NavItem[]).map(renderNavItem)}
         </div>
+
+        {/* Nav: My Library */}
+        <div className="v2-sidebar-section">
+          <div className="v2-sidebar-section__label">My Library</div>
+          {(LIBRARY_ITEMS as unknown as NavItem[]).map(renderNavItem)}
+        </div>
+
+        {/* Nav: Browse */}
+        <div className="v2-sidebar-section">
+          <div className="v2-sidebar-section__label">Browse</div>
+          {(BROWSE_ITEMS as unknown as NavItem[]).map(renderNavItem)}
+        </div>
+
+        {/* Quick Tags */}
+        <div className="v2-sidebar-section">
+          <div className="v2-sidebar-section__label">Quick Tags</div>
+          <div className="v2-sidebar-tags">
+            {QUICK_TAGS.map((tag) => (
+              <Link
+                key={tag.label}
+                href={tag.href}
+                className={`v2-sidebar-tag v2-sidebar-tag--${tag.color}`}
+              >
+                {tag.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+
       </aside>
 
-      {/* ══ TOPBAR ════════════════════════════════════════════ */}
+      {/* TOPBAR */}
       <header className={`v2-topbar${scrolled ? " v2-topbar--scrolled" : ""}`}>
 
+        {/* Mobile logo */}
         <Link href="/" className="v2-topbar__logo" aria-label="iku home">
           <span className="v2-topbar__logo-text">iku</span>
         </Link>
 
-        <SearchAutocomplete />
-
-        <div className="v2-topbar__right">
-          <nav className="v2-topbar__nav" aria-label="Content navigation">
-            <Link href="/"          className={`v2-topbar__link${pathname === "/" ? " v2-topbar__link--active" : ""}`}>Home</Link>
-            <Link href="/trending"  className={`v2-topbar__link${pathname.startsWith("/trending") ? " v2-topbar__link--active" : ""}`}>Trending</Link>
-            <Link href="/new"       className={`v2-topbar__link${pathname.startsWith("/new") ? " v2-topbar__link--active" : ""}`}>New</Link>
-            <Link href="/explore"   className={`v2-topbar__link${pathname.startsWith("/explore") ? " v2-topbar__link--active" : ""}`}>Browse</Link>
-            <Link href="/tags"      className={`v2-topbar__link${pathname.startsWith("/tags") ? " v2-topbar__link--active" : ""}`}>Tags</Link>
-            <Link href="/history"   className={`v2-topbar__link${pathname.startsWith("/history") ? " v2-topbar__link--active" : ""}`}>History</Link>
-            <Link href="/favorites" className={`v2-topbar__link${pathname.startsWith("/favorites") ? " v2-topbar__link--active" : ""}`}>Favorites</Link>
-            <Link href="/settings"  className={`v2-topbar__link${pathname.startsWith("/settings") ? " v2-topbar__link--active" : ""}`}>Settings</Link>
-          </nav>
-
-          <button
-            className="v2-topbar__hamburger"
-            aria-label="Menu"
-            type="button"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            <IconHamburger size={22} />
-          </button>
+        <div className="v2-topbar__search-area">
+          <SearchAutocomplete />
         </div>
 
-        {/* Mobile menu dropdown */}
-        {menuOpen && (
-          <div className="v2-mobile-menu" onClick={() => setMenuOpen(false)}>
-            <Link href="/" className="v2-mobile-menu__item">Home</Link>
-            <Link href="/explore" className="v2-mobile-menu__item">Browse</Link>
-            <Link href="/trending" className="v2-mobile-menu__item">Trending</Link>
-            <Link href="/new" className="v2-mobile-menu__item">New</Link>
-            <Link href="/tags" className="v2-mobile-menu__item">Tags</Link>
-            <Link href="/feed" className="v2-mobile-menu__item">Feed</Link>
-            <div className="v2-mobile-menu__divider" />
-            <Link href="/blog" className="v2-mobile-menu__item">Blog</Link>
-            <Link href="/glossary" className="v2-mobile-menu__item">Glossary</Link>
-            <div className="v2-mobile-menu__divider" />
-            <Link href="/history" className="v2-mobile-menu__item">History</Link>
-            <Link href="/favorites" className="v2-mobile-menu__item">Favorites</Link>
-            <Link href="/settings" className="v2-mobile-menu__item">Settings</Link>
-          </div>
-        )}
+        {/* Stats chip */}
+        <div className="v2-stats-chip">
+          <span className="v2-stats-chip__sparkle">&#10024;</span>
+          <span>353K+ Videos</span>
+        </div>
+
+        <div className="v2-topbar__actions">
+          <Link href="/favorites" className="v2-topbar-btn" title="Favorites" aria-label="Favorites">
+            <IconHeart size={18} />
+          </Link>
+          <Link href="/settings" className="v2-topbar-avatar" title="Account" aria-label="Account">
+            <IconCharacter size={16} />
+          </Link>
+        </div>
+
       </header>
 
-      {/* ══ MAIN CONTENT ════════════════════════════════════════ */}
+      {/* MAIN CONTENT */}
       <div className="v2-main">
         {children}
       </div>
 
     </div>
 
-    {/* ══ MOBILE BOTTOM NAV ═══════════════════════════════════ */}
+    {/* MOBILE BOTTOM NAV */}
     <nav className="v2-bottom-nav" aria-label="Mobile navigation">
       {BOTTOM_ITEMS.map(({ href, label, Icon, featured }) => (
         <Link
           key={href}
           href={href}
-          className={`v2-bottom-nav__item${isActive(href) ? " v2-bottom-nav__item--active" : ""}${featured && isActive(href) ? " v2-bottom-nav__item--featured" : ""}${featured && !isActive(href) ? " v2-bottom-nav__item--shorts-hint" : ""}`}
+          className={`v2-bottom-nav__item${isActive(href) ? " v2-bottom-nav__item--active" : ""}${featured ? " v2-bottom-nav__item--shorts" : ""}`}
           aria-current={isActive(href) ? "page" : undefined}
         >
-          <Icon size={22} />
+          {featured ? (
+            <span className={`v2-shorts-icon-wrap${isActive(href) ? " v2-shorts-icon-wrap--active" : ""}`}>
+              <Icon size={20} />
+            </span>
+          ) : (
+            <Icon size={22} />
+          )}
           <span className="v2-bottom-nav__label">{label}</span>
         </Link>
       ))}
 
-      {/* More — opens slide-up drawer */}
+      {/* More -- opens slide-up drawer */}
       <button
         type="button"
         className={`v2-bottom-nav__item${moreOpen ? " v2-bottom-nav__item--active" : ""}`}
@@ -304,16 +381,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </button>
     </nav>
 
-    {/* ══ MORE DRAWER ════════════════════════════════════════ */}
+    {/* MORE DRAWER */}
     {moreOpen && (
       <>
         <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.6)",
-            zIndex: 49,
-          }}
+          className="v2-more-overlay"
           onClick={() => setMoreOpen(false)}
           aria-hidden="true"
         />
@@ -321,34 +393,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           role="dialog"
           aria-modal="true"
           aria-label="More navigation options"
-          style={{
-            position: "fixed",
-            bottom: "calc(60px + env(safe-area-inset-bottom))",
-            left: 0,
-            right: 0,
-            background: "var(--color-bg-elevated)",
-            borderTop: "1px solid var(--color-border-default)",
-            borderRadius: "16px 16px 0 0",
-            zIndex: 50,
-            padding: "20px 24px 24px",
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: "8px",
-          }}
+          className="v2-more-drawer"
         >
           {MORE_ITEMS.map(({ href, label, Icon }) => (
             <Link
               key={href}
               href={href}
-              className={`v2-bottom-nav__item${isActive(href) ? " v2-bottom-nav__item--active" : ""}`}
+              className={`v2-more-drawer__item${isActive(href) ? " v2-more-drawer__item--active" : ""}`}
               aria-current={isActive(href) ? "page" : undefined}
-              style={{
-                padding: "14px 8px",
-                borderRadius: "10px",
-                background: isActive(href)
-                  ? "var(--color-accent-dim)"
-                  : "var(--color-bg-muted)",
-              }}
             >
               <Icon size={22} />
               <span className="v2-bottom-nav__label">{label}</span>
