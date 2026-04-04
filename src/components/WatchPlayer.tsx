@@ -268,13 +268,17 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
     };
   }, []);
 
-  const handleUnmuteClick = useCallback(() => {
+  const handleUnmuteClick = useCallback((e?: React.MouseEvent | React.KeyboardEvent) => {
+    if (e) e.stopPropagation();
     const v = videoRef.current;
     if (!v) return;
     v.muted = false;
+    v.volume = volume || 0.5;
+    // Re-trigger play to satisfy browser autoplay policy for unmuting
+    v.play().catch(() => {});
     setShowUnmuteHint(false);
     if (unmuteHintTimerRef.current) clearTimeout(unmuteHintTimerRef.current);
-  }, []);
+  }, [volume]);
 
   /* ── Feature 3: End-of-video overlay + countdown ───────── */
   const [ended, setEnded] = useState(false);
@@ -752,7 +756,7 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
             aria-label="Tap to unmute"
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleUnmuteClick(); }}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleUnmuteClick(e); }}
             style={{
               position: "absolute",
               top: 16,
