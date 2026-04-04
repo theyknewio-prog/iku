@@ -7,6 +7,7 @@ import {
   useCallback,
   useTransition,
 } from "react";
+import Image from "next/image";
 import { useVideoShortcuts } from "@/hooks/useVideoShortcuts";
 import { useDoubleTap } from "@/hooks/useDoubleTap";
 
@@ -14,11 +15,18 @@ import { useDoubleTap } from "@/hooks/useDoubleTap";
    Types
 ───────────────────────────────────────────────────────────── */
 
+interface RelatedVideo {
+  slug: string;
+  thumbnail: string;
+  title: string;
+}
+
 interface WatchPlayerProps {
   src: string;
   poster?: string;
   /** For rule34video: page URL to resolve via /api/resolve-video */
   resolveUrl?: string;
+  relatedVideos?: RelatedVideo[];
 }
 
 interface SeekOverlay {
@@ -65,6 +73,14 @@ function IconVolumeFull() {
   );
 }
 
+function IconVolumeSmall() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="14" height="14">
+      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77 0-4.28-2.99-7.86-7-8.77z" />
+    </svg>
+  );
+}
+
 function IconVolumeMuted() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -105,6 +121,14 @@ function IconTheater() {
   );
 }
 
+function IconLoop() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z" />
+    </svg>
+  );
+}
+
 function IconSpinner() {
   return (
     <svg
@@ -121,6 +145,14 @@ function IconSpinner() {
   );
 }
 
+function IconReplay() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" />
+    </svg>
+  );
+}
+
 /* ─────────────────────────────────────────────────────────────
    ControlBtn
 ───────────────────────────────────────────────────────────── */
@@ -129,11 +161,16 @@ function ControlBtn({
   onClick,
   label,
   children,
+  active,
+  activeColor,
 }: {
   onClick: () => void;
   label: string;
   children: React.ReactNode;
+  active?: boolean;
+  activeColor?: string;
 }) {
+  const color = active ? (activeColor ?? "#e8467c") : "#fff";
   return (
     <button
       onClick={onClick}
@@ -143,7 +180,7 @@ function ControlBtn({
         background: "transparent",
         border: "none",
         cursor: "pointer",
-        color: "#fff",
+        color,
         width: 44,
         height: 44,
         display: "flex",
@@ -156,11 +193,11 @@ function ControlBtn({
       }}
       onMouseEnter={(e) => {
         (e.currentTarget as HTMLButtonElement).style.transform = "scale(1.1)";
-        (e.currentTarget as HTMLButtonElement).style.color = "#e8467c";
+        if (!active) (e.currentTarget as HTMLButtonElement).style.color = "#e8467c";
       }}
       onMouseLeave={(e) => {
         (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)";
-        (e.currentTarget as HTMLButtonElement).style.color = "#fff";
+        (e.currentTarget as HTMLButtonElement).style.color = color;
       }}
     >
       <div style={{ width: 20, height: 20 }}>{children}</div>
@@ -179,12 +216,14 @@ type Speed = (typeof SPEEDS)[number];
    WatchPlayer
 ───────────────────────────────────────────────────────────── */
 
-export function WatchPlayer({ src, poster, resolveUrl }: WatchPlayerProps) {
+export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPlayerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const overlayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const unmuteHintTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /* Resolved video URL (for sources like rule34video with temp URLs) */
   const [resolvedSrc, setResolvedSrc] = useState(src);
@@ -205,7 +244,7 @@ export function WatchPlayer({ src, poster, resolveUrl }: WatchPlayerProps) {
     return () => { cancelled = true; };
   }, [src, resolveUrl]);
 
-  /* Playback state */
+  /* ── Playback state ────────────────────────────────────── */
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -215,7 +254,147 @@ export function WatchPlayer({ src, poster, resolveUrl }: WatchPlayerProps) {
   const [speed, setSpeed] = useState<Speed>(1);
   const [speedOpen, setSpeedOpen] = useState(false);
 
-  /* UI state */
+  /* ── Feature 1: Loop toggle ────────────────────────────── */
+  const [looping, setLooping] = useState(true);
+  const toggleLoop = useCallback(() => { setLooping((l) => !l); }, []);
+
+  /* ── Feature 2: Tap-to-unmute hint ────────────────────── */
+  const [showUnmuteHint, setShowUnmuteHint] = useState(true);
+
+  useEffect(() => {
+    unmuteHintTimerRef.current = setTimeout(() => setShowUnmuteHint(false), 3000);
+    return () => {
+      if (unmuteHintTimerRef.current) clearTimeout(unmuteHintTimerRef.current);
+    };
+  }, []);
+
+  const handleUnmuteClick = useCallback(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = false;
+    setShowUnmuteHint(false);
+    if (unmuteHintTimerRef.current) clearTimeout(unmuteHintTimerRef.current);
+  }, []);
+
+  /* ── Feature 3: End-of-video overlay + countdown ───────── */
+  const [ended, setEnded] = useState(false);
+  const [countdown, setCountdown] = useState(5);
+
+  const clearCountdown = useCallback(() => {
+    if (countdownRef.current) {
+      clearInterval(countdownRef.current);
+      countdownRef.current = null;
+    }
+  }, []);
+
+  const handleReplay = useCallback(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    clearCountdown();
+    setEnded(false);
+    setCountdown(5);
+    v.currentTime = 0;
+    v.play();
+  }, [clearCountdown]);
+
+  const handleCancelAutoplay = useCallback(() => {
+    clearCountdown();
+    setEnded(false);
+    setCountdown(5);
+    const v = videoRef.current;
+    if (v) {
+      v.currentTime = 0;
+      v.play();
+    }
+  }, [clearCountdown]);
+
+  const handleEnded = useCallback(() => {
+    if (looping) return; // video loops naturally, onEnded won't fire when loop=true, but guard anyway
+    if (relatedVideos && relatedVideos.length > 0) {
+      setEnded(true);
+      setCountdown(5);
+      countdownRef.current = setInterval(() => {
+        setCountdown((c) => {
+          if (c <= 1) {
+            clearInterval(countdownRef.current!);
+            countdownRef.current = null;
+            window.location.href = `/watch/${relatedVideos[0].slug}`;
+            return 0;
+          }
+          return c - 1;
+        });
+      }, 1000);
+    }
+  }, [looping, relatedVideos]);
+
+  /* ── Feature 4: Mobile volume gesture (left-side vertical swipe) */
+  const touchStartRef = useRef<{ x: number; y: number; isLeftSide: boolean; isVolumeGesture: boolean }>({
+    x: 0, y: 0, isLeftSide: false, isVolumeGesture: false,
+  });
+  const [volumeGestureLabel, setVolumeGestureLabel] = useState<string | null>(null);
+  const volumeLabelTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showVolumeLabel = useCallback((vol: number) => {
+    setVolumeGestureLabel(`Vol ${Math.round(vol * 100)}%`);
+    if (volumeLabelTimerRef.current) clearTimeout(volumeLabelTimerRef.current);
+    volumeLabelTimerRef.current = setTimeout(() => setVolumeGestureLabel(null), 1200);
+  }, []);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    const container = containerRef.current;
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    const touch = e.touches[0];
+    const isLeftSide = touch.clientX - rect.left < rect.width / 2;
+    touchStartRef.current = {
+      x: touch.clientX,
+      y: touch.clientY,
+      isLeftSide,
+      isVolumeGesture: false,
+    };
+    // Always show controls on touch
+    showControls();
+  }, []); // showControls declared below — hoisted via ref pattern; we call it by name after definition
+
+  const handleTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    const ref = touchStartRef.current;
+    if (!ref.isLeftSide) return;
+    const touch = e.touches[0];
+    const deltaY = ref.y - touch.clientY;
+    const deltaX = Math.abs(touch.clientX - ref.x);
+    // Only treat as volume gesture if vertical movement dominates
+    if (Math.abs(deltaY) < 8 && !ref.isVolumeGesture) return;
+    if (deltaX > Math.abs(deltaY) && !ref.isVolumeGesture) return;
+
+    ref.isVolumeGesture = true;
+    e.stopPropagation();
+
+    const container = containerRef.current;
+    const v = videoRef.current;
+    if (!container || !v) return;
+
+    const rect = container.getBoundingClientRect();
+    // Full player height = 0→1 volume range
+    const deltaNorm = deltaY / rect.height;
+    const newVol = Math.max(0, Math.min(1, v.volume + deltaNorm * 1.5));
+    v.volume = newVol;
+    if (newVol > 0) v.muted = false;
+    touchStartRef.current.y = touch.clientY;
+    showVolumeLabel(newVol);
+  }, [showVolumeLabel]);
+
+  /* ── Feature 5: Scroll wheel volume ───────────────────── */
+  const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const v = videoRef.current;
+    if (!v) return;
+    const delta = e.deltaY < 0 ? 0.05 : -0.05;
+    const newVol = Math.max(0, Math.min(1, v.volume + delta));
+    v.volume = newVol;
+    if (newVol > 0) v.muted = false;
+  }, []);
+
+  /* ── UI state ──────────────────────────────────────────── */
   const [controlsVisible, setControlsVisible] = useState(true);
   const [buffering, setBuffering] = useState(false);
   const [error, setError] = useState(false);
@@ -263,6 +442,9 @@ export function WatchPlayer({ src, poster, resolveUrl }: WatchPlayerProps) {
     return () => {
       if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
       if (overlayTimerRef.current) clearTimeout(overlayTimerRef.current);
+      if (countdownRef.current) clearInterval(countdownRef.current);
+      if (unmuteHintTimerRef.current) clearTimeout(unmuteHintTimerRef.current);
+      if (volumeLabelTimerRef.current) clearTimeout(volumeLabelTimerRef.current);
     };
   }, []);
 
@@ -302,6 +484,8 @@ export function WatchPlayer({ src, poster, resolveUrl }: WatchPlayerProps) {
     if (!v) return;
     setVolume(v.volume);
     setMuted(v.muted);
+    // Hide unmute hint once user unmutes
+    if (!v.muted) setShowUnmuteHint(false);
   }, []);
 
   /* ── Control actions ───────────────────────────────────── */
@@ -379,6 +563,8 @@ export function WatchPlayer({ src, poster, resolveUrl }: WatchPlayerProps) {
     onDoubleTap: (side) => {
       const v = videoRef.current;
       if (!v || !side) return;
+      // Don't fire double-tap seek if a volume gesture was in progress
+      if (touchStartRef.current.isVolumeGesture) return;
       if (side === "left") {
         v.currentTime = Math.max(0, v.currentTime - 10);
       } else {
@@ -388,6 +574,7 @@ export function WatchPlayer({ src, poster, resolveUrl }: WatchPlayerProps) {
       showControls();
     },
     onSingleTap: () => {
+      if (touchStartRef.current.isVolumeGesture) return;
       togglePlay();
       showControls();
     },
@@ -442,6 +629,16 @@ export function WatchPlayer({ src, poster, resolveUrl }: WatchPlayerProps) {
           70%  { opacity: 1; transform: scale(1.08); }
           100% { opacity: 0; transform: scale(1.12); }
         }
+        @keyframes wp-unmute-fade {
+          0%   { opacity: 1; }
+          75%  { opacity: 1; }
+          100% { opacity: 0; pointer-events: none; }
+        }
+        @keyframes wp-vol-label-fade {
+          0%   { opacity: 1; transform: translateX(-50%) scale(1); }
+          70%  { opacity: 1; transform: translateX(-50%) scale(1.04); }
+          100% { opacity: 0; transform: translateX(-50%) scale(0.96); }
+        }
         .wp-theater-backdrop {
           position: fixed;
           inset: 0;
@@ -484,6 +681,7 @@ export function WatchPlayer({ src, poster, resolveUrl }: WatchPlayerProps) {
           border: none;
         }
         .wp-progress-track:hover { height: 6px !important; }
+        .wp-end-thumb:hover { opacity: 0.8; }
         @media (prefers-reduced-motion: reduce) {
           .wp-seek-indicator,
           .wp-center-play,
@@ -496,8 +694,10 @@ export function WatchPlayer({ src, poster, resolveUrl }: WatchPlayerProps) {
       <div
         ref={containerRef}
         onMouseMove={showControls}
-        onTouchStart={showControls}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
         onClick={() => setSpeedOpen(false)}
+        onWheel={handleWheel}
         style={{
           position: theaterMode ? "fixed" : "relative",
           top: theaterMode ? "50%" : undefined,
@@ -524,7 +724,7 @@ export function WatchPlayer({ src, poster, resolveUrl }: WatchPlayerProps) {
           poster={poster}
           autoPlay
           muted={muted}
-          loop
+          loop={looping}
           playsInline
           onPlay={handlePlay}
           onPause={handlePause}
@@ -534,6 +734,7 @@ export function WatchPlayer({ src, poster, resolveUrl }: WatchPlayerProps) {
           onCanPlay={handleCanPlay}
           onError={handleError}
           onVolumeChange={handleVolumeChange}
+          onEnded={handleEnded}
           onClick={handleVideoClick}
           style={{
             width: "100%",
@@ -543,6 +744,64 @@ export function WatchPlayer({ src, poster, resolveUrl }: WatchPlayerProps) {
             cursor: "inherit",
           }}
         />
+
+        {/* ── Feature 2: Tap-to-unmute hint ────────────────── */}
+        {showUnmuteHint && muted && (
+          <div
+            onClick={handleUnmuteClick}
+            aria-label="Tap to unmute"
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleUnmuteClick(); }}
+            style={{
+              position: "absolute",
+              top: 16,
+              right: 16,
+              zIndex: 7,
+              background: "rgba(0,0,0,0.7)",
+              backdropFilter: "blur(6px)",
+              borderRadius: 20,
+              padding: "6px 14px",
+              color: "#fff",
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              animation: "wp-unmute-fade 3s ease forwards",
+            }}
+          >
+            <IconVolumeSmall />
+            Tap to unmute
+          </div>
+        )}
+
+        {/* ── Feature 4: Volume gesture label ─────────────── */}
+        {volumeGestureLabel && (
+          <div
+            aria-live="polite"
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "25%",
+              transform: "translateX(-50%)",
+              background: "rgba(0,0,0,0.6)",
+              backdropFilter: "blur(4px)",
+              color: "#fff",
+              fontWeight: 700,
+              fontSize: 13,
+              padding: "8px 14px",
+              borderRadius: 30,
+              pointerEvents: "none",
+              animation: "wp-vol-label-fade 1.2s ease forwards",
+              zIndex: 4,
+              letterSpacing: "0.02em",
+            }}
+          >
+            {volumeGestureLabel}
+          </div>
+        )}
 
         {/* Resolving / Buffering spinner */}
         {(buffering || resolving) && (
@@ -613,7 +872,7 @@ export function WatchPlayer({ src, poster, resolveUrl }: WatchPlayerProps) {
         )}
 
         {/* Big center play button */}
-        {!playing && !buffering && (
+        {!playing && !buffering && !ended && (
           <button
             className="wp-center-play"
             onClick={togglePlay}
@@ -664,6 +923,148 @@ export function WatchPlayer({ src, poster, resolveUrl }: WatchPlayerProps) {
           </button>
         )}
 
+        {/* ── Feature 3: End-of-video overlay ─────────────── */}
+        {ended && !looping && relatedVideos && relatedVideos.length > 0 && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "rgba(0,0,0,0.92)",
+              zIndex: 8,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 20,
+              padding: "24px 16px",
+              animation: "wp-fade-in 0.22s ease",
+            }}
+          >
+            {/* Header */}
+            <p
+              style={{
+                color: "rgba(255,255,255,0.7)",
+                fontSize: 14,
+                fontWeight: 600,
+                margin: 0,
+                letterSpacing: "0.04em",
+                textTransform: "uppercase",
+              }}
+            >
+              Up next in{" "}
+              <span style={{ color: "#e8467c", fontVariantNumeric: "tabular-nums" }}>
+                {countdown}s
+              </span>
+            </p>
+
+            {/* Related thumbnails grid */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(2, 1fr)",
+                gap: 10,
+                width: "100%",
+                maxWidth: 480,
+              }}
+            >
+              {relatedVideos.slice(0, 4).map((rv) => (
+                <a
+                  key={rv.slug}
+                  href={`/watch/${rv.slug}`}
+                  style={{
+                    display: "block",
+                    textDecoration: "none",
+                    borderRadius: 8,
+                    overflow: "hidden",
+                    background: "rgba(255,255,255,0.05)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    transition: "border-color 0.15s ease, transform 0.15s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLAnchorElement).style.borderColor = "#e8467c";
+                    (e.currentTarget as HTMLAnchorElement).style.transform = "scale(1.02)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(255,255,255,0.08)";
+                    (e.currentTarget as HTMLAnchorElement).style.transform = "scale(1)";
+                  }}
+                >
+                  <div style={{ position: "relative", aspectRatio: "16/9", width: "100%" }}>
+                    <Image
+                      src={rv.thumbnail}
+                      alt={rv.title}
+                      fill
+                      sizes="(max-width: 640px) 45vw, 220px"
+                      style={{ objectFit: "cover" }}
+                      unoptimized
+                    />
+                  </div>
+                  <p
+                    style={{
+                      color: "rgba(255,255,255,0.82)",
+                      fontSize: 11,
+                      fontWeight: 500,
+                      margin: 0,
+                      padding: "6px 8px",
+                      overflow: "hidden",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    {rv.title}
+                  </p>
+                </a>
+              ))}
+            </div>
+
+            {/* Action buttons */}
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
+              <button
+                onClick={handleReplay}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  background: "rgba(255,255,255,0.1)",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  borderRadius: 8,
+                  color: "#fff",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  padding: "10px 18px",
+                  cursor: "pointer",
+                  transition: "background 0.15s ease",
+                }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.18)"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.1)"; }}
+              >
+                <div style={{ width: 16, height: 16 }}><IconReplay /></div>
+                Replay
+              </button>
+              <button
+                onClick={handleCancelAutoplay}
+                style={{
+                  background: "rgba(232,70,124,0.15)",
+                  border: "1px solid rgba(232,70,124,0.4)",
+                  borderRadius: 8,
+                  color: "#e8467c",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  padding: "10px 18px",
+                  cursor: "pointer",
+                  transition: "background 0.15s ease",
+                }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(232,70,124,0.28)"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(232,70,124,0.15)"; }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Controls overlay */}
         <div
           className="wp-controls"
@@ -676,9 +1077,9 @@ export function WatchPlayer({ src, poster, resolveUrl }: WatchPlayerProps) {
               "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%)",
             padding: "40px 12px 10px",
             transition: "opacity 0.28s ease, transform 0.28s ease",
-            opacity: controlsVisible ? 1 : 0,
-            transform: controlsVisible ? "translateY(0)" : "translateY(6px)",
-            pointerEvents: controlsVisible ? "auto" : "none",
+            opacity: controlsVisible && !ended ? 1 : 0,
+            transform: controlsVisible && !ended ? "translateY(0)" : "translateY(6px)",
+            pointerEvents: controlsVisible && !ended ? "auto" : "none",
             zIndex: 5,
           }}
           onMouseEnter={() => {
@@ -832,6 +1233,15 @@ export function WatchPlayer({ src, poster, resolveUrl }: WatchPlayerProps) {
 
             {/* Spacer */}
             <div style={{ flex: 1 }} />
+
+            {/* Feature 1: Loop toggle — placed before Speed */}
+            <ControlBtn
+              onClick={toggleLoop}
+              label={looping ? "Disable loop" : "Enable loop"}
+              active={looping}
+            >
+              <IconLoop />
+            </ControlBtn>
 
             {/* Speed */}
             <div style={{ position: "relative" }}>
