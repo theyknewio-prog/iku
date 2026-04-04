@@ -89,6 +89,12 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <div className="sparkles-bg" aria-hidden="true">
+          <div className="sparkle" /><div className="sparkle" /><div className="sparkle" />
+          <div className="sparkle" /><div className="sparkle" /><div className="sparkle" />
+          <div className="sparkle" /><div className="sparkle" /><div className="sparkle" />
+          <div className="sparkle" />
+        </div>
         <AppShell>{children}</AppShell>
       </body>
     </html>
