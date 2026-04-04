@@ -105,13 +105,13 @@ export async function GET(request: NextRequest) {
       .map((v) => ({
         id: v.id,
         slug: v.slug,
-        videoUrl: v.url,
+        url: v.url,
         thumbnail: v.thumbnail,
         score: v.score,
         tags: v.tags.slice(0, 6),
-        character: v.characters[0] || "",
-        artist: v.artists[0] || "",
-        copyright: v.copyrights[0] || "",
+        characters: v.characters.slice(0, 3),
+        artists: v.artists.slice(0, 2),
+        copyrights: v.copyrights.slice(0, 2),
         duration: v.duration,
       }));
 
