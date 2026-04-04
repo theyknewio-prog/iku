@@ -374,22 +374,87 @@ Avant : SSR complet à chaque requête. Maintenant : première visite = généra
 
 ---
 
+## Stratégie UX/UI — Data-Driven (recherche 2026-04-04)
+
+### Principes fondamentaux (issus des données Semrush/Similarweb 2025-2026)
+- **90% du trafic adult est mobile** (Pornhub 91.3%, xVideos 90.9%) → mobile-first obligatoire
+- **Session cible : 8-9 min, 8-9 pages/visite** (xVideos 8:26, 8.89 pages — gold standard)
+- **Bounce rate cible : <20%** (xVideos 17.79%)
+- **64% trafic direct sur hanime.tv** → brand loyalty = objectif long terme
+- **Aucun tube adult n'a de feed TikTok en 2026** → avantage concurrentiel iku.gg
+
+### Architecture UX validée : Hybride 3 modes
+1. **Homepage type hanime.tv** — curatée, poster cards anime-style, sections éditorialisées, SEO-first avec cocon sémantique (tags → characters → series)
+2. **Watch page type PornHub** — related videos VISIBLES sans scroller (sidebar desktop, stack mobile), autoplay next avec countdown. Driver #1 de pages/session
+3. **Feed vertical type TikTok** — swipe plein écran, avance concurrentielle. Parfait pour clips 30s-3min
+
+### Navigation mobile : Bottom tab bar 5 icônes
+Home | Search | Feed (accent, bouton central) | Trending | More
+→ 100% des top 5 sites adult utilisent ce pattern. Hamburger-only = suicide mobile.
+
+### Layout prêt pour monétisation (emplacements intégrés dès le design)
+
+| Page | Emplacements ads prévus |
+|------|------------------------|
+| Homepage | 1 leaderboard 728x90 + 1 in-content 300x250 |
+| `/watch/[slug]` | Pre-roll 15s + underplayer 728x90 + sidebar 300x600 (desktop) |
+| `/tag/*`, `/character/*` | 1 in-content 300x250 tous les 8 cards |
+| `/feed` | 1 interstitiel tous les 10 swipes |
+| `/explore` | 1 leaderboard + in-content |
+| `/blog`, `/glossary` | 1-2 in-content |
+
+**Règle** : max 3 ads visibles simultanément + 1 popunder/session. Au-delà = +35% bounce rate.
+
+### Revenue estimé
+- 100K pages/mois → ~$300/mois (ExoClick, RPM $3)
+- 1M pages/mois → ~$4,000/mois (négocié, RPM $4)
+- Levier principal : augmenter trafic US/JP/DE (meilleurs CPM) via SEO anglophone
+
+### Réseau pub recommandé
+- **Démarrage** : ExoClick (zéro minimum, 20+ formats, 100% fill rate)
+- **À 500K visites/mois** : négocier JuicyAds (CPM supérieur)
+- **Pre-roll** : 15s non-skippable pour clips <60s, 30s skippable après 5s pour clips >60s
+
+### Sources des données
+- Semrush Top Adult Websites (Feb 2026)
+- Statista — Pornhub/xVideos device split
+- Pornhub 2025 Year in Review (session times)
+- hanime.tv Semrush overview (trafic direct 63.75%)
+- Affmaven — Adult ad networks CPM data
+
+### Règle pour Claude Code
+**TOUJOURS baser les décisions UX/UI sur des données et études, JAMAIS deviner.** Avant de proposer un layout ou un changement UX, chercher ce que font les top sites du secteur et pourquoi. Citer les sources.
+
+---
+
 ## Prochaines étapes (priorité)
 
-### FAIT ✅ (2026-04-03)
+### FAIT ✅ (2026-04-03/04)
 1. ~~Mettre Cloudflare~~ — CDN + DDoS + WAF gratuit, nameservers configurés
 2. ~~Régénérer clé API Rule34~~ — nouvelle clé active (Gelbooru : pas de régénération possible)
 3. ~~ISR/cache sur 13 pages~~ — énorme réduction de charge serveur
 4. ~~Purge contenu pédopornographique~~ — 1,457 vidéos supprimées + filtrage serveur + scrapers bloquants
+5. ~~Player V2~~ — loop toggle, tap-to-unmute, autoplay next, volume gesture mobile, scroll wheel
+6. ~~Fix CSP~~ — cdn.donmai.us manquait dans media-src, bloquait toutes les vidéos
+7. ~~Fix feed API~~ — champs incompatibles entre SwipeFeed et HomeFeed
+8. ~~Fix Coolify~~ — env vars corrompues, source git, deploy key, webhook GitHub
+9. ~~Recherche UX/UI data-driven~~ — benchmark top sites, stratégie monétisation
+
+### PROCHAIN : Refonte UX/UI complète
+10. **Spec de design** — écrire la spec complète basée sur la stratégie hybride validée
+11. **Homepage redesign** — hanime.tv style, poster cards, sections curatées, SEO-first
+12. **Watch page redesign** — related videos above-fold, layout ads-ready
+13. **Navigation mobile** — bottom tab bar 5 icônes, remplacer le layout actuel
+14. **Feed vertical polish** — améliorer le SwipeFeed existant
 
 ### Court terme (performance pour scale)
-5. Ajouter Redis pour cache partagé (ou in-memory LRU plus sophistiqué)
-6. Images : `unoptimized={true}` gardé volontairement — Cloudflare CDN cache les images externes, plus efficace que l'optimisation Next.js sur un serveur 8GB
+15. Ajouter Redis pour cache partagé (ou in-memory LRU plus sophistiqué)
 
 ### Moyen terme (scale à 200K daily users)
-7. CDN pour les vidéos (Bunny CDN ou Cloudflare Stream)
-8. Upgrade serveur CX33 → CPX21 (8 vCPU, 16GB RAM) si besoin
-9. Migrer les JSONs vers PostgreSQL pour réduire la RAM
+16. CDN pour les vidéos (Bunny CDN ou Cloudflare Stream)
+17. Upgrade serveur CX33 → CPX21 (8 vCPU, 16GB RAM) si besoin
+18. Migrer les JSONs vers PostgreSQL pour réduire la RAM
+19. Intégrer ExoClick pour la monétisation
 
 ---
 
