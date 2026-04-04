@@ -5,9 +5,41 @@ import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { Pagination } from "@/components/Pagination";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { searchPosts } from "@/lib/danbooru";
-import { CHARACTERS, getCharacterBySlug } from "@/data/characters";
+import { CHARACTERS, getCharacterBySlug, type Character } from "@/data/characters";
 import { getSeriesBySlug } from "@/data/series";
 import type { Metadata } from "next";
+
+/**
+ * Resolve a character slug to a Character object. Falls back to a synthesized
+ * "virtual character" for Danbooru tag names that aren't in the static
+ * CHARACTERS dataset. The homepage links directly to popular character tag
+ * names (e.g. /character/hatsune_miku) which are not in CHARACTERS — without
+ * this fallback, those links 404.
+ */
+function resolveCharacter(slug: string): Character | null {
+  const existing = getCharacterBySlug(slug);
+  if (existing) return existing;
+
+  // Reject obviously invalid slugs
+  if (!slug || slug.length < 2 || slug.length > 80) return null;
+  if (!/^[a-z0-9_\-()]+$/i.test(slug)) return null;
+
+  const rawName = slug.replace(/_/g, " ").replace(/-/g, " ");
+  const displayName = rawName.replace(/\b\w/g, (c) => c.toUpperCase());
+  const tag = slug.replace(/-/g, "_");
+
+  return {
+    slug,
+    name: displayName,
+    series: "",
+    seriesName: "",
+    description: `${displayName} is a popular anime character featured in hundreds of fan animations. Browse the best free ${displayName} hentai videos on iku.gg, updated daily from top fan artists and animators across the booru ecosystem.`,
+    tags: [tag],
+    relatedCharacters: [],
+    seoTitle: `${displayName} Hentai — Best Videos & Animations | iku.gg`,
+    seoDescription: `Watch free ${displayName} hentai videos on iku.gg. Stream top-rated animated ${displayName} porn featuring the most popular scenes and fan art.`,
+  };
+}
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -24,7 +56,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { slug } = await params;
   const sp = await searchParams;
-  const character = getCharacterBySlug(slug);
+  const character = resolveCharacter(slug);
   if (!character) return { title: "Character Not Found | iku.gg" };
 
   const page = parseInt(typeof sp.page === "string" ? sp.page : "1") || 1;
@@ -58,7 +90,7 @@ const SORT_OPTIONS = [
 export default async function CharacterPage({ params, searchParams }: Props) {
   const { slug } = await params;
   const sp = await searchParams;
-  const character = getCharacterBySlug(slug);
+  const character = resolveCharacter(slug);
   if (!character) notFound();
 
   const series = getSeriesBySlug(character.series);

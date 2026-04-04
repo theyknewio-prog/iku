@@ -29,6 +29,31 @@ const execFileAsync = promisify(execFile);
 const l1Cache = new Map<string, { videoUrl: string; expiresAt: number }>();
 const CACHE_TTL_MS = 60 * 60 * 1000;
 
+// Rate limit: 30 video stream requests per minute per IP.
+// Higher than resolve-video (10/min) because a single video playback triggers
+// multiple range requests, but still bounded to prevent bandwidth abuse.
+const rateLimit = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT_WINDOW = 60 * 1000;
+const RATE_LIMIT_MAX = 30;
+const RATE_LIMIT_MAX_SIZE = 10000;
+
+// Periodic cleanup of expired rate-limit entries
+if (typeof setInterval !== "undefined") {
+  setInterval(() => {
+    const now = Date.now();
+    for (const [k, v] of rateLimit) if (now > v.resetAt) rateLimit.delete(k);
+    if (rateLimit.size > RATE_LIMIT_MAX_SIZE) {
+      const toDelete = rateLimit.size - RATE_LIMIT_MAX_SIZE;
+      let i = 0;
+      for (const k of rateLimit.keys()) {
+        if (i++ >= toDelete) break;
+        rateLimit.delete(k);
+      }
+    }
+    for (const [k, v] of l1Cache) if (now > v.expiresAt) l1Cache.delete(k);
+  }, 5 * 60 * 1000);
+}
+
 async function getFromPgCache(pageUrl: string): Promise<string | null> {
   try {
     const { rows } = await pool.query(
@@ -148,6 +173,24 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "url parameter required" }, { status: 400 });
   }
 
+  // Rate limit by IP (prevents bandwidth DoS)
+  const xRealIp = request.headers.get("x-real-ip");
+  const xForwardedFor = request.headers.get("x-forwarded-for");
+  const ip = xRealIp || (xForwardedFor ? xForwardedFor.split(",").pop()?.trim() : null) || "unknown";
+  const now = Date.now();
+  const rl = rateLimit.get(ip);
+  if (rl && now < rl.resetAt) {
+    if (rl.count >= RATE_LIMIT_MAX) {
+      return NextResponse.json(
+        { error: "too many requests" },
+        { status: 429, headers: { "Retry-After": "60" } }
+      );
+    }
+    rl.count++;
+  } else {
+    rateLimit.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW });
+  }
+
   // SSRF guard — same domain whitelist as resolve-video
   const allowedDomains = [
     "rule34video.com",
@@ -192,10 +235,23 @@ export async function GET(request: NextRequest) {
   };
   if (rangeHeader) upstreamHeaders.Range = rangeHeader;
 
-  const upstream = await fetch(streamUrl, {
-    headers: upstreamHeaders,
-    redirect: "follow",
-  });
+  let upstream: Response;
+  try {
+    const upstreamController = new AbortController();
+    const upstreamTimeout = setTimeout(() => upstreamController.abort(), 20_000);
+    upstream = await fetch(streamUrl, {
+      headers: upstreamHeaders,
+      redirect: "follow",
+      signal: upstreamController.signal,
+    });
+    clearTimeout(upstreamTimeout);
+  } catch (err) {
+    console.error("[video-stream] upstream fetch failed:", err);
+    return NextResponse.json(
+      { error: "upstream unreachable" },
+      { status: 502 }
+    );
+  }
 
   if (!upstream.ok && upstream.status !== 206) {
     return NextResponse.json(

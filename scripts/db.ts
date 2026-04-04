@@ -4,6 +4,7 @@
  */
 
 import { Pool } from "pg";
+import { BANNED_TAGS, hasBannedTitle } from "./banned-tags";
 
 const DATABASE_URL = process.env.DATABASE_URL;
 if (!DATABASE_URL) {
@@ -32,6 +33,24 @@ export async function upsertVideos(
   }>
 ): Promise<number> {
   if (rows.length === 0) return 0;
+
+  // Safety net: reject any row with banned tags or a slug/title matching
+  // banned keywords. This is the LAST line of defense — every scraper should
+  // also filter upstream, but we never want illegal content to reach the DB
+  // even if an upstream filter is missed or bypassed.
+  const filtered = rows.filter((r) => {
+    const tags = r.tags ?? [];
+    if (tags.some((t) => BANNED_TAGS.has(t.toLowerCase()))) return false;
+    if (r.slug && hasBannedTitle(r.slug)) return false;
+    if (r.title && hasBannedTitle(r.title)) return false;
+    return true;
+  });
+  const rejected = rows.length - filtered.length;
+  if (rejected > 0) {
+    console.warn(`[upsertVideos] rejected ${rejected}/${rows.length} rows for banned content`);
+  }
+  if (filtered.length === 0) return 0;
+  rows = filtered;
 
   const values: unknown[] = [];
   const placeholders: string[] = [];
