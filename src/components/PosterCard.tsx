@@ -137,11 +137,6 @@ export function PosterCard({ video, rank, badge, priority = false }: PosterCardP
           </div>
         </div>
 
-        {/* Bottom overlay */}
-        <div className="poster-card__overlay">
-          <h3>{title}</h3>
-          <span>{sub}</span>
-        </div>
       </div>
 
       {/* Info below card */}

@@ -156,26 +156,26 @@ function IconClose({ size = 20 }: { size?: number }) {
 
 /* Sidebar sections — Discover */
 const DISCOVER_ITEMS = [
-  { href: "/",         label: "Home",         Icon: IconHome },
-  { href: "/trending", label: "Trending",     Icon: IconTrending, badge: "Hot" },
-  { href: "/new",      label: "New Releases", Icon: IconNew },
-  { href: "/explore?sort=top", label: "Top Rated", Icon: IconStar },
-  { href: "/feed",     label: "Shorts",       Icon: IconFeed,     badge: "New", badgeGradient: true },
-  { href: "/explore",  label: "Explore",      Icon: IconBrowse },
+  { href: "/",         label: "Home",         Icon: IconHome,     emoji: "🏠" },
+  { href: "/trending", label: "Trending",     Icon: IconTrending, emoji: "🔥", badge: "Hot" },
+  { href: "/new",      label: "New Releases", Icon: IconNew,      emoji: "🆕" },
+  { href: "/explore?sort=top", label: "Top Rated", Icon: IconStar, emoji: "⭐" },
+  { href: "/feed",     label: "Shorts",       Icon: IconFeed,     emoji: "⚡", badge: "New", badgeGradient: true },
+  { href: "/explore",  label: "Explore",      Icon: IconBrowse,   emoji: "🔎" },
 ] as const;
 
 /* Library */
 const LIBRARY_ITEMS = [
-  { href: "/favorites", label: "Favorites", Icon: IconHeart },
-  { href: "/history",   label: "History",   Icon: IconHistory },
-  { href: "/settings",  label: "Settings",  Icon: IconSettings },
+  { href: "/favorites", label: "Favorites", Icon: IconHeart,    emoji: "❤️" },
+  { href: "/history",   label: "History",   Icon: IconHistory,  emoji: "🕐" },
+  { href: "/settings",  label: "Settings",  Icon: IconSettings, emoji: "⚙️" },
 ] as const;
 
 /* Browse */
 const BROWSE_ITEMS = [
-  { href: "/character", label: "Characters", Icon: IconCharacter },
-  { href: "/series",    label: "Series",     Icon: IconSeries },
-  { href: "/tags",      label: "Tags",       Icon: IconTag },
+  { href: "/character", label: "Characters", Icon: IconCharacter, emoji: "👤" },
+  { href: "/series",    label: "Series",     Icon: IconSeries,    emoji: "📺" },
+  { href: "/tags",      label: "Tags",       Icon: IconTag,       emoji: "🏷️" },
 ] as const;
 
 /* Quick tags for sidebar bottom */
@@ -238,19 +238,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return pathname.startsWith(href);
   }
 
-  type NavItem = { href: string; label: string; Icon: React.ComponentType<{ size?: number }>; badge?: string; badgeGradient?: boolean };
+  type NavItem = { href: string; label: string; Icon: React.ComponentType<{ size?: number }>; emoji?: string; badge?: string; badgeGradient?: boolean };
 
   function renderNavItem(item: NavItem) {
     const active = isActive(item.href);
     return (
       <Link
-        key={item.href}
+        key={item.href + item.label}
         href={item.href}
         className={`v2-nav-item${active ? " v2-nav-item--active" : ""}`}
         aria-current={active ? "page" : undefined}
       >
-        <span className="v2-nav-icon">
-          <item.Icon size={16} />
+        <span className="v2-nav-icon" aria-hidden="true">
+          {item.emoji ?? <item.Icon size={16} />}
         </span>
         <span className="v2-nav-item__label">{item.label}</span>
         {item.badge && (
@@ -334,10 +334,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         <div className="v2-topbar__actions">
           <Link href="/favorites" className="v2-topbar-btn" title="Favorites" aria-label="Favorites">
-            <IconHeart size={18} />
+            <span aria-hidden="true" style={{ fontSize: 18 }}>❤️</span>
           </Link>
           <Link href="/settings" className="v2-topbar-avatar" title="Account" aria-label="Account">
-            <IconCharacter size={16} />
+            <span aria-hidden="true" style={{ fontSize: 18 }}>🎌</span>
           </Link>
         </div>
 

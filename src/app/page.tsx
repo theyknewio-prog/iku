@@ -21,17 +21,36 @@ export const dynamic = "force-dynamic";
 
 /* ── Genre tag emoji map ─────────────────────────────────── */
 const TAG_EMOJIS: Record<string, string> = {
+  // Mockup tags
   animated: "✨", "3d": "🎮", fantasy: "🧚", uncensored: "🔓",
   vanilla: "💚", monster: "👹", elf: "🌿", schoolgirl: "📚",
   catgirl: "🐱", cat_girl: "🐱", demon: "😈", action: "⚔️",
   harem: "🏠", romance: "🌸", vampire: "🧛", mecha: "🤖",
   mermaid: "🧜", fox_girl: "🦊", superpower: "⚡", idol: "🎤",
-  outdoor: "🍃", night: "🌙", wet: "💧", bondage: "⛓️",
-  tentacle: "🐙", nurse: "🏥", maid: "🧹", teacher: "📖",
-  swim: "🏊", dance: "💃", school: "🏫",
-  oral: "👄", anal: "🍑", big_breasts: "🍈", milf: "👩",
+  outdoor: "🍃", night: "🌙", wet: "💧",
+  // Real Danbooru top tags
+  "1girl": "👧", "1boy": "👦", solo: "💎", "2girls": "👭", "3girls": "👯",
+  multiple_girls: "👯", multiple_boys: "👬",
+  long_hair: "💇‍♀️", short_hair: "💇", "long hair": "💇‍♀️", "short hair": "💇",
+  black_hair: "🖤", blonde_hair: "💛", brown_hair: "🤎", red_hair: "❤️",
+  blue_hair: "💙", pink_hair: "🩷", purple_hair: "💜", white_hair: "🤍",
+  "black hair": "🖤", "blonde hair": "💛", "brown hair": "🤎",
+  blue_eyes: "🔵", red_eyes: "🔴", green_eyes: "🟢", purple_eyes: "🟣",
+  "blue eyes": "🔵",
+  breasts: "🍈", large_breasts: "🍉", small_breasts: "🍒",
+  "large breasts": "🍉",
+  smile: "😊", blush: "☺️", open_mouth: "😮", "open mouth": "😮",
+  looking_at_viewer: "👀", "looking at viewer": "👀",
+  skirt: "👗", dress: "👚", shirt: "👕", gloves: "🧤",
+  simple_background: "🎨", "simple background": "🎨",
+  white_background: "⬜", "white background": "⬜",
+  hair_ornament: "🎀", "hair ornament": "🎀",
+  long_sleeves: "👚", "long sleeves": "👚",
+  holding: "✋", bondage: "⛓️", tentacle: "🐙", nurse: "🏥",
+  maid: "🧹", teacher: "📖", swim: "🏊", dance: "💃", school: "🏫",
+  oral: "👄", anal: "🍑", milf: "👩",
   futanari: "⚧️", yuri: "👩‍❤️‍👩", yaoi: "👨‍❤️‍👨",
-  solo: "💎", group: "👥", threesome: "🔥",
+  group: "👥", threesome: "🔥", cleavage: "💞",
 };
 
 /* ── Genre tag color classes — round-robin ─────────────── */
@@ -45,6 +64,9 @@ const TAG_COLORS = [
   "hp-gt-orange",
   "hp-gt-blue",
 ];
+
+/* ── Character fallback emojis (when no thumbnail) ───────── */
+const CHAR_EMOJIS = ["⚔️", "🌸", "🧙", "🐉", "🏹", "😈", "👹", "🌙", "🤖", "🌿", "⚗️", "🐱"];
 
 /* ── Character gradient ring classes — round-robin ─────── */
 const CHAR_RING_CLASSES = [
@@ -355,8 +377,8 @@ export default async function HomePage() {
                             unoptimized
                           />
                         ) : (
-                          <span className="hp-char-avatar__initials">
-                            {displayName.split(" ").map(w => w[0]?.toUpperCase() ?? "").slice(0, 2).join("")}
+                          <span className="hp-char-avatar__emoji" style={{ fontSize: "28px", lineHeight: 1 }}>
+                            {CHAR_EMOJIS[i % CHAR_EMOJIS.length]}
                           </span>
                         )}
                       </div>
