@@ -4,7 +4,7 @@ import { AgeGate } from "@/components/AgeGate";
 import { PosterCard } from "@/components/PosterCard";
 import { Carousel } from "@/components/Carousel";
 import { getPopularTags, getPopularCharacters } from "@/lib/danbooru";
-import { getVideos, getThumbnailForTag } from "@/lib/content";
+import { getVideos, getThumbnailsForTags } from "@/lib/content";
 import { SERIES } from "@/data/series";
 import Image from "next/image";
 
@@ -53,6 +53,11 @@ export default async function HomePage() {
     getPopularTags(20),
     getPopularCharacters(12),
   ]);
+
+  /* Pre-fetch thumbnails for Series and Characters carousels */
+  const seriesTags = SERIES.slice(0, 12).map((s) => s.tags[0] || s.name.toLowerCase());
+  const characterTags = characters.map((c) => c.name);
+  const thumbnailMap = await getThumbnailsForTags([...seriesTags, ...characterTags]);
 
   /* Hero video — pick highest scored */
   const hero = trending.data[0];
@@ -152,7 +157,7 @@ export default async function HomePage() {
           <Carousel title="Popular Series" seeAllHref="/series">
             {SERIES.slice(0, 12).map((series, i) => {
               const gradient = CHAR_GRADIENTS[i % CHAR_GRADIENTS.length];
-              const thumb = getThumbnailForTag(series.tags[0] || series.name.toLowerCase());
+              const thumb = thumbnailMap[series.tags[0] || series.name.toLowerCase()];
               return (
                 <Link key={series.slug} href={`/series/${series.slug}`} className="v2-char-card">
                   <div className="v2-char-card__avatar" style={{ background: gradient }}>
@@ -189,7 +194,7 @@ export default async function HomePage() {
           <Carousel title="Popular Characters" seeAllHref="/tags">
             {characters.map((char, i) => {
               const gradient = CHAR_GRADIENTS[i % CHAR_GRADIENTS.length];
-              const thumb = getThumbnailForTag(char.name);
+              const thumb = thumbnailMap[char.name];
               return (
                 <Link
                   key={char.name}

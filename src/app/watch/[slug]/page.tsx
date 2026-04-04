@@ -84,11 +84,11 @@ export async function generateMetadata({
   try {
     const id = extractIdFromSlug(slug);
     if (isWPHentaiSlug(slug)) {
-      const wv = getWPHentaiPost(id);
+      const wv = await getWPHentaiPost(id);
       if (!wv) return { title: "Hentai Video | iku.gg", robots: { index: false } };
       video = wv;
     } else if (isRule34VideoSlug(slug)) {
-      const rv = getRule34VideoPost(id);
+      const rv = await getRule34VideoPost(id);
       if (!rv) return { title: "Hentai Video | iku.gg", robots: { index: false } };
       video = rv;
     } else if (isRule34Slug(slug)) {
@@ -186,15 +186,15 @@ export default async function WatchPage({ params }: WatchPageProps) {
   try {
     const id = extractIdFromSlug(slug);
     if (isWPHentaiSlug(slug)) {
-      const wv = getWPHentaiPost(id);
+      const wv = await getWPHentaiPost(id);
       if (!wv) notFound();
       video = wv;
-      resolvePageUrl = getWPHentaiPageUrl(id);
+      resolvePageUrl = await getWPHentaiPageUrl(id);
     } else if (isRule34VideoSlug(slug)) {
-      const rv = getRule34VideoPost(id);
+      const rv = await getRule34VideoPost(id);
       if (!rv) notFound();
       video = rv;
-      resolvePageUrl = getRule34VideoPageUrl(id);
+      resolvePageUrl = await getRule34VideoPageUrl(id);
     } else if (isRule34Slug(slug)) {
       const rv = await getRule34Post(id);
       if (!rv) notFound();
