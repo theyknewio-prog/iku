@@ -389,8 +389,9 @@ Avant : SSR complet à chaque requête. Maintenant : première visite = généra
 3. **Feed vertical type TikTok** — swipe plein écran, avance concurrentielle. Parfait pour clips 30s-3min
 
 ### Navigation mobile : Bottom tab bar 5 icônes
-Home | Search | Feed (accent, bouton central) | Trending | More
+Home | Search | Shorts (pulse glow quand inactif, gradient quand actif) | Trending | More
 → 100% des top 5 sites adult utilisent ce pattern. Hamburger-only = suicide mobile.
+→ "Shorts" au lieu de "Feed" — les users comprennent le format (cf. YouTube Shorts).
 
 ### Layout prêt pour monétisation (emplacements intégrés dès le design)
 
@@ -430,31 +431,71 @@ Home | Search | Feed (accent, bouton central) | Trending | More
 ## Prochaines étapes (priorité)
 
 ### FAIT ✅ (2026-04-03/04)
-1. ~~Mettre Cloudflare~~ — CDN + DDoS + WAF gratuit, nameservers configurés
-2. ~~Régénérer clé API Rule34~~ — nouvelle clé active (Gelbooru : pas de régénération possible)
-3. ~~ISR/cache sur 13 pages~~ — énorme réduction de charge serveur
-4. ~~Purge contenu pédopornographique~~ — 1,457 vidéos supprimées + filtrage serveur + scrapers bloquants
-5. ~~Player V2~~ — loop toggle, tap-to-unmute, autoplay next, volume gesture mobile, scroll wheel
-6. ~~Fix CSP~~ — cdn.donmai.us manquait dans media-src, bloquait toutes les vidéos
-7. ~~Fix feed API~~ — champs incompatibles entre SwipeFeed et HomeFeed
-8. ~~Fix Coolify~~ — env vars corrompues, source git, deploy key, webhook GitHub
-9. ~~Recherche UX/UI data-driven~~ — benchmark top sites, stratégie monétisation
 
-### PROCHAIN : Refonte UX/UI complète
-10. **Spec de design** — écrire la spec complète basée sur la stratégie hybride validée
-11. **Homepage redesign** — hanime.tv style, poster cards, sections curatées, SEO-first
-12. **Watch page redesign** — related videos above-fold, layout ads-ready
-13. **Navigation mobile** — bottom tab bar 5 icônes, remplacer le layout actuel
-14. **Feed vertical polish** — améliorer le SwipeFeed existant
+**Infrastructure & sécurité :**
+1. ~~Cloudflare~~ — CDN + DDoS + WAF, nameservers Porkbun → Cloudflare
+2. ~~Clé API Rule34 régénérée~~ — nouvelle clé active (Gelbooru : pas de régénération possible)
+3. ~~ISR/cache sur 13 pages~~ — réduction massive charge serveur
+4. ~~Purge contenu pédopornographique~~ — 1,457 vidéos supprimées + filtrage serveur 3 niveaux + scrapers bloquants
+5. ~~Fix CSP~~ — cdn.donmai.us ajouté dans media-src (bloquait TOUTES les vidéos)
+6. ~~Fix Coolify~~ — env vars corrompues (DecryptException), source git cassée, deploy via GitHub token HTTPS, webhook GitHub configuré
+7. ~~Fix Dockerfile~~ — `HOSTNAME=0.0.0.0` pour que Traefik atteigne le container
+8. ~~Cache warmup~~ — script `warmup.sh` qui préchauffe les 7 pages principales après chaque deploy (plus de cold-start pour les visiteurs)
 
-### Court terme (performance pour scale)
-15. Ajouter Redis pour cache partagé (ou in-memory LRU plus sophistiqué)
+**Player V2 (custom, ~1500 lignes) :**
+9. ~~Loop toggle~~ — bouton visible dans les contrôles, rose quand actif
+10. ~~Tap-to-unmute~~ — badge top-right, auto-fade 3s, re-trigger play() pour browser policy
+11. ~~Autoplay next~~ — overlay end-of-video avec grille related, countdown 5s, cancel/replay
+12. ~~Volume gesture mobile~~ — swipe vertical côté gauche = volume
+13. ~~Scroll wheel volume desktop~~ — molette = volume ±5%
+14. ~~Volume slider vertical popup~~ — tap icône volume = popup avec slider + pourcentage
+15. ~~Heart burst double-tap~~ — centre du player = explosion de coeurs au point du tap (TikTok style)
+16. ~~Progress bar toujours visible~~ — jamais cachée (adulte = users scrubent 3-5x plus), 3px → 6px au touch
+17. ~~Bouton Share~~ — navigator.share() sur mobile, clipboard sur desktop, toast "Link copied!"
+
+**Homepage redesign :**
+18. ~~Hero fusionné~~ — merged dual hero en single featured-video full-bleed (Netflix/hanime style)
+19. ~~Popular Series carousel~~ — avec thumbnails réelles des vidéos les plus populaires
+20. ~~Popular Characters~~ — avec thumbnails réelles (getThumbnailForTag() depuis données locales, zero API calls)
+21. ~~Liens characters fixés~~ — /tag/ → /character/ pour SEO cocon sémantique
+22. ~~Rich SEO footer~~ — 4 colonnes (Browse, Characters, Series, About) = maillage interne massif
+23. ~~Ad zones placeholder~~ — leaderboard + medium-rect, invisibles, prêtes pour ExoClick
+24. ~~Tagline gradient~~ — "353,000+ free animated hentai clips" en dégradé rose→violet→cyan, plus gros
+25. ~~Favicon custom~~ — "iku" sur fond gradient rose→violet, + apple-touch-icon
+
+**Navigation mobile :**
+26. ~~Bottom tab bar 5 icônes~~ — Home, Search, Shorts, Trending, More
+27. ~~Rename Feed → Shorts~~ — les users comprennent le format
+28. ~~Gradient seulement quand actif~~ — plus de confusion visuelle avec le bouton Shorts
+29. ~~Pulse glow subtil~~ — attire les taps vers Shorts quand pas actif
+
+**Feed (Shorts) redesign :**
+30. ~~VideoCard TikTok-style~~ — action bar droite (heart, bookmark, share, sound, watch)
+31. ~~Heart burst centre~~ — même animation que le WatchPlayer
+32. ~~Progress bar seekable~~ — drag/tap pour naviguer, 3px → 5px au touch
+33. ~~Artist en @nom~~ — plus de nom brut
+34. ~~Suppression taille fichier~~ — personne veut voir "4.2 MB"
+35. ~~Fix son desktop~~ — re-trigger play() après unmute pour autoplay policy
+36. ~~Fix feed API~~ — champs incompatibles SwipeFeed/HomeFeed, retourne les deux formats
+
+**Watch page :**
+37. ~~Related videos passées au player~~ — pour autoplay-next
+38. ~~Character links fixés~~ — /tag/ → /character/
+39. ~~Ad zone underplayer~~ — placeholder prêt pour ExoClick
+
+### PROCHAIN : Migration PostgreSQL
+- **Migrer les 5 JSONs (120MB+) vers PostgreSQL** — build passe de 5min à ~1min, RAM réduite, requêtes en temps réel
+- Meilleur moment : maintenant, avant d'avoir du trafic
+- Chantier : schéma DB, réécriture data layer (content.ts, danbooru.ts, gelbooru.ts, rule34video.ts, wp-hentai.ts), migration scrapers, suppression JSONs du repo
+
+### Court terme
+- Ajouter Redis pour cache partagé
+- Intégrer ExoClick pour la monétisation
+- SEO : soumettre sitemaps à Google Search Console, vérifier indexation
 
 ### Moyen terme (scale à 200K daily users)
-16. CDN pour les vidéos (Bunny CDN ou Cloudflare Stream)
-17. Upgrade serveur CX33 → CPX21 (8 vCPU, 16GB RAM) si besoin
-18. Migrer les JSONs vers PostgreSQL pour réduire la RAM
-19. Intégrer ExoClick pour la monétisation
+- CDN pour les vidéos (Bunny CDN ou Cloudflare Stream)
+- Upgrade serveur CX33 → CPX21 (8 vCPU, 16GB RAM) si besoin
 
 ---
 
@@ -470,3 +511,7 @@ Home | Search | Feed (accent, bouton central) | Trending | More
 - **Consulter le skill approprié** avant toute modification importante — chaque skill contient les conventions, contraintes et patterns spécifiques à son domaine
 - **Toute nouvelle route API doit avoir un rate limit** — voir les patterns dans les routes existantes
 - **Le Dockerfile est multi-stage** — le runtime n'a que 3GB de heap, pas 6GB
+- **Le player custom fait ~1500 lignes** (`WatchPlayer.tsx`) — pas de librairie externe (Video.js, Plyr), tout est maison. Bon choix tant qu'on agrège du contenu externe (MP4 direct). Migration vers Video.js seulement si on héberge nos propres vidéos HLS multi-bitrate
+- **Deploy Coolify** se fait via `docker exec coolify php artisan tinker` avec `queue_application_deployment()` — le webhook GitHub ne déclenche pas toujours le deploy automatiquement
+- **Repo GitHub est PRIVÉ** — Coolify clone via token HTTPS (pas SSH). Le token est dans la config Coolify DB
+- **Cache warmup** — après chaque deploy, le script `warmup.sh` visite les 7 pages principales pour pré-remplir le cache ISR
