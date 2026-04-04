@@ -289,6 +289,10 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
     if (!v) return;
     v.muted = false;
     v.volume = volume || 0.5;
+    // Update state immediately — otherwise React re-renders with the
+    // stale `muted={true}` prop and re-mutes before volumechange catches up.
+    setMuted(false);
+    setVolume(v.volume);
     // Re-trigger play to satisfy browser autoplay policy for unmuting
     v.play().catch(() => {});
     setShowUnmuteHint(false);
@@ -397,7 +401,11 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
     const deltaNorm = deltaY / rect.height;
     const newVol = Math.max(0, Math.min(1, v.volume + deltaNorm * 1.5));
     v.volume = newVol;
-    if (newVol > 0) v.muted = false;
+    setVolume(newVol);
+    if (newVol > 0) {
+      v.muted = false;
+      setMuted(false);
+    }
     touchStartRef.current.y = touch.clientY;
     showVolumeLabel(newVol);
   }, [showVolumeLabel]);
@@ -410,7 +418,11 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
     const delta = e.deltaY < 0 ? 0.05 : -0.05;
     const newVol = Math.max(0, Math.min(1, v.volume + delta));
     v.volume = newVol;
-    if (newVol > 0) v.muted = false;
+    setVolume(newVol);
+    if (newVol > 0) {
+      v.muted = false;
+      setMuted(false);
+    }
   }, []);
 
   /* ── UI state ──────────────────────────────────────────── */
@@ -525,9 +537,19 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
     if (!v) return;
     const willUnmute = v.muted;
     v.muted = !v.muted;
-    // Browser autoplay policy: after unmuting, re-trigger play()
-    // so the browser allows audio output on the current user gesture.
+    // Update state immediately — otherwise React re-renders with the
+    // stale `muted={muted}` prop and re-mutes the video before the
+    // `volumechange` event catches up.
+    setMuted(v.muted);
     if (willUnmute) {
+      // Ensure audible volume when unmuting from mute state.
+      if (v.volume === 0) {
+        v.volume = 0.5;
+        setVolume(0.5);
+      }
+      setShowUnmuteHint(false);
+      // Browser autoplay policy: after unmuting, re-trigger play()
+      // so the browser allows audio output on the current user gesture.
       v.play().catch(() => {});
     }
   }, []);
@@ -539,6 +561,12 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
       const val = parseFloat(e.target.value);
       v.volume = val;
       v.muted = val === 0;
+      setVolume(val);
+      setMuted(val === 0);
+      if (val > 0) {
+        setShowUnmuteHint(false);
+        v.play().catch(() => {});
+      }
     },
     []
   );
