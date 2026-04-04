@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Poppins, Righteous } from "next/font/google";
+import { Inter, Poppins, Righteous, Nunito } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "@/components/AppShell";
 
@@ -21,6 +21,13 @@ const righteous = Righteous({
   subsets: ["latin"],
   weight: ["400"],
   variable: "--font-righteous",
+  display: "swap",
+});
+
+const nunito = Nunito({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: "--font-nunito",
   display: "swap",
 });
 
@@ -61,7 +68,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${poppins.variable} ${righteous.variable}`} data-theme="dark">
+    <html lang="en" className={`${inter.variable} ${poppins.variable} ${righteous.variable} ${nunito.variable}`} data-theme="dark">
       <head>
         <script
           type="application/ld+json"
