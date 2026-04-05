@@ -130,6 +130,10 @@ export function JoinDiscordCTA({ variant = "hero", className = "" }: Props) {
       { scale: 0.95 },
       { scale: 1.05, duration: 0.18, ease: "back.out(4)" }
     );
+    // PostHog: track Discord invite click (drop-off point)
+    import("@/lib/analytics").then(({ track, EVENTS }) => {
+      track(EVENTS.DISCORD_INVITE_CLICK, { variant });
+    });
   };
 
   return (

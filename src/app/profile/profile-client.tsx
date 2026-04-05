@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { JoinDiscordCTA } from "@/components/JoinDiscordCTA";
+import { track, EVENTS } from "@/lib/analytics";
 
 const AVATAR_OPTIONS = ["🌸", "🎮", "⚔️", "🧙", "🐉", "🏹", "😈", "👹", "🌙", "🤖", "🌿", "⚗️", "🐱", "🦊", "🧝", "🧛", "🧜", "👑", "💎", "🔥"];
 
@@ -15,6 +16,17 @@ interface Props {
 
 export function ProfileClient({ initialUsername, initialAvatar, hasPassword }: Props) {
   const router = useRouter();
+  const search = useSearchParams();
+
+  // PostHog: track Pro purchase completion (user lands here after successful Stripe checkout)
+  useEffect(() => {
+    if (search.get("upgraded") === "1") {
+      track(EVENTS.PRO_PURCHASE);
+    }
+    if (search.get("verified") === "1") {
+      track("email_verified");
+    }
+  }, [search]);
 
   const [username, setUsername] = useState(initialUsername);
   const [avatar, setAvatar] = useState(initialAvatar);
@@ -176,7 +188,10 @@ export function ProfileClient({ initialUsername, initialAvatar, hasPassword }: P
         <button
           type="button"
           className="profile-logout"
-          onClick={() => signOut({ callbackUrl: "/" })}
+          onClick={() => {
+            track(EVENTS.LOGOUT);
+            signOut({ callbackUrl: "/" });
+          }}
         >
           Sign out
         </button>

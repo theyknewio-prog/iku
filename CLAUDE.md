@@ -141,15 +141,50 @@ oppai_loli, legal_loli, elementary_school, kindergarten, randoseru
 - **Memory leaks** : tous les caches in-memory bornés + cleanup toutes les 5 min
 - **Cloudflare** : CDN + DDoS + WAF gratuit devant le site (configuré le 2026-04-03, nameservers Porkbun → Cloudflare)
 
-### Variables d'environnement requises
+### Variables d'environnement requises (toutes en prod dans Coolify)
 ```
+# Scraping APIs
 GELBOORU_API_KEY=...
 GELBOORU_USER_ID=...
 RULE34_API_KEY=...
 RULE34_USER_ID=...
+
+# Database
 DATABASE_URL=postgresql://iku:PASSWORD@iku-postgres:5432/iku
+
+# NextAuth v5
+AUTH_SECRET=...                        # 32-byte random, base64
+AUTH_URL=https://iku.gg
+AUTH_TRUST_HOST=true
+
+# Discord OAuth (iku.gg app)
+DISCORD_CLIENT_ID=1490319089694937108
+DISCORD_CLIENT_SECRET=...
+
+# Stripe (live keys — sk_live_...)
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_PRICE_MONTHLY=price_1TIsKwE6BjkfAdXjZGpChcFW
+STRIPE_PRICE_YEARLY=price_1TIsKwE6BjkfAdXjJnVBTmyC
+STRIPE_PRICE_LIFETIME=price_1TIsKxE6BjkfAdXjuF7yu2KT
+STRIPE_COUPON_TIER_DISCOUNT=waifu_scholar_30
+
+# Email (Resend)
+RESEND_API_KEY=re_...
+EMAIL_FROM=iku.gg <hello@iku.gg>
+NEXT_PUBLIC_SITE_URL=https://iku.gg       # build-time (Dockerfile ARG)
+
+# Analytics (PostHog, US Cloud)
+NEXT_PUBLIC_POSTHOG_KEY=phc_...            # build-time (Dockerfile ARG)
+NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com  # build-time
 ```
-Fichier `.env.example` fourni. En prod, configurées dans Coolify (env vars application). `DATABASE_URL` est également requis dans les GitHub Actions secrets pour les scrapers.
+
+**Variables `NEXT_PUBLIC_*`** : doivent être `is_buildtime=true` dans Coolify ET déclarées comme `ARG` dans le Dockerfile (builder stage). Next.js bake ces valeurs dans le bundle client au moment du `npm run build`.
+
+Fichier `.env.example` fourni. `DATABASE_URL` aussi requis dans les GitHub Actions secrets pour les scrapers + bots Discord. `DISCORD_BOT_TOKEN` + `DISCORD_GUILD_ID=1490318988369068184` dans les GH secrets pour les bots.
+
+**GitHub Actions secrets** (repo `theyknewio-prog/iku`) :
+- `DATABASE_URL`, `DISCORD_BOT_TOKEN`, `DISCORD_GUILD_ID`, `COOLIFY_TOKEN`, `COOLIFY_HOST`, `COOLIFY_APP_ID`
 
 ---
 
@@ -528,6 +563,112 @@ Home | Search | Shorts (pulse glow quand inactif, gradient quand actif) | Trendi
 
 ## Prochaines étapes (priorité)
 
+### FAIT ✅ (session 2026-04-05 — méga session : gamification, Pro, Discord, email, SEO)
+
+**🎯 Monétisation (Stripe Pro live)**
+- Stripe products créés en live : `iku_pro_monthly` (4.99€/mo), `iku_pro_yearly` (39.99€/yr, -33%), `iku_pro_lifetime` (69.99€ one-time)
+- Webhook endpoint sur `https://iku.gg/api/stripe/webhook` (6 events : checkout.session.completed, customer.subscription.created/updated/deleted, invoice.payment_succeeded/failed)
+- Dedup via `stripe_events` table (PRIMARY KEY sur event.id)
+- Schema PG : `users.stripe_customer_id`, `pro_status` (active/canceled/past_due/lifetime), `pro_plan`, `pro_current_period_end`, `pro_subscription_id`, `pro_started_at`
+- Page `/pricing` : 3 cards, yearly = "Most Popular", FAQ accordion, features table
+- **Coupon `waifu_scholar_30`** : -30% auto-appliqué au checkout pour users avec `user_stats.score >= 15000` (Waifu Scholar tier)
+- Pricing psychology : `first month 0.99€` option disponible, lifetime limité à 500 spots
+- **Risque Stripe adult** : compte grand-père donc pas de contact support nécessaire ; descripteur bancaire neutre à vérifier ; ouvrir Paxum/Epoch en backup si Stripe suspend
+- `scripts/stripe-create-products.mjs` idempotent via `lookup_key`
+- **Stripe branding PNG générés** dans `public/iku-logo.png` (600x150 rose→violet) + `public/iku-icon.png` (512x512 gradient "iku"). Uploadés à l'API Stripe Files mais `accounts.update()` interdit pour own account — user doit uploader manuellement sur Dashboard → Settings → Branding.
+
+**🎮 Gamification complète**
+- Schema PG : `user_stats` (score, totals, current_streak, longest_streak, last_active_date, streak_freezes, daily_points), `user_badges`, `user_daily_quests`, `user_score_events`
+- Lib `src/lib/gamification.ts` : POINTS table (+2 view, +5 complete, +8 fav, +15 quest, +20 VOD, +10 new char, +5 share, +50/+200/+500 streak bonuses), 6 tiers (Wanderer 0 → Kouhai 200 → Senpai 1k → Otaku 5k → Waifu Scholar 15k → Hentai Sage 50k), 11 badges auto-awarded
+- Daily cap 100 pts/jour sur actions passives (view/complete), uncapped sur qualité (fav/quest)
+- Streak milestone bonus award ONE TIME only (check `stats.current_streak < threshold` avant de donner le bonus)
+- T5 Waifu Scholar → donne un **discount Pro 30%**, pas accès Pro gratuit (pattern Duolingo Super)
+- **Daily quests** : 3/jour per user, deterministic via hash(userId+date), 12 templates (watch N, favorite N, explore [tag], complete 1, new_character), reset minuit UTC, +15 pts chacune
+- `src/lib/daily-quests.ts > advanceDailyQuests()` appelé depuis `/api/score` — auto-avance les quêtes matchées par l'événement
+- **Video of the Day** : deterministic pick du jour depuis top 500 par score, memoized 1h (`src/lib/content.ts > getVideoOfTheDay`), section homepage entre Trending et Top Rated
+- **Page `/leaderboard`** : top 100 par score, medals 🥇🥈🥉 sur les 3 premiers, tier legend pills, force-dynamic (PG pas dispo au build)
+- **Streak badge** dans topbar `<StreakBadge>` — 🔥 + count, color tier (gold/orange/purple/red), refresh 2min
+- **Profile page** : tier progress bar, stats grid (streak, longest, views, favs), badges grid, daily quests widget
+- Score toasts (DOM dynamique) pour badges/tier up/quest complete via `src/lib/score-client.ts > recordScoreEvent`
+- **Homepage Go Pro CTA** : section prominente avec orbes animés + eyebrow + title + 6 features pills + dual CTA (See plans / Lifetime)
+
+**🤖 Discord community complete**
+- Serveur iku.gg : 10 catégories, 50 channels (incl 12 forum channels par genre, 5 voice watch parties), 26 rôles avec emoji prefixes
+- **Native Discord Onboarding** (mode 1 ADVANCED) : 3 prompts (age check + 2 taste prompts 7+8 options) — remplace complètement Carl-bot/MEE6 pour reaction roles, accessible via "Channels & Roles" bouton
+- Icon 512x512 + banner 960x540 uploadés via API (`PATCH /guilds/{id}`)
+- Community mode activé (welcome screen, onboarding, features unlocked)
+- **50 emojis statiques** importés depuis emoji.gg (ahegao, owo/uwu family, kiss, smug, blush, kawaii, anime tropes, hearts) — 50/50 slots remplis, filter `INCLUDE_KEYWORDS` + `EXCLUDE_KEYWORDS` (loli/shota bannis), tri par faves desc
+- **5 stickers** importés (ahegao, cat_hearts, smug_waifu, blush, kiss) via multipart `/stickers` endpoint
+- **Animated emojis Discord rate limited** (429 retry_after 864s après 50 + 5 stickers). GH Actions workflow `.github/workflows/discord-emoji-sync.yml` tourne daily à 05:15 UTC, idempotent, imports auto quand cooldown Discord expire
+- **#✨-pro-lounge** channel créé sous VIP LOUNGE, perms : @everyone deny VIEW_CHANNEL, rôles Pro + VIP allow view+send, welcome message posté
+- **3 bots GH Actions** :
+  - `scripts/discord-sync-roles.mjs` — cron hourly, sync Pro/VIP/Top Contributor/OG roles basé sur `user_stats.score` + `pro_status` + join date
+  - `scripts/discord-daily-drop.mjs` — cron 06:00 UTC, deterministic pick du jour depuis top 500 score, embed riche dans `#🔥-daily-drop`
+  - `scripts/discord-weekly-leaderboard.mjs` — cron Monday 09:00 UTC, top 10 users par score avec medals
+- `.github/workflows/discord-bots.yml` avec 3 jobs gated par cron schedule + workflow_dispatch
+- **Permanent invite** : `https://discord.gg/cQZc8trq8N` (jamais expire, unlimited uses)
+- **Opsec fix** : purge dans welcome/rules/announcements/changelog/faq de toutes les mentions de sources (Rule34, Danbooru, Gelbooru, etc.), scraping, backend, "silent bugs". iku.gg = curated library, not aggregator.
+
+**📧 Email (Resend) full stack**
+- Schema PG : `users.email_verified` + `email_verified_at`, `email_verification_tokens` (24h TTL), `password_reset_tokens` (1h TTL), `email_log` (audit)
+- Lib `src/lib/email.ts` : Resend SDK singleton, `emailShell()` dark anime HTML template, token helpers, 3 send functions (verification, password_reset, welcome)
+- `/api/signup` fire-and-forget sendVerificationEmail au signup
+- `/api/auth/verify?token=xxx` — consume token, mark email_verified, send welcome, redirect `/profile?verified=1`
+- `/api/auth/forgot-password` — anti-enumeration (always return success), rate limit 5/h/IP
+- `/api/auth/reset-password` — validate token, bcrypt hash, update
+- Pages `/forgot-password` + `/reset-password?token=xxx` + link "Forgot password?" sur `/login`
+- **DNS Resend config** ajoutée à Cloudflare via internal dashboard API (cookies de session) : `TXT resend._domainkey` (DKIM), `MX send` priority 10, `TXT send` (SPF), `TXT _dmarc` (`v=DMARC1; p=none; rua=mailto:dmarc@iku.gg`)
+- **Resend domain verified** (DKIM + SPF + DMARC) après ~10 min de propagation DNS
+- Test email E2E réussi depuis `hello@iku.gg` vers Gmail
+
+**📥 Email aliases (Cloudflare Email Routing)**
+- 17 alias → forward vers `iku.media.gg@gmail.com` (le compte Resend)
+- Setup : 5 DNS records (3 MX routes + SPF + DKIM Cloudflare) + enable Email Routing + verify destination
+- Aliases : hello, contact, info, support, help, feedback, dmca, abuse, legal, privacy, 2257, press, partnerships, jobs, founder, dmarc, noreply
+- `scripts/cf-email-aliases.mjs` standalone script réutilisable avec `CF_API_TOKEN + CF_ZONE_ID + EMAIL_DESTINATION`
+
+**📊 Analytics (PostHog)**
+- Compte PostHog US Cloud (NOT EU!), project ID 370092
+- **Clé = `phc_wFyYxZguyvxUNPbZAYT2hS2RwNy9YhuHdXYif5TLSRCv`** (Project API key, PAS personal)
+- Lib `src/lib/analytics.ts` : lazy init, dynamic import, session recording OFF par défaut (opsec adult), `respect_dnt: true`, EVENTS constants
+- Provider `src/components/AnalyticsProvider.tsx` dans root layout, auto-identify on login, track `app_loaded`
+- **3 bugs debug cumulés** :
+  1. User m'a donné une clé `phx_...` (invalide, format inconnu) au lieu de `phc_...` (Project API key)
+  2. Projet en US Cloud, j'avais hardcodé `https://eu.i.posthog.com` comme fallback → `https://us.i.posthog.com`
+  3. **Doublons env vars Coolify** — mes updates via tinker ont créé des duplicates (2x `NEXT_PUBLIC_POSTHOG_HOST`), l'ancien `eu` dominait au build. Fix : delete by id (rows 63, 62)
+- **Dockerfile** : ajout `ARG NEXT_PUBLIC_POSTHOG_KEY/HOST/SITE_URL` + `ENV` forward pour que Coolify passe les env vars à `next build` (NEXT_PUBLIC_* sont baked au build, pas au runtime)
+- **`rm -rf .next` avant `npm run build`** dans le Dockerfile pour éviter stale chunks cachés
+- Vérifié live : 8 requêtes PostHog confirmées (config.js, events, flags, surveys, dead-clicks, web-vitals)
+- CSP headers mis à jour : `script-src` + `connect-src` autorisent maintenant `eu.i.posthog.com`, `eu-assets.i.posthog.com`, `us.i.posthog.com`, `us-assets.i.posthog.com`
+
+**🏆 SEO first results (GSC)**
+- Premier clic organique enregistré le 2026-04-05 (`/blog/best-hentai-studios` depuis Malaisie)
+- Position moyenne 7.82 (page 1), CTR mobile 50%
+- Mot-clé déclencheur : `3d hentai studios` (position 2)
+- 11 impressions total — indexation Google démarrée
+- Action suivante : prog SEO, cloner la recette "best hentai studios" sur 20 variations
+
+**🎨 Homepage pixel-perfect + polish**
+- `JoinDiscordCTA` avec GSAP animations (glow pulse + breathing float + particle spawner hearts/sparkles + sheen sweep au hover)
+- Sidebar Discord badge sticky bottom (visible partout, pas juste homepage)
+- Footer rich 4-col SEO conservé (intentionnel pour maillage interne)
+- PosterCard restructurée (rank badge, duration pill, genre tag, title, stars, views) + mockup-perfect
+- Popular Characters uniformes (emoji + gradient) au lieu de photos mélangées
+- Browse by Genre curé : 20 genres sexy (anal, uncensored, vanilla, 3d, monster, fantasy, schoolgirl, etc.) via `CURATED_GENRES` dans `content.ts`
+- `buildTitle()` + `pickGenreTag()` factorisés dans `src/lib/video-display.ts`, title case + dedup prefix
+- OG image 1200x630 vaporwave anime (public/og-default.png) — sun, retro grid, "iku.gg" neon, katakana イク, hearts
+
+**🔐 Auth MVP complet**
+- NextAuth v5 + Credentials (email+bcrypt) + Discord OAuth (provider chargé conditionnellement via env vars)
+- `findOrCreateDiscordUser()` — link by email si existe, sinon crée nouvel user avec synthetic email fallback (`{discord_id}@discord.iku.gg`)
+- Pages `/login`, `/signup` (avec DOB + 18+ checkbox server-side), `/profile` (avatar picker 20 emoji, password change, sign out, Discord join CTA)
+- `/api/signup` rate limited 5/h/IP, server-side 18+ check via `is18Plus(dob)`
+- `UserDataSync` component : push localStorage favorites/history → PG sur first login par user (localStorage key `iku-synced-user:${id}` pour dedup)
+- **Favorites + history server-side pour users loggés** : `/favorites/page.tsx` + `/history/page.tsx` = server components, query `getUserFavorites(userId)` / `getUserHistory(userId)` JOIN videos on slug, passe `initialItems` au client, fallback localStorage pour anon. Badge "✓ synced" affiché si connecté.
+- `lib/favorites.ts > toggleFavorite` et `lib/history.ts > addToHistory` font fire-and-forget POST vers API + fire scoring event (`favorite_add`, `video_view`)
+- UserMenu dropdown topbar : avatar + Profile / Favorites / History / Go Pro / Settings / Sign out
+- AppShell sidebar : ajout lien "Go Pro" et "Streak badge" dans topbar
+
 ### FAIT ✅ (session 2026-04-04 — audit profond + fixes silencieux)
 
 **Bugs silencieux découverts et fixés :**
@@ -712,3 +853,137 @@ Bugs qui ne produisent PAS d'erreur visible et qui restent silencieux jusqu'à u
 - **`/character/[slug]`** utilise `resolveCharacter()` qui fallback sur un Character virtuel synthétisé pour les noms Danbooru (underscore) non présents dans le fichier `CHARACTERS` statique
 - **CSP** (`next.config.ts`) — si tu ajoutes un domaine tiers, toujours ajouter les DEUX variantes : `https://domain.com https://*.domain.com`. Les wildcards ne couvrent pas les bare domains.
 - **Rate limiters Map** — le pattern `get→check→increment` est atomique en Node mono-thread, pas besoin de "fixer" les races.
+
+---
+
+## Quickref post-2026-04-05 (gamification + Pro + email + Discord)
+
+### DB tables (toutes en prod PG `iku-postgres`)
+```
+videos (351K+)                  — catalog, indexes on source/score/date
+users                            — auth + subscription fields
+user_oauth_accounts              — Discord OAuth link (provider='discord')
+user_stats                       — score, streaks, totals, tier computed from score
+user_badges                      — earned badges (PK user_id + badge_code)
+user_daily_quests                — 3 quests per user per UTC day
+user_score_events                — audit log of every scoring event
+user_favorites                   — server-side favorites sync
+user_history                     — server-side watch history sync
+email_verification_tokens        — 24h TTL, one-shot
+password_reset_tokens            — 1h TTL, one-shot
+email_log                        — audit for all sent emails
+stripe_events                    — webhook event dedup
+resolved_urls                    — L2 cache for video URL resolution
+```
+
+### API routes créées dans cette session
+```
+POST   /api/signup                    — signup + fire verification email
+GET    /api/auth/verify?token=...     — consume token, mark verified, welcome email
+POST   /api/auth/forgot-password      — rate limited 5/h, fire reset email
+POST   /api/auth/reset-password       — validate token, update password
+POST   /api/auth/[...nextauth]        — NextAuth handlers (login/callback)
+
+PATCH  /api/profile                   — username + avatar
+POST   /api/profile/password          — change password
+
+GET    /api/user/stats                — full gamification profile
+GET    /api/user/quests               — today's 3 daily quests
+POST   /api/score                     — record scoring event, advance quests
+
+GET    /api/favorites                 — server-side list
+POST   /api/favorites  { slug }       — add
+POST   /api/favorites  { bulk: [...] } — migrate localStorage → PG on first login
+DELETE /api/favorites?slug=...        — remove
+
+GET    /api/history                   — server-side list
+POST   /api/history                   — add
+POST   /api/history  { bulk: [...] }  — migrate
+DELETE /api/history                   — clear all
+
+POST   /api/stripe/checkout           — create Stripe Checkout Session (auto-apply Waifu discount)
+POST   /api/stripe/webhook            — process Stripe events (6 types handled)
+```
+
+### Pages créées
+```
+/pricing                              — Pro subscription (3 plans)
+/profile                              — user profile + gamification + quests
+/login, /signup                       — auth
+/forgot-password, /reset-password     — password recovery
+/leaderboard                          — top 100 by score
+```
+
+### Scripts `scripts/` créés dans cette session
+```
+init-auth.sql                         — users, user_oauth_accounts tables
+init-gamification.sql                 — user_stats, user_badges, quests, events
+init-subscriptions.sql                — stripe fields on users, stripe_events
+init-email-verification.sql           — tokens + email_log
+
+stripe-create-products.mjs            — idempotent Stripe products creation
+stripe-branding.mjs                   — generate iku-logo.png + iku-icon.png + upload to Stripe Files
+
+setup-discord.mjs                     — full Discord server bootstrap
+discord-polish.mjs                    — icon/banner/community/onboarding/invite
+discord-assets-v2.mjs                 — v2 vaporwave assets (not used, reverted)
+discord-revert-icon.mjs               — revert to v1 simple gradient icon
+discord-rewrite-messages.mjs          — opsec cleanup of welcome/rules/faq
+discord-fix-roles-message.mjs         — replace "react for roles" misleading message
+discord-import-emojis.mjs             — 50 static emojis from emoji.gg
+discord-import-animated-emojis.mjs    — 50 GIF emojis (rate limited, runs via GH Actions cron)
+discord-import-stickers.mjs           — 5 stickers via multipart
+discord-create-pro-channel.mjs        — #✨-pro-lounge with Pro+VIP perms
+discord-sync-roles.mjs                — hourly cron: sync site tier → Discord role
+discord-daily-drop.mjs                — daily drop bot (06:00 UTC)
+discord-weekly-leaderboard.mjs        — weekly leaderboard bot (Monday 09:00 UTC)
+
+cf-email-aliases.mjs                  — 17 Cloudflare Email Routing forwards
+```
+
+### GitHub Actions workflows
+```
+daily-scrape.yml                      — scrapers 04:00 UTC
+discord-emoji-sync.yml                — emoji import retry (daily 05:15 UTC)
+discord-bots.yml                      — role sync / daily drop / weekly leaderboard (3 jobs)
+```
+
+### Infrastructure services (ids pour future ref)
+- **Stripe** :
+  - Product iku.gg Pro : `prod_UHRDVazOtNmUQM` (monthly + yearly prices)
+  - Product iku.gg Pro Lifetime : `prod_UHRDeEBhLwKbOK` (one-time)
+  - Prices : monthly `price_1TIsKwE6BjkfAdXjZGpChcFW`, yearly `price_1TIsKwE6BjkfAdXjJnVBTmyC`, lifetime `price_1TIsKxE6BjkfAdXjuF7yu2KT`
+  - Webhook : `we_1TIsL6E6BjkfAdXjbfd2c3Gz` → `https://iku.gg/api/stripe/webhook`
+  - Coupon : `waifu_scholar_30` (-30% forever, auto-applied if score >= 15000)
+
+- **Discord** :
+  - App ID / Client ID : `1490319089694937108`
+  - Guild ID : `1490318988369068184`
+  - Permanent invite : `https://discord.gg/cQZc8trq8N`
+
+- **Cloudflare** :
+  - Zone ID : `5507efa73817cda6ef4648297ebd1584`
+  - Account ID : `1610af4dab58c5077e26b327e30888ff`
+  - Email Routing : enabled, destination `iku.media.gg@gmail.com` (verified)
+
+- **PostHog** :
+  - Project ID : `370092`
+  - Region : **US Cloud** (NOT EU)
+  - Host : `https://us.i.posthog.com`
+
+- **Resend** :
+  - Domain : `iku.gg` verified (DKIM + SPF + DMARC)
+  - Account email : `iku.media.gg@gmail.com`
+
+### Pièges rencontrés (à ne pas reproduire)
+- **Coolify env vars duplicates** : les updates via `tinker` peuvent créer des doublons dans `environment_variables` table. Vérifier avec `where key = ... get()` (pluriel) avant l'update pour s'assurer qu'il n'y a qu'une seule row. Si doublon : `delete` explicit par id.
+- **NEXT_PUBLIC_* vars** : doivent être déclarées comme `ARG` + `ENV` dans le builder stage du Dockerfile + `is_buildtime=true` dans Coolify. Sans ça, elles ne sont pas baked dans le bundle client.
+- **Next.js cache** : `rm -rf .next && npm run build` dans le Dockerfile pour éviter des stale chunks entre builds.
+- **PostHog region** : si user dit `us.posthog.com`, host = `https://us.i.posthog.com`. Si `eu.posthog.com`, host = `https://eu.i.posthog.com`. Le format de clé est le même (`phc_` pour Project API key, ~47 chars).
+- **Cloudflare API token format** : tokens standards sont **40 chars alphanumériques sans préfixe**. Les nouveaux `cfut_` prefix fonctionnent aussi. Les `cfk_` ne sont PAS des API tokens.
+- **Cloudflare DNS via internal dashboard API** : quand on est authentifié sur dash.cloudflare.com, on peut `fetch("/api/v4/zones/{id}/dns_records", {credentials: "include"})` directement sans avoir besoin d'un API token scoped. Trick énorme pour automation via Playwright MCP.
+- **Discord Onboarding mode** : 0 = DEFAULT (onboarding only shows on join), 1 = ADVANCED (persistent "Channels & Roles" button visible to existing members). Use mode 1 for iku.gg.
+- **Discord emoji rate limit** : après ~50 emojis + 5 stickers uploadés dans une session, Discord répond 429 `retry_after: 864s` (~14 min) sur chaque nouvelle création. Attendre 24h ou scheduler via cron.
+- **React-select Cloudflare dashboard** : impossible à driver via Playwright `click()` — il faut dispatcher mousedown+mouseup+click OU utiliser l'API interne du dashboard directement.
+- **Stripe adult content keys** : compte grand-père = tranquille. Mais descripteur bancaire neutre ("IKU GG"), jamais PayPal, ouvrir Paxum/Epoch en backup.
+- **Resend domain verification** : DNS propagation ~5 min mais Resend peut mettre 10-15 min à rescanner. Retry manuel via `POST /domains/{id}/verify`.

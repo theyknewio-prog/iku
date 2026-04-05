@@ -44,12 +44,25 @@ export async function recordScoreEvent(
       for (const b of data.newBadges) {
         showScoreToast(`${b.emoji} Badge unlocked: ${b.name}`, b.description);
       }
+      // PostHog: track badge earned
+      import("./analytics").then(({ track, EVENTS }) => {
+        for (const b of data.newBadges!) {
+          track(EVENTS.BADGE_EARNED, { code: b.code, name: b.name });
+        }
+      });
     }
     if (data.newTier) {
       showScoreToast(
         `${data.newTier.emoji} Tier up — ${data.newTier.name}`,
         "Check your profile for new perks"
       );
+      // PostHog: track tier up
+      import("./analytics").then(({ track, EVENTS }) => {
+        track(EVENTS.TIER_UP, {
+          tier_name: data.newTier!.name,
+          tier_index: data.newTier!.index,
+        });
+      });
     }
     if (data.completedQuests && data.completedQuests.length > 0) {
       for (const q of data.completedQuests) {

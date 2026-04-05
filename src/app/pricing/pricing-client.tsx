@@ -39,6 +39,10 @@ export function PricingClient({ plans, isAuthenticated, currentPlan }: Props) {
     }
 
     setLoading(planId);
+    // PostHog: user started Pro checkout
+    import("@/lib/analytics").then(({ track, EVENTS }) => {
+      track(EVENTS.PRO_CHECKOUT_START, { plan: planId });
+    });
     try {
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",

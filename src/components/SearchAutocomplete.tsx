@@ -143,7 +143,13 @@ export function SearchAutocomplete() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const q = query.trim().replace(/\s+/g, "_");
-    if (q) goToTag(q);
+    if (q) {
+      // PostHog: track search query
+      import("@/lib/analytics").then(({ track, EVENTS }) => {
+        track(EVENTS.SEARCH, { query: query.trim().slice(0, 100) });
+      });
+      goToTag(q);
+    }
   }
 
   /* Keyboard navigation */

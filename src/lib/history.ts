@@ -41,6 +41,11 @@ function syncToServer(slug: string): void {
   import("./score-client").then(({ recordScoreEvent }) => {
     recordScoreEvent("video_view", { slug });
   });
+
+  // PostHog: track video view
+  import("./analytics").then(({ track, EVENTS }) => {
+    track(EVENTS.VIDEO_VIEW, { slug });
+  });
 }
 
 export function addToHistory(id: number, slug: string): void {

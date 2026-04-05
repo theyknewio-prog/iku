@@ -50,6 +50,11 @@ function syncToServer(method: "POST" | "DELETE", slug: string): void {
       recordScoreEvent("favorite_add", { slug });
     });
   }
+
+  // PostHog: track add/remove
+  import("./analytics").then(({ track, EVENTS }) => {
+    track(method === "POST" ? EVENTS.FAVORITE_ADD : EVENTS.FAVORITE_REMOVE, { slug });
+  });
 }
 
 /**
