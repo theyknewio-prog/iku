@@ -201,3 +201,66 @@ async function _getVideos(
 // Memoize — 5 min TTL. Short enough to still feel fresh, long enough
 // to absorb bursts from ISR regeneration + warmup pings.
 export const getVideos = memoize("videos", _getVideos, 5 * 60 * 1000);
+
+// ---------------------------------------------------------------------------
+// Curated genre tags for the homepage "Browse by Genre" section.
+// These are deliberately chosen to be "sexy" / genre-ish, not generic
+// descriptors like "1girl" or "solo".
+// ---------------------------------------------------------------------------
+
+export const CURATED_GENRES: { name: string; emoji: string }[] = [
+  { name: "anal",         emoji: "🍑" },
+  { name: "uncensored",   emoji: "🔥" },
+  { name: "vanilla",      emoji: "💗" },
+  { name: "3d",           emoji: "🎮" },
+  { name: "monster",      emoji: "👹" },
+  { name: "fantasy",      emoji: "🧚" },
+  { name: "schoolgirl",   emoji: "🎒" },
+  { name: "maid",         emoji: "🎀" },
+  { name: "futa",         emoji: "✨" },
+  { name: "milf",         emoji: "💋" },
+  { name: "elf",          emoji: "🧝" },
+  { name: "catgirl",      emoji: "🐱" },
+  { name: "tentacles",    emoji: "🐙" },
+  { name: "cosplay",      emoji: "👗" },
+  { name: "bondage",      emoji: "⛓️" },
+  { name: "group",        emoji: "👥" },
+  { name: "ahegao",       emoji: "😵" },
+  { name: "creampie",     emoji: "🍦" },
+  { name: "oral",         emoji: "👄" },
+  { name: "threesome",    emoji: "3️⃣" },
+];
+
+/** Count how many videos match each curated genre tag. Returns [{name, emoji, count}]. */
+async function _getCuratedGenreCounts(): Promise<
+  { name: string; emoji: string; count: number }[]
+> {
+  try {
+    const names = CURATED_GENRES.map((g) => g.name);
+    const { rows } = await pool.query(
+      `SELECT tag, COUNT(*)::int AS count
+       FROM (
+         SELECT unnest(tags) AS tag FROM videos
+         WHERE NOT (tags && $1::text[])
+       ) t
+       WHERE tag = ANY($2::text[])
+       GROUP BY tag`,
+      [BANNED_TAGS_ARRAY, names]
+    );
+    const byName = new Map<string, number>(rows.map((r) => [r.tag, r.count]));
+    return CURATED_GENRES.map((g) => ({
+      ...g,
+      count: byName.get(g.name) ?? 0,
+    })).filter((g) => g.count > 0);
+  } catch (err) {
+    console.error("getCuratedGenreCounts error:", err);
+    return [];
+  }
+}
+
+// Cache aggressively — curated tag counts are extremely stable
+export const getCuratedGenreCounts = memoize(
+  "curated-genres",
+  _getCuratedGenreCounts,
+  60 * 60 * 1000 // 1h
+);

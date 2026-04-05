@@ -4,8 +4,8 @@ import Image from "next/image";
 import { AgeGate } from "@/components/AgeGate";
 import { PosterCard } from "@/components/PosterCard";
 import { Carousel } from "@/components/Carousel";
-import { getPopularTags, getPopularCharacters } from "@/lib/danbooru";
-import { getVideos } from "@/lib/content";
+import { getPopularCharacters } from "@/lib/danbooru";
+import { getVideos, getCuratedGenreCounts } from "@/lib/content";
 import { buildTitle, pickGenreTag } from "@/lib/video-display";
 import { SERIES } from "@/data/series";
 import { OnlineCounter } from "@/components/OnlineCounter";
@@ -19,40 +19,6 @@ export const metadata: Metadata = {
 
 export const revalidate = 3600;
 export const dynamic = "force-dynamic";
-
-/* ── Genre tag emoji map ─────────────────────────────────── */
-const TAG_EMOJIS: Record<string, string> = {
-  // Mockup tags
-  animated: "✨", "3d": "🎮", fantasy: "🧚", uncensored: "🔓",
-  vanilla: "💚", monster: "👹", elf: "🌿", schoolgirl: "📚",
-  catgirl: "🐱", cat_girl: "🐱", demon: "😈", action: "⚔️",
-  harem: "🏠", romance: "🌸", vampire: "🧛", mecha: "🤖",
-  mermaid: "🧜", fox_girl: "🦊", superpower: "⚡", idol: "🎤",
-  outdoor: "🍃", night: "🌙", wet: "💧",
-  // Real Danbooru top tags
-  "1girl": "👧", "1boy": "👦", solo: "💎", "2girls": "👭", "3girls": "👯",
-  multiple_girls: "👯", multiple_boys: "👬",
-  long_hair: "💇‍♀️", short_hair: "💇", "long hair": "💇‍♀️", "short hair": "💇",
-  black_hair: "🖤", blonde_hair: "💛", brown_hair: "🤎", red_hair: "❤️",
-  blue_hair: "💙", pink_hair: "🩷", purple_hair: "💜", white_hair: "🤍",
-  "black hair": "🖤", "blonde hair": "💛", "brown hair": "🤎",
-  blue_eyes: "🔵", red_eyes: "🔴", green_eyes: "🟢", purple_eyes: "🟣",
-  "blue eyes": "🔵",
-  breasts: "🍈", large_breasts: "🍉", small_breasts: "🍒",
-  "large breasts": "🍉",
-  smile: "😊", blush: "☺️", open_mouth: "😮", "open mouth": "😮",
-  looking_at_viewer: "👀", "looking at viewer": "👀",
-  skirt: "👗", dress: "👚", shirt: "👕", gloves: "🧤",
-  simple_background: "🎨", "simple background": "🎨",
-  white_background: "⬜", "white background": "⬜",
-  hair_ornament: "🎀", "hair ornament": "🎀",
-  long_sleeves: "👚", "long sleeves": "👚",
-  holding: "✋", bondage: "⛓️", tentacle: "🐙", nurse: "🏥",
-  maid: "🧹", teacher: "📖", swim: "🏊", dance: "💃", school: "🏫",
-  oral: "👄", anal: "🍑", milf: "👩",
-  futanari: "⚧️", yuri: "👩‍❤️‍👩", yaoi: "👨‍❤️‍👨",
-  group: "👥", threesome: "🔥", cleavage: "💞",
-};
 
 /* ── Genre tag color classes — round-robin ─────────────── */
 const TAG_COLORS = [
@@ -127,8 +93,8 @@ export default async function HomePage() {
   const newReleasesPage = Math.floor(Math.random() * 5) + 1;
   const newest = await getVideos({ limit: 10, page: newReleasesPage, order: "date", source: "all", requireThumbnail: true });
   const topRated = await getVideos({ limit: 8, order: "favcount", source: "all", requireThumbnail: true });
-  const [tags, characters] = await Promise.all([
-    getPopularTags(24),
+  const [genres, characters] = await Promise.all([
+    getCuratedGenreCounts(),
     getPopularCharacters(12),
   ]);
 
@@ -384,17 +350,17 @@ export default async function HomePage() {
             </div>
 
             <div className="hp-tags-cloud" role="list">
-              {tags.map((tag, i) => {
+              {genres.map((genre, i) => {
                 const colorClass = TAG_COLORS[i % TAG_COLORS.length];
-                const count = tag.count >= 1000 ? `${(tag.count / 1000).toFixed(1)}k` : String(tag.count);
+                const count = genre.count >= 1000 ? `${(genre.count / 1000).toFixed(1)}k` : String(genre.count);
                 return (
                   <Link
-                    key={tag.name}
-                    href={`/tag/${encodeURIComponent(tag.name)}`}
+                    key={genre.name}
+                    href={`/tag/${encodeURIComponent(genre.name)}`}
                     className={`hp-genre-tag ${colorClass}`}
                     role="listitem"
                   >
-                    {TAG_EMOJIS[tag.name] ? `${TAG_EMOJIS[tag.name]} ` : ""}{tag.name.replace(/_/g, " ")}
+                    {genre.emoji} {genre.name.charAt(0).toUpperCase() + genre.name.slice(1)}
                     <span className="hp-genre-tag__count">{count}</span>
                   </Link>
                 );
