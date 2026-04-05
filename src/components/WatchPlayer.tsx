@@ -287,16 +287,20 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
     if (e) e.stopPropagation();
     const v = videoRef.current;
     if (!v) return;
-    v.muted = false;
-    v.volume = volume || 0.5;
-    // Update state immediately — otherwise React re-renders with the
-    // stale `muted={true}` prop and re-mutes before volumechange catches up.
+    // IMPORTANT: never mutate `v.muted` directly — the <video> element has
+    // `muted={muted}` so React controls that attribute. Mutating the DOM
+    // races with the next render (which re-applies the stale prop and
+    // re-mutes the video before the user hears anything). Instead we drive
+    // state first and let React apply the attribute on re-render. Volume
+    // is imperative (no `volume` prop on <video>) so we can touch it.
+    const nextVolume = volume || 0.5;
+    v.volume = nextVolume;
+    setVolume(nextVolume);
     setMuted(false);
-    setVolume(v.volume);
-    // Re-trigger play to satisfy browser autoplay policy for unmuting
-    v.play().catch(() => {});
     setShowUnmuteHint(false);
     if (unmuteHintTimerRef.current) clearTimeout(unmuteHintTimerRef.current);
+    // Re-trigger play to satisfy browser autoplay policy for unmuting.
+    v.play().catch(() => {});
   }, [volume]);
 
   /* ── Feature 3: End-of-video overlay + countdown ───────── */
@@ -403,7 +407,7 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
     v.volume = newVol;
     setVolume(newVol);
     if (newVol > 0) {
-      v.muted = false;
+      // State-only — v.muted is React-controlled via muted={muted}.
       setMuted(false);
     }
     touchStartRef.current.y = touch.clientY;
@@ -420,7 +424,7 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
     v.volume = newVol;
     setVolume(newVol);
     if (newVol > 0) {
-      v.muted = false;
+      // State-only — v.muted is React-controlled via muted={muted}.
       setMuted(false);
     }
   }, []);
@@ -444,8 +448,8 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
 
   const [, startTransition] = useTransition();
 
-  /* Keyboard shortcuts (existing hook — delegates to videoRef) */
-  useVideoShortcuts(videoRef);
+  /* Keyboard shortcuts — hook is invoked below after toggleMute is defined
+     so we can pass the onMuteToggle callback safely. See line further down. */
 
   /* ── Auto-hide controls ────────────────────────────────── */
 
@@ -533,35 +537,43 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
   }, []);
 
   const toggleMute = useCallback(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    const willUnmute = v.muted;
-    v.muted = !v.muted;
-    // Update state immediately — otherwise React re-renders with the
-    // stale `muted={muted}` prop and re-mutes the video before the
-    // `volumechange` event catches up.
-    setMuted(v.muted);
-    if (willUnmute) {
-      // Ensure audible volume when unmuting from mute state.
-      if (v.volume === 0) {
-        v.volume = 0.5;
-        setVolume(0.5);
+    setMuted((prev) => {
+      const next = !prev;
+      const v = videoRef.current;
+      if (v && !next) {
+        // Unmuting: ensure the video is audible and actively playing.
+        // Volume is imperative (no `volume` prop on <video>), safe to mutate.
+        if (v.volume === 0) {
+          v.volume = 0.5;
+          setVolume(0.5);
+        }
+        setShowUnmuteHint(false);
+        // Re-trigger play() so the browser allows audio output on the
+        // current user gesture (autoplay policy requirement).
+        v.play().catch(() => {});
       }
-      setShowUnmuteHint(false);
-      // Browser autoplay policy: after unmuting, re-trigger play()
-      // so the browser allows audio output on the current user gesture.
-      v.play().catch(() => {});
-    }
+      // IMPORTANT: never touch v.muted here — it's a React-controlled prop
+      // (<video muted={muted}>), so returning `next` from this updater lets
+      // React apply the new value on re-render. Mutating it directly creates
+      // a race where the re-render re-applies the stale prop and re-mutes.
+      return next;
+    });
   }, []);
+
+  /* Keyboard shortcuts — routed through toggleMute so the M key updates
+     React state instead of mutating the DOM directly (see silent-bug note
+     in CLAUDE.md). */
+  useVideoShortcuts(videoRef, { onMuteToggle: toggleMute });
 
   const handleVolumeSlider = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const v = videoRef.current;
       if (!v) return;
       const val = parseFloat(e.target.value);
+      // volume is imperative (no prop on <video>) so safe to set directly.
       v.volume = val;
-      v.muted = val === 0;
       setVolume(val);
+      // muted is React-controlled — state only, no DOM mutation.
       setMuted(val === 0);
       if (val > 0) {
         setShowUnmuteHint(false);
