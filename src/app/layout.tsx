@@ -5,6 +5,7 @@ import { AppShell } from "@/components/AppShell";
 import { SessionProviderClient } from "@/components/SessionProviderClient";
 import { UserDataSync } from "@/components/UserDataSync";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
+import { getNonce } from "@/lib/csp-nonce";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -72,16 +73,18 @@ export const viewport: Viewport = {
   colorScheme: "dark",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const nonce = await getNonce();
   return (
     <html lang="en" className={`${inter.variable} ${poppins.variable} ${righteous.variable} ${nunito.variable} ${quicksand.variable}`} data-theme="dark">
       <head>
         <script
           type="application/ld+json"
+          nonce={nonce}
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",

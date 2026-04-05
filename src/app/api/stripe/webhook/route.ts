@@ -22,6 +22,7 @@ import { NextRequest, NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
 import pool from "@/lib/db";
+import { sendDunningEmail } from "@/lib/email";
 
 export const runtime = "nodejs"; // Need raw body
 
@@ -94,16 +95,34 @@ export async function POST(request: NextRequest) {
         break;
       }
       case "invoice.payment_failed": {
-        const invoice = event.data.object as Stripe.Invoice & { subscription?: string };
+        const invoice = event.data.object as Stripe.Invoice & {
+          subscription?: string;
+          next_payment_attempt?: number | null;
+        };
         console.warn("stripe payment failed:", invoice.id);
         // Immediately flip to past_due so UI reflects reality — don't wait for
         // a trailing subscription.updated event that may be minutes late.
         if (invoice.subscription) {
-          await pool.query(
+          const { rows } = await pool.query(
             `UPDATE users SET pro_status = 'past_due'
-             WHERE pro_subscription_id = $1 AND pro_status != 'lifetime'`,
+             WHERE pro_subscription_id = $1 AND pro_status != 'lifetime'
+             RETURNING id, email, username, pro_plan`,
             [String(invoice.subscription)]
           );
+          // Fire-and-forget dunning email — deduped server-side to 1/week.
+          const user = rows[0];
+          if (user && user.email && !String(user.email).endsWith("@discord.iku.gg")) {
+            const nextAttempt = invoice.next_payment_attempt
+              ? new Date(invoice.next_payment_attempt * 1000)
+              : null;
+            sendDunningEmail({
+              userId: user.id,
+              email: user.email,
+              username: user.username,
+              plan: (user.pro_plan === "yearly" ? "yearly" : "monthly"),
+              nextAttemptAt: nextAttempt,
+            }).catch((err) => console.error("dunning email failed:", err));
+          }
         }
         break;
       }

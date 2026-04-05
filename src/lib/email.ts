@@ -110,6 +110,8 @@ interface SendResult {
   ok: boolean;
   id?: string;
   error?: string;
+  skipped?: boolean;
+  reason?: string;
 }
 
 async function rawSend(opts: {
@@ -392,6 +394,75 @@ export async function sendWinbackEmail(opts: {
   });
 }
 
+/**
+ * Dunning email — sent when a Pro user's card payment fails.
+ *
+ * Stripe auto-retries for ~3 weeks via smart retries, but we send our own
+ * notification immediately so the user knows before their Pro access lapses.
+ * Deduped via email_log template='dunning' — max 1 per 7 days per user so a
+ * noisy retry storm doesn't flood the inbox.
+ */
+export async function sendDunningEmail(opts: {
+  userId: number | string;
+  email: string;
+  username: string;
+  plan: "monthly" | "yearly";
+  nextAttemptAt?: Date | null;
+}): Promise<SendResult> {
+  // Dedup: skip if we already sent a dunning email in the last 7 days.
+  try {
+    const { rows } = await pool.query(
+      `SELECT 1 FROM email_log
+       WHERE user_id = $1 AND template = 'dunning'
+         AND created_at > NOW() - INTERVAL '7 days'
+       LIMIT 1`,
+      [opts.userId]
+    );
+    if (rows.length > 0) {
+      return { ok: true, skipped: true, reason: "already sent in last 7d" };
+    }
+  } catch {
+    // non-fatal — proceed
+  }
+
+  const retryLine = opts.nextAttemptAt
+    ? `<p style="margin:0 0 16px;font-size:14px;color:rgba(255,255,255,0.72);">
+         Stripe will automatically retry on <strong>${opts.nextAttemptAt.toLocaleDateString()}</strong>.
+         You don't need to do anything — but if you want to fix your card now, use the link below.
+       </p>`
+    : `<p style="margin:0 0 16px;font-size:14px;color:rgba(255,255,255,0.72);">
+         Stripe will automatically retry over the next few days. You can also update your
+         card now to avoid any interruption.
+       </p>`;
+
+  const html = emailShell({
+    title: `Your iku.gg Pro payment didn't go through 💳`,
+    preheader: "Your card was declined — update it to keep Pro access",
+    body: `
+      <p style="margin:0 0 16px;">Hey <strong style="color:#fff;">${escapeHtml(opts.username)}</strong>,</p>
+      <p style="margin:0 0 16px;">We tried to charge your card for the <strong style="color:#ff6b9d;">${opts.plan}</strong> iku.gg Pro plan and it was declined.</p>
+      ${retryLine}
+      <p style="margin:0 0 12px;font-weight:700;color:#ff6b9d;">What happens now:</p>
+      <ul style="margin:0 0 20px;padding-left:20px;color:rgba(255,255,255,0.75);font-size:14px;line-height:1.8;">
+        <li>Your Pro access is still active for now.</li>
+        <li>If the retries all fail, your subscription will be canceled and you'll drop to free.</li>
+        <li>Update your card and your subscription will continue without any gap.</li>
+      </ul>
+    `,
+    ctaLabel: "Update my card 💳",
+    ctaUrl: `${SITE_URL}/profile?billing=1`,
+    footnote: `Questions? Reply to this email or reach out at <a href="mailto:support@iku.gg" style="color:#ff6b9d;text-decoration:none;">support@iku.gg</a>.`,
+  });
+
+  return rawSend({
+    to: opts.email,
+    subject: `Your iku.gg Pro payment was declined`,
+    html,
+    userId: opts.userId,
+    template: "dunning",
+  });
+}
+
 // ─────────────────────────────────────────────────────────────
 // Token consumption helpers (used by /api/auth/verify + /reset-password)
 // ─────────────────────────────────────────────────────────────
@@ -416,13 +487,24 @@ export async function consumeVerificationToken(token: string): Promise<number | 
   return userId;
 }
 
+/**
+ * Atomic consume of a password reset token.
+ *
+ * Uses UPDATE ... RETURNING so concurrent requests can't both claim the same
+ * token. This mirrors the pattern in reset-password/route.ts. Callers should
+ * consider whether they need their own atomic claim — the reset route inlines
+ * its own query for clarity.
+ */
 export async function consumePasswordResetToken(token: string): Promise<number | null> {
   const { rows } = await pool.query(
-    `SELECT user_id FROM password_reset_tokens
-     WHERE token = $1 AND used_at IS NULL AND expires_at > NOW()`,
+    `UPDATE password_reset_tokens
+     SET used_at = NOW()
+     WHERE token = $1 AND used_at IS NULL AND expires_at > NOW()
+     RETURNING user_id`,
     [token]
   );
-  return rows.length === 0 ? Number(rows[0]?.user_id) || null : Number(rows[0].user_id);
+  if (rows.length === 0) return null;
+  return Number(rows[0].user_id);
 }
 
 export async function markPasswordResetTokenUsed(token: string): Promise<void> {

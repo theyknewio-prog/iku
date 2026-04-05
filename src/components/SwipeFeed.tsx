@@ -21,65 +21,77 @@ export interface FeedVideo {
 
 export function SwipeFeed() {
   const [videos, setVideos] = useState<FeedVideo[]>([]);
-  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [exhausted, setExhausted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const loadingRef = useRef(false);
-  // Captured from the first API response and forwarded on all subsequent fetches.
-  const sessionOffsetRef = useRef<number | null>(null);
+  // Keyset cursor forwarded on each subsequent request. null = first request
+  // (server picks session sort + random offset). false = end of feed reached.
+  const cursorRef = useRef<string | null>(null);
 
-  const fetchVideos = useCallback(async (pageNum: number) => {
+  const fetchVideos = useCallback(async () => {
     if (loadingRef.current) return;
+    if (cursorRef.current === null && videos.length > 0) return; // first fetch already done
     loadingRef.current = true;
 
     try {
-      const offsetParam =
-        sessionOffsetRef.current !== null
-          ? `&offset=${sessionOffsetRef.current}`
+      const cursorParam =
+        cursorRef.current && videos.length > 0
+          ? `?cursor=${encodeURIComponent(cursorRef.current)}`
           : "";
-      const res = await fetch(`/api/feed?page=${pageNum}${offsetParam}`);
-      const data = await res.json();
-
-      // Store the offset from the first response for all future pages.
-      if (sessionOffsetRef.current === null && typeof data.offset === "number") {
-        sessionOffsetRef.current = data.offset;
+      const res = await fetch(`/api/feed${cursorParam}`);
+      if (!res.ok) {
+        // Transient error — leave cursor untouched so a retry hits the same
+        // slice again instead of skipping ahead. Stop trying after 3 failures.
+        console.error("feed fetch failed:", res.status);
+        return;
       }
+      const data = await res.json();
 
       if (data.videos && data.videos.length > 0) {
         setVideos((prev) => [...prev, ...data.videos]);
       }
 
-      // Always advance the cursor, even on empty pages, so that subsequent
-      // triggers try the *next* page rather than retrying the same one forever.
-      // The API response may return fewer (or zero) rows after the URL/size
-      // filters — without this we could get stuck retrying page N indefinitely.
-      setPage(pageNum);
+      // Update cursor for the next fetch. `null` means the server returned
+      // no more pages — stop the infinite loop gracefully.
+      if (typeof data.cursor === "string") {
+        cursorRef.current = data.cursor;
+      } else {
+        cursorRef.current = null;
+        setExhausted(true);
+      }
+
+      if (!data.hasMore) setExhausted(true);
     } catch (err) {
       console.error("Failed to fetch feed:", err);
     } finally {
       setLoading(false);
       loadingRef.current = false;
     }
+  }, [videos.length]);
+
+  // First fetch on mount
+  useEffect(() => {
+    if (videos.length === 0 && !loadingRef.current) {
+      fetchVideos();
+    }
+    // Run once — fetchVideos rebinds when videos.length changes but we don't
+    // want to re-fire the initial load.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Safety net: proactively prefetch the next keyset page while the buffer
+  // ahead of the active card is dangerously low. Guarded by `exhausted` so
+  // we stop hitting the API once the server confirmed end of feed.
   useEffect(() => {
-    fetchVideos(1);
-  }, [fetchVideos]);
-
-  // Safety net: if a fetch returned few videos (aggressive server-side filtering
-  // can drop most of a batch), the IntersectionObserver may not fire again
-  // because the active card is already past the new threshold. Re-check after
-  // every state change and proactively refetch the next page while the buffer
-  // ahead of the active index is dangerously low.
-  useEffect(() => {
-    if (loadingRef.current) return;
+    if (loadingRef.current || exhausted) return;
     if (videos.length === 0) return;
     const buffer = videos.length - activeIndex;
     if (buffer < 5) {
-      fetchVideos(page + 1);
+      fetchVideos();
     }
-  }, [videos.length, activeIndex, page, fetchVideos]);
+  }, [videos.length, activeIndex, exhausted, fetchVideos]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -92,8 +104,8 @@ export function SwipeFeed() {
             const index = Number(entry.target.getAttribute("data-index"));
             if (!isNaN(index)) {
               setActiveIndex(index);
-              if (index >= videos.length - 5) {
-                fetchVideos(page + 1);
+              if (index >= videos.length - 5 && !exhausted) {
+                fetchVideos();
               }
             }
           }
@@ -106,7 +118,7 @@ export function SwipeFeed() {
     items.forEach((item) => observer.observe(item));
 
     return () => observer.disconnect();
-  }, [videos.length, page, fetchVideos]);
+  }, [videos.length, exhausted, fetchVideos]);
 
   if (loading && videos.length === 0) {
     return (

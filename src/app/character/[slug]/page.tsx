@@ -5,6 +5,7 @@ import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { Pagination } from "@/components/Pagination";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { getVideos } from "@/lib/content";
+import { getNonce } from "@/lib/csp-nonce";
 import { CHARACTERS, getCharacterBySlug, type Character } from "@/data/characters";
 import { getSeriesBySlug } from "@/data/series";
 import type { Metadata } from "next";
@@ -88,6 +89,7 @@ const SORT_OPTIONS = [
 ] as const;
 
 export default async function CharacterPage({ params, searchParams }: Props) {
+  const nonce = await getNonce();
   const { slug } = await params;
   const sp = await searchParams;
   const character = resolveCharacter(slug);
@@ -132,8 +134,8 @@ export default async function CharacterPage({ params, searchParams }: Props) {
 
   return (
     <div className="shell-content">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd).replace(/</g, "\\u003c") }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
       <main>
         <div className="page-container">
           {/* ── Character hero ──────────────────────────────────── */}

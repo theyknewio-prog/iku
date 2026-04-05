@@ -3,6 +3,7 @@ import Image from "next/image";
 import { CHARACTERS } from "@/data/characters";
 import { SERIES } from "@/data/series";
 import { getThumbnailsForTags } from "@/lib/content";
+import { getNonce } from "@/lib/csp-nonce";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -45,6 +46,7 @@ function fallbackEmoji(name: string): string {
 }
 
 export default async function CharactersPage() {
+  const nonce = await getNonce();
   const groups = groupBySeries();
 
   // Batch-fetch real thumbnails for every character using their primary Danbooru tag.
@@ -63,7 +65,7 @@ export default async function CharactersPage() {
 
   return (
     <div className="shell-content">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
       <main>
         <div className="page-container">
           {/* ── Page hero ─────────────────────────────────────── */}

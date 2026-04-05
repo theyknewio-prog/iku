@@ -5,6 +5,7 @@ import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { Pagination } from "@/components/Pagination";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { getVideos } from "@/lib/content";
+import { getNonce } from "@/lib/csp-nonce";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 
@@ -80,6 +81,7 @@ const RELATED_TAGS = [
 ];
 
 export default async function TagPage({ params, searchParams }: Props) {
+  const nonce = await getNonce();
   const { tag } = await params;
   const sp = await searchParams;
   const pageParam = typeof sp.page === "string" ? sp.page : "1";
@@ -122,8 +124,8 @@ export default async function TagPage({ params, searchParams }: Props) {
 
   return (
     <div className="shell-content">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(tagJsonLd).replace(/</g, "\\u003c") }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(tagJsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
       <main>
         <div className="page-container">
           {/* ── Tag hero ─────────────────────────────────────── */}

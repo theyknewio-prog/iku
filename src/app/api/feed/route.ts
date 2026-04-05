@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getVideos } from "@/lib/content";
+import { getFeedKeyset, decodeCursor, encodeCursor } from "@/lib/content";
 
 // Rate limit: 30 requests/min per IP
 const feedRateLimit = new Map<string, { count: number; resetAt: number }>();
@@ -17,18 +17,13 @@ setInterval(() => {
   }
 }, 5 * 60_000);
 
-// How many "pages" worth of catalog we skip to spread sessions across the
-// content library. Gelbooru/Danbooru support page numbers up to a few hundred
-// before returning empty results, so keep the ceiling modest.
-const MAX_RANDOM_OFFSET = 40;
-
-// Rotate sort order so consecutive pages feel different even within one session.
-const ORDER_ROTATION: Array<"score" | "date" | "favcount"> = [
+// On the very first request (no cursor) we want session variety — pick a
+// random sort from this set so two users landing on /feed don't get the
+// exact same top-scoring clips. After that, the cursor locks the sort.
+const FIRST_PAGE_SORTS: Array<"score" | "date" | "favcount"> = [
   "score",
-  "date",
   "favcount",
   "date",
-  "score",
 ];
 
 export async function GET(request: NextRequest) {
@@ -51,8 +46,9 @@ export async function GET(request: NextRequest) {
   }
 
   const { searchParams } = new URL(request.url);
-  const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
-  const sort = searchParams.get("sort") || "score";
+  const rawCursor = searchParams.get("cursor");
+  const cursor = decodeCursor(rawCursor);
+  const sortParam = searchParams.get("sort");
   const tag = searchParams.get("tag") || "";
   const sourceParam = searchParams.get("source") || "all";
   const source =
@@ -62,43 +58,29 @@ export async function GET(request: NextRequest) {
         ? "gelbooru"
         : "all";
 
-  // When a sort is explicitly requested by the user (e.g. filter UI), honour it.
-  // Otherwise let the rotation decide.
-  const hasExplicitSort = searchParams.has("sort");
-  const explicitOrder =
-    sort === "date" ? "date" : sort === "favcount" ? "favcount" : "score";
-
-  // Rotation: each page index (0-based) picks a different sort order so
-  // scrolling through the feed alternates between high-score, newest, popular.
-  const rotatedOrder = ORDER_ROTATION[(page - 1) % ORDER_ROTATION.length];
-  const order = hasExplicitSort ? explicitOrder : rotatedOrder;
-
-  // Session-level random offset — this changes on every request because the
-  // server runs Math.random() fresh each time.  The offset is added to the
-  // requested page so two users on "page 1" actually hit different slices of
-  // the catalog.  We only apply the offset on page 1 so that subsequent
-  // infinite-scroll pages stay coherent (page 2 = offset+2, etc.).
-  //
-  // The offset is passed back to the client so the frontend can include it in
-  // subsequent page requests, keeping the session slice consistent.
-  const rawOffset = searchParams.get("offset");
-  const sessionOffset =
-    rawOffset !== null
-      ? Math.max(0, Math.min(parseInt(rawOffset), MAX_RANDOM_OFFSET))
-      : Math.floor(Math.random() * MAX_RANDOM_OFFSET);
-
-  // Effective catalog page: user's logical page + session offset.
-  const catalogPage = page + sessionOffset;
+  // Resolve sort order:
+  //   1. cursor's order wins (must stay stable across keyset pages)
+  //   2. explicit ?sort= param wins next (filter UI)
+  //   3. otherwise pick a random session sort for variety
+  let order: "score" | "date" | "favcount";
+  if (cursor?.order) {
+    order = cursor.order;
+  } else if (sortParam === "date" || sortParam === "favcount" || sortParam === "score") {
+    order = sortParam;
+  } else {
+    order = FIRST_PAGE_SORTS[Math.floor(Math.random() * FIRST_PAGE_SORTS.length)];
+  }
 
   try {
-    const { data, hasMore } = await getVideos({
-      // Wider pull so that after filtering out missing URLs / oversize files
-      // the client still receives a healthy batch (~20-30 playable videos per page).
+    const { data, nextCursor } = await getFeedKeyset({
+      // Pull a wider batch so the URL/size filter still yields ~20-30 playable rows.
       limit: 60,
-      page: catalogPage,
       order,
+      cursor,
       tags: tag || undefined,
       source,
+      // Feed cards without a thumbnail look broken on swipe — exclude.
+      requireThumbnail: true,
     });
 
     // Filter: must have a direct playable URL and stay under a reasonable
@@ -115,7 +97,6 @@ export async function GET(request: NextRequest) {
         thumbnail: v.thumbnail,
         score: v.score,
         tags: v.tags.slice(0, 6),
-        // Both formats: arrays for HomeFeed, singular for SwipeFeed/VideoCard
         characters: v.characters.slice(0, 3),
         artists: v.artists.slice(0, 2),
         copyrights: v.copyrights.slice(0, 2),
@@ -128,9 +109,17 @@ export async function GET(request: NextRequest) {
         size: v.fileSize || 0,
       }));
 
-    return NextResponse.json({ videos, page, hasMore, offset: sessionOffset });
+    return NextResponse.json({
+      videos,
+      order,
+      cursor: nextCursor ? encodeCursor(nextCursor) : null,
+      hasMore: nextCursor !== null,
+    });
   } catch (error) {
     console.error("Feed error:", error);
-    return NextResponse.json({ videos: [], page, hasMore: false, offset: sessionOffset }, { status: 500 });
+    return NextResponse.json(
+      { videos: [], cursor: null, hasMore: false, order },
+      { status: 500 }
+    );
   }
 }

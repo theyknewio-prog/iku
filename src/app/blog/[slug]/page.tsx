@@ -7,6 +7,7 @@ import {
   getRelatedArticles,
 } from "@/data/blog";
 import { GLOSSARY } from "@/data/glossary";
+import { getNonce } from "@/lib/csp-nonce";
 
 interface BlogPostProps {
   params: Promise<{ slug: string }>;
@@ -46,6 +47,7 @@ function formatDate(iso: string): string {
 }
 
 export default async function BlogPostPage({ params }: BlogPostProps) {
+  const nonce = await getNonce();
   const { slug } = await params;
   const article = getArticleBySlug(slug);
   if (!article) notFound();
@@ -99,12 +101,14 @@ export default async function BlogPostPage({ params }: BlogPostProps) {
     <>
       <script
         type="application/ld+json"
+        nonce={nonce}
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(articleSchema).replace(/</g, "\\u003c"),
         }}
       />
       <script
         type="application/ld+json"
+        nonce={nonce}
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(breadcrumbSchema).replace(/</g, "\\u003c"),
         }}

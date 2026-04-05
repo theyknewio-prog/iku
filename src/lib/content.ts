@@ -390,6 +390,213 @@ async function _getVideoOfTheDay(): Promise<Video | null> {
 export const getVideoOfTheDay = memoize("vod", _getVideoOfTheDay, 60 * 60 * 1000);
 
 // ---------------------------------------------------------------------------
+// Single-video lookup by id+source (used by watch page to avoid live API calls)
+// ---------------------------------------------------------------------------
+
+/**
+ * Fetch a Danbooru video from PG first, fall back to the live Danbooru API
+ * only if the row isn't in the DB yet (brand-new posts that our scraper
+ * hasn't picked up). This kills 200-1500ms of throttled external latency on
+ * the overwhelming majority of watch-page renders — see performance.md P1.
+ *
+ * The `liveFallback` param lets callers opt out of the external call entirely
+ * (e.g. metadata generation) to keep cold renders snappy at the cost of
+ * serving a generic "Hentai Video" title on unscraped posts.
+ */
+export async function getDanbooruVideo(
+  id: number,
+  opts: { liveFallback?: boolean } = {}
+): Promise<Video | null> {
+  try {
+    const { rows } = await pool.query(
+      `SELECT source, source_id, slug, url, page_url, site, title,
+              thumbnail, preview, score, favorites,
+              tags, characters, copyrights, artists,
+              width, height, file_size, duration, created_at
+       FROM videos
+       WHERE source = 'danbooru' AND source_id = $1
+         AND NOT (tags && $2::text[])
+         AND NOT (COALESCE(characters, ARRAY[]::text[]) && $2::text[])
+         AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $2::text[])
+       LIMIT 1`,
+      [id, BANNED_TAGS_ARRAY]
+    );
+    if (rows.length > 0) {
+      const video = rowToVideo(rows[0]);
+      if (containsBannedContent(video)) return null;
+      return video;
+    }
+  } catch (err) {
+    console.error("getDanbooruVideo PG error:", err);
+  }
+
+  // Not in PG — optionally fall back to the live Danbooru API for fresh posts.
+  if (!opts.liveFallback) return null;
+  try {
+    const { getPost } = await import("./danbooru");
+    const live = await getPost(id);
+    if (live && !containsBannedContent(live)) return live;
+  } catch {
+    // fall through to null
+  }
+  return null;
+}
+
+// ---------------------------------------------------------------------------
+// Keyset pagination for /api/feed — infinite scroll without OFFSET hell
+// ---------------------------------------------------------------------------
+
+export interface FeedCursor {
+  /** Primary sort value at the last row returned. */
+  v: number;
+  /** Tiebreaker id at the last row returned. */
+  id: number;
+  /** Sort column — ensures the cursor stays tied to a stable sort order. */
+  order: "score" | "date" | "favcount";
+}
+
+/** Encode a cursor as a URL-safe base64 string. */
+export function encodeCursor(c: FeedCursor): string {
+  return Buffer.from(JSON.stringify(c)).toString("base64url");
+}
+
+/** Decode a cursor, returning null on any parse error. */
+export function decodeCursor(raw: string | null | undefined): FeedCursor | null {
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(Buffer.from(raw, "base64url").toString("utf8"));
+    if (
+      typeof parsed?.v === "number" &&
+      typeof parsed?.id === "number" &&
+      (parsed?.order === "score" || parsed?.order === "date" || parsed?.order === "favcount")
+    ) {
+      return parsed;
+    }
+  } catch {
+    // fall through
+  }
+  return null;
+}
+
+/**
+ * Keyset-paginated fetch used by the Shorts feed. Avoids OFFSET entirely so
+ * deep scrolls stay O(log n) on the sort index instead of O(n).
+ *
+ * Composite tuple comparison: for DESC order, the next page is rows where
+ *   (sort_col, id) < (cursor.v, cursor.id)
+ * which resolves ties via `id` and guarantees forward progress even when
+ * many rows share the same sort value (common with `favorites=0`).
+ */
+export async function getFeedKeyset(options: {
+  limit?: number;
+  order?: "score" | "date" | "favcount";
+  cursor?: FeedCursor | null;
+  tags?: string;
+  source?: "all" | "danbooru" | "gelbooru";
+  requireThumbnail?: boolean;
+}): Promise<{ data: Video[]; nextCursor: FeedCursor | null }> {
+  const {
+    limit = 60,
+    order = "score",
+    cursor = null,
+    tags = "",
+    source = "all",
+    requireThumbnail = false,
+  } = options;
+
+  const clampedLimit = Math.min(limit, 200);
+  const conditions: string[] = [];
+  const params: unknown[] = [];
+  let p = 1;
+
+  // Banned content filter (tags, characters, copyrights).
+  const banned = buildBannedSqlCondition("", params, p);
+  conditions.push(banned.condition);
+  p = banned.nextIdx;
+
+  if (requireThumbnail) {
+    conditions.push(`thumbnail IS NOT NULL AND thumbnail <> ''`);
+  }
+
+  if (source === "danbooru") {
+    conditions.push(`source = $${p}`);
+    params.push("danbooru");
+    p++;
+  } else if (source === "gelbooru") {
+    conditions.push(`source = $${p}`);
+    params.push("gelbooru");
+    p++;
+  }
+
+  if (tags) {
+    const terms = tags.toLowerCase().split(/\s+/).filter(Boolean);
+    for (const term of terms) {
+      conditions.push(
+        `($${p} = ANY(tags) OR $${p} = ANY(characters) OR $${p} = ANY(copyrights))`
+      );
+      params.push(term);
+      p++;
+    }
+  }
+
+  // Sort column + composite cursor clause.
+  const sortCol =
+    order === "score" ? "score" :
+    order === "favcount" ? "favorites" :
+    "created_at";
+
+  const sortExpr = order === "date"
+    ? `EXTRACT(EPOCH FROM ${sortCol})::bigint`
+    : sortCol;
+
+  if (cursor && cursor.order === order) {
+    // Composite tuple comparison: rows strictly after the cursor in DESC order.
+    conditions.push(`(${sortExpr}, source_id) < ($${p}, $${p + 1})`);
+    params.push(cursor.v, cursor.id);
+    p += 2;
+  }
+
+  const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
+  const orderClause = `ORDER BY ${sortCol} DESC, source_id DESC`;
+
+  params.push(clampedLimit + 1);
+  const query = `
+    SELECT source, source_id, slug, url, page_url, site, title,
+           thumbnail, preview, score, favorites,
+           tags, characters, copyrights, artists,
+           width, height, file_size, duration, created_at,
+           ${sortExpr} AS __sort_val
+    FROM videos
+    ${whereClause}
+    ${orderClause}
+    LIMIT $${p}
+  `;
+
+  try {
+    const { rows } = await pool.query(query, params);
+    const slice = rows.slice(0, clampedLimit);
+    const data = filterBannedContent(slice.map(rowToVideo));
+
+    let nextCursor: FeedCursor | null = null;
+    if (rows.length > clampedLimit) {
+      const last = slice[slice.length - 1];
+      if (last) {
+        nextCursor = {
+          v: Number(last.__sort_val),
+          id: Number(last.source_id),
+          order,
+        };
+      }
+    }
+
+    return { data, nextCursor };
+  } catch (err) {
+    console.error("getFeedKeyset PG error:", err);
+    return { data: [], nextCursor: null };
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Related videos — PG-backed, source-agnostic (replaces Danbooru getRelatedPosts)
 // ---------------------------------------------------------------------------
 

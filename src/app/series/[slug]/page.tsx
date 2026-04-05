@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { Pagination } from "@/components/Pagination";
 import { getVideos } from "@/lib/content";
+import { getNonce } from "@/lib/csp-nonce";
 import { SERIES, getSeriesBySlug } from "@/data/series";
 import { getCharacterBySlug } from "@/data/characters";
 import type { Metadata } from "next";
@@ -55,6 +56,7 @@ const SORT_OPTIONS = [
 ] as const;
 
 export default async function SeriesPage({ params, searchParams }: Props) {
+  const nonce = await getNonce();
   const { slug } = await params;
   const sp = await searchParams;
   const series = getSeriesBySlug(slug);
@@ -99,8 +101,8 @@ export default async function SeriesPage({ params, searchParams }: Props) {
 
   return (
     <div className="shell-content">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd).replace(/</g, "\\u003c") }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
       <main>
         <div className="page-container">
           {/* ── Series hero ─────────────────────────────────────── */}

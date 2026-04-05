@@ -4,6 +4,96 @@
    IKU.GG — DESIGN SYSTEM v2.0
    Tailwind CSS v4  |  @theme inline (CSS-first config)
    Architecture: dark premium · neon pink/purple · glassmorphism
+   ============================================================
+
+   TABLE OF CONTENTS (jump line numbers — keep in sync when editing)
+
+   Foundation
+     L 12  TOKEN SYSTEM                (--color-*, --font-*, --radius-*)
+     L174  BASE RESET                  (html, body, global selectors)
+     L224  KEYFRAME ANIMATIONS         (spin, shimmer, pulse, bounce)
+     L279  UTILITY CLASSES             (truncate, gradient text, glass)
+     L357  LAYOUT SYSTEM               (page-container, grids)
+     L382  LOADING & SKELETON          (spinner, shimmer placeholders)
+
+   Components — generic
+     L446  FEED — TIKTOK VERTICAL SWIPE (.feed-*, heart bursts)
+     L813  TAG PILL                    (.tag-pill*, filter chips)
+     L880  AGE GATE
+     L1068 HEADER / NAVBAR
+     L1204 SEARCH BAR
+     L1345 VIDEO CARD  (catalog / grid PimpBunny-style)
+     L1653 VIDEO GRID
+     L1695 SECTION HEADER
+     L1740 TAG CARD (featured grid)
+     L1805 CHARACTER CARD
+     L1869 BUTTONS
+     L1937 BADGES
+     L1956 PAGINATION
+     L2019 TOAST NOTIFICATIONS
+     L2065 TAG PAGE HERO
+
+   Watch / player
+     L2163 VIDEO PLAYER PAGE
+     L2400 TRENDING STRIP (horizontal scroll)
+     L2443 SCORE BAR
+     L2466 HOMEPAGE AMBIENT GLOW
+     L2498 FOOTER
+     L2521 WATCH PAGE — /watch/[slug]
+
+   App shell + home feed
+     L2608 APP SHELL — 3-COLUMN REDGIFS LAYOUT
+     L2977 HOME FEED — RedGIFs-style GifPreview player feed
+     L3407 LOGO — Righteous font
+     L3438 PAGINATION — PimpBunny circle active
+     L3505 EXPLORE PAGE — Sort filter pills
+     L3556 EXPLORE PAGE — Header
+     L3581 CONTENT TABS — Poppins cleaner underline
+     L3616 SECTION TITLES — Poppins weight
+     L3631 PAGE CONTAINER — side padding
+     L3645 SEARCH BAR — Poppins tighter padding
+     L3654 RIGHT SIDEBAR TAGS
+     L3680 HOMEPAGE — PimpBunny thumbnail grid
+
+   V2 anime colorful theme
+     L3867 V2 STREAMING LAYOUT — AppShell
+     L4444 V2 SITE HERO
+     L4448 V2 HERO SECTION — Featured trending
+     L4452 V2 CONTENT AREA
+     L4515 V2 CAROUSEL SECTION
+     L4627 V2 POSTER CARD (2:3 ratio)
+     L4853 V2 CHARACTER CARD (circular)
+     L4928 INDEX PAGE GRIDS — /character and /series
+     L5075 V2 POPULAR TAGS SECTION
+     L5159 V2 FOOTER
+
+   Autocomplete + overlays
+     L5164 SEARCH AUTOCOMPLETE
+     L5328 SEEK OVERLAY (double-tap feedback)
+
+   Content pages
+     L5358 GLOSSARY — iku.gg semantic content layer
+     L5595 BLOG — iku.gg
+     L5874 WATCH PAGE — rich content additions
+     L5958 HOMEPAGE — Learn section
+     L6025 TAG PAGE — cross-links section
+
+   Redesign (explore v2 + anime colorful)
+     L6333 EXPLORE PAGE v2 — Discovery layout
+     L6633 HOMEPAGE — ANIME COLORFUL REDESIGN (.hp-*)
+     L7321 ANIME COLORFUL — Floating sparkles
+
+   Auth + pricing + monetization
+     L7493 AUTH PAGES — /login, /signup, /profile
+     L7866 JOIN DISCORD CTA — animated button with GSAP
+     L8128 SCORE TOAST — top-right earn notifications
+     L8314 PRICING PAGE — /pricing
+     L8631 LEADERBOARD PAGE — /leaderboard
+     L8861 HOMEPAGE GO PRO CTA SECTION
+     L9104 VIDEO OF THE DAY (homepage)
+
+   NOTE: line numbers drift as code is added. Run this to regenerate:
+     awk '/^\/\* =+$/{getline; if($0 ~ /^[[:space:]]/){print NR-1": "$0}}' src/app/globals.css
    ============================================================ */
 
 /* ── GOOGLE FONTS ──────────────────────────────────────────── */

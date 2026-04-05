@@ -5,7 +5,6 @@ import type { Metadata } from "next";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { WatchPlayer } from "@/components/WatchPlayer";
 import { WatchActions } from "@/components/WatchActions";
-import { getPost } from "@/lib/danbooru";
 import { getGelbooruPost } from "@/lib/gelbooru";
 import { getRule34Post } from "@/lib/rule34";
 import { getRule34VideoPost, getRule34VideoPageUrl } from "@/lib/rule34video";
@@ -17,7 +16,8 @@ import {
   generateVideoFAQ,
   generateBreadcrumbs,
 } from "@/lib/content-generator";
-import { containsBannedContent, getRelatedVideos } from "@/lib/content";
+import { containsBannedContent, getRelatedVideos, getDanbooruVideo } from "@/lib/content";
+import { getNonce } from "@/lib/csp-nonce";
 
 export const revalidate = 86400;
 // Enable ISR for dynamic slugs: no pre-built params, but cache on-demand
@@ -107,7 +107,10 @@ export async function generateMetadata({
       if (!gv) return { title: "Hentai Video | iku.gg", robots: { index: false } };
       video = gv;
     } else {
-      video = await getPost(id);
+      // PG-first lookup; no live fallback for metadata so cold renders stay fast.
+      const dv = await getDanbooruVideo(id, { liveFallback: false });
+      if (!dv) return { title: "Hentai Video | iku.gg", robots: { index: false } };
+      video = dv;
     }
   } catch {
     return {
@@ -186,6 +189,7 @@ export async function generateMetadata({
 ───────────────────────────────────────────────────────────── */
 
 export default async function WatchPage({ params }: WatchPageProps) {
+  const nonce = await getNonce();
   const { slug } = await params;
 
   let video: Video;
@@ -218,7 +222,10 @@ export default async function WatchPage({ params }: WatchPageProps) {
       if (!gv) notFound();
       video = gv;
     } else {
-      video = await getPost(id);
+      // PG-first, live fallback only for fresh unscraped posts.
+      const dv = await getDanbooruVideo(id, { liveFallback: true });
+      if (!dv) notFound();
+      video = dv;
     }
   } catch {
     notFound();
@@ -319,6 +326,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
       {/* JSON-LD — VideoObject */}
       <script
         type="application/ld+json"
+        nonce={nonce}
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
         }}
@@ -327,6 +335,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
       {faqJsonLd && (
         <script
           type="application/ld+json"
+          nonce={nonce}
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c"),
           }}
@@ -335,6 +344,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
       {/* JSON-LD — BreadcrumbList */}
       <script
         type="application/ld+json"
+        nonce={nonce}
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c"),
         }}

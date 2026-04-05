@@ -7,6 +7,7 @@ import {
   getRelatedTerms,
 } from "@/data/glossary";
 import { BLOG_ARTICLES } from "@/data/blog";
+import { getNonce } from "@/lib/csp-nonce";
 
 interface TermPageProps {
   params: Promise<{ term: string }>;
@@ -37,6 +38,7 @@ export async function generateMetadata({ params }: TermPageProps): Promise<Metad
 }
 
 export default async function TermPage({ params }: TermPageProps) {
+  const nonce = await getNonce();
   const { term: slug } = await params;
   const term = getTermBySlug(slug);
   if (!term) notFound();
@@ -93,12 +95,14 @@ export default async function TermPage({ params }: TermPageProps) {
     <>
       <script
         type="application/ld+json"
+        nonce={nonce}
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(faqSchema).replace(/</g, "\\u003c"),
         }}
       />
       <script
         type="application/ld+json"
+        nonce={nonce}
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(breadcrumbSchema).replace(/</g, "\\u003c"),
         }}

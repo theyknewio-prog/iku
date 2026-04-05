@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { SERIES } from "@/data/series";
 import { getThumbnailsForTags } from "@/lib/content";
+import { getNonce } from "@/lib/csp-nonce";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -25,6 +26,7 @@ export const revalidate = 86400;
 export const dynamic = "force-dynamic";
 
 export default async function SeriesIndexPage() {
+  const nonce = await getNonce();
   // Batch-fetch real poster thumbnails for every series using the primary tag.
   const allTags = SERIES.map((s) => s.tags[0]).filter(Boolean);
   const thumbnails = await getThumbnailsForTags(allTags);
@@ -40,7 +42,7 @@ export default async function SeriesIndexPage() {
 
   return (
     <div className="shell-content">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
       <main>
         <div className="page-container">
           {/* ── Page hero ─────────────────────────────────────── */}
