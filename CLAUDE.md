@@ -563,7 +563,94 @@ Home | Search | Shorts (pulse glow quand inactif, gradient quand actif) | Trendi
 
 ## Prochaines étapes (priorité)
 
-### FAIT ✅ (session 2026-04-05 — méga session : gamification, Pro, Discord, email, SEO)
+### FAIT ✅ (session 2026-04-05 soir — UX sweep 5 phases + 20 prog SEO + audits + watch sound fix)
+
+Après la méga session du matin (gamification + Pro + Discord + email), Sab a fait un audit visuel du site et envoyé 24 feedback points. Traités en 5 phases, toutes déployées :
+
+**Phase 1 — Bugs critiques (`b66fdc3`)**
+- **Topbar overlap sur toutes les pages hors homepage** : `.v2-topbar` est `position: fixed`, mais seules les 4 pages utilisant `.v2-page` avaient un `padding-top` pour compenser. Déplacé le `padding-top: var(--v2-topbar-h)` de `.v2-page` vers `.v2-main` → fix instantané de `/trending`, `/explore`, `/new`, `/watch`, `/character`, `/series`, etc.
+- **Shorts feed s'arrêtait après ~10 vidéos** : filter API agressif (`v.url && v.fileSize < 15MB`) + `limit: 20` donnait ~3-5 vidéos utilisables par fetch. Fix : limit 20→60, cap fileSize 15MB→60MB, `setPage` avance TOUJOURS (pas seulement sur fetch non-vide), nouveau safety-net useEffect qui auto-fetch quand buffer ahead < 5.
+- **Duplicate "online now" counter sur mobile** : static "1,247 online" hardcoded dans mobile-stats bar + OnlineCounter live dans la hp-hero stats row en dessous du CTA Discord. Remplacé le static par OnlineCounter live et supprimé le doublon.
+- **"See plans" pas responsive** : les CTAs Pro stackent maintenant full-width sous 640px.
+
+**Phase 2 — Images partout (`e8ebeef`)**
+- `/character` : grid d'avatars circulaires avec vraies thumbnails (via `getThumbnailsForTags`, emoji fallback si PG vide).
+- `/series` : poster grid rectangulaire avec cover images + vignette sombre pour lisibilité.
+- `/history` : `HistoryItem` persiste maintenant `thumbnail` + `title` dans localStorage (backfill progressif au fur et à mesure que l'user re-watch des vidéos).
+- `/explore` : backdrops images sur les 6 hub cards + Popular Characters scroll (vraies images rondes) + Popular Series cards avec cover images.
+- Homepage "Trending right now" preview card agrandie 200→280px (320px sur ≥1280px), titre 13→17/19px.
+
+**Phase 3 — Mobile nav complète (`5f07665`)**
+- Bouton hamburger dans le topbar (mobile only, `.v2-topbar-hamburger`).
+- Nouveau drawer complet `.v2-nav-drawer` slide-in-left (86vw / max 340px), accessible depuis le hamburger topbar ET le "More" bottom-nav (state partagé `menuOpen`).
+- 5 sections : Discover / My Library / Browse / **More (Blog, Pricing, Glossary)** ← nouveauté / Quick Tags + CTA Discord.
+- Body scroll locked pendant l'ouverture. Legacy `.v2-mobile-menu` dropdown supprimé.
+
+**Phase 4 — UX refine + conversion (`700c425`)**
+- **Retiré "Top Rated"** du sidebar Discover (pointait vers `/explore?sort=top` = identique à `/trending`, faisait doublon).
+- **Nouveau `<SignupCTA>` component** : anon-only, placé sur homepage / explore / trending / favorites (si items > 0) / history (si items > 0). Pitch : gamification + streak + quests + 30% Pro discount. Liens `/signup?from=<placement>` pour analytics attribution.
+- **Tags Instagram stories-circle sur homepage** : `.hp-tag-stories` horizontal scroll avec gradient rings colorés + vraies cover images (via `getThumbnailsForTags`). Remplace le pill cloud plat.
+- **Shorts action rail desktop refresh** : nouvelle classe `.feed-action` avec circular backdrop, hover scale, active pink tint, labels visibles (LIKE / SAVE / SHARE / SOUND / WATCH) sur desktop ≥1024px. Mobile garde 48px targets sans labels.
+
+**Phase 5 — Silent bug Shorts sound desktop (`ff7e479`)**
+- Same pattern que le bug React muted race → fix `toggleMute` pour utiliser functional setMuted + pas de mutation directe de `el.muted` + refacto `useVideoShortcuts` hook pour accepter un callback `onMuteToggle`.
+- ⚠️ **Ce fix était incomplet** — voir commits suivants.
+
+**Deploy CI + workaround (`da1ef66`, `b9a6b7b`)**
+- `.github/workflows/deploy.yml` créé comme fallback au webhook Coolify cassé (appelle `POST /api/v1/deploy` sur chaque push master).
+- `deploy.sh` local créé comme fallback-au-fallback (GH Actions est soft-locked par le flag compte — voir section GitHub account flag).
+
+**Watch page sound fix saga (`4aa0ccf` → `ed1b3f0` → `d72fba3` → `2c52b32`)**
+- User a signalé que sur `/watch/*`, clic sur Unmute ne fait rien (seule la molette marche en desktop, rien en mobile).
+- **4 commits successifs** car j'ai trouvé 3 bugs en cascade. Voir Silent Bugs section pour les détails techniques.
+- Bug 1 : même pattern que Shorts → React muted quirk → fix avec useEffect `v.muted = muted`.
+- Bug 2 : `playing` state init à `false` + `<video autoPlay>` → big center Play overlay rendu, zIndex 3, inset 0 → couvre la control bar → clicks morts. Fix : init `playing: true` + rescue effect.
+- Bug 3 (le vrai !) : Le bouton volume visible avait `onClick={() => setVolumeSliderOpen(o => !o)}` au lieu de `toggleMute`. Le toggleMute réel était dans un bouton nested inside the popup slider. Fix : click direct = toggleMute, slider via onMouseEnter.
+- **Vérifié en prod via Playwright MCP E2E** : `before: muted=true` → click → `after: muted=false, paused=false, btnLabel="Mute"` ✅
+- **Shorts feed aussi testé** : scrolling 20 rounds a chargé 60 → 954 vidéos sans blocage ✅
+
+**20 articles prog SEO (`a8cf637`)**
+- Nouveau fichier `src/data/blog-seo-push.ts` avec 20 listicles clonant la recette `best-hentai-studios` (qui a ranké position 2 Google sur `3d hentai studios` au first indexing).
+- 10 genre listicles (vanilla, NTR, MILF, succubus, maid, ahegao, tentacle, isekai, bondage, schoolgirl) + 10 franchise listicles (Naruto, Bleach, One Piece, Dragon Ball, MHA, LoL, Final Fantasy, Nier 2B, Chainsaw Man, JJK).
+- Total blog passe de 30 → 50 articles. Chaque ~2000 mots avec maillage interne dense vers `/tag/`, `/character/`, `/series/`, autres `/blog/`.
+
+**Winback email cron (`309e0a8`)**
+- `sendWinbackEmail()` ajouté à `src/lib/email.ts` + `scripts/winback-email-cron.mjs` standalone (utilise Resend SDK directement).
+- 3 fenêtres j7 / j14 / j30 avec tone qui ramp (soft → stakes → last call). Chaque user reçoit max 3 lifetime (dedup via `email_log`).
+- Workflow `.github/workflows/winback-email.yml` daily 08:00 UTC. **Ne tourne pas** tant que GH Actions est bloqué.
+
+**Email verification enforcement (`17dfcb2`)**
+- Helper `src/lib/email-verify-guard.ts` → `getVerifyStatus(userId)` retourne `{ passed, email, emailVerified, isOAuthSynthetic }`. Discord users avec `@discord.iku.gg` sont exempt.
+- Routes gardées : `POST /api/stripe/checkout` et `POST /api/favorites { bulk: [...] }` retournent `403 email_not_verified`.
+- Nouveau endpoint `POST /api/auth/resend-verification` (rate-limited 1/5min/user).
+- `<EmailVerificationBanner>` client component (state machine idle/sending/sent/cooldown/error), placé sur `/profile` (universel) et `/pricing` (avec blocking hint "upgrade to Pro").
+- pricing-client gère le 403 avec un message clair pointant vers le banner.
+
+**PostHog dashboards automation (`f9b51d3`)**
+- `scripts/posthog-setup-dashboards.mjs` idempotent (lookup by name, skip if exist). Dry-run via `DRY_RUN=1`.
+- **Exécuté en live** avec une clé `phx_...` créée via MCP sur https://us.posthog.com (compte `iku.media.gg@gmail.com`, project `370092`) → 3 dashboards + 16 insights créés :
+  - 📊 Acquisition & Engagement (id `1433013`) — pageviews, DAU, landings, referrers, geo, device
+  - 🎯 Conversion Funnels (id `1433014`) — anon→active, signup→Pro, video engagement, Discord join
+  - 🔁 Retention & Gamification (id `1433015`) — cohort retention, DAU/WAU/MAU, tier ups, badges, top users
+- **Clé used** : scrubbed — PostHog personal API key with abilities `dashboard:write + insight:write` on project 370092. Stored server-side only; regenerate via https://us.posthog.com → Settings → Personal API keys if needed.
+
+**Tâches FAITES aujourd'hui** :
+- ✅ Câblage events PostHog custom (a696191, 9deb710 — du matin)
+- ✅ Dashboards PostHog créés (script + exécution live)
+- ✅ 20 prog SEO articles
+- ✅ Winback email cron (code + workflow prêt, en pause à cause du GH flag)
+- ✅ Email verification enforcement
+- ✅ 5 phases UX sweep (24 feedback items traités)
+- ✅ Watch sound fix (3 bugs en cascade)
+- ✅ Shorts scroll infinite fix
+- ✅ Deploy.sh local pour contourner webhook+GH Actions cassés
+
+**Tâches restantes / next priorities** :
+- ⏳ Lever le flag GitHub (support ticket) → automation crons reprennent
+- ⏳ ExoClick integration (ad zones déjà en place dans le design)
+- ⏳ Deep audit technique avant lancement subscriptions live (user wants no bug surprises)
+
+### FAIT ✅ (session 2026-04-05 matin — méga session : gamification, Pro, Discord, email, SEO)
 
 **🎯 Monétisation (Stripe Pro live)**
 - Stripe products créés en live : `iku_pro_monthly` (4.99€/mo), `iku_pro_yearly` (39.99€/yr, -33%), `iku_pro_lifetime` (69.99€ one-time)
@@ -789,6 +876,24 @@ Bugs qui ne produisent PAS d'erreur visible et qui restent silencieux jusqu'à u
 - Toujours faire `setMuted(false)` EN MÊME TEMPS que `v.muted = false`.
 - Pattern à surveiller partout où du code touche directement les props contrôlées du `<video>`.
 
+### React `muted` attribute ne propage PAS (issue #10389) — DÉCOUVERT 2026-04-05
+- **Corollaire plus vicieux** du bug ci-dessus. Même si tu fais tout propre côté state (`setMuted(false)` via functional updater, zéro mutation de `v.muted` dans le code), ça ne marche QUAND MÊME pas.
+- L'attribut HTML `muted` sur `<video>` mappe sémantiquement à `defaultMuted` en DOM API — il représente l'état INITIAL, pas l'état courant. Quand React voit `muted={false}` après le mount, il fait `element.removeAttribute("muted")` ce qui **ne démute pas** la vidéo (la propriété `.muted` JS garde son ancienne valeur).
+- **Fix obligatoire** : un `useEffect([muted])` qui force `v.muted = muted` impérativement à chaque changement de state.
+- Appliqué dans `WatchPlayer.tsx` et `VideoCard.tsx` — commit `ed1b3f0`. Ne PAS retirer cet useEffect, il ne fait pas double emploi avec la prop `muted={muted}`.
+
+### Autoplay + `<video onPlay={}>` = state race qui crée un overlay click-eater — DÉCOUVERT 2026-04-05
+- Le `WatchPlayer` initialisait `const [playing, setPlaying] = useState(false)`. Quand `<video autoPlay>` commence la lecture AVANT que React attache son listener `onPlay`, l'event est perdu dans la race de mount. React garde `playing = false` pendant que `v.paused === false`.
+- Conséquence : le `{!playing && <button className="wp-center-play">}` (grand bouton central) reste rendu avec `position:absolute; inset:0; zIndex:3` → **il couvre TOUTE la control bar** et bouffe tous les clicks (mute, share, fullscreen, speed, loop, etc.).
+- **Fix** : initialiser `playing` à `true` (matche l'attribut `autoPlay`) + un `useEffect` qui resync depuis `v.paused` après 250ms pour les cas d'autoplay refusé par le browser. Commit `d72fba3`.
+- **Règle générale** : quand un state React doit refléter l'état d'un element `<video>` qui a `autoPlay`, ne JAMAIS l'initialiser à `false`. Toujours init à `true` + effect de rescue.
+
+### UI trap : bouton visible qui ouvre un popup au lieu de l'action attendue — DÉCOUVERT 2026-04-05
+- Dans `WatchPlayer.tsx`, le bouton volume avec `aria-label={muted ? "Unmute" : "Mute"}` appelait `setVolumeSliderOpen(o => !o)` au lieu de `toggleMute()`. Le `toggleMute` réel était dans un bouton **imbriqué à l'intérieur du popup slider**, invisible tant que le popup n'était pas ouvert.
+- Résultat user : clic sur "Unmute" → popup s'ouvre → user ne voit rien changer → son reste coupé → user pense que le bouton est cassé. Sur mobile aucun hover donc le popup ne s'ouvre jamais → son jamais activable.
+- **Fix** : le bouton primaire fait l'action primaire (click = toggleMute direct). Le slider s'ouvre via `onMouseEnter` sur le container parent. Commit `2c52b32`.
+- **Règle** : si un bouton a un aria-label qui décrit une action ("Unmute"), son `onClick` doit faire exactement cette action. Pas de misdirection vers un sous-menu.
+
 ### Legacy CSS `display: none` oublié
 - Une règle `.v2-topbar__search { display: none }` trainait dans `globals.css`, léguée d'un ancien redesign. Elle cachait la search bar depuis des mois.
 - Si un élément "devrait exister" mais n'apparaît pas, grep `globals.css` pour `display: none` sur la classe.
@@ -811,6 +916,143 @@ Bugs qui ne produisent PAS d'erreur visible et qui restent silencieux jusqu'à u
 ### IP detection via headers
 - Utilise `x-real-ip` (set par Traefik, non-spoofable) en priorité, fallback `x-forwarded-for.pop()` (dernier IP = le plus proche du reverse proxy, non-spoofable aussi).
 - `x-forwarded-for[0]` (premier IP) est user-controllable → spoofable. **Ne pas utiliser**.
+
+---
+
+## ⚠️ GitHub account flag — COMPTE LIMITÉ (2026-04-05)
+
+**Le compte `theyknewio-prog` est FLAGGÉ par l'anti-abus de GitHub.**
+
+Symptômes observés dans la session du 2026-04-05 :
+- `gh api POST .../workflows/{id}/dispatches` → **`422 "Actions has been disabled for this user"`**
+- UI "Run workflow" click silencieusement no-op (0 runs créés)
+- Push events master ne déclenchent aucun workflow (tous les 5 workflows sont `enabled: true` côté API mais dormants)
+- Billing → Payment method : **"You cannot add or update a payment method because your account has been flagged"**
+- Budget Actions edit/delete → 400/422 (même reason: payment method flow bloqué)
+- Banners persistants sur toutes les pages Actions : "You can't perform that action at this time"
+
+**Ce qui marche malgré le flag** :
+- ✅ `git push origin master` (le git protocol n'est pas bloqué)
+- ✅ Repo accès, code, commits, branches, PRs
+- ✅ Coolify deploy manuel via API (voir section deploy ci-dessous)
+- ✅ iku.gg en prod (le site tourne indépendamment de GH Actions)
+
+**Ce qui est cassé tant que le flag n'est pas levé** :
+- ❌ Workflow auto-trigger sur push → `deploy.yml` ne déploie pas
+- ❌ Cron schedules → `daily-scrape.yml`, `winback-email.yml`, `discord-bots.yml`, `discord-emoji-sync.yml` ne tournent pas
+- ❌ `workflow_dispatch` via API ou UI
+- ❌ Ajouter une carte / modifier les budgets billing
+
+**Probable cause** (pattern anti-crypto-miner) :
+1. Compte < 7 jours au moment du flag
+2. Flip du repo public → privé → public dans la même journée
+3. Création de 5 workflows (dont plusieurs crons) en quelques heures
+4. Pas de 2FA au moment du flag (activée après)
+5. Pas de payment method
+
+**Actions prises dans la session** :
+- 2FA SMS activée ✅ (mais seule, ne lève pas le flag)
+- Tentative ajout PayPal → bloquée par le flag lui-même
+- `deploy.sh` local créé comme workaround (voir section suivante)
+
+**Pour lever le flag — message à envoyer à GitHub Support** (https://support.github.com/contact?tags=rr-actions, catégorie Billing & Account) :
+
+```
+Subject: Account flagged — unable to add payment method or run Actions
+
+Hi,
+
+My account `theyknewio-prog` appears to have been flagged. Symptoms:
+
+1. Settings → Billing → Payment information shows:
+   "You cannot add or update a payment method because your account 
+   has been flagged. If you believe this is a mistake, contact support."
+
+2. GitHub Actions: API workflow_dispatch returns:
+   "Actions has been disabled for this user." (HTTP 422)
+
+3. Workflow runs via UI are silently dropped.
+
+The account is recent, the repo is public, and my activity is legitimate
+(personal project development pushes). SMS 2FA is enabled.
+
+Could you please review the flag and restore account access?
+
+Thanks!
+```
+
+**Quand le flag est levé** : tous les workflows existants (deploy.yml, daily-scrape, discord-bots, etc.) reprennent automatiquement à leur schedule. Aucun code à modifier.
+
+---
+
+## 🚀 Deploy Coolify — `deploy.sh` local (workaround webhook cassé + GH Actions bloqué)
+
+### Le webhook Coolify est cassé
+
+Le webhook GitHub → Coolify (`POST /webhooks/source/github/events`) reçoit bien les push events (200 OK côté GitHub) mais **ne queue aucun deploy**. Cause : l'app Coolify a `source_id: null` et `source_type: null` — le repo est cloné via un token embedded dans l'URL HTTPS, pas via une "GitHub Source" Coolify-managed. Le handler webhook ne sait pas à quelle app rattacher l'event et le drop silencieusement.
+
+### Pattern deploy recommandé
+
+**Script local** : `deploy.sh` à la racine du projet. Usage :
+```bash
+./deploy.sh                          # push + deploy
+./deploy.sh "commit msg"              # stage + commit + push + deploy
+```
+
+Il fait : optional `git add -A && git commit` → `git push` → `POST /api/v1/deploy` sur Coolify → poll jusqu'à finished (8 min timeout) → verify `https://iku.gg` HTTP 200.
+
+### Variables d'env requises pour `deploy.sh`
+
+À mettre dans `~/.bashrc` ou équivalent shell rc :
+```bash
+export COOLIFY_TOKEN="{SCRUBBED_SEE_MEMORY_reference_coolify_deploy.md}"
+export COOLIFY_HOST="204.168.233.29:8000"
+export COOLIFY_APP_UUID="hjta50cv9nfem56atjtwmlx1"
+```
+
+Le token `{SCRUBBED_SEE_MEMORY_reference_coolify_deploy.md}` est un Personal Access Token Coolify créé le 2026-04-05, abilities `["deploy","read","write"]`, name `iku-deploy-sh`, user 0 (theyknewio@gmail.com), team_id `0`. Créé via raw SQL insert dans `personal_access_tokens` (la méthode `createToken()` de Laravel Sanctum n'acceptait pas `team_id` explicite).
+
+### API Coolify — endpoints utiles
+
+```bash
+# Deploy (pull + rebuild)
+POST /api/v1/deploy?uuid=<app-uuid>&force=false
+Authorization: Bearer <token>
+
+# Restart container (sans pull)
+POST /api/v1/applications/<app-uuid>/restart
+
+# Get deployment status
+GET /api/v1/deployments/<deployment-uuid>
+
+# List all recent deployments
+GET /api/v1/deployments?per_page=10
+```
+
+Le POST `/api/v1/deploy` retourne `{"deployments": [{"deployment_uuid": "xxx"}]}`. Utiliser ce UUID pour poller `/api/v1/deployments/{uuid}` — status passe par `in_progress` → `finished` (ou `failed`).
+
+### Pattern fallback via tinker (si API indispo)
+
+```bash
+ssh root@204.168.233.29 'docker exec -i coolify php artisan tinker << EOF
+$app = \App\Models\Application::where("uuid", "hjta50cv9nfem56atjtwmlx1")->first();
+$uuid = (new \Visus\Cuid2\Cuid2)->toString();
+queue_application_deployment(application: $app, deployment_uuid: $uuid, force_rebuild: false, is_webhook: false);
+echo "Queued: " . $uuid;
+EOF'
+```
+
+### GH Actions workflow `deploy.yml` (en dormance)
+
+Le fichier `.github/workflows/deploy.yml` existe et est committé. Il déclenche sur push master et appelle `POST /api/v1/deploy` avec les secrets `COOLIFY_TOKEN`, `COOLIFY_HOST`, `COOLIFY_APP_ID`. **Il ne tourne pas actuellement** à cause du flag GitHub — mais dès que le flag est levé, il reprend automatiquement et `deploy.sh` devient optionnel.
+
+### Playwright MCP — quirks rencontrés dans la session
+
+- **Viewport par défaut est 1x1 pixel** quand le browser est lancé via le MCP en mode connexion CDP. Faire `mcp__playwright__browser_resize(1400, 900)` au début de chaque session de tests, sinon les `browser_click(ref)` timeout avec "element is outside of the viewport".
+- **`element.click()` via `evaluate()` ne déclenche PAS les React onClick** dans certains cas (synthetic events non-trusted). Utiliser les tools MCP natifs (`browser_click` avec ref depuis snapshot) qui passent par CDP avec des événements trusted.
+- **Les `aria-ref=eXXX` sont invalidés à chaque snapshot/navigate**. Toujours re-snapshot juste avant un click si le DOM a changé.
+- **`pointer-events: none` sur un parent invisible bloque les clicks** même si le child est visible. Vérifier `document.elementFromPoint(x, y)` retourne bien l'élément attendu avant de cliquer.
+- **Pour debug quel handler est attaché** à un bouton React : `btn[Object.keys(btn).find(k => k.startsWith('__reactProps$'))].onClick.toString()` — ça révèle la vraie fonction (même minifiée, on voit son corps).
 
 ---
 
