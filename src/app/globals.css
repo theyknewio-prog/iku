@@ -7203,3 +7203,173 @@ body {
 .v2-user-dropdown__item--danger:hover {
   background: rgba(239,68,68,0.1);
 }
+
+/* ============================================================
+   JOIN DISCORD CTA — animated button with GSAP
+   ============================================================ */
+.jd-cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #fff;
+  font-family: var(--font-sans);
+  font-weight: 800;
+  isolation: isolate;
+  overflow: visible;
+  cursor: pointer;
+  will-change: transform;
+  /* transform applied by GSAP — don't put a CSS transition on transform */
+}
+
+.jd-cta--hero {
+  padding: 18px 32px;
+  border-radius: 18px;
+  font-size: 15px;
+  box-shadow:
+    0 10px 30px rgba(88, 101, 242, 0.4),
+    0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.jd-cta--compact {
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 13px;
+  box-shadow: 0 6px 20px rgba(88, 101, 242, 0.35);
+}
+
+.jd-cta--inline {
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  box-shadow: 0 4px 14px rgba(88, 101, 242, 0.3);
+}
+
+/* Background + border (the actual "button" surface) */
+.jd-cta__inner {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0;
+  border-radius: inherit;
+}
+
+.jd-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(135deg, #5865f2 0%, #7289da 50%, #c084fc 100%);
+  z-index: 1;
+}
+
+.jd-cta::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Animated glow halo (outside the button) */
+.jd-cta__glow {
+  position: absolute;
+  inset: -6px;
+  border-radius: calc(var(--radius, 18px) + 6px);
+  background:
+    radial-gradient(circle, rgba(88,101,242,0.6) 0%, rgba(192,132,252,0.3) 40%, transparent 70%);
+  opacity: 0.3;
+  z-index: 0;
+  pointer-events: none;
+  filter: blur(12px);
+}
+
+/* Sheen that sweeps across on hover */
+.jd-cta__sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 70%
+  );
+  transform: translateX(-110%);
+  z-index: 4;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* Floating particles container */
+.jd-cta__particles {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.jd-particle {
+  position: absolute;
+  bottom: 20%;
+  color: #fbbf24;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+}
+
+.jd-particle:nth-child(odd) {
+  color: #ff6b9d;
+  text-shadow: 0 0 10px rgba(255, 107, 157, 0.6);
+}
+
+/* Icon + text */
+.jd-cta__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  will-change: transform;
+}
+
+.jd-cta__text {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.jd-cta__title {
+  font-size: inherit;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.jd-cta__sub {
+  font-size: 11px;
+  font-weight: 500;
+  opacity: 0.85;
+  margin-top: 2px;
+  letter-spacing: 0.02em;
+}
+
+.jd-cta--compact .jd-cta__sub,
+.jd-cta--inline .jd-cta__sub {
+  display: none;
+}
+
+.jd-cta__arrow {
+  font-size: 18px;
+  margin-left: 4px;
+  opacity: 0.9;
+  font-weight: 700;
+}

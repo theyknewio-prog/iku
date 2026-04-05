@@ -9,6 +9,7 @@ import { getVideos, getCuratedGenreCounts } from "@/lib/content";
 import { buildTitle, pickGenreTag } from "@/lib/video-display";
 import { SERIES } from "@/data/series";
 import { OnlineCounter } from "@/components/OnlineCounter";
+import { JoinDiscordCTA } from "@/components/JoinDiscordCTA";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai Videos | Stream Animated Hentai Online",
@@ -148,6 +149,10 @@ export default async function HomePage() {
                 <Link href="/feed" className="hp-btn-secondary">
                   <span>⚡</span> Try Shorts
                 </Link>
+              </div>
+
+              <div style={{ marginTop: "20px" }}>
+                <JoinDiscordCTA variant="hero" />
               </div>
 
               <div className="hp-hero-stats">

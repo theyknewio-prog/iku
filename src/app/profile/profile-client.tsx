@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { JoinDiscordCTA } from "@/components/JoinDiscordCTA";
 
 const AVATAR_OPTIONS = ["🌸", "🎮", "⚔️", "🧙", "🐉", "🏹", "😈", "👹", "🌙", "🤖", "🌿", "⚗️", "🐱", "🦊", "🧝", "🧛", "🧜", "👑", "💎", "🔥"];
 
@@ -161,6 +162,14 @@ export function ProfileClient({ initialUsername, initialAvatar, hasPassword }: P
           </button>
         </form>
       )}
+
+      <div className="profile-section">
+        <h2>Community</h2>
+        <p style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", margin: "0 0 14px" }}>
+          Jump into the iku.gg Discord — daily drops, genre forums, watch parties, and a community of fans.
+        </p>
+        <JoinDiscordCTA variant="compact" />
+      </div>
 
       <div className="profile-section">
         <h2>Session</h2>
