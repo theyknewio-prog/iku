@@ -324,6 +324,74 @@ export async function sendWelcomeEmail(opts: {
   });
 }
 
+export async function sendWinbackEmail(opts: {
+  userId: number | string;
+  email: string;
+  username: string;
+  daysInactive: 7 | 14 | 30;
+  currentStreak?: number;
+  longestStreak?: number;
+  score?: number;
+  tier?: string;
+}): Promise<SendResult> {
+  const { daysInactive, username, currentStreak = 0, longestStreak = 0, score = 0, tier = "Wanderer" } = opts;
+
+  // Tone ramps up: j7 soft, j14 with stakes, j30 last call
+  const subjects: Record<number, string> = {
+    7:  `We miss you, ${username} 💔`,
+    14: `${username}, your streak is getting cold ❄️`,
+    30: `One last reminder, ${username} — we're still here 💖`,
+  };
+
+  const hooks: Record<number, string> = {
+    7:  "It's been a week since you last visited. Your spot on the leaderboard is getting hungry.",
+    14: "Two weeks without watching. Your daily quests are piling up and the community is scoring past you.",
+    30: "A full month. We know life gets busy — just a reminder that your account, favorites, and progress are still here waiting.",
+  };
+
+  const streakLine = longestStreak > 0
+    ? `<p style="margin:0 0 16px;padding:14px 18px;background:rgba(255,107,157,0.08);border-left:3px solid #ff6b9d;border-radius:6px;font-size:14px;">
+         🔥 Your longest streak was <strong style="color:#ff6b9d;">${longestStreak} days</strong>. Think you can beat it?
+       </p>`
+    : "";
+
+  const statLine = score > 0
+    ? `<p style="margin:0 0 20px;font-size:14px;color:rgba(255,255,255,0.65);">
+         Current tier: <strong style="color:#c084fc;">${escapeHtml(tier)}</strong>
+         &nbsp;·&nbsp; Score: <strong style="color:#c084fc;">${score.toLocaleString()}</strong>
+       </p>`
+    : "";
+
+  const html = emailShell({
+    title: subjects[daysInactive],
+    preheader: hooks[daysInactive],
+    body: `
+      <p style="margin:0 0 16px;">Hey <strong style="color:#fff;">${escapeHtml(username)}</strong>,</p>
+      <p style="margin:0 0 16px;">${hooks[daysInactive]}</p>
+      ${streakLine}
+      ${statLine}
+      <p style="margin:0 0 12px;font-weight:700;color:#ff6b9d;">What's new since you've been gone:</p>
+      <ul style="margin:0 0 16px;padding-left:20px;color:rgba(255,255,255,0.75);font-size:14px;line-height:1.8;">
+        <li>🆕 Fresh clips added daily from all sources</li>
+        <li>🎯 3 new daily quests waiting for you (+15 pts each)</li>
+        <li>🏆 New badges to unlock on your next visit</li>
+        <li>💎 iku.gg Pro — remove ads + early access (now live)</li>
+      </ul>
+    `,
+    ctaLabel: currentStreak > 0 ? "Resume my streak 🔥" : "Take me back 💖",
+    ctaUrl: `${SITE_URL}/?utm_source=email&utm_medium=winback&utm_campaign=j${daysInactive}`,
+    footnote: `You're receiving this because you haven't visited iku.gg in ${daysInactive} days. <a href="${SITE_URL}/settings" style="color:#c084fc;text-decoration:none;">Unsubscribe from re-engagement emails</a>.`,
+  });
+
+  return rawSend({
+    to: opts.email,
+    subject: subjects[daysInactive],
+    html,
+    userId: opts.userId,
+    template: `winback_j${daysInactive}`,
+  });
+}
+
 // ─────────────────────────────────────────────────────────────
 // Token consumption helpers (used by /api/auth/verify + /reset-password)
 // ─────────────────────────────────────────────────────────────

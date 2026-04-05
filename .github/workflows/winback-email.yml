@@ -1,0 +1,33 @@
+name: Winback emails — daily re-engagement cron
+
+on:
+  schedule:
+    # Daily at 08:00 UTC — catches users in Europe morning, US late night
+    - cron: "0 8 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (log picks without sending)"
+        type: boolean
+        required: false
+        default: false
+
+jobs:
+  winback:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install deps
+        run: npm install pg resend
+      - name: Send winback emails (j7 + j14 + j30)
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          DATABASE_URL:   ${{ secrets.DATABASE_URL }}
+          EMAIL_FROM:     ${{ secrets.EMAIL_FROM }}
+          NEXT_PUBLIC_SITE_URL: https://iku.gg
+          WINBACK_DRY_RUN: ${{ github.event.inputs.dry_run && '1' || '' }}
+        run: node scripts/winback-email-cron.mjs
