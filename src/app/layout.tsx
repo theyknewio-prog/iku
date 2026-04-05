@@ -4,6 +4,7 @@ import "./globals.css";
 import { AppShell } from "@/components/AppShell";
 import { SessionProviderClient } from "@/components/SessionProviderClient";
 import { UserDataSync } from "@/components/UserDataSync";
+import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -105,6 +106,7 @@ export default function RootLayout({
           <div className="sparkle" />
         </div>
         <SessionProviderClient>
+          <AnalyticsProvider />
           <UserDataSync />
           <AppShell>{children}</AppShell>
         </SessionProviderClient>
