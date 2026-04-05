@@ -45,6 +45,8 @@ export interface Video {
   duration: number | null;
   createdAt: Date;
   source: "danbooru" | "gelbooru" | "rule34" | "rule34video" | "wp";
+  /** Scraped title (rule34video, WP sources). Empty for booru sources. */
+  title?: string;
 }
 
 export interface SearchOptions {

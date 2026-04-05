@@ -108,6 +108,7 @@ function rowToVideo(row: Record<string, unknown>): Video {
     duration: row.duration as number | null,
     createdAt: new Date(row.created_at as string),
     source: row.source as Video["source"],
+    title: (row.title as string) || undefined,
   };
 }
 
