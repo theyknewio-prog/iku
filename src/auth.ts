@@ -1,0 +1,209 @@
+/**
+ * auth.ts — NextAuth v5 (Auth.js) configuration for iku.gg
+ *
+ * Two sign-in methods:
+ *   1. Credentials (email + password) — stored hashed in `users` table
+ *   2. Discord OAuth — linked via `user_oauth_accounts` table
+ *
+ * Session strategy: JWT (no session DB lookup on every request).
+ * The JWT contains the internal user id + username + avatar, so pages
+ * can render user info without hitting PG.
+ */
+
+import NextAuth, { type DefaultSession } from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import Discord from "next-auth/providers/discord";
+import bcrypt from "bcryptjs";
+import pool from "@/lib/db";
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      username: string;
+      avatarEmoji: string;
+    } & DefaultSession["user"];
+  }
+}
+
+interface UserRow {
+  id: number;
+  email: string;
+  username: string;
+  password_hash: string | null;
+  avatar_emoji: string;
+}
+
+/** Look up a user by email (case-insensitive). */
+async function findUserByEmail(email: string): Promise<UserRow | null> {
+  const { rows } = await pool.query(
+    `SELECT id, email, username, password_hash, avatar_emoji
+     FROM users WHERE LOWER(email) = LOWER($1) LIMIT 1`,
+    [email]
+  );
+  return rows[0] ?? null;
+}
+
+/** Look up a user by internal id. */
+async function findUserById(id: number | string): Promise<UserRow | null> {
+  const { rows } = await pool.query(
+    `SELECT id, email, username, password_hash, avatar_emoji
+     FROM users WHERE id = $1 LIMIT 1`,
+    [id]
+  );
+  return rows[0] ?? null;
+}
+
+/** Find or create a user from a Discord OAuth profile. */
+async function findOrCreateDiscordUser(profile: {
+  id: string;
+  email: string | null;
+  username: string;
+  avatar: string | null;
+}): Promise<UserRow> {
+  // 1. Already linked?
+  const existing = await pool.query(
+    `SELECT u.id, u.email, u.username, u.password_hash, u.avatar_emoji
+     FROM user_oauth_accounts o
+     JOIN users u ON u.id = o.user_id
+     WHERE o.provider = 'discord' AND o.provider_user_id = $1`,
+    [profile.id]
+  );
+  if (existing.rows[0]) return existing.rows[0];
+
+  // 2. Account by email? (link, don't duplicate)
+  if (profile.email) {
+    const byEmail = await findUserByEmail(profile.email);
+    if (byEmail) {
+      await pool.query(
+        `INSERT INTO user_oauth_accounts (provider, provider_user_id, user_id)
+         VALUES ('discord', $1, $2)
+         ON CONFLICT DO NOTHING`,
+        [profile.id, byEmail.id]
+      );
+      return byEmail;
+    }
+  }
+
+  // 3. Create new user. Username must be unique — suffix with discord id if clash.
+  const baseUsername = profile.username.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 20) || "user";
+  let username = baseUsername;
+  const clash = await pool.query(
+    `SELECT 1 FROM users WHERE LOWER(username) = LOWER($1) LIMIT 1`,
+    [username]
+  );
+  if (clash.rows.length > 0) {
+    username = `${baseUsername}_${profile.id.slice(-4)}`;
+  }
+
+  const email = profile.email ?? `${profile.id}@discord.iku.gg`;
+  const avatar = "🎮"; // Discord default
+
+  const { rows } = await pool.query(
+    `INSERT INTO users (email, username, avatar_emoji)
+     VALUES ($1, $2, $3)
+     RETURNING id, email, username, password_hash, avatar_emoji`,
+    [email, username, avatar]
+  );
+  const newUser = rows[0];
+
+  await pool.query(
+    `INSERT INTO user_oauth_accounts (provider, provider_user_id, user_id)
+     VALUES ('discord', $1, $2)`,
+    [profile.id, newUser.id]
+  );
+
+  return newUser;
+}
+
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  // Don't use the default `/api/auth/*` DB adapter — we manage users manually
+  // because this is adult content and we want full control over signup flow.
+  session: { strategy: "jwt", maxAge: 30 * 24 * 60 * 60 }, // 30 days
+
+  pages: {
+    signIn: "/login",
+  },
+
+  providers: [
+    Credentials({
+      name: "Credentials",
+      credentials: {
+        email:    { label: "Email",    type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        const email = String(credentials?.email ?? "").trim();
+        const password = String(credentials?.password ?? "");
+        if (!email || !password) return null;
+
+        const user = await findUserByEmail(email);
+        if (!user || !user.password_hash) return null;
+
+        const ok = await bcrypt.compare(password, user.password_hash);
+        if (!ok) return null;
+
+        return {
+          id: String(user.id),
+          email: user.email,
+          name: user.username,
+          image: user.avatar_emoji,
+        };
+      },
+    }),
+
+    // Discord is optional — only enabled when env vars are set.
+    ...(process.env.DISCORD_CLIENT_ID && process.env.DISCORD_CLIENT_SECRET
+      ? [
+          Discord({
+            clientId:     process.env.DISCORD_CLIENT_ID,
+            clientSecret: process.env.DISCORD_CLIENT_SECRET,
+            authorization: { params: { scope: "identify email" } },
+          }),
+        ]
+      : []),
+  ],
+
+  callbacks: {
+    async signIn({ user, account, profile }) {
+      // Discord OAuth flow: resolve to our internal user row
+      if (account?.provider === "discord" && profile) {
+        const discordProfile = profile as {
+          id: string;
+          email: string | null;
+          username: string;
+          avatar: string | null;
+        };
+        const row = await findOrCreateDiscordUser(discordProfile);
+        // Mutate user object so jwt() callback sees our internal id + username
+        user.id = String(row.id);
+        user.name = row.username;
+        user.email = row.email;
+        user.image = row.avatar_emoji;
+      }
+      return true;
+    },
+
+    async jwt({ token, user }) {
+      if (user) {
+        token.uid = user.id;
+        token.username = user.name ?? "";
+        token.avatarEmoji = user.image ?? "🌸";
+      }
+      return token;
+    },
+
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = String(token.uid ?? "");
+        session.user.username = String(token.username ?? "");
+        session.user.avatarEmoji = String(token.avatarEmoji ?? "🌸");
+      }
+      return session;
+    },
+  },
+
+  trustHost: true, // Required behind Coolify/Traefik
+});
+
+export { findUserById };

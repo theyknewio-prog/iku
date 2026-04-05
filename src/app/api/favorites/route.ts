@@ -1,0 +1,92 @@
+/**
+ * Favorites sync API
+ *   GET    /api/favorites              → list user's favorite slugs
+ *   POST   /api/favorites               { slug }              → add
+ *   POST   /api/favorites  { bulk: [slug1, slug2, ...] }      → bulk upsert (used on first login)
+ *   DELETE /api/favorites?slug=...     → remove
+ */
+
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/auth";
+import pool from "@/lib/db";
+
+export async function GET() {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  const { rows } = await pool.query(
+    `SELECT video_slug AS slug, created_at
+     FROM user_favorites
+     WHERE user_id = $1
+     ORDER BY created_at DESC
+     LIMIT 500`,
+    [session.user.id]
+  );
+
+  return NextResponse.json({ favorites: rows });
+}
+
+export async function POST(request: NextRequest) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
+  const { slug, bulk } = (body ?? {}) as { slug?: string; bulk?: string[] };
+
+  if (Array.isArray(bulk)) {
+    // Bulk upsert (first-login localStorage migration). Cap to avoid abuse.
+    const slugs = bulk
+      .filter((s) => typeof s === "string" && s.length > 0 && s.length <= 200)
+      .slice(0, 500);
+    if (slugs.length === 0) return NextResponse.json({ ok: true, added: 0 });
+
+    const values = slugs.map((_, i) => `($1, $${i + 2})`).join(",");
+    await pool.query(
+      `INSERT INTO user_favorites (user_id, video_slug) VALUES ${values}
+       ON CONFLICT DO NOTHING`,
+      [session.user.id, ...slugs]
+    );
+    return NextResponse.json({ ok: true, added: slugs.length });
+  }
+
+  if (!slug || typeof slug !== "string" || slug.length > 200) {
+    return NextResponse.json({ error: "Invalid slug" }, { status: 400 });
+  }
+
+  await pool.query(
+    `INSERT INTO user_favorites (user_id, video_slug) VALUES ($1, $2)
+     ON CONFLICT DO NOTHING`,
+    [session.user.id, slug]
+  );
+
+  return NextResponse.json({ ok: true });
+}
+
+export async function DELETE(request: NextRequest) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  const slug = new URL(request.url).searchParams.get("slug");
+  if (!slug || slug.length > 200) {
+    return NextResponse.json({ error: "Invalid slug" }, { status: 400 });
+  }
+
+  await pool.query(
+    `DELETE FROM user_favorites WHERE user_id = $1 AND video_slug = $2`,
+    [session.user.id, slug]
+  );
+
+  return NextResponse.json({ ok: true });
+}

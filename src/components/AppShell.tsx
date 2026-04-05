@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useSession, signOut } from "next-auth/react";
 import { SearchAutocomplete } from "./SearchAutocomplete";
 
 /* ── SVG Icons ─────────────────────────────────────────────── */
@@ -149,6 +150,75 @@ function IconClose({ size = 20 }: { size?: number }) {
       <line x1="18" y1="6" x2="6" y2="18" />
       <line x1="6" y1="6" x2="18" y2="18" />
     </svg>
+  );
+}
+
+/* ── User menu (topbar) ─────────────────────────────────────── */
+
+function UserMenu() {
+  const { data: session, status } = useSession();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onClick(e: MouseEvent) {
+      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+    }
+    if (open) {
+      document.addEventListener("mousedown", onClick);
+      return () => document.removeEventListener("mousedown", onClick);
+    }
+  }, [open]);
+
+  if (status === "loading") {
+    return <div className="v2-topbar-avatar" aria-hidden />;
+  }
+
+  if (!session?.user) {
+    return (
+      <Link href="/login" className="v2-topbar-signin">
+        Sign in
+      </Link>
+    );
+  }
+
+  const avatar = session.user.avatarEmoji || "🌸";
+  const username = session.user.username || session.user.name || "You";
+
+  return (
+    <div ref={ref} className="v2-user-menu">
+      <button
+        type="button"
+        className="v2-topbar-avatar v2-topbar-avatar--user"
+        onClick={() => setOpen((v) => !v)}
+        aria-label="User menu"
+        aria-expanded={open}
+      >
+        <span aria-hidden="true" style={{ fontSize: 18 }}>{avatar}</span>
+      </button>
+      {open && (
+        <div className="v2-user-dropdown" role="menu">
+          <div className="v2-user-dropdown__header">
+            <div className="v2-user-dropdown__avatar">{avatar}</div>
+            <div>
+              <div className="v2-user-dropdown__name">{username}</div>
+              <div className="v2-user-dropdown__email">{session.user.email}</div>
+            </div>
+          </div>
+          <Link href="/profile" className="v2-user-dropdown__item" onClick={() => setOpen(false)}>👤 Profile</Link>
+          <Link href="/favorites" className="v2-user-dropdown__item" onClick={() => setOpen(false)}>❤️ Favorites</Link>
+          <Link href="/history" className="v2-user-dropdown__item" onClick={() => setOpen(false)}>🕐 History</Link>
+          <Link href="/settings" className="v2-user-dropdown__item" onClick={() => setOpen(false)}>⚙️ Settings</Link>
+          <button
+            type="button"
+            className="v2-user-dropdown__item v2-user-dropdown__item--danger"
+            onClick={() => { setOpen(false); signOut({ callbackUrl: "/" }); }}
+          >
+            🚪 Sign out
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -336,9 +406,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <Link href="/favorites" className="v2-topbar-btn" title="Favorites" aria-label="Favorites">
             <span aria-hidden="true" style={{ fontSize: 18 }}>❤️</span>
           </Link>
-          <Link href="/settings" className="v2-topbar-avatar" title="Account" aria-label="Account">
-            <span aria-hidden="true" style={{ fontSize: 18 }}>🎌</span>
-          </Link>
+          <UserMenu />
         </div>
 
       </header>
