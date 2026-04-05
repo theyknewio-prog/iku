@@ -264,3 +264,54 @@ export const getCuratedGenreCounts = memoize(
   _getCuratedGenreCounts,
   60 * 60 * 1000 // 1h
 );
+
+// ---------------------------------------------------------------------------
+// User library — favorites + history fetched from PG for logged-in users
+// ---------------------------------------------------------------------------
+
+const USER_VIDEO_SELECT = `
+  SELECT v.source, v.source_id, v.slug, v.url, v.page_url, v.site, v.title,
+         v.thumbnail, v.preview, v.score, v.favorites,
+         v.tags, v.characters, v.copyrights, v.artists,
+         v.width, v.height, v.file_size, v.duration, v.created_at
+`;
+
+/** Fetch a logged-in user's favorites as full Video objects, newest first. */
+export async function getUserFavorites(userId: string | number): Promise<Video[]> {
+  try {
+    const { rows } = await pool.query(
+      `${USER_VIDEO_SELECT}
+       FROM videos v
+       JOIN user_favorites f ON v.slug = f.video_slug
+       WHERE f.user_id = $1
+         AND NOT (v.tags && $2::text[])
+       ORDER BY f.created_at DESC
+       LIMIT 500`,
+      [userId, BANNED_TAGS_ARRAY]
+    );
+    return rows.map(rowToVideo);
+  } catch (err) {
+    console.error("getUserFavorites error:", err);
+    return [];
+  }
+}
+
+/** Fetch a logged-in user's watch history as full Video objects, newest first. */
+export async function getUserHistory(userId: string | number): Promise<Video[]> {
+  try {
+    const { rows } = await pool.query(
+      `${USER_VIDEO_SELECT}, h.watched_at
+       FROM videos v
+       JOIN user_history h ON v.slug = h.video_slug
+       WHERE h.user_id = $1
+         AND NOT (v.tags && $2::text[])
+       ORDER BY h.watched_at DESC
+       LIMIT 500`,
+      [userId, BANNED_TAGS_ARRAY]
+    );
+    return rows.map(rowToVideo);
+  } catch (err) {
+    console.error("getUserHistory error:", err);
+    return [];
+  }
+}

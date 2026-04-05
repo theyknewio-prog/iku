@@ -1,0 +1,43 @@
+name: Discord emoji sync
+
+# Runs daily — the import scripts are idempotent, so once the slots are full
+# they're a no-op. Main use: retry after the Discord rate-limit cooldown (~24h
+# from the initial 50-emoji burst).
+#
+# Also triggerable manually via workflow_dispatch.
+on:
+  schedule:
+    - cron: "15 5 * * *" # Daily at 05:15 UTC
+  workflow_dispatch:
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Import static emojis (idempotent)
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_GUILD_ID:  ${{ secrets.DISCORD_GUILD_ID }}
+        run: node scripts/discord-import-emojis.mjs
+        continue-on-error: true
+
+      - name: Import animated emojis
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_GUILD_ID:  ${{ secrets.DISCORD_GUILD_ID }}
+        run: node scripts/discord-import-animated-emojis.mjs
+        continue-on-error: true
+
+      - name: Import stickers (idempotent)
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_GUILD_ID:  ${{ secrets.DISCORD_GUILD_ID }}
+        run: node scripts/discord-import-stickers.mjs
+        continue-on-error: true

@@ -28,6 +28,24 @@ function write(items: FavoriteItem[]): void {
 }
 
 /**
+ * Fire-and-forget server sync. Returns 401 for anon users, which we ignore.
+ */
+function syncToServer(method: "POST" | "DELETE", slug: string): void {
+  if (typeof window === "undefined") return;
+  const url =
+    method === "DELETE"
+      ? `/api/favorites?slug=${encodeURIComponent(slug)}`
+      : "/api/favorites";
+  fetch(url, {
+    method,
+    headers: { "Content-Type": "application/json" },
+    body: method === "POST" ? JSON.stringify({ slug }) : undefined,
+  }).catch(() => {
+    /* silent — anon users return 401, offline returns network error */
+  });
+}
+
+/**
  * Toggle a video in/out of favorites.
  * Returns the new favorited state (true = now favorited).
  */
@@ -42,6 +60,7 @@ export function toggleFavorite(video: {
   const idx = existing.findIndex((f) => f.id === video.id);
   if (idx !== -1) {
     write(existing.filter((f) => f.id !== video.id));
+    syncToServer("DELETE", video.slug);
     return false;
   }
   write([
@@ -54,6 +73,7 @@ export function toggleFavorite(video: {
       addedAt: Date.now(),
     },
   ]);
+  syncToServer("POST", video.slug);
   return true;
 }
 

@@ -7373,3 +7373,86 @@ body {
   opacity: 0.9;
   font-weight: 700;
 }
+
+/* Discord CTA pinned at the bottom of the sidebar */
+.v2-sidebar-discord {
+  margin-top: auto;
+  padding: 16px 12px 20px;
+}
+
+.v2-sidebar-discord-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  background: linear-gradient(135deg, #5865f2 0%, #7289da 50%, #9b84ec 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  text-decoration: none;
+  color: #fff;
+  font-family: var(--font-sans);
+  box-shadow: 0 6px 18px rgba(88, 101, 242, 0.35);
+  transition: transform 0.18s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.v2-sidebar-discord-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.18) 50%,
+    transparent 65%
+  );
+  transform: translateX(-110%);
+  transition: transform 0.7s ease;
+  pointer-events: none;
+}
+
+.v2-sidebar-discord-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(88, 101, 242, 0.5);
+  filter: brightness(1.08);
+}
+
+.v2-sidebar-discord-btn:hover::before {
+  transform: translateX(110%);
+}
+
+.v2-sidebar-discord-btn__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.v2-sidebar-discord-btn__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  overflow: hidden;
+}
+
+.v2-sidebar-discord-btn__title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.v2-sidebar-discord-btn__sub {
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0.85;
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
