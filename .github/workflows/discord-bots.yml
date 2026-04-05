@@ -1,0 +1,76 @@
+name: Discord bots — hourly sync + daily drops + weekly leaderboard
+
+on:
+  schedule:
+    # Hourly: role sync (keeps Pro/Top Contributor/OG roles up to date)
+    - cron: "5 * * * *"
+    # Daily 06:00 UTC: daily drop
+    - cron: "0 6 * * *"
+    # Weekly Monday 09:00 UTC: leaderboard
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+    inputs:
+      script:
+        description: "Script to run manually"
+        type: choice
+        required: true
+        options:
+          - role-sync
+          - daily-drop
+          - leaderboard
+          - all
+
+jobs:
+  role-sync:
+    if: github.event.schedule == '5 * * * *' || github.event.inputs.script == 'role-sync' || github.event.inputs.script == 'all'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install pg
+        run: npm install pg
+      - name: Sync Discord roles
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_GUILD_ID:  ${{ secrets.DISCORD_GUILD_ID }}
+          DATABASE_URL:       ${{ secrets.DATABASE_URL }}
+        run: node scripts/discord-sync-roles.mjs
+
+  daily-drop:
+    if: github.event.schedule == '0 6 * * *' || github.event.inputs.script == 'daily-drop' || github.event.inputs.script == 'all'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install pg
+        run: npm install pg
+      - name: Post daily drop
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_GUILD_ID:  ${{ secrets.DISCORD_GUILD_ID }}
+          DATABASE_URL:       ${{ secrets.DATABASE_URL }}
+        run: node scripts/discord-daily-drop.mjs
+
+  leaderboard:
+    if: github.event.schedule == '0 9 * * 1' || github.event.inputs.script == 'leaderboard' || github.event.inputs.script == 'all'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install pg
+        run: npm install pg
+      - name: Post weekly leaderboard
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_GUILD_ID:  ${{ secrets.DISCORD_GUILD_ID }}
+          DATABASE_URL:       ${{ secrets.DATABASE_URL }}
+        run: node scripts/discord-weekly-leaderboard.mjs
