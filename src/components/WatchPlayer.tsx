@@ -269,6 +269,27 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
   const [speedOpen, setSpeedOpen] = useState(false);
   const [volumeSliderOpen, setVolumeSliderOpen] = useState(false);
 
+  /*
+   * Force-sync the `muted` state to the HTMLVideoElement imperatively.
+   *
+   * React has a long-standing quirk with the `muted` attribute on <video>:
+   * the HTML attribute represents the INITIAL mute state (like `defaultMuted`
+   * in the DOM API), not the current mute state. When you change
+   * `muted={false}` as a prop after mount, React calls
+   * `element.removeAttribute("muted")` which does NOT actually unmute the
+   * video — the `.muted` JS property retains its previous value.
+   *
+   * The only reliable fix is to imperatively set `v.muted` whenever our
+   * state changes. See React issue #10389 for the history. Verified in
+   * prod against https://iku.gg/watch/* on 2026-04-05.
+   */
+  useEffect(() => {
+    const v = videoRef.current;
+    if (v && v.muted !== muted) {
+      v.muted = muted;
+    }
+  }, [muted]);
+
   /* ── Feature 1: Loop toggle ────────────────────────────── */
   const [looping, setLooping] = useState(true);
   const toggleLoop = useCallback(() => { setLooping((l) => !l); }, []);

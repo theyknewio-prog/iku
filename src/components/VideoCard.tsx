@@ -265,6 +265,21 @@ export function VideoCard({
   const lastTapTimeRef = useRef(0);
   const lastTapSideRef = useRef<"left" | "center" | "right" | null>(null);
 
+  /*
+   * Force-sync `muted` state to the HTMLVideoElement imperatively.
+   * React's `muted` prop on <video> has a known quirk (issue #10389):
+   * the HTML attribute represents the INITIAL mute state, so changing
+   * `muted={false}` after mount doesn't actually unmute — React just
+   * removes the attribute, but the `.muted` property keeps its old value.
+   * This effect guarantees the DOM stays in sync with our state.
+   */
+  useEffect(() => {
+    const el = videoRef.current;
+    if (el && el.muted !== muted) {
+      el.muted = muted;
+    }
+  }, [muted]);
+
   /* Keyboard shortcuts — only when active */
 
   /* Auto-play / pause */
