@@ -125,8 +125,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Username already taken" }, { status: 409 });
   }
 
-  // Hash + insert
-  const hash = await bcrypt.hash(password, 10);
+  // Hash + insert (rounds=12 — adult/payment site minimum)
+  const hash = await bcrypt.hash(password, 12);
   let newUserId: number;
   try {
     const { rows } = await pool.query(

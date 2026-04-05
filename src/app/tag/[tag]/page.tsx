@@ -4,7 +4,7 @@ import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { Pagination } from "@/components/Pagination";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
-import { searchPosts } from "@/lib/danbooru";
+import { getVideos } from "@/lib/content";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 
@@ -91,11 +91,12 @@ export default async function TagPage({ params, searchParams }: Props) {
   const order =
     sortParam === "date" || sortParam === "favcount" || sortParam === "score" ? sortParam : "score";
 
-  const { data: videos, hasMore } = await searchPosts({
+  const { data: videos, hasMore } = await getVideos({
     tags: tag,
     page: currentPage,
     limit: 20,
     order,
+    requireThumbnail: true,
   });
 
   const relatedTags = RELATED_TAGS.filter((t) => t !== tag);

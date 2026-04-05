@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { Pagination } from "@/components/Pagination";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
-import { searchPosts } from "@/lib/danbooru";
+import { getVideos } from "@/lib/content";
 import { CHARACTERS, getCharacterBySlug, type Character } from "@/data/characters";
 import { getSeriesBySlug } from "@/data/series";
 import type { Metadata } from "next";
@@ -100,11 +100,12 @@ export default async function CharacterPage({ params, searchParams }: Props) {
   const order =
     sortParam === "date" || sortParam === "favcount" || sortParam === "score" ? sortParam : "score";
 
-  const { data: videos, hasMore } = await searchPosts({
+  const { data: videos, hasMore } = await getVideos({
     tags: character.tags[0],
     page: currentPage,
     limit: 20,
     order,
+    requireThumbnail: true,
   });
 
   const relatedChars = character.relatedCharacters

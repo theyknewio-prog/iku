@@ -24,8 +24,24 @@ export function useVideoShortcuts(
   useEffect(() => {
     function handler(e: KeyboardEvent) {
       // Ignore when typing in an input / textarea / contenteditable
-      const tag = (e.target as HTMLElement).tagName;
-      if (tag === "INPUT" || tag === "TEXTAREA" || (e.target as HTMLElement).isContentEditable) return;
+      const target = e.target as HTMLElement;
+      const tag = target.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || target.isContentEditable) return;
+
+      // A11y: don't steal Space / Enter from focused buttons or links. The
+      // useVideoShortcuts handler is global (window keydown) and was
+      // preventDefault-ing Space even when a tag pill / Save button / Source
+      // button had focus — breaking keyboard-only navigation on the watch
+      // page. Let native button activation run instead. See ux.md #6.
+      if (
+        tag === "BUTTON" ||
+        tag === "A" ||
+        tag === "SELECT" ||
+        target.getAttribute("role") === "button" ||
+        target.getAttribute("tabindex") === "0"
+      ) {
+        if (e.key === " " || e.key === "Enter") return;
+      }
 
       const el = videoRef.current;
       if (!el) return;

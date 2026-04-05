@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { WatchPlayer } from "@/components/WatchPlayer";
 import { WatchActions } from "@/components/WatchActions";
-import { getPost, getRelatedPosts } from "@/lib/danbooru";
+import { getPost } from "@/lib/danbooru";
 import { getGelbooruPost } from "@/lib/gelbooru";
 import { getRule34Post } from "@/lib/rule34";
 import { getRule34VideoPost, getRule34VideoPageUrl } from "@/lib/rule34video";
@@ -17,7 +17,7 @@ import {
   generateVideoFAQ,
   generateBreadcrumbs,
 } from "@/lib/content-generator";
-import { containsBannedContent } from "@/lib/content";
+import { containsBannedContent, getRelatedVideos } from "@/lib/content";
 
 export const revalidate = 86400;
 // Enable ISR for dynamic slugs: no pre-built params, but cache on-demand
@@ -232,7 +232,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
   // Fetch related for autoplay-next (small set, no suspense needed)
   let relatedForPlayer: { slug: string; thumbnail: string; title: string }[] = [];
   try {
-    const related = await getRelatedPosts(video.id, 4);
+    const related = await getRelatedVideos(video, 4);
     relatedForPlayer = related.map((v) => ({
       slug: v.slug,
       thumbnail: v.thumbnail || v.preview || "",
@@ -643,7 +643,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
                     </div>
                   }
                 >
-                  <RelatedGrid postId={video.id} />
+                  <RelatedGrid video={video} />
                 </Suspense>
               </div>
             </div>
@@ -671,7 +671,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
                   </div>
                 ))}
               >
-                <RelatedSidebar postId={video.id} />
+                <RelatedSidebar video={video} />
               </Suspense>
             </aside>
           </div>
@@ -708,8 +708,8 @@ export default async function WatchPage({ params }: WatchPageProps) {
    Async server components — related content
 ───────────────────────────────────────────────────────────── */
 
-async function RelatedGrid({ postId }: { postId: number }) {
-  const related = await getRelatedPosts(postId, 8);
+async function RelatedGrid({ video }: { video: Video }) {
+  const related = await getRelatedVideos(video, 8);
   if (!related.length) return null;
   return (
     <div className="video-grid">
@@ -720,8 +720,8 @@ async function RelatedGrid({ postId }: { postId: number }) {
   );
 }
 
-async function RelatedSidebar({ postId }: { postId: number }) {
-  const related = await getRelatedPosts(postId, 12);
+async function RelatedSidebar({ video }: { video: Video }) {
+  const related = await getRelatedVideos(video, 12);
   if (!related.length)
     return (
       <p

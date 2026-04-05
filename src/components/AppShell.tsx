@@ -289,7 +289,7 @@ const QUICK_TAGS = [
 /* Mobile bottom — Industry standard 5-tab pattern */
 const BOTTOM_ITEMS = [
   { href: "/",         label: "Home",     Icon: IconHome,     featured: false },
-  { href: "/explore",  label: "Search",   Icon: IconSearch,   featured: false },
+  { href: "/search",   label: "Search",   Icon: IconSearch,   featured: false },
   { href: "/feed",     label: "Shorts",   Icon: IconFeed,     featured: true },
   { href: "/trending", label: "Trending", Icon: IconTrending, featured: false },
 ] as const;

@@ -11,7 +11,11 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://eu-assets.i.posthog.com https://us-assets.i.posthog.com",
+      // Removed 'unsafe-eval' (2026-04-05 audit). PostHog, React 19 and
+      // Next 16 runtimes all work without it. 'unsafe-inline' remains only
+      // because JSON-LD script tags are still inline — migrating to nonces
+      // is a separate follow-up (see security.md #7).
+      "script-src 'self' 'unsafe-inline' https://us-assets.i.posthog.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: blob: https://cdn.donmai.us https://gelbooru.com https://*.gelbooru.com https://rule34.xxx https://*.rule34.xxx https://rule34video.com https://*.rule34video.com https://hentaimama.io https://hentai.tv https://animeidhentai.com https://watchhentai.net https://hentaiworld.tv https://hentaigasm.com https://hentaicity.com",
@@ -30,9 +34,11 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "cdn.donmai.us" },
+      { protocol: "https", hostname: "gelbooru.com" },
       { protocol: "https", hostname: "media.gelbooru.com" },
       { protocol: "https", hostname: "img2.gelbooru.com" },
       { protocol: "https", hostname: "img3.gelbooru.com" },
+      { protocol: "https", hostname: "img4.gelbooru.com" },
     ],
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 2592000, // 30 days

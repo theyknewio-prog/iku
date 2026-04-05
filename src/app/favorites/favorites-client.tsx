@@ -7,7 +7,7 @@ import { SignupCTA } from "@/components/SignupCTA";
 import {
   getFavorites,
   clearFavorites,
-  toggleFavorite,
+  removeFavorite,
   type FavoriteItem,
 } from "@/lib/favorites";
 
@@ -53,39 +53,27 @@ export function FavoritesClient({ initialItems, isAuthenticated }: Props) {
 
   const handleClear = useCallback(async () => {
     if (isAuthenticated) {
-      // Clear server-side by deleting each one
-      await Promise.all(
-        items.map((item) =>
-          fetch(`/api/favorites?slug=${encodeURIComponent(item.slug)}`, {
-            method: "DELETE",
-          })
-        )
-      );
+      // Single bulk delete — avoids the old N-parallel-DELETE pattern that
+      // could 429 the rate limiter and leave partial state.
+      await fetch(`/api/favorites?all=1`, { method: "DELETE" }).catch(() => {
+        /* network error → fall through to local clear, user can retry later */
+      });
     }
     clearFavorites();
     setItems([]);
-  }, [items, isAuthenticated]);
+  }, [isAuthenticated]);
 
   const handleRemove = useCallback(
     async (slug: string) => {
-      const item = items.find((f) => f.slug === slug);
-      if (!item) return;
-
-      if (isAuthenticated) {
-        await fetch(`/api/favorites?slug=${encodeURIComponent(slug)}`, {
-          method: "DELETE",
-        });
-      }
-      // Always update localStorage mirror
-      toggleFavorite({
-        id: item.id,
-        slug: item.slug,
-        title: item.title,
-        thumbnail: item.thumbnail,
-      });
+      // Remove-only, never toggles. Previously used `toggleFavorite`, which on
+      // a logged-in user's new device (empty localStorage) would ADD the item
+      // instead of removing it — the server DELETE would then race with a
+      // server POST from the same call, and the ghost favorite came back on
+      // refresh. See ux.md #3.
+      removeFavorite(slug);
       setItems((prev) => prev.filter((f) => f.slug !== slug));
     },
-    [items, isAuthenticated]
+    []
   );
 
   if (!mounted) {

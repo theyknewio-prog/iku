@@ -1,4 +1,5 @@
 import type { Video, PaginatedResult } from "@/types/video";
+import { filterBannedContent } from "./content";
 
 const BASE_URL = "https://api.rule34.xxx/index.php";
 const API_KEY = process.env.RULE34_API_KEY ?? "";
@@ -117,7 +118,7 @@ export async function searchRule34(
       .filter((v): v is Video => v !== null);
 
     return {
-      data: videos,
+      data: filterBannedContent(videos),
       hasMore: posts.length === clampedLimit,
     };
   } catch {

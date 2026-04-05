@@ -94,6 +94,21 @@ export function isFavorite(id: number): boolean {
   return read().some((f) => f.id === id);
 }
 
+/**
+ * Remove-only operation. Unlike `toggleFavorite`, this never re-adds — used
+ * by the favorites page delete button where localStorage may be empty on a
+ * new device and toggling would ADD instead of remove.
+ */
+export function removeFavorite(slug: string): void {
+  if (typeof window === "undefined") return;
+  const existing = read();
+  const filtered = existing.filter((f) => f.slug !== slug);
+  if (filtered.length !== existing.length) {
+    write(filtered);
+  }
+  syncToServer("DELETE", slug);
+}
+
 export function getFavorites(): FavoriteItem[] {
   return read();
 }

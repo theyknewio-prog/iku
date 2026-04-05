@@ -19,18 +19,42 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function ProfilePage() {
+interface ProfilePageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function ProfilePage({ searchParams }: ProfilePageProps) {
   const session = await auth();
   if (!session?.user) redirect("/login?callbackUrl=/profile");
+  const sp = await searchParams;
+  const justUpgraded = sp?.upgraded === "1";
 
   const { rows } = await pool.query(
     `SELECT id, email, username, avatar_emoji, dob, created_at, email_verified,
-            password_hash IS NOT NULL AS has_password
+            password_hash IS NOT NULL AS has_password,
+            pro_status, pro_plan, pro_current_period_end, pro_started_at
      FROM users WHERE id = $1`,
     [session.user.id]
   );
   const user = rows[0];
   if (!user) redirect("/login");
+
+  const proStatus = (user.pro_status as string | null) ?? null;
+  const proPlan = (user.pro_plan as string | null) ?? null;
+  const proPeriodEnd = user.pro_current_period_end
+    ? new Date(user.pro_current_period_end as string)
+    : null;
+  const isPro = proStatus === "active" || proStatus === "lifetime";
+
+  // Format plan label for display
+  const planLabel =
+    proPlan === "lifetime"
+      ? "Lifetime"
+      : proPlan === "yearly"
+        ? "Annual"
+        : proPlan === "monthly"
+          ? "Monthly"
+          : "Pro";
 
   // Gamification data
   const stats = await getOrCreateUserStats(session.user.id);
@@ -57,6 +81,89 @@ export default async function ProfilePage() {
       {needsEmailVerification && (
         <EmailVerificationBanner email={user.email} />
       )}
+
+      {/* ── Post-checkout confirmation card ──────────────────────────── */}
+      {justUpgraded && (
+        <div
+          className="profile-pro-welcome"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(236,72,153,0.18), rgba(168,85,247,0.18))",
+            border: "1px solid rgba(236,72,153,0.45)",
+            borderRadius: 16,
+            padding: "18px 22px",
+            margin: "0 0 18px",
+            boxShadow: "0 10px 30px rgba(236,72,153,0.15)",
+          }}
+        >
+          {isPro ? (
+            <>
+              <div
+                style={{
+                  fontSize: 20,
+                  fontWeight: 700,
+                  color: "#fff",
+                  marginBottom: 4,
+                }}
+              >
+                ✨ Welcome to iku.gg Pro
+              </div>
+              <div style={{ fontSize: 14, color: "rgba(255,255,255,0.82)" }}>
+                You&apos;re now on the <strong>{planLabel}</strong> plan.
+                {proPeriodEnd && proPlan !== "lifetime" && (
+                  <> Next renewal: {proPeriodEnd.toLocaleDateString()}.</>
+                )}
+                {proPlan === "lifetime" && <> Forever access — no renewal ever.</>}
+              </div>
+            </>
+          ) : (
+            <>
+              <div style={{ fontSize: 16, fontWeight: 600, color: "#fff" }}>
+                Payment received — activating Pro…
+              </div>
+              <div
+                style={{
+                  fontSize: 13,
+                  color: "rgba(255,255,255,0.72)",
+                  marginTop: 4,
+                }}
+              >
+                Your Pro benefits will appear here within a few seconds. Refresh
+                if nothing shows after a minute.
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* ── Always-visible Pro badge for Pro users ─────────────────── */}
+      {isPro && !justUpgraded && (
+        <div
+          className="profile-pro-badge-row"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 10,
+            padding: "8px 14px",
+            borderRadius: 999,
+            background:
+              "linear-gradient(90deg, rgba(236,72,153,0.25), rgba(168,85,247,0.25))",
+            border: "1px solid rgba(236,72,153,0.5)",
+            color: "#fff",
+            fontSize: 13,
+            fontWeight: 600,
+            margin: "0 0 14px",
+          }}
+        >
+          ✨ iku.gg Pro · {planLabel}
+          {proPeriodEnd && proPlan !== "lifetime" && (
+            <span style={{ opacity: 0.72, fontWeight: 500 }}>
+              · until {proPeriodEnd.toLocaleDateString()}
+            </span>
+          )}
+        </div>
+      )}
+
       <div className="profile-header">
         <div className="profile-avatar">{user.avatar_emoji}</div>
         <div style={{ flex: 1 }}>

@@ -10,6 +10,7 @@
 
 import pool from "@/lib/db";
 import type { Video, PaginatedResult } from "@/types/video";
+import { BANNED_TAGS_ARRAY, containsBannedContent, filterBannedContent } from "@/lib/content";
 
 /** Known slug prefixes for each WP site */
 const WP_PREFIXES = ["hmm", "htv", "aid", "wh", "hw", "hg"] as const;
@@ -42,17 +43,29 @@ function rowToVideo(row: Record<string, unknown>): Video {
 
 export async function getWPHentaiPost(id: number): Promise<Video | null> {
   const { rows } = await pool.query(
-    "SELECT * FROM videos WHERE source = 'wp' AND source_id = $1 LIMIT 1",
-    [id]
+    `SELECT * FROM videos
+     WHERE source = 'wp' AND source_id = $1
+       AND NOT (tags && $2::text[])
+       AND NOT (COALESCE(characters, ARRAY[]::text[]) && $2::text[])
+       AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $2::text[])
+     LIMIT 1`,
+    [id, BANNED_TAGS_ARRAY]
   );
   if (rows.length === 0) return null;
-  return rowToVideo(rows[0]);
+  const video = rowToVideo(rows[0]);
+  if (containsBannedContent(video)) return null;
+  return video;
 }
 
 export async function getWPHentaiPageUrl(id: number): Promise<string | null> {
   const { rows } = await pool.query(
-    "SELECT page_url FROM videos WHERE source = 'wp' AND source_id = $1 LIMIT 1",
-    [id]
+    `SELECT page_url FROM videos
+     WHERE source = 'wp' AND source_id = $1
+       AND NOT (tags && $2::text[])
+       AND NOT (COALESCE(characters, ARRAY[]::text[]) && $2::text[])
+       AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $2::text[])
+     LIMIT 1`,
+    [id, BANNED_TAGS_ARRAY]
   );
   return rows[0]?.page_url ?? null;
 }
@@ -74,6 +87,15 @@ export async function searchWPHentai(
   const params: unknown[] = [];
   let paramIndex = 1;
 
+  // Banned content filter (SQL level)
+  conditions.push(
+    `NOT (tags && $${paramIndex}::text[])
+     AND NOT (COALESCE(characters, ARRAY[]::text[]) && $${paramIndex}::text[])
+     AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $${paramIndex}::text[])`
+  );
+  params.push(BANNED_TAGS_ARRAY);
+  paramIndex++;
+
   if (tags) {
     const searchTerms = tags.toLowerCase().split(/\s+/);
     for (const term of searchTerms) {
@@ -92,7 +114,7 @@ export async function searchWPHentai(
   const hasMore = rows.length > limit;
 
   return {
-    data: rows.slice(0, limit).map(rowToVideo),
+    data: filterBannedContent(rows.slice(0, limit).map(rowToVideo)),
     hasMore,
   };
 }

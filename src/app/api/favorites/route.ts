@@ -3,7 +3,8 @@
  *   GET    /api/favorites              → list user's favorite slugs
  *   POST   /api/favorites               { slug }              → add
  *   POST   /api/favorites  { bulk: [slug1, slug2, ...] }      → bulk upsert (used on first login)
- *   DELETE /api/favorites?slug=...     → remove
+ *   DELETE /api/favorites?slug=...     → remove one
+ *   DELETE /api/favorites?all=1        → remove all for the current user
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -89,7 +90,20 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const slug = new URL(request.url).searchParams.get("slug");
+  const url = new URL(request.url);
+  const slug = url.searchParams.get("slug");
+  const all = url.searchParams.get("all");
+
+  if (all === "1") {
+    // Bulk clear — replaces the old client pattern of firing N concurrent
+    // DELETE requests that risked 429 and left partial state.
+    await pool.query(
+      `DELETE FROM user_favorites WHERE user_id = $1`,
+      [session.user.id]
+    );
+    return NextResponse.json({ ok: true, cleared: true });
+  }
+
   if (!slug || slug.length > 200) {
     return NextResponse.json({ error: "Invalid slug" }, { status: 400 });
   }

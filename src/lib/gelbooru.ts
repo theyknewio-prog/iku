@@ -1,4 +1,5 @@
 import type { Video, PaginatedResult } from "@/types/video";
+import { filterBannedContent, containsBannedContent } from "./content";
 
 // ---------------------------------------------------------------------------
 // Config
@@ -253,7 +254,7 @@ export async function searchGelbooru(
       .filter((v): v is Video => v !== null);
 
     data = {
-      data: videos,
+      data: filterBannedContent(videos),
       hasMore: posts.length === clampedLimit,
     };
   } catch (err) {
@@ -277,6 +278,7 @@ export async function getGelbooruPost(id: number): Promise<Video | null> {
     const posts = normalisePosts(json.post);
     if (posts.length === 0) return null;
     const video = mapGelbooruToVideo(posts[0]);
+    if (!video || containsBannedContent(video)) return null;
     return video;
   } catch {
     return null;

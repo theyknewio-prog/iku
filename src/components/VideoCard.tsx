@@ -4,6 +4,8 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import type { FeedVideo } from "./SwipeFeed";
 import { useVideoShortcuts } from "@/hooks/useVideoShortcuts";
+import { toggleFavorite, isFavorite } from "@/lib/favorites";
+import { addToHistory } from "@/lib/history";
 
 /* ── Helpers ──────────────────────────────────────────────── */
 
@@ -245,10 +247,19 @@ export function VideoCard({
   const containerRef = useRef<HTMLDivElement>(null);
   const lastClickRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  const [liked, setLiked] = useState(false);
+  // Hydrate initial state from localStorage (logged-in user's server state is
+  // mirrored there via UserDataSync). Sharing a single "favorited" boolean for
+  // both Like and Save keeps the data model simple — Save currently writes to
+  // the same /api/favorites endpoint. A future UI split can add a dedicated
+  // "saves" column without changing this surface.
+  const [liked, setLiked] = useState(() => isFavorite(video.id));
   const [likeAnimating, setLikeAnimating] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState(() => isFavorite(video.id));
   const [saveAnimating, setSaveAnimating] = useState(false);
+  // Per-card guard against re-firing video_view events on every mount/active
+  // cycle. Reset when the card unmounts so a user who actually re-opens the
+  // feed later still gets a fresh view event.
+  const viewedRef = useRef(false);
   const [muted, setMuted] = useState(true);
   const [loaded, setLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -295,6 +306,38 @@ export function VideoCard({
       setBuffered(0);
     }
   }, [isActive]);
+
+  /* Build the display title/thumbnail used for favorites + history entries.
+   * Matches the watch-page derivation so a Shorts save lands in /favorites with
+   * the same label the user would see on the watch card. */
+  const favoriteEntry = useCallback(() => {
+    const title = video.character
+      ? `${video.character.replace(/_/g, " ")}${
+          video.copyright ? ` — ${video.copyright.replace(/_/g, " ")}` : ""
+        }`
+      : (video.tags || []).slice(0, 3).map((t) => t.replace(/_/g, " ")).join(", ") || "Untitled";
+    return {
+      id: video.id,
+      slug: video.slug ?? "",
+      title,
+      thumbnail: video.thumbnail || "",
+    };
+  }, [video.id, video.slug, video.thumbnail, video.character, video.copyright, video.tags]);
+
+  /* Record a history entry + score event once per active cycle.
+   * Gated by a per-card ref so refreshing or swiping back within the same
+   * session doesn't re-fire the view. The Danbooru `addToHistory` helper
+   * already deduplicates inside localStorage but it re-fires the scoring /
+   * PostHog events every call — that's what we want to suppress. */
+  useEffect(() => {
+    if (!isActive || viewedRef.current || !video.slug) return;
+    const t = setTimeout(() => {
+      viewedRef.current = true;
+      const entry = favoriteEntry();
+      addToHistory(entry.id, entry.slug, entry.thumbnail, entry.title);
+    }, 2000); // 2s watch time before we count it as a real view
+    return () => clearTimeout(t);
+  }, [isActive, video.slug, favoriteEntry]);
 
   /* Progress + buffered tracking */
   const handleTimeUpdate = useCallback(() => {
@@ -351,18 +394,45 @@ export function VideoCard({
     seekOverlayTimerRef.current = setTimeout(() => setSeekOverlay(null), 800);
   }, []);
 
-  /* Heart burst */
-  const triggerHeartBurst = useCallback((x: number, y: number) => {
-    const burst: HeartBurst = { x, y, id: Date.now() };
-    setHeartBursts((prev) => [...prev, burst]);
-    // Also trigger like
-    setLiked(true);
-    setLikeAnimating(true);
-    setTimeout(() => setLikeAnimating(false), 350);
-    setTimeout(() => {
-      setHeartBursts((prev) => prev.filter((b) => b.id !== burst.id));
-    }, 700);
-  }, []);
+  /* Unified favorite toggle — single source of truth.
+   * The Like button, Save button, and center double-tap heart burst all call
+   * this. Handles localStorage + server sync + score event + PostHog via
+   * `toggleFavorite`. `mode` lets the caller "add-only" (heart burst never
+   * removes) or "toggle" (button taps). */
+  const applyFavorite = useCallback(
+    (mode: "toggle" | "add") => {
+      if (!video.slug) return liked;
+      if (mode === "add" && liked) return true;
+      const next = toggleFavorite(favoriteEntry());
+      setLiked(next);
+      setSaved(next);
+      if (next) {
+        setLikeAnimating(true);
+        setSaveAnimating(true);
+        setTimeout(() => {
+          setLikeAnimating(false);
+          setSaveAnimating(false);
+        }, 350);
+      }
+      return next;
+    },
+    [video.slug, liked, favoriteEntry]
+  );
+
+  /* Heart burst — TikTok-style center double-tap animation. */
+  const triggerHeartBurst = useCallback(
+    (x: number, y: number) => {
+      const burst: HeartBurst = { x, y, id: Date.now() };
+      setHeartBursts((prev) => [...prev, burst]);
+      // Double-tap heart burst = add to favorites (never remove — standard
+      // TikTok UX so accidental double-taps can't delete).
+      applyFavorite("add");
+      setTimeout(() => {
+        setHeartBursts((prev) => prev.filter((b) => b.id !== burst.id));
+      }, 700);
+    },
+    [applyFavorite]
+  );
 
   /* Progress bar seek — pointer events for drag + click */
   const seekToPercent = useCallback((clientX: number) => {
@@ -605,16 +675,11 @@ export function VideoCard({
 
       {/* ── Right action sidebar ─────────────────────────── */}
       <div className="feed-actions-rail">
-        {/* Heart / Like */}
+        {/* Heart / Like — persists to localStorage + server via toggleFavorite */}
         <ActionBtn
           onClick={(e) => {
             e.stopPropagation();
-            const next = !liked;
-            setLiked(next);
-            if (next) {
-              setLikeAnimating(true);
-              setTimeout(() => setLikeAnimating(false), 350);
-            }
+            applyFavorite("toggle");
           }}
           ariaLabel={liked ? "Unlike" : "Like"}
           count={formatScore(video.score + (liked ? 1 : 0))}
@@ -625,16 +690,11 @@ export function VideoCard({
           <IconHeart filled={liked} />
         </ActionBtn>
 
-        {/* Bookmark / Save */}
+        {/* Bookmark / Save — shares the same favorite store */}
         <ActionBtn
           onClick={(e) => {
             e.stopPropagation();
-            const next = !saved;
-            setSaved(next);
-            if (next) {
-              setSaveAnimating(true);
-              setTimeout(() => setSaveAnimating(false), 350);
-            }
+            applyFavorite("toggle");
           }}
           ariaLabel={saved ? "Unsave" : "Save"}
           label="Save"

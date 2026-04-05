@@ -27,11 +27,87 @@ const BANNED_TAGS = new Set([
   "randoseru",
 ]);
 
-const BANNED_TAGS_ARRAY = Array.from(BANNED_TAGS);
+export const BANNED_TAGS_ARRAY = Array.from(BANNED_TAGS);
 
-/** Check if a single video contains banned content */
-export function containsBannedContent(video: { tags: string[] }): boolean {
-  return video.tags.some((t) => BANNED_TAGS.has(t.toLowerCase()));
+// Substring patterns for title/slug scanning. Intentionally broad because
+// Danbooru/Gelbooru embed these words in titles even when they're not in
+// general tags. A positive match on any of these kills the row.
+const BANNED_SUBSTRINGS = [
+  "loli", "shota", "lolicon", "shotacon",
+  "child", "minor", "underage", "toddler", "infant",
+  "young_girl", "young girl", "young_boy", "young boy",
+  "cub ", "baby ",
+  "oppai_loli", "legal_loli",
+];
+
+/**
+ * Check if a single video contains banned content.
+ *
+ * Checks ALL the places source APIs classify subjects, not just general tags:
+ *   - tags, characters, copyrights (array columns)
+ *   - title and slug (substring scan)
+ *
+ * This is the function of last resort before rendering to a user. It MUST be
+ * called anywhere a Video object leaves the DB layer (related grids, live API
+ * fetches, direct lookups by slug, etc.).
+ */
+export function containsBannedContent(video: {
+  tags?: string[];
+  characters?: string[];
+  copyrights?: string[];
+  slug?: string;
+  title?: string | null;
+}): boolean {
+  const lists: string[][] = [
+    video.tags ?? [],
+    video.characters ?? [],
+    video.copyrights ?? [],
+  ];
+  for (const list of lists) {
+    for (const t of list) {
+      if (BANNED_TAGS.has(t.toLowerCase())) return true;
+    }
+  }
+  const hay = `${video.slug ?? ""} ${video.title ?? ""}`.toLowerCase();
+  if (hay.trim()) {
+    for (const s of BANNED_SUBSTRINGS) {
+      if (hay.includes(s)) return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Filter an array of videos, removing any that contain banned content.
+ * Used as a JS-side belt-and-suspenders check after SQL queries and for
+ * live-API results (Danbooru getRelatedPosts, etc.) that bypass the DB.
+ */
+export function filterBannedContent<T extends {
+  tags?: string[];
+  characters?: string[];
+  copyrights?: string[];
+  slug?: string;
+  title?: string | null;
+}>(videos: T[]): T[] {
+  return videos.filter((v) => !containsBannedContent(v));
+}
+
+/**
+ * Build a set of SQL conditions that exclude banned content for a videos table
+ * row (optionally prefixed with an alias like `v.`). Pushes the shared
+ * BANNED_TAGS_ARRAY parameter ONCE and reuses its index across all three
+ * array-column checks. Returns `{ condition, nextIdx }`.
+ */
+export function buildBannedSqlCondition(
+  alias: string,
+  params: unknown[],
+  startIdx: number
+): { condition: string; nextIdx: number } {
+  params.push(BANNED_TAGS_ARRAY);
+  const p = `$${startIdx}::text[]`;
+  const a = alias ? `${alias}.` : "";
+  const condition = `NOT (${a}tags && ${p}) AND NOT (COALESCE(${a}characters, ARRAY[]::text[]) && ${p}) AND NOT (COALESCE(${a}copyrights, ARRAY[]::text[]) && ${p})`;
+  return { condition, nextIdx: startIdx + 1 };
 }
 
 // ---------------------------------------------------------------------------
@@ -47,6 +123,8 @@ async function _getThumbnailForTag(tag: string): Promise<string> {
          AND thumbnail != ''
          AND ($1 = ANY(characters) OR $1 = ANY(copyrights) OR $1 = ANY(tags))
          AND NOT (tags && $2::text[])
+         AND NOT (COALESCE(characters, ARRAY[]::text[]) && $2::text[])
+         AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $2::text[])
        ORDER BY score DESC
        LIMIT 1`,
       [tag.toLowerCase(), BANNED_TAGS_ARRAY]
@@ -135,10 +213,10 @@ async function _getVideos(
   const params: unknown[] = [];
   let paramIndex = 1;
 
-  // Banned content filter (always applied)
-  conditions.push(`NOT (tags && $${paramIndex}::text[])`);
-  params.push(BANNED_TAGS_ARRAY);
-  paramIndex++;
+  // Banned content filter (always applied) — checks tags, characters, copyrights
+  const banned = buildBannedSqlCondition("", params, paramIndex);
+  conditions.push(banned.condition);
+  paramIndex = banned.nextIdx;
 
   // Thumbnail filter — hide WP entries that still lack a poster image
   if (requireThumbnail) {
@@ -189,8 +267,10 @@ async function _getVideos(
 
   try {
     const { rows } = await pool.query(query, params);
+    const mapped = rows.slice(0, clampedLimit).map(rowToVideo);
+    // JS-side belt-and-suspenders: catches banned title/slug that SQL arrays miss
+    const data = filterBannedContent(mapped);
     const hasMore = rows.length > clampedLimit;
-    const data = rows.slice(0, clampedLimit).map(rowToVideo);
     return { data, hasMore };
   } catch (err) {
     console.error("getVideos PG error:", err);
@@ -242,6 +322,8 @@ async function _getCuratedGenreCounts(): Promise<
        FROM (
          SELECT unnest(tags) AS tag FROM videos
          WHERE NOT (tags && $1::text[])
+           AND NOT (COALESCE(characters, ARRAY[]::text[]) && $1::text[])
+           AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $1::text[])
        ) t
        WHERE tag = ANY($2::text[])
        GROUP BY tag`,
@@ -285,14 +367,19 @@ async function _getVideoOfTheDay(): Promise<Video | null> {
        FROM videos
        WHERE thumbnail IS NOT NULL AND thumbnail <> ''
          AND NOT (tags && $1::text[])
+         AND NOT (COALESCE(characters, ARRAY[]::text[]) && $1::text[])
+         AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $1::text[])
        ORDER BY score DESC
        LIMIT 500`,
       [BANNED_TAGS_ARRAY]
     );
     if (rows.length === 0) return null;
+    // JS-side filter catches banned title/slug substrings
+    const clean = filterBannedContent(rows.map(rowToVideo));
+    if (clean.length === 0) return null;
     const today = new Date().toISOString().slice(0, 10);
-    const idx = hashDayToIndex(today, rows.length);
-    return rowToVideo(rows[idx]);
+    const idx = hashDayToIndex(today, clean.length);
+    return clean[idx];
   } catch (err) {
     console.error("getVideoOfTheDay error:", err);
     return null;
@@ -301,6 +388,67 @@ async function _getVideoOfTheDay(): Promise<Video | null> {
 
 // Memoize 1h — the "day" doesn't change that often
 export const getVideoOfTheDay = memoize("vod", _getVideoOfTheDay, 60 * 60 * 1000);
+
+// ---------------------------------------------------------------------------
+// Related videos — PG-backed, source-agnostic (replaces Danbooru getRelatedPosts)
+// ---------------------------------------------------------------------------
+
+/**
+ * Fetch videos related to the given video using its character/copyright/tag
+ * signals. Unlike the old Danbooru-only getRelatedPosts, this queries PG so it
+ * works for all 5 sources (Danbooru, Gelbooru, Rule34, Rule34Video, WP) and
+ * respects the banned content filter automatically.
+ *
+ * Strategy:
+ *   1. Try to match on the first character (strongest signal).
+ *   2. Fall back to the first copyright (series).
+ *   3. Fall back to the first general tag.
+ *   4. Fall back to top-scored videos overall.
+ * In all cases, exclude the current video from the results.
+ */
+export async function getRelatedVideos(
+  video: {
+    id: number;
+    slug: string;
+    source?: string;
+    characters?: string[];
+    copyrights?: string[];
+    tags?: string[];
+  },
+  limit: number = 12
+): Promise<Video[]> {
+  const signals: string[] = [];
+  if (video.characters?.[0]) signals.push(video.characters[0]);
+  if (video.copyrights?.[0]) signals.push(video.copyrights[0]);
+  if (video.tags?.[0]) signals.push(video.tags[0]);
+
+  for (const tag of signals) {
+    try {
+      const { data } = await getVideos({
+        tags: tag,
+        limit: limit + 5,
+        order: "score",
+        requireThumbnail: true,
+      });
+      const filtered = data.filter((v) => v.slug !== video.slug).slice(0, limit);
+      if (filtered.length >= Math.min(4, limit)) return filtered;
+    } catch (err) {
+      console.error("getRelatedVideos signal error:", err);
+    }
+  }
+
+  // Last-resort fallback: top-scored videos, minus the current one.
+  try {
+    const { data } = await getVideos({
+      limit: limit + 5,
+      order: "score",
+      requireThumbnail: true,
+    });
+    return data.filter((v) => v.slug !== video.slug).slice(0, limit);
+  } catch {
+    return [];
+  }
+}
 
 // ---------------------------------------------------------------------------
 // User library — favorites + history fetched from PG for logged-in users
@@ -322,11 +470,13 @@ export async function getUserFavorites(userId: string | number): Promise<Video[]
        JOIN user_favorites f ON v.slug = f.video_slug
        WHERE f.user_id = $1
          AND NOT (v.tags && $2::text[])
+         AND NOT (COALESCE(v.characters, ARRAY[]::text[]) && $2::text[])
+         AND NOT (COALESCE(v.copyrights, ARRAY[]::text[]) && $2::text[])
        ORDER BY f.created_at DESC
        LIMIT 500`,
       [userId, BANNED_TAGS_ARRAY]
     );
-    return rows.map(rowToVideo);
+    return filterBannedContent(rows.map(rowToVideo));
   } catch (err) {
     console.error("getUserFavorites error:", err);
     return [];
@@ -342,11 +492,13 @@ export async function getUserHistory(userId: string | number): Promise<Video[]> 
        JOIN user_history h ON v.slug = h.video_slug
        WHERE h.user_id = $1
          AND NOT (v.tags && $2::text[])
+         AND NOT (COALESCE(v.characters, ARRAY[]::text[]) && $2::text[])
+         AND NOT (COALESCE(v.copyrights, ARRAY[]::text[]) && $2::text[])
        ORDER BY h.watched_at DESC
        LIMIT 500`,
       [userId, BANNED_TAGS_ARRAY]
     );
-    return rows.map(rowToVideo);
+    return filterBannedContent(rows.map(rowToVideo));
   } catch (err) {
     console.error("getUserHistory error:", err);
     return [];

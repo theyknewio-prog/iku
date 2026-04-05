@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Current password is incorrect" }, { status: 400 });
   }
 
-  const newHash = await bcrypt.hash(newPassword, 10);
+  const newHash = await bcrypt.hash(newPassword, 12);
   await pool.query(
     `UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2`,
     [newHash, session.user.id]

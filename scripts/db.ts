@@ -39,8 +39,15 @@ export async function upsertVideos(
   // also filter upstream, but we never want illegal content to reach the DB
   // even if an upstream filter is missed or bypassed.
   const filtered = rows.filter((r) => {
-    const tags = r.tags ?? [];
-    if (tags.some((t) => BANNED_TAGS.has(t.toLowerCase()))) return false;
+    // Check ALL array columns where sources classify subjects, not just tags.
+    // Danbooru/Gelbooru put character/copyright names in dedicated columns and
+    // nothing relevant in `tags`, so checking only tags was a critical hole.
+    const lists: string[][] = [r.tags ?? [], r.characters ?? [], r.copyrights ?? []];
+    for (const list of lists) {
+      for (const t of list) {
+        if (BANNED_TAGS.has(t.toLowerCase())) return false;
+      }
+    }
     if (r.slug && hasBannedTitle(r.slug)) return false;
     if (r.title && hasBannedTitle(r.title)) return false;
     return true;
@@ -76,6 +83,7 @@ export async function upsertVideos(
     VALUES ${placeholders.join(",")}
     ON CONFLICT (source, source_id) DO UPDATE SET
       slug = EXCLUDED.slug, url = EXCLUDED.url,
+      page_url = EXCLUDED.page_url, site = EXCLUDED.site, title = EXCLUDED.title,
       thumbnail = EXCLUDED.thumbnail, preview = EXCLUDED.preview,
       score = EXCLUDED.score, favorites = EXCLUDED.favorites,
       tags = EXCLUDED.tags, characters = EXCLUDED.characters,

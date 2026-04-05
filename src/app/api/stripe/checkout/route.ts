@@ -98,31 +98,64 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const origin = request.headers.get("origin") || "https://iku.gg";
+  // Never trust the Origin header for redirect URLs — an attacker can forge
+  // `Origin: https://evil.gg` and have Stripe redirect the user to their
+  // phishing page after a real payment. Use a server-side constant.
+  const origin = process.env.NEXT_PUBLIC_SITE_URL || "https://iku.gg";
+
+  // Reject double-buying: if the user already has lifetime or an active
+  // subscription on the same plan, return 409 (prevents webhook mangling).
+  const { rows: proRows } = await pool.query(
+    `SELECT pro_status, pro_plan FROM users WHERE id = $1`,
+    [userId]
+  );
+  const proStatus = proRows[0]?.pro_status as string | null;
+  const proPlan = proRows[0]?.pro_plan as string | null;
+  if (proStatus === "lifetime") {
+    return NextResponse.json(
+      { error: "already_lifetime", message: "You already have lifetime Pro access." },
+      { status: 409 }
+    );
+  }
+  if (proStatus === "active" && proPlan === plan.id) {
+    return NextResponse.json(
+      { error: "already_subscribed", message: `You are already on the ${plan.id} plan.` },
+      { status: 409 }
+    );
+  }
 
   try {
-    const checkoutSession = await stripe.checkout.sessions.create({
-      mode: plan.id === "lifetime" ? "payment" : "subscription",
-      payment_method_types: ["card"],
-      line_items: [{ price: plan.priceId, quantity: 1 }],
-      customer: user.stripe_customer_id || undefined,
-      customer_email: user.stripe_customer_id ? undefined : user.email,
-      client_reference_id: userId,
-      allow_promotion_codes: true,
-      discounts,
-      success_url: `${origin}/profile?upgraded=1`,
-      cancel_url: `${origin}/pricing?canceled=1`,
-      metadata: {
-        user_id: userId,
-        plan: plan.id,
+    const checkoutSession = await stripe.checkout.sessions.create(
+      {
+        mode: plan.id === "lifetime" ? "payment" : "subscription",
+        payment_method_types: ["card"],
+        line_items: [{ price: plan.priceId, quantity: 1 }],
+        customer: user.stripe_customer_id || undefined,
+        customer_email: user.stripe_customer_id ? undefined : user.email,
+        client_reference_id: userId,
+        // `allow_promotion_codes` and `discounts` are MUTUALLY EXCLUSIVE in the
+        // Stripe API — sending both throws StripeInvalidRequestError. Prefer
+        // auto-applied server-side discounts (Waifu Scholar) when present;
+        // otherwise let the user enter promo codes manually.
+        ...(discounts ? { discounts } : { allow_promotion_codes: true }),
+        success_url: `${origin}/profile?upgraded=1`,
+        cancel_url: `${origin}/pricing?canceled=1`,
+        metadata: {
+          user_id: userId,
+          plan: plan.id,
+        },
+        subscription_data:
+          plan.id !== "lifetime"
+            ? {
+                metadata: { user_id: userId, plan: plan.id },
+              }
+            : undefined,
       },
-      subscription_data:
-        plan.id !== "lifetime"
-          ? {
-              metadata: { user_id: userId, plan: plan.id },
-            }
-          : undefined,
-    });
+      {
+        // Idempotency: dedupe double-clicks within a 1-minute window.
+        idempotencyKey: `checkout-${userId}-${plan.id}-${Math.floor(Date.now() / 60_000)}`,
+      }
+    );
 
     return NextResponse.json({ url: checkoutSession.url });
   } catch (err) {

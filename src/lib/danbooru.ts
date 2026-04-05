@@ -6,6 +6,7 @@ import type {
   TagCount,
 } from "@/types/video";
 import { generateSlug } from "./slugify";
+import { filterBannedContent } from "./content";
 
 const BASE_URL = "https://danbooru.donmai.us";
 const DEFAULT_TAGS = "animated filetype:mp4 rating:e";
@@ -193,7 +194,10 @@ export async function searchPosts(
     : posts;
 
   return {
-    data: filtered.map(mapPostToVideo).filter((v): v is Video => v !== null),
+    // Banned content filter — live API bypasses the DB-level filter.
+    data: filterBannedContent(
+      filtered.map(mapPostToVideo).filter((v): v is Video => v !== null)
+    ),
     hasMore: posts.length === clampedLimit,
   };
 }
@@ -300,9 +304,11 @@ export async function getRelatedPosts(
   );
 
   // Filter for MP4/WebM only (since we can't use filetype:mp4 tag)
-  return posts
+  // Plus banned content filter — live API bypasses the DB-level filter.
+  const mapped = posts
     .filter((p) => p.id !== postId && (p.file_url?.endsWith(".mp4") || p.file_url?.endsWith(".webm")))
-    .slice(0, limit)
+    .slice(0, limit + 5)
     .map(mapPostToVideo)
     .filter((v): v is Video => v !== null);
+  return filterBannedContent(mapped).slice(0, limit);
 }

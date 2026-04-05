@@ -2,9 +2,12 @@
 -- Run once against PG: psql $DATABASE_URL -f scripts/init-auth.sql
 
 -- password_hash / dob are nullable for OAuth-only users (e.g. Discord)
+-- NOTE: the `email` column does NOT have a UNIQUE constraint at the column
+-- level because that would be case-sensitive. The functional unique index
+-- `users_email_lower_uniq` below enforces case-insensitive uniqueness.
 CREATE TABLE IF NOT EXISTS users (
   id            BIGSERIAL PRIMARY KEY,
-  email         TEXT NOT NULL UNIQUE,
+  email         TEXT NOT NULL,
   username      TEXT NOT NULL UNIQUE,
   password_hash TEXT,
   dob           DATE,
@@ -23,7 +26,9 @@ CREATE TABLE IF NOT EXISTS user_oauth_accounts (
 );
 CREATE INDEX IF NOT EXISTS user_oauth_user_idx ON user_oauth_accounts (user_id);
 
-CREATE INDEX IF NOT EXISTS users_email_lower_idx ON users (LOWER(email));
+-- Case-insensitive unique email index. Replaces both the old column-level
+-- UNIQUE constraint and the non-unique LOWER(email) index.
+CREATE UNIQUE INDEX IF NOT EXISTS users_email_lower_uniq ON users (LOWER(email));
 CREATE INDEX IF NOT EXISTS users_username_lower_idx ON users (LOWER(username));
 
 CREATE TABLE IF NOT EXISTS user_favorites (

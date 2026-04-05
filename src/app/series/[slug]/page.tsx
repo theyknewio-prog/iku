@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { Pagination } from "@/components/Pagination";
-import { searchPosts } from "@/lib/danbooru";
+import { getVideos } from "@/lib/content";
 import { SERIES, getSeriesBySlug } from "@/data/series";
 import { getCharacterBySlug } from "@/data/characters";
 import type { Metadata } from "next";
@@ -66,11 +66,12 @@ export default async function SeriesPage({ params, searchParams }: Props) {
   const order =
     sortParam === "date" || sortParam === "favcount" || sortParam === "score" ? sortParam : "score";
 
-  const { data: videos, hasMore } = await searchPosts({
+  const { data: videos, hasMore } = await getVideos({
     tags: series.tags[0],
     page: currentPage,
     limit: 20,
     order,
+    requireThumbnail: true,
   });
 
   const seriesCharacters = series.characters

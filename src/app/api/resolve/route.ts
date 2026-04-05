@@ -3,11 +3,19 @@ import { NextRequest, NextResponse } from "next/server";
 const PROXY_URL = process.env.PROXY_URL || "http://10.0.0.1:3001";
 
 // Rate limit: 20 requests/min per IP
+// Map is capped at 10k entries to prevent unbounded growth under attack.
+const RATE_LIMIT_MAX_ENTRIES = 10_000;
 const resolveRateLimit = new Map<string, { count: number; resetAt: number }>();
 setInterval(() => {
   const now = Date.now();
   for (const [key, val] of resolveRateLimit) {
     if (now > val.resetAt) resolveRateLimit.delete(key);
+  }
+  // Hard cap: if cleanup didn't shrink enough, drop oldest entries.
+  while (resolveRateLimit.size > RATE_LIMIT_MAX_ENTRIES) {
+    const firstKey = resolveRateLimit.keys().next().value;
+    if (firstKey === undefined) break;
+    resolveRateLimit.delete(firstKey);
   }
 }, 5 * 60_000);
 

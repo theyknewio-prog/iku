@@ -8,7 +8,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import pool from "@/lib/db";
-import { markPasswordResetTokenUsed } from "@/lib/email";
 
 export async function POST(request: NextRequest) {
   let body: unknown;
@@ -33,10 +32,16 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Find valid unused token (not expired)
+  // Atomic claim: mark the token used inside the WHERE clause so two
+  // concurrent requests can't both pass the "unused" check. Only the first
+  // UPDATE wins; subsequent ones see rowCount=0 and return an error.
+  // (See security.md #6 — previously a token race let an attacker with the
+  // leaked token override a legitimate password reset in the same second.)
   const { rows } = await pool.query(
-    `SELECT user_id FROM password_reset_tokens
-     WHERE token = $1 AND used_at IS NULL AND expires_at > NOW()`,
+    `UPDATE password_reset_tokens
+     SET used_at = NOW()
+     WHERE token = $1 AND used_at IS NULL AND expires_at > NOW()
+     RETURNING user_id`,
     [token]
   );
   if (rows.length === 0) {
@@ -44,14 +49,12 @@ export async function POST(request: NextRequest) {
   }
 
   const userId = Number(rows[0].user_id);
-  const hash = await bcrypt.hash(newPassword, 10);
+  const hash = await bcrypt.hash(newPassword, 12); // bump rounds (was 10)
 
   await pool.query(
     `UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2`,
     [hash, userId]
   );
-
-  await markPasswordResetTokenUsed(token);
 
   return NextResponse.json({ ok: true });
 }

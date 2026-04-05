@@ -9,9 +9,13 @@
  *   - customer.subscription.updated    → sync status (active, past_due, canceled)
  *   - customer.subscription.deleted    → downgrade to free
  *   - invoice.payment_succeeded        → extend period_end
- *   - invoice.payment_failed           → log but keep active (Stripe retries)
+ *   - invoice.payment_failed           → flip to past_due immediately
  *
  * The raw body signature is verified via STRIPE_WEBHOOK_SECRET.
+ *
+ * Dedup: stripe_events table, INSERT only AFTER successful handling so that
+ * transient errors (DB down, etc.) cause a 500 and Stripe retries automatically.
+ * Guards: never overwrite pro_status='lifetime' from a subscription update.
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -46,21 +50,23 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "invalid signature" }, { status: 400 });
   }
 
-  // Dedup via event id in stripe_events table
+  // Dedup check (read-only) — if already processed, ack immediately.
   try {
-    const { rowCount } = await pool.query(
-      `INSERT INTO stripe_events (id, type, raw) VALUES ($1, $2, $3::jsonb)
-       ON CONFLICT DO NOTHING`,
-      [event.id, event.type, JSON.stringify(event)]
+    const { rows } = await pool.query(
+      `SELECT 1 FROM stripe_events WHERE id = $1 LIMIT 1`,
+      [event.id]
     );
-    if (rowCount === 0) {
-      // Already processed
+    if (rows.length > 0) {
       return NextResponse.json({ received: true, dedup: true });
     }
   } catch (err) {
-    console.error("stripe_events insert error:", err);
+    console.error("stripe_events dedup check error:", err);
+    // Fall through — handler may still succeed; Stripe retry will re-dedup next time.
   }
 
+  // Process the event. On error, return 500 so Stripe retries (up to 3 days).
+  // The stripe_events INSERT only runs AFTER successful handling, so transient
+  // failures (DB down, network blip) don't poison the dedup set.
   try {
     switch (event.type) {
       case "checkout.session.completed": {
@@ -82,25 +88,85 @@ export async function POST(request: NextRequest) {
       case "invoice.payment_succeeded": {
         const invoice = event.data.object as Stripe.Invoice & { subscription?: string };
         if (invoice.subscription) {
-          // Fetch the fresh subscription to sync period_end
           const sub = await stripe.subscriptions.retrieve(String(invoice.subscription));
           await handleSubscriptionUpdate(sub);
         }
         break;
       }
       case "invoice.payment_failed": {
-        // Keep active — Stripe auto-retries. Log only.
-        const invoice = event.data.object as Stripe.Invoice;
+        const invoice = event.data.object as Stripe.Invoice & { subscription?: string };
         console.warn("stripe payment failed:", invoice.id);
+        // Immediately flip to past_due so UI reflects reality — don't wait for
+        // a trailing subscription.updated event that may be minutes late.
+        if (invoice.subscription) {
+          await pool.query(
+            `UPDATE users SET pro_status = 'past_due'
+             WHERE pro_subscription_id = $1 AND pro_status != 'lifetime'`,
+            [String(invoice.subscription)]
+          );
+        }
         break;
       }
     }
   } catch (err) {
     console.error("stripe webhook handler error:", err);
-    // Still return 200 so Stripe doesn't retry indefinitely on bugs
+    // Return 500 — Stripe will retry (up to 3 days). Event NOT inserted into
+    // stripe_events, so the retry will re-attempt cleanly.
+    return NextResponse.json(
+      { error: "handler failed" },
+      { status: 500 }
+    );
+  }
+
+  // Mark event as processed AFTER successful handling.
+  try {
+    await pool.query(
+      `INSERT INTO stripe_events (id, type, raw) VALUES ($1, $2, $3::jsonb)
+       ON CONFLICT DO NOTHING`,
+      [event.id, event.type, JSON.stringify(event)]
+    );
+  } catch (err) {
+    console.error("stripe_events insert error (post-handler):", err);
+    // Handler already succeeded — don't 500 the webhook. Stripe retry would
+    // be a safe no-op (handlers are idempotent via upserts).
   }
 
   return NextResponse.json({ received: true });
+}
+
+// ─────────────────────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * Resolve a user_id from a subscription: prefer metadata, fallback to
+ * stripe_customer_id lookup so subs created outside our checkout flow
+ * (customer portal, manual recreate, dunning swap) still get routed.
+ */
+async function resolveUserIdFromSub(sub: Stripe.Subscription): Promise<string | null> {
+  const metaUserId = sub.metadata?.user_id;
+  if (metaUserId) return metaUserId;
+
+  const customerId =
+    typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
+  if (!customerId) return null;
+
+  const { rows } = await pool.query(
+    `SELECT id FROM users WHERE stripe_customer_id = $1 LIMIT 1`,
+    [customerId]
+  );
+  return rows[0] ? String(rows[0].id) : null;
+}
+
+/**
+ * Strict price-id → plan mapping. No substring magic.
+ */
+function planFromPriceId(priceId: string | undefined): "monthly" | "yearly" | "lifetime" | null {
+  if (!priceId) return null;
+  if (priceId === process.env.STRIPE_PRICE_MONTHLY) return "monthly";
+  if (priceId === process.env.STRIPE_PRICE_YEARLY) return "yearly";
+  if (priceId === process.env.STRIPE_PRICE_LIFETIME) return "lifetime";
+  return null;
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -128,10 +194,29 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
   // ── Lifetime (one-time payment) ──
   if (plan === "lifetime" || session.mode === "payment") {
+    // Cancel any pre-existing active subscription so trailing webhooks from
+    // it can't downgrade the lifetime status.
+    const { rows } = await pool.query(
+      `SELECT pro_subscription_id FROM users WHERE id = $1`,
+      [userId]
+    );
+    const existingSubId = rows[0]?.pro_subscription_id as string | null;
+    if (existingSubId && stripe) {
+      try {
+        await stripe.subscriptions.cancel(existingSubId);
+        console.log(`canceled prior sub ${existingSubId} for lifetime upgrade (user ${userId})`);
+      } catch (err) {
+        // Non-fatal: sub may already be canceled. The guard in
+        // handleSubscriptionUpdate (pro_status != 'lifetime') is the real safety net.
+        console.warn(`could not cancel prior sub ${existingSubId}:`, err);
+      }
+    }
+
     await pool.query(
       `UPDATE users SET
          pro_status = 'lifetime',
          pro_plan = 'lifetime',
+         pro_subscription_id = NULL,
          pro_started_at = COALESCE(pro_started_at, NOW()),
          pro_current_period_end = NULL
        WHERE id = $1`,
@@ -142,20 +227,28 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   }
 
   // ── Subscription — the subscription.created event will handle the details ──
-  // Just mark stripe_customer_id above; subscription.updated will sync the rest.
 }
 
 async function handleSubscriptionUpdate(sub: Stripe.Subscription) {
-  const userId = sub.metadata?.user_id;
+  const userId = await resolveUserIdFromSub(sub);
   if (!userId) {
-    console.error("subscription without user_id metadata:", sub.id);
+    console.error("subscription without user_id metadata or customer link:", sub.id);
+    return;
+  }
+
+  // GUARD: never overwrite a lifetime user's status from a subscription event.
+  // Lifetime is a permanent state and any trailing monthly/yearly sub event
+  // must not touch it (see conversion.md blocker #2).
+  const { rows: currentRows } = await pool.query(
+    `SELECT pro_status FROM users WHERE id = $1`,
+    [userId]
+  );
+  if (currentRows[0]?.pro_status === "lifetime") {
+    console.log(`skipping sub update for lifetime user ${userId}`);
     return;
   }
 
   // Status mapping: Stripe → our pro_status
-  // active, trialing → 'active'
-  // past_due, unpaid → 'past_due'
-  // canceled, incomplete_expired → 'canceled' (but keep access until period_end)
   let proStatus: string;
   switch (sub.status) {
     case "active":
@@ -170,9 +263,12 @@ async function handleSubscriptionUpdate(sub: Stripe.Subscription) {
       proStatus = "canceled";
   }
 
-  // Determine plan from the price lookup_key
+  // Determine plan from price ID (strict lookup, no substring guessing).
   const priceId = sub.items.data[0]?.price.id;
-  const plan = sub.metadata?.plan || (priceId?.includes("year") ? "yearly" : "monthly");
+  const plan =
+    (sub.metadata?.plan as "monthly" | "yearly" | "lifetime" | undefined) ||
+    planFromPriceId(priceId) ||
+    "monthly";
 
   const subWithPeriodEnd = sub as Stripe.Subscription & { current_period_end?: number };
   const periodEnd = subWithPeriodEnd.current_period_end
@@ -186,7 +282,7 @@ async function handleSubscriptionUpdate(sub: Stripe.Subscription) {
        pro_subscription_id = $4,
        pro_current_period_end = $5,
        pro_started_at = COALESCE(pro_started_at, NOW())
-     WHERE id = $1`,
+     WHERE id = $1 AND pro_status != 'lifetime'`,
     [userId, proStatus, plan, sub.id, periodEnd]
   );
 
@@ -194,14 +290,14 @@ async function handleSubscriptionUpdate(sub: Stripe.Subscription) {
 }
 
 async function handleSubscriptionDeleted(sub: Stripe.Subscription) {
-  const userId = sub.metadata?.user_id;
+  const userId = await resolveUserIdFromSub(sub);
   if (!userId) return;
 
   await pool.query(
     `UPDATE users SET
        pro_status = 'canceled',
        pro_subscription_id = NULL
-     WHERE id = $1`,
+     WHERE id = $1 AND pro_status != 'lifetime'`,
     [userId]
   );
   console.log(`pro canceled for user ${userId}`);

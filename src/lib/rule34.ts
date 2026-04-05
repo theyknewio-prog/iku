@@ -1,4 +1,5 @@
 import type { Video } from "@/types/video";
+import { containsBannedContent } from "./content";
 
 const BASE_URL = "https://api.rule34.xxx/index.php";
 const API_KEY = process.env.RULE34_API_KEY ?? "";
@@ -76,7 +77,9 @@ export async function getRule34Post(id: number): Promise<Video | null> {
     const json = JSON.parse(text);
     if (!Array.isArray(json) || json.length === 0) return null;
 
-    return mapToVideo(json[0]);
+    const video = mapToVideo(json[0]);
+    if (!video || containsBannedContent(video)) return null;
+    return video;
   } catch {
     return null;
   }

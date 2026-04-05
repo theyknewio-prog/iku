@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { SignupCTA } from "@/components/SignupCTA";
-import { searchPosts } from "@/lib/danbooru";
+import { getVideos } from "@/lib/content";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 
@@ -35,9 +35,10 @@ const CATEGORY_TAGS = [
 ];
 
 export default async function TrendingPage() {
-  const { data: videos } = await searchPosts({
+  const { data: videos } = await getVideos({
     limit: 40,
     order: "score",
+    requireThumbnail: true,
   });
 
   return (

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { Pagination } from "@/components/Pagination";
-import { searchPosts } from "@/lib/danbooru";
+import { getVideos } from "@/lib/content";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 
@@ -32,10 +32,11 @@ export default async function NewPage({ searchParams }: Props) {
   const { page = "1" } = await searchParams;
   const currentPage = Math.max(1, parseInt(String(page)));
 
-  const { data: videos, hasMore } = await searchPosts({
+  const { data: videos, hasMore } = await getVideos({
     limit: 40,
     order: "date",
     page: currentPage,
+    requireThumbnail: true,
   });
 
   return (

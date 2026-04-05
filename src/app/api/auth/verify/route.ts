@@ -12,7 +12,10 @@ import { consumeVerificationToken, sendWelcomeEmail } from "@/lib/email";
 
 export async function GET(request: NextRequest) {
   const token = new URL(request.url).searchParams.get("token");
-  const origin = request.headers.get("origin") || "https://iku.gg";
+  // NEVER trust `Origin` for redirect URLs. Top-level GET navigations from
+  // email clients don't send it, so it falls back to an attacker-controlled
+  // value if set. Use the server-side constant (see security.md #4).
+  const origin = process.env.NEXT_PUBLIC_SITE_URL || "https://iku.gg";
 
   if (!token || token.length < 32) {
     return NextResponse.redirect(new URL("/login?verify_error=invalid", origin));
