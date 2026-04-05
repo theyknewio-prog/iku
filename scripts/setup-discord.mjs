@@ -330,44 +330,38 @@ Welcome home. 💖`,
 - CSP headers locked down
 - **Purged 1,457 illegal videos** — 3-layer content filter live`,
 
-  "🎭-roles-and-tags": `# 🎭 Pick Your Roles
+  "🎭-roles-and-tags": `# 🎭 Your Roles — Self-Serve
 
-**Step 1** — React with 🔞 to confirm you're 18+ and unlock NSFW channels.
-**Step 2** — React with genre emojis to pick your taste roles (auto-subscribes you to matching forums).
+**There's no "react here" thing. Discord has a much better native system.**
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-## 🔞 Age verification (required)
-React: 🔞 → **I am 18 or older** ⚠️ *Required for NSFW channels*
+## 🚀 How to pick / change your roles
 
-## 🎨 Taste roles (react for each genre you enjoy)
-React: 💗 → **Vanilla**
-React: 🎮 → **3D** (Blender / Koikatsu / MMD)
-React: ✨ → **Futa**
-React: 👹 → **Monster**
-React: 🧚 → **Fantasy**
-React: 🎒 → **Schoolgirl**
-React: 🎀 → **Maid**
-React: 🧝 → **Elf**
-React: 🐱 → **Catgirl**
-React: 🐙 → **Tentacles**
-React: 🔥 → **Uncensored**
-React: 💋 → **MILF**
-React: 😵 → **Ahegao**
-React: 🍦 → **Creampie**
-React: 👥 → **Group**
+**Method 1 — Onboarding (for new members)**
+When you join, Discord walks you through 3 prompts:
+1. 🔞 **Age verification** → grants the **18+ Verified** role (required for NSFW)
+2. 🎨 **Main genres** → Vanilla, 3D, Futa, Monster, Fantasy, Uncensored, MILF
+3. 🎨 **Specific kinks** → Schoolgirl, Maid, Elf, Catgirl, Tentacles, Ahegao, Creampie, Group
+
+**Method 2 — Channels & Roles (any time)**
+At the top of the channel list on the left, click **✨ Channels & Roles**. Pick/unpick any taste role whenever you want.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ## 🌟 Earned roles (not self-serve)
-> 🌟 **OG** — Joined before the public launch
+
+> 🌟 **OG** — Joined before the public launch (auto-assigned)
 > 📣 **Contributor** — Active helpers (bug reports, suggestions, feedback)
-> 🏆 **Top Contributor** — Top 10 active members each month
+> 🏆 **Top Contributor** — Top 10 most active members each month
 > 🎨 **Verified Creator** — Animators/artists (DM a mod with portfolio)
-> 💎 **VIP** — Patreon supporters
+> 💎 **VIP** — Patreon supporters (linked on signup)
 > ✨ **Pro** — iku.gg Pro subscribers (coming soon)
-> 🚀 **Server Booster** — Boost the server
+> 🚀 **Server Booster** — Boost the server and get the role automatically
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-*Reaction roles are auto-configured by Carl-bot / MEE6. Until the bot is added, DM a mod for manual assignment.*`,
+
+**Privacy note:** Your taste roles are visible to other members. If you want to stay private, just skip the taste prompts — you'll still have access to everything.`,
 
   "❓-faq": `# ❓ Frequently Asked Questions
 
