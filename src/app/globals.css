@@ -8365,3 +8365,183 @@ body {
   .hp-go-pro__title { font-size: 32px; }
   .hp-go-pro__sub { font-size: 14px; }
 }
+
+/* Daily quests widget on /profile */
+.profile-quests {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.profile-quest {
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  transition: all 0.25s;
+}
+.profile-quest--done {
+  background: rgba(74,222,128,0.08);
+  border-color: rgba(74,222,128,0.35);
+  opacity: 0.85;
+}
+.profile-quest__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.profile-quest__emoji { font-size: 20px; }
+.profile-quest__title {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+.profile-quest__reward {
+  font-size: 11px;
+  font-weight: 800;
+  color: #fbbf24;
+  padding: 3px 8px;
+  background: rgba(251,191,36,0.12);
+  border-radius: 999px;
+  border: 1px solid rgba(251,191,36,0.35);
+}
+.profile-quest__bar {
+  height: 6px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.profile-quest__fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff6b9d, #c084fc);
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+.profile-quest--done .profile-quest__fill {
+  background: linear-gradient(90deg, #4ade80, #86efac);
+}
+.profile-quest__progress {
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  margin-top: 6px;
+  font-weight: 600;
+}
+.profile-quest--done .profile-quest__progress { color: #4ade80; }
+
+/* ============================================================
+   VIDEO OF THE DAY (homepage)
+   ============================================================ */
+.hp-vod {
+  margin: 48px 0;
+  padding: 24px;
+  background: linear-gradient(135deg, rgba(255,107,157,0.08), rgba(192,132,252,0.08));
+  border: 1px solid rgba(255,107,157,0.25);
+  border-radius: 20px;
+}
+.hp-vod__badge {
+  display: inline-block;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, #ff6b9d, #c084fc);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+
+.hp-vod__card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s;
+}
+@media (min-width: 768px) {
+  .hp-vod__card { grid-template-columns: 1.2fr 1fr; }
+}
+.hp-vod__card:hover { transform: translateY(-2px); }
+
+.hp-vod__thumb {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #1a0b2e;
+}
+.hp-vod__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%);
+  z-index: 1;
+}
+.hp-vod__play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.92);
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(255,107,157,0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 40px rgba(255,107,157,0.6);
+  z-index: 2;
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+.hp-vod__card:hover .hp-vod__play { transform: translate(-50%, -50%) scale(1.05); }
+
+.hp-vod__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.hp-vod__eyebrow {
+  font-size: 12px;
+  font-weight: 800;
+  color: #ff6b9d;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+.hp-vod__title {
+  font-size: 28px;
+  font-weight: 900;
+  color: #fff;
+  margin: 0 0 8px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+.hp-vod__char {
+  font-size: 14px;
+  color: #c084fc;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.hp-vod__desc {
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.55;
+  margin: 0 0 18px;
+}
+.hp-vod__desc strong { color: #fbbf24; }
+.hp-vod__cta {
+  display: inline-block;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #ff6b9d, #c084fc);
+  color: #fff;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 800;
+  align-self: flex-start;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.hp-vod__card:hover .hp-vod__cta {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(255,107,157,0.4);
+}

@@ -12,6 +12,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { recordScore, POINTS, type ScoreEventType } from "@/lib/gamification";
+import { advanceDailyQuests } from "@/lib/daily-quests";
 
 const ALLOWED_EVENTS = new Set<ScoreEventType>(
   Object.keys(POINTS) as ScoreEventType[]
@@ -73,6 +74,17 @@ export async function POST(request: NextRequest) {
     meta,
   });
 
+  // Advance daily quests based on this event (no-op for events that don't match)
+  // daily_quest event itself should NOT advance quests (prevents infinite loops)
+  let completedQuests: Array<{ code: string; title: string; emoji: string }> = [];
+  if (event !== "daily_quest") {
+    completedQuests = await advanceDailyQuests(
+      userId,
+      event as string,
+      meta as { tags?: string[] } | undefined
+    );
+  }
+
   return NextResponse.json({
     ok: true,
     awarded: result.awarded,
@@ -89,6 +101,7 @@ export async function POST(request: NextRequest) {
           index: result.newTier.index,
         }
       : null,
+    completedQuests,
     stats: {
       score:          result.stats.score,
       current_streak: result.stats.current_streak,

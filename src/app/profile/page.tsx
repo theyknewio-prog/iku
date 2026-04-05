@@ -9,6 +9,7 @@ import {
   tierFromScore,
   nextTierFor,
 } from "@/lib/gamification";
+import { getOrCreateTodayQuests } from "@/lib/daily-quests";
 
 export const metadata: Metadata = {
   title: "Profile — iku.gg",
@@ -33,6 +34,7 @@ export default async function ProfilePage() {
   // Gamification data
   const stats = await getOrCreateUserStats(session.user.id);
   const badges = await getUserBadges(session.user.id);
+  const quests = await getOrCreateTodayQuests(session.user.id);
   const tier = tierFromScore(stats.score);
   const next = nextTierFor(stats.score);
   const progressPct = next
@@ -95,6 +97,34 @@ export default async function ProfilePage() {
           </ul>
         </div>
       )}
+
+      {/* Daily quests */}
+      <div className="profile-section">
+        <h2>Daily Quests</h2>
+        <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", margin: "0 0 14px" }}>
+          Complete 3 quests every day to earn bonus points · Resets at midnight UTC
+        </p>
+        <div className="profile-quests">
+          {quests.map((q) => {
+            const pct = Math.min(100, Math.round((q.progress / q.target) * 100));
+            return (
+              <div key={q.code} className={`profile-quest ${q.completed ? "profile-quest--done" : ""}`}>
+                <div className="profile-quest__header">
+                  <span className="profile-quest__emoji">{q.emoji}</span>
+                  <span className="profile-quest__title">{q.title}</span>
+                  <span className="profile-quest__reward">+{q.rewardPoints}</span>
+                </div>
+                <div className="profile-quest__bar">
+                  <div className="profile-quest__fill" style={{ width: `${pct}%` }} />
+                </div>
+                <div className="profile-quest__progress">
+                  {q.completed ? "✓ Complete" : `${q.progress} / ${q.target}`}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
       {/* Stats grid */}
       <div className="profile-section">

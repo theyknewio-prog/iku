@@ -266,6 +266,43 @@ export const getCuratedGenreCounts = memoize(
 );
 
 // ---------------------------------------------------------------------------
+// Video of the Day — deterministic pick per UTC day from the top 500 by score
+// ---------------------------------------------------------------------------
+
+function hashDayToIndex(date: string, modulo: number): number {
+  let h = 0;
+  for (let i = 0; i < date.length; i++) h = (h * 31 + date.charCodeAt(i)) | 0;
+  return Math.abs(h) % modulo;
+}
+
+async function _getVideoOfTheDay(): Promise<Video | null> {
+  try {
+    const { rows } = await pool.query(
+      `SELECT source, source_id, slug, url, page_url, site, title,
+              thumbnail, preview, score, favorites,
+              tags, characters, copyrights, artists,
+              width, height, file_size, duration, created_at
+       FROM videos
+       WHERE thumbnail IS NOT NULL AND thumbnail <> ''
+         AND NOT (tags && $1::text[])
+       ORDER BY score DESC
+       LIMIT 500`,
+      [BANNED_TAGS_ARRAY]
+    );
+    if (rows.length === 0) return null;
+    const today = new Date().toISOString().slice(0, 10);
+    const idx = hashDayToIndex(today, rows.length);
+    return rowToVideo(rows[idx]);
+  } catch (err) {
+    console.error("getVideoOfTheDay error:", err);
+    return null;
+  }
+}
+
+// Memoize 1h — the "day" doesn't change that often
+export const getVideoOfTheDay = memoize("vod", _getVideoOfTheDay, 60 * 60 * 1000);
+
+// ---------------------------------------------------------------------------
 // User library — favorites + history fetched from PG for logged-in users
 // ---------------------------------------------------------------------------
 

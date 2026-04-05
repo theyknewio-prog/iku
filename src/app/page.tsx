@@ -5,7 +5,7 @@ import { AgeGate } from "@/components/AgeGate";
 import { PosterCard } from "@/components/PosterCard";
 import { Carousel } from "@/components/Carousel";
 import { getPopularCharacters } from "@/lib/danbooru";
-import { getVideos, getCuratedGenreCounts } from "@/lib/content";
+import { getVideos, getCuratedGenreCounts, getVideoOfTheDay } from "@/lib/content";
 import { buildTitle, pickGenreTag } from "@/lib/video-display";
 import { SERIES } from "@/data/series";
 import { OnlineCounter } from "@/components/OnlineCounter";
@@ -94,9 +94,10 @@ export default async function HomePage() {
   const newReleasesPage = Math.floor(Math.random() * 5) + 1;
   const newest = await getVideos({ limit: 10, page: newReleasesPage, order: "date", source: "all", requireThumbnail: true });
   const topRated = await getVideos({ limit: 8, order: "favcount", source: "all", requireThumbnail: true });
-  const [genres, characters] = await Promise.all([
+  const [genres, characters, vod] = await Promise.all([
     getCuratedGenreCounts(),
     getPopularCharacters(12),
+    getVideoOfTheDay(),
   ]);
 
   const hero = trending.data[0];
@@ -234,6 +235,50 @@ export default async function HomePage() {
               <PosterCard key={video.id} video={video} rank={i < 8 ? i + 1 : undefined} priority={i < 5} />
             ))}
           </Carousel>
+
+          {/* ================================================================
+              VIDEO OF THE DAY — deterministic daily pick
+          ================================================================ */}
+          {vod && (
+            <section aria-label="Video of the Day" className="hp-vod">
+              <div className="hp-vod__badge">✨ Video of the Day · {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric" })}</div>
+              <Link href={`/watch/${vod.slug}`} className="hp-vod__card">
+                <div className="hp-vod__thumb">
+                  {vod.thumbnail && (
+                    <Image
+                      src={vod.thumbnail}
+                      alt={vod.title || vod.characters[0] || "Video of the Day"}
+                      fill
+                      sizes="(max-width: 960px) 100vw, 600px"
+                      style={{ objectFit: "cover" }}
+                      unoptimized
+                      priority
+                    />
+                  )}
+                  <div className="hp-vod__overlay" />
+                  <div className="hp-vod__play">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21" /></svg>
+                  </div>
+                </div>
+                <div className="hp-vod__info">
+                  <div className="hp-vod__eyebrow">🎯 Today's hand-picked banger</div>
+                  <h2 className="hp-vod__title">
+                    {vod.title
+                      ? vod.title.replace(/_/g, " ")
+                      : vod.characters[0]?.replace(/_/g, " ") || "Featured clip"}
+                  </h2>
+                  {vod.characters[0] && (
+                    <div className="hp-vod__char">👤 {vod.characters[0].replace(/_/g, " ")}</div>
+                  )}
+                  <p className="hp-vod__desc">
+                    Curated pick of the day. Watch before midnight UTC to earn <strong>+20 bonus points</strong>.
+                    A new pick drops every day at 00:00 UTC.
+                  </p>
+                  <div className="hp-vod__cta">Watch now →</div>
+                </div>
+              </Link>
+            </section>
+          )}
 
           {/* ================================================================
               TOP RATED THIS WEEK -- 4-column grid

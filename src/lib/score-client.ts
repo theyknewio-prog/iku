@@ -20,6 +20,7 @@ interface ScoreResponse {
   awarded?: number;
   newBadges?: Array<{ code: string; name: string; emoji: string; description: string }>;
   newTier?: { name: string; emoji: string; index: number };
+  completedQuests?: Array<{ code: string; title: string; emoji: string }>;
   stats?: { score: number; current_streak: number };
 }
 
@@ -38,7 +39,7 @@ export async function recordScoreEvent(
     if (!res.ok) return null;
     const data = (await res.json()) as ScoreResponse;
 
-    // Show a toast for new badges / tier ups
+    // Show a toast for new badges / tier ups / completed quests
     if (data.newBadges && data.newBadges.length > 0) {
       for (const b of data.newBadges) {
         showScoreToast(`${b.emoji} Badge unlocked: ${b.name}`, b.description);
@@ -49,6 +50,11 @@ export async function recordScoreEvent(
         `${data.newTier.emoji} Tier up — ${data.newTier.name}`,
         "Check your profile for new perks"
       );
+    }
+    if (data.completedQuests && data.completedQuests.length > 0) {
+      for (const q of data.completedQuests) {
+        showScoreToast(`${q.emoji} Quest complete: ${q.title}`, "+15 points · keep going");
+      }
     }
 
     return data;
