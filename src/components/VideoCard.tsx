@@ -266,7 +266,6 @@ export function VideoCard({
   const lastTapSideRef = useRef<"left" | "center" | "right" | null>(null);
 
   /* Keyboard shortcuts — only when active */
-  useVideoShortcuts(isActive ? videoRef : { current: null });
 
   /* Auto-play / pause */
   useEffect(() => {
@@ -296,22 +295,39 @@ export function VideoCard({
     setBuffered((end / el.duration) * 100);
   }, []);
 
-  /* Toggle mute with visual hint */
+  /* Toggle mute.
+   *
+   * Silent bug avoidance (see CLAUDE.md) — the <video> element's `muted`
+   * attribute is controlled by React via `muted={muted}`. Mutating `el.muted`
+   * directly creates a race: React's next render re-applies the stale prop
+   * and the video can re-mute milliseconds after our change. The fix is to
+   * update ONLY the state and let React drive the attribute. We still
+   * imperatively call `el.play()` after unmuting because some desktop
+   * browsers pause an autoplaying muted video the first time it unmutes.
+   */
   const toggleMute = useCallback(() => {
-    const el = videoRef.current;
-    if (!el) return;
-    const next = !el.muted;
-    el.muted = next;
-    if (!next) {
-      // Re-trigger play to satisfy browser autoplay policy for unmuting
-      el.volume = el.volume || 0.5;
-      el.play().catch(() => {});
-    }
-    setMuted(next);
-    setShowMuteHint(true);
-    if (muteTimerRef.current) clearTimeout(muteTimerRef.current);
-    muteTimerRef.current = setTimeout(() => setShowMuteHint(false), 900);
+    setMuted((prev) => {
+      const next = !prev;
+      const el = videoRef.current;
+      if (el) {
+        if (!next) {
+          // Unmuting — ensure audio is audible and the video is playing.
+          if (el.volume === 0) el.volume = 0.5;
+          el.play().catch(() => {});
+        }
+      }
+      setShowMuteHint(true);
+      if (muteTimerRef.current) clearTimeout(muteTimerRef.current);
+      muteTimerRef.current = setTimeout(() => setShowMuteHint(false), 900);
+      return next;
+    });
   }, []);
+
+  // Keyboard shortcuts — route mute through toggleMute so React state stays
+  // in sync with the DOM (see CLAUDE.md silent-bug section).
+  useVideoShortcuts(isActive ? videoRef : { current: null }, {
+    onMuteToggle: toggleMute,
+  });
 
   /* Seek overlay */
   const showSeekFeedback = useCallback((side: "left" | "right") => {

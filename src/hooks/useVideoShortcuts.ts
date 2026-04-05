@@ -1,10 +1,26 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
+/**
+ * Keyboard shortcuts for a <video> element.
+ *
+ * The optional `onMuteToggle` callback lets the caller route mute/unmute
+ * through their own state machine instead of mutating the DOM directly.
+ * This matters when the video's `muted` attribute is controlled by React
+ * (e.g. `<video muted={muted} />`) — direct DOM mutation races with the
+ * next render and can get reverted. See CLAUDE.md silent-bug section.
+ */
 export function useVideoShortcuts(
-  videoRef: { current: HTMLVideoElement | null }
+  videoRef: { current: HTMLVideoElement | null },
+  opts: { onMuteToggle?: () => void } = {}
 ) {
+  // Stable ref to the latest onMuteToggle so the effect below doesn't need
+  // to tear down and re-add its keydown listener on every parent render.
+  const onMuteToggleRef = useRef(opts.onMuteToggle);
+  useEffect(() => {
+    onMuteToggleRef.current = opts.onMuteToggle;
+  }, [opts.onMuteToggle]);
   useEffect(() => {
     function handler(e: KeyboardEvent) {
       // Ignore when typing in an input / textarea / contenteditable
@@ -54,7 +70,11 @@ export function useVideoShortcuts(
         case "m":
         case "M":
           e.preventDefault();
-          el.muted = !el.muted;
+          if (onMuteToggleRef.current) {
+            onMuteToggleRef.current();
+          } else {
+            el.muted = !el.muted;
+          }
           break;
 
         default:
