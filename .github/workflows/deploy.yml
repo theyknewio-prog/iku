@@ -1,0 +1,37 @@
+name: Deploy to Coolify
+
+# Auto-deploy fallback — the native Coolify webhook from GitHub has been
+# unreliable (app had source_type=null, so POSTs to /webhooks/source/github/events
+# returned 200 but never queued a deployment). This workflow calls the Coolify
+# REST API directly on every push to master so deploys always happen.
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: coolify-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Trigger Coolify deployment
+        run: |
+          set -e
+          SHORT_SHA=${GITHUB_SHA::7}
+          echo "Deploying $SHORT_SHA to Coolify…"
+          HTTP_CODE=$(curl -s -o /tmp/resp.json -w "%{http_code}" -X POST \
+            -H "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            "http://${{ secrets.COOLIFY_HOST }}/api/v1/deploy?uuid=${{ secrets.COOLIFY_APP_ID }}&force=false")
+          echo "HTTP $HTTP_CODE"
+          cat /tmp/resp.json
+          echo
+          if [ "$HTTP_CODE" != "200" ] && [ "$HTTP_CODE" != "201" ]; then
+            echo "::error::Coolify deploy trigger failed with $HTTP_CODE"
+            exit 1
+          fi
