@@ -92,16 +92,20 @@ export async function GET(request: NextRequest) {
 
   try {
     const { data, hasMore } = await getVideos({
-      limit: 20,
+      // Wider pull so that after filtering out missing URLs / oversize files
+      // the client still receives a healthy batch (~20-30 playable videos per page).
+      limit: 60,
       page: catalogPage,
       order,
       tags: tag || undefined,
       source,
     });
 
-    // Filter: must have a URL and be under the file-size limit.
+    // Filter: must have a direct playable URL and stay under a reasonable
+    // streaming budget (60MB keeps the cap for pathological files without
+    // dropping the long-tail of 2-3 min high-quality clips).
     const videos = data
-      .filter((v) => v.url && v.fileSize < 15_000_000)
+      .filter((v) => v.url && (v.fileSize === 0 || v.fileSize < 60_000_000))
       .map((v) => ({
         id: v.id,
         slug: v.slug,

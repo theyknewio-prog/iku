@@ -109,9 +109,8 @@ export default async function HomePage() {
 
           {/* ── Mobile stats bar — visible only when hero-right is hidden (<960px) ── */}
           <div className="hp-hero-mobile-stats" aria-label="Live stats">
-            <div className="hp-hero-mobile-stats__item">
-              <span className="hp-hero-mobile-stats__dot" />
-              <span className="hp-hero-mobile-stats__online">1,247 online</span>
+            <div className="hp-hero-mobile-stats__item hp-hero-mobile-stats__item--live">
+              <OnlineCounter />
             </div>
             <div className="hp-hero-mobile-stats__item">
               <span className="hp-hero-mobile-stats__rating">&#9733; 4.8 rating</span>
@@ -168,12 +167,6 @@ export default async function HomePage() {
                 <div className="hp-hero-stat">
                   <span className="hp-hero-stat__num">Free</span>
                   <span className="hp-hero-stat__label">Always</span>
-                </div>
-                <div className="hp-hero-stat hp-hero-stat--online">
-                  <span className="hp-hero-stat__num hp-hero-stat__num--online">
-                    <OnlineCounter />
-                  </span>
-                  <span className="hp-hero-stat__label">Right now</span>
                 </div>
               </div>
             </div>

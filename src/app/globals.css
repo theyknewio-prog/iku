@@ -4115,6 +4115,8 @@ body {
 .v2-main {
   flex: 1;
   min-width: 0;
+  /* Reserve space for the fixed .v2-topbar so page content doesn't overlap */
+  padding-top: var(--v2-topbar-h);
 }
 
 @media (min-width: 1024px) {
@@ -4286,10 +4288,11 @@ body {
 }
 
 /* ── Page wrapper ────────────────────────────────────────── */
+/* Note: padding-top for the fixed topbar now lives on .v2-main so every page
+   benefits (not just the few that wrap their content in .v2-page). */
 .v2-page {
   background: var(--v2-bg);
   min-height: 100dvh;
-  padding-top: var(--v2-topbar-h);
 }
 
 @media (max-width: 1023px) {
@@ -6731,6 +6734,9 @@ body {
 .hp-hero-mobile-stats__online { color: #4ade80; }
 .hp-hero-mobile-stats__rating { color: #fbbf24; }
 .hp-hero-mobile-stats__new    { color: #67e8f9; }
+/* Live OnlineCounter injected into the mobile stats bar — match the green look */
+.hp-hero-mobile-stats__item--live { color: #4ade80; }
+.hp-hero-mobile-stats__item--live .hp-online-dot { margin-right: 6px; }
 
 /* ── Responsive — Hero + Grid ─────────────────────────── */
 @media (max-width: 1200px) {
@@ -8364,6 +8370,19 @@ body {
   .hp-go-pro { padding: 36px 20px; margin: 32px 0 24px; }
   .hp-go-pro__title { font-size: 32px; }
   .hp-go-pro__sub { font-size: 14px; }
+  /* Stack CTAs full-width on narrow screens so the buttons never overflow
+     or look cramped when the copy wraps. */
+  .hp-go-pro__ctas {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 0 4px;
+  }
+  .hp-go-pro__btn {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 14px;
+  }
 }
 
 /* Daily quests widget on /profile */

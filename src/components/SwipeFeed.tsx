@@ -48,8 +48,13 @@ export function SwipeFeed() {
 
       if (data.videos && data.videos.length > 0) {
         setVideos((prev) => [...prev, ...data.videos]);
-        setPage(pageNum);
       }
+
+      // Always advance the cursor, even on empty pages, so that subsequent
+      // triggers try the *next* page rather than retrying the same one forever.
+      // The API response may return fewer (or zero) rows after the URL/size
+      // filters — without this we could get stuck retrying page N indefinitely.
+      setPage(pageNum);
     } catch (err) {
       console.error("Failed to fetch feed:", err);
     } finally {
@@ -61,6 +66,20 @@ export function SwipeFeed() {
   useEffect(() => {
     fetchVideos(1);
   }, [fetchVideos]);
+
+  // Safety net: if a fetch returned few videos (aggressive server-side filtering
+  // can drop most of a batch), the IntersectionObserver may not fire again
+  // because the active card is already past the new threshold. Re-check after
+  // every state change and proactively refetch the next page while the buffer
+  // ahead of the active index is dangerously low.
+  useEffect(() => {
+    if (loadingRef.current) return;
+    if (videos.length === 0) return;
+    const buffer = videos.length - activeIndex;
+    if (buffer < 5) {
+      fetchVideos(page + 1);
+    }
+  }, [videos.length, activeIndex, page, fetchVideos]);
 
   useEffect(() => {
     const container = containerRef.current;
