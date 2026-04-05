@@ -95,7 +95,7 @@
 - **S1 :** CSP `script-src 'unsafe-inline' 'unsafe-eval'` = zéro défense XSS
 - **S2 :** `getVideos()` tag search `ILIKE '%' || $N || '%'` → un user peut brute avec `%` wildcards pour hammer l'index
 - **S3 :** `/api/video-stream` proxy sans cap sur output size → bandwidth DoS
-- **S4 :** Gelbooru API key + Rule34 API key **hardcodées dans git history** (supply-chain.md C1/C2) → à rotate
+- **S4 :** Gelbooru API key + Rule34 API key **hardcodées dans git history** (supply-chain.md C1/C2) → à rotate. ⚠️ **IMPORTANT** : le Rule34 key a déjà été rotée une fois le 2026-04-03 mais **la nouvelle clé a été re-committée dans git immediately après**, donc elle est ELLE AUSSI burned (présente dans l'historique public). Il faut soit : (a) rotation #2 + `git filter-repo` pour purger toutes les references dans l'historique, soit (b) considérer les deux clés comme publiques à vie et rate-limit + monitorer l'abus.
 
 ### UX
 - **U1 :** Logged-in "Remove favorite" re-adds the item (race localStorage vs server)
