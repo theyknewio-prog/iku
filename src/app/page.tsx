@@ -382,6 +382,43 @@ export default async function HomePage() {
             ))}
           </Carousel>
 
+          {/* ================================================================
+              GO PRO CTA — prominent, animated, above the footer
+          ================================================================ */}
+          <section className="hp-go-pro" aria-label="Upgrade to Pro">
+            <div className="hp-go-pro__bg" aria-hidden="true">
+              <div className="hp-go-pro__orb hp-go-pro__orb--1" />
+              <div className="hp-go-pro__orb hp-go-pro__orb--2" />
+              <div className="hp-go-pro__orb hp-go-pro__orb--3" />
+            </div>
+            <div className="hp-go-pro__content">
+              <div className="hp-go-pro__eyebrow">✨ iku.gg Pro</div>
+              <h2 className="hp-go-pro__title">
+                Remove ads. <span className="hp-go-pro__title-accent">Forever.</span>
+              </h2>
+              <p className="hp-go-pro__sub">
+                Zero ads, unlimited favorites, 48h early access, Discord Pro lounge,
+                and more. From <strong>4.99€/month</strong> — cancel anytime.
+              </p>
+              <div className="hp-go-pro__features">
+                <span>🚫 Zero ads</span>
+                <span>❤️ Unlimited favorites</span>
+                <span>🎯 Early access 48h</span>
+                <span>💎 Pro badge</span>
+                <span>🎮 Discord Pro channel</span>
+                <span>⚡ Priority loading</span>
+              </div>
+              <div className="hp-go-pro__ctas">
+                <Link href="/pricing" className="hp-go-pro__btn hp-go-pro__btn--primary">
+                  See plans ✨
+                </Link>
+                <Link href="/pricing" className="hp-go-pro__btn hp-go-pro__btn--ghost">
+                  Lifetime 69.99€
+                  <span className="hp-go-pro__btn-sub">Limited 500 spots</span>
+                </Link>
+              </div>
+            </div>
+          </section>
 
         </div>
 

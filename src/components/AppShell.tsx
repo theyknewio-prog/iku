@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { SearchAutocomplete } from "./SearchAutocomplete";
+import { StreakBadge } from "./StreakBadge";
 
 /* ── SVG Icons ─────────────────────────────────────────────── */
 
@@ -426,6 +427,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className="v2-topbar__actions">
+          <StreakBadge />
           <Link href="/favorites" className="v2-topbar-btn" title="Favorites" aria-label="Favorites">
             <span aria-hidden="true" style={{ fontSize: 18 }}>❤️</span>
           </Link>
