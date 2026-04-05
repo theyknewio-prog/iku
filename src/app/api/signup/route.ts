@@ -15,6 +15,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import pool from "@/lib/db";
+import { sendVerificationEmail } from "@/lib/email";
 
 const signupRateLimit = new Map<string, { count: number; resetAt: number }>();
 setInterval(() => {
@@ -126,12 +127,15 @@ export async function POST(request: NextRequest) {
 
   // Hash + insert
   const hash = await bcrypt.hash(password, 10);
+  let newUserId: number;
   try {
-    await pool.query(
+    const { rows } = await pool.query(
       `INSERT INTO users (email, username, password_hash, dob, avatar_emoji)
-       VALUES ($1, $2, $3, $4, '🌸')`,
+       VALUES ($1, $2, $3, $4, '🌸')
+       RETURNING id`,
       [email, username, hash, dob]
     );
+    newUserId = Number(rows[0].id);
   } catch (err) {
     const msg = err instanceof Error ? err.message : "unknown";
     if (msg.includes("duplicate") || msg.includes("unique")) {
@@ -143,6 +147,13 @@ export async function POST(request: NextRequest) {
     console.error("signup error:", err);
     return NextResponse.json({ error: "Signup failed" }, { status: 500 });
   }
+
+  // Fire-and-forget verification email (don't block signup response)
+  sendVerificationEmail({
+    userId: newUserId,
+    email,
+    username,
+  }).catch((err) => console.error("verification email failed:", err));
 
   return NextResponse.json({ ok: true });
 }

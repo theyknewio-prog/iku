@@ -88,6 +88,10 @@ export function LoginForm() {
       </button>
 
       <p className="auth-switch">
+        <Link href="/forgot-password">Forgot password?</Link>
+      </p>
+
+      <p className="auth-switch" style={{ marginTop: 8 }}>
         Don&apos;t have an account? <Link href="/signup">Sign up</Link>
       </p>
     </>
