@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import type { Video } from "@/types/video";
 import { isWatched } from "@/lib/history";
 import { prefetchVideoUrl, cancelPrefetch } from "@/lib/prefetch-video";
+import { buildTitle, pickGenreTag } from "@/lib/video-display";
 
 /* ── Gradient palette for fallback backgrounds (mockup thumb-grad-*) ─── */
 const GRADIENTS = [
@@ -37,57 +38,6 @@ const TAG_COLORS = [
   { cls: "gt-green",   bg: "linear-gradient(135deg, #4ade80, #67e8f9)" },
 ];
 
-const GENERIC_TAGS = new Set([
-  "animated", "video", "sound", "tagme", "highres", "absurdres",
-  "original", "solo", "1girl", "1boy", "1girls", "2girls", "3girls",
-  "multiple_girls", "multiple_boys", "group", "duo",
-  "nude", "nipples", "breasts", "pussy", "completely_nude", "large_breasts",
-  "looking_at_viewer", "smile", "blush", "open_mouth", "closed_eyes",
-  "long_hair", "short_hair", "blonde_hair", "black_hair", "brown_hair",
-  "blue_eyes", "green_eyes", "red_eyes", "hair_ornament",
-  "simple_background", "white_background", "transparent_background",
-  "skirt", "shirt", "dress", "holding", "sitting", "standing",
-]);
-
-// Skip tags that are just numbers / resolutions / years
-function isNoise(tag: string): boolean {
-  return /^\d/.test(tag) || tag.includes("x1080") || tag.includes("x720");
-}
-
-function pickGenreTag(video: Video): string {
-  const candidate = video.tags.find(
-    (t) => !GENERIC_TAGS.has(t.toLowerCase()) && !isNoise(t)
-  );
-  if (candidate) return candidate.replace(/_/g, " ");
-  if (video.tags.length > 0) return video.tags[0].replace(/_/g, " ");
-  return "Hentai";
-}
-
-function buildTitle(video: Video): string {
-  // Prefer scraped title (rule34video, WP)
-  if (video.title && video.title.trim()) {
-    return video.title.replace(/_/g, " ");
-  }
-  // Then character name
-  if (video.characters[0]) {
-    const char = video.characters[0].replace(/_/g, " ");
-    return video.copyrights[0]
-      ? `${char} — ${video.copyrights[0].replace(/_/g, " ")}`
-      : char;
-  }
-  // Then copyright
-  if (video.copyrights[0]) {
-    return video.copyrights[0].replace(/_/g, " ");
-  }
-  // Then first meaningful tags
-  const meaningful = video.tags.filter(
-    (t) => !GENERIC_TAGS.has(t.toLowerCase()) && !isNoise(t)
-  );
-  if (meaningful.length > 0) {
-    return meaningful.slice(0, 2).map((t) => t.replace(/_/g, " ")).join(", ");
-  }
-  return "Animated Hentai";
-}
 
 function hashString(s: string): number {
   let h = 0;

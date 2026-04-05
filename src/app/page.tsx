@@ -6,6 +6,7 @@ import { PosterCard } from "@/components/PosterCard";
 import { Carousel } from "@/components/Carousel";
 import { getPopularTags, getPopularCharacters } from "@/lib/danbooru";
 import { getVideos } from "@/lib/content";
+import { buildTitle, pickGenreTag } from "@/lib/video-display";
 import { SERIES } from "@/data/series";
 import { OnlineCounter } from "@/components/OnlineCounter";
 
@@ -276,11 +277,10 @@ export default async function HomePage() {
               {topRated.data.map((video, i) => {
                 const charName = video.characters[0]
                   ? video.characters[0].replace(/_/g, " ")
-                  : video.copyrights[0]
-                    ? video.copyrights[0].replace(/_/g, " ")
-                    : null;
+                  : null;
                 const categoryColor = GRID_CATEGORY_COLORS[i % GRID_CATEGORY_COLORS.length];
-                const tag = video.tags[0]?.replace(/_/g, " ") || "animated";
+                const genre = pickGenreTag(video);
+                const title = buildTitle(video);
                 const rating = scoreToRating(video.score);
                 const isHot = video.score >= 200;
                 const isNew = (Date.now() - new Date(video.createdAt).getTime()) < 72 * 60 * 60 * 1000;
@@ -297,7 +297,7 @@ export default async function HomePage() {
                         {video.preview ? (
                           <Image
                             src={video.preview}
-                            alt={charName || tag}
+                            alt={title}
                             fill
                             sizes="(max-width: 600px) 50vw, (max-width: 960px) 33vw, 25vw"
                             style={{ objectFit: "cover" }}
@@ -314,10 +314,8 @@ export default async function HomePage() {
                       )}
                     </div>
                     <div className="hp-grid-card__info">
-                      <span className={`hp-grid-card__category ${categoryColor}`}>{tag}</span>
-                      <div className="hp-grid-card__title">
-                        {charName ? `${charName} — ${tag}` : tag}
-                      </div>
+                      <span className={`hp-grid-card__category ${categoryColor}`}>{genre}</span>
+                      <div className="hp-grid-card__title">{title}</div>
                       {charName && (
                         <div className="hp-grid-card__char">👤 {charName}</div>
                       )}
