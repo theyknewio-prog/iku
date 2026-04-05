@@ -7374,10 +7374,19 @@ body {
   font-weight: 700;
 }
 
-/* Discord CTA pinned at the bottom of the sidebar */
+/* Discord CTA pinned at the bottom of the sidebar — sticky so it stays visible
+   even when the sidebar content is scrolled */
 .v2-sidebar-discord {
+  position: sticky;
+  bottom: 0;
   margin-top: auto;
   padding: 16px 12px 20px;
+  background: linear-gradient(
+    to top,
+    var(--v2-surface) 60%,
+    rgba(26, 11, 46, 0) 100%
+  );
+  z-index: 2;
 }
 
 .v2-sidebar-discord-btn {
