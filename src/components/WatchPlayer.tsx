@@ -259,7 +259,16 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
   }, [src, resolveUrl]);
 
   /* ── Playback state ────────────────────────────────────── */
-  const [playing, setPlaying] = useState(false);
+  /*
+   * `playing` mirrors whether the <video> element is actively playing.
+   * Initial state is TRUE because the element has `autoPlay` and the
+   * browser starts playback before React attaches its `onPlay` listener —
+   * if we init to false, the big center Play overlay (`!playing &&` guard)
+   * renders on top of the control bar and eats every click, including
+   * the Unmute button. A secondary useEffect below also syncs from the
+   * real DOM state in case autoplay was denied.
+   */
+  const [playing, setPlaying] = useState(true);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [buffered, setBuffered] = useState(0);
@@ -268,6 +277,23 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
   const [speed, setSpeed] = useState<Speed>(1);
   const [speedOpen, setSpeedOpen] = useState(false);
   const [volumeSliderOpen, setVolumeSliderOpen] = useState(false);
+
+  /*
+   * Sync `playing` state from the DOM on mount, in case the browser's
+   * autoplay policy blocked playback (which we'd miss otherwise because
+   * the `onPlay` event never fires). Runs once per video source change.
+   */
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    // Check on next tick to let autoplay attempt resolve
+    const id = setTimeout(() => {
+      if (v.paused && playing) setPlaying(false);
+      if (!v.paused && !playing) setPlaying(true);
+    }, 250);
+    return () => clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /*
    * Force-sync the `muted` state to the HTMLVideoElement imperatively.
