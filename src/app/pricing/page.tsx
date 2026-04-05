@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import pool from "@/lib/db";
 import { PLANS, formatPrice } from "@/lib/stripe";
 import { PricingClient } from "./pricing-client";
+import { EmailVerificationBanner } from "@/components/EmailVerificationBanner";
 
 export const metadata: Metadata = {
   title: "iku.gg Pro — Remove ads, unlimited favorites, early access",
@@ -28,10 +29,11 @@ export default async function PricingPage() {
   const session = await auth();
   let currentPlan: string | null = null;
   let tierDiscount = false;
+  let unverifiedEmail: string | null = null;
 
   if (session?.user?.id) {
     const { rows } = await pool.query(
-      `SELECT u.pro_status, u.pro_plan, s.score
+      `SELECT u.pro_status, u.pro_plan, u.email, u.email_verified, s.score
        FROM users u
        LEFT JOIN user_stats s ON s.user_id = u.id
        WHERE u.id = $1`,
@@ -43,6 +45,15 @@ export default async function PricingPage() {
     }
     // Waifu Scholar tier (15k+) gets 30% off auto-applied at checkout
     if (row?.score >= 15000) tierDiscount = true;
+    // Unverified email + not a Discord-synthetic → show banner (checkout will
+    // be blocked server-side by the checkout route until verified).
+    if (
+      row?.email &&
+      !row.email_verified &&
+      !String(row.email).endsWith("@discord.iku.gg")
+    ) {
+      unverifiedEmail = row.email;
+    }
   }
 
   const plans = PLANS.map((p) => ({
@@ -61,6 +72,12 @@ export default async function PricingPage() {
   return (
     <main className="pricing-page">
       <div className="pricing-container">
+        {unverifiedEmail && (
+          <EmailVerificationBanner
+            email={unverifiedEmail}
+            blocking="upgrade to Pro"
+          />
+        )}
         <div className="pricing-hero">
           <h1 className="pricing-title">
             Go <span className="pricing-title__highlight">Pro</span> ✨

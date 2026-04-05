@@ -8545,3 +8545,87 @@ body {
   transform: translateY(-1px);
   box-shadow: 0 8px 24px rgba(255,107,157,0.4);
 }
+
+/* ──────────────────────────────────────────────────────────────
+   Email verification banner
+   ────────────────────────────────────────────────────────────── */
+.email-verify-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  margin: 16px auto 24px;
+  max-width: 960px;
+  background: linear-gradient(135deg, rgba(255, 183, 77, 0.12), rgba(255, 107, 157, 0.08));
+  border: 1px solid rgba(255, 183, 77, 0.35);
+  border-radius: 14px;
+  color: #fff;
+}
+.email-verify-banner__icon {
+  font-size: 28px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.email-verify-banner__body {
+  flex: 1;
+  min-width: 0;
+}
+.email-verify-banner__title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #ffb74d;
+  margin-bottom: 4px;
+}
+.email-verify-banner__sub {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.5;
+}
+.email-verify-banner__sub strong {
+  color: #fff;
+  font-weight: 700;
+}
+.email-verify-banner__action {
+  flex-shrink: 0;
+}
+.email-verify-banner__btn {
+  padding: 9px 18px;
+  background: linear-gradient(135deg, #ffb74d, #ff6b9d);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.email-verify-banner__btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(255, 107, 157, 0.35);
+}
+.email-verify-banner__btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.email-verify-banner__ok {
+  color: #4ade80;
+  font-weight: 800;
+  font-size: 13px;
+}
+.email-verify-banner__muted {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 12px;
+}
+@media (max-width: 600px) {
+  .email-verify-banner {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px 16px;
+  }
+  .email-verify-banner__action {
+    width: 100%;
+  }
+  .email-verify-banner__btn {
+    width: 100%;
+  }
+}

@@ -51,7 +51,14 @@ export function PricingClient({ plans, isAuthenticated, currentPlan }: Props) {
       });
       const data = await res.json();
       if (!res.ok || !data.url) {
-        setError(data.error || "Checkout failed");
+        if (data.error === "email_not_verified") {
+          setError(
+            data.message ||
+              "Please verify your email address before upgrading. Check the banner at the top of this page."
+          );
+        } else {
+          setError(data.error || "Checkout failed");
+        }
         setLoading(null);
         return;
       }

@@ -10,6 +10,7 @@ import {
   nextTierFor,
 } from "@/lib/gamification";
 import { getOrCreateTodayQuests } from "@/lib/daily-quests";
+import { EmailVerificationBanner } from "@/components/EmailVerificationBanner";
 
 export const metadata: Metadata = {
   title: "Profile — iku.gg",
@@ -23,7 +24,7 @@ export default async function ProfilePage() {
   if (!session?.user) redirect("/login?callbackUrl=/profile");
 
   const { rows } = await pool.query(
-    `SELECT id, email, username, avatar_emoji, dob, created_at,
+    `SELECT id, email, username, avatar_emoji, dob, created_at, email_verified,
             password_hash IS NOT NULL AS has_password
      FROM users WHERE id = $1`,
     [session.user.id]
@@ -46,8 +47,16 @@ export default async function ProfilePage() {
       )
     : 100;
 
+  // Show verification banner unless already verified or using a synthetic
+  // Discord email that can't be verified anyway.
+  const needsEmailVerification =
+    !user.email_verified && !String(user.email || "").endsWith("@discord.iku.gg");
+
   return (
     <main className="profile-page">
+      {needsEmailVerification && (
+        <EmailVerificationBanner email={user.email} />
+      )}
       <div className="profile-header">
         <div className="profile-avatar">{user.avatar_emoji}</div>
         <div style={{ flex: 1 }}>

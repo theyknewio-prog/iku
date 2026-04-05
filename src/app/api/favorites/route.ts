@@ -9,6 +9,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import pool from "@/lib/db";
+import { getVerifyStatus } from "@/lib/email-verify-guard";
 
 export async function GET() {
   const session = await auth();
@@ -44,6 +45,16 @@ export async function POST(request: NextRequest) {
   const { slug, bulk } = (body ?? {}) as { slug?: string; bulk?: string[] };
 
   if (Array.isArray(bulk)) {
+    // Bulk migration requires a verified email (anti-abuse: spam signups
+    // could mass-import garbage slugs before the account is confirmed).
+    const vStatus = await getVerifyStatus(session.user.id);
+    if (!vStatus.passed) {
+      return NextResponse.json(
+        { error: "email_not_verified", message: "Verify your email to sync favorites." },
+        { status: 403 }
+      );
+    }
+
     // Bulk upsert (first-login localStorage migration). Cap to avoid abuse.
     const slugs = bulk
       .filter((s) => typeof s === "string" && s.length > 0 && s.length <= 200)

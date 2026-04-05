@@ -11,6 +11,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { stripe, PLANS, getPlan } from "@/lib/stripe";
 import pool from "@/lib/db";
+import { getVerifyStatus } from "@/lib/email-verify-guard";
 
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
 setInterval(() => {
@@ -26,6 +27,19 @@ export async function POST(request: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "not authenticated" }, { status: 401 });
+  }
+
+  // Email verification gate — block checkout until user confirms their address.
+  // Discord-synthetic emails (@discord.iku.gg) are exempt (can't verify).
+  const vStatus = await getVerifyStatus(session.user.id);
+  if (!vStatus.passed) {
+    return NextResponse.json(
+      {
+        error: "email_not_verified",
+        message: "Please verify your email address before upgrading to Pro.",
+      },
+      { status: 403 }
+    );
   }
 
   // Rate limit: 10 checkout attempts per hour per user (anti-abuse)
