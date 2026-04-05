@@ -205,17 +205,17 @@ const MESSAGES = {
 **You just walked into the biggest animated hentai community on Discord.**
 
 ## 🎬 What is iku.gg?
-The largest curated library of animated hentai on the web — **353,000+ clips**, 100% free, no account needed, no BS. We aggregate from the best sources (Rule34.xxx, Danbooru, Gelbooru, R34Video, and indie animators) and organize the chaos into something actually watchable.
+A curated library of **353,000+ animated hentai clips** — 100% free, no signup, no BS. Browse by character, tag, series, or artist. New clips added daily.
 
 ## ✨ Why this Discord?
-iku.gg isn't just another tube site. We're a community that **treats animated hentai like art**.
+iku.gg isn't just a site — it's a community that **treats animated hentai like art**.
 > 🔥 **Daily Drop** — one hand-picked banger posted every day
-> 🆕 **New releases feed** — 5000+ new clips/week auto-posted (bot coming)
-> 💬 **Genre forums** — dedicated threads for every kink, tidy and searchable
-> 🎯 **Personal recs** — describe your taste, get matched
+> 🆕 **New releases** — fresh clips posted to the server regularly
+> 💬 **Genre forums** — dedicated threads for every taste and kink
+> 🎯 **Personal recs** — describe what you're into, we match you with clips
 > 🎨 **Creators corner** — animators and artists share their WIPs
 > 🎙️ **Watch parties** — voice channels to co-view clips with friends
-> 💎 **Early access** — Pro members see features before anyone else
+> 💎 **Early access** — Pro members get new features first
 
 ## 🚀 Your next 4 steps
 **1.** 📜 Read **#📜-rules** (2 min, non-negotiable)
@@ -279,56 +279,45 @@ Mods can remove content and take action at their discretion. Disagree? DM a mod,
 
 **353,000+ animated hentai clips. Free. No account. No BS.**
 
-After months of scraping, filtering, deduping, building, and fixing silent bugs — iku.gg is officially open to the public.
+iku.gg is officially open to the public — the biggest curated library of animated hentai on the web.
 
 ## 📦 What's inside
-- **353K+ clips** from 5 curated sources (Danbooru, Gelbooru, Rule34.xxx, Rule34Video, WordPress sites)
-- **3-layer content moderation** — nothing illegal reaches the site
-- **Custom video player** — double-tap seek, PiP, theater mode, heart burst, progress scrub
+- **353K+ clips** organized by character, tag, series, and artist
+- **Custom video player** — double-tap seek, picture-in-picture, theater mode, heart burst, progress scrub
 - **Swipe feed** — TikTok-style shorts at https://iku.gg/feed
-- **Smart search** — by character, tag, series, artist
-- **20 curated genre collections** — real genres, not "1girl / solo / long hair"
-- **User accounts** — sync favorites and history across devices (shipped today)
-- **Discord OAuth** — sign in with your Discord account (shipped today)
+- **Smart search** — find clips by character, tag, or series
+- **20 curated genre collections** — Vanilla, 3D, Futa, Monster, Fantasy, Uncensored, and more
+- **User accounts** — sync favorites and history across devices
+- **Sign in with Discord** — link your Discord account
 
 ## 🔮 Coming soon
-- 🤖 **Discord bot** — new releases auto-posted to **#🆕-new-releases**
+- 🤖 **Auto-post bot** — new releases pushed to **#🆕-new-releases**
 - 💎 **Pro membership** — no ads, early access, exclusive 4K clips, custom badge
 - ⭐ **Rating system** — stars and reviews
 - 🎨 **Creator program** — verified animator accounts with custom pages
-- 🎙️ **Watch-together** — sync playback in voice channels
+- 🎙️ **Watch-together** — synchronized playback in voice channels
 
 Welcome home. 💖`,
 
-  "📰-changelog": `# Changelog
+  "📰-changelog": `# Changelog — latest updates
 
-## 2026-04-05 — Auth + pixel-perfect UI 💎
-- 🔐 **User accounts shipped** — email + password signup, Discord OAuth, profile page
-- 💎 Avatar picker (20 emoji), password change, logout
-- ❤️ Favorites + history auto-sync localStorage → PG on first login
-- 🎨 Pixel-perfect homepage pass — rank badges, duration pills, genre tag pills, real scraped titles
-- 🏷️ Browse by Genre → 20 curated sexy tags (fini "1girl / solo")
-- 📝 Title case + dedup on all card titles
+## 2026-04-05
+- 🔐 **User accounts shipped** — email + password signup, sign in with Discord
+- 💎 Profile page with avatar picker, password change, sync across devices
+- ❤️ Favorites + history sync automatically once you're signed in
+- 🎨 Homepage redesign — better card layouts, genre tag pills, rank badges, duration indicators
+- 🏷️ Browse by Genre section with 20 curated genres
+- 📝 Better titles everywhere
 
-## 2026-04-04 — Silent bugs hunt 🐛
-- Fixed Rule34Video playback — 78% of catalogue was silently broken (IP-bound tokens → added /api/video-stream proxy)
-- Fixed search autocomplete — CSP was blocking the Danbooru API host
-- Fixed character page 404s for Danbooru-style slugs
-- Player mute race condition fixed
-- ISR enabled on /watch pages — massive speed boost
+## 2026-04-04
+- ⚡ Faster page loads across the site
+- 🎬 Playback improvements on the video player
+- 🔍 Search autocomplete fixes
 
-## 2026-04-03 — PostgreSQL migration 🗄️
-- 351K videos migrated from JSON files to PostgreSQL
-- RAM usage: 800MB → 131MB (-83%)
-- Scrapers now write directly to PG
-- Build no longer needs 6GB heap
-
-## 2026-04-02 — Security audit 🛡️
-- Cloudflare CDN + DDoS + WAF enabled
-- All API keys rotated and moved to Coolify env vars
-- Rate limiting on all API routes
-- CSP headers locked down
-- **Purged 1,457 illegal videos** — 3-layer content filter live`,
+## 2026-04-03
+- 🛡️ Site reliability and speed improvements
+- 🚀 CDN + DDoS protection enabled
+- 🧹 Content moderation improvements`,
 
   "🎭-roles-and-tags": `# 🎭 Your Roles — Self-Serve
 
@@ -368,41 +357,38 @@ At the top of the channel list on the left, click **✨ Channels & Roles**. Pick
 ## 🎬 About the site
 
 **Q: Is iku.gg really free?**
-Yes. 100% free, forever. Core library stays free. Optional Pro tier (ads off + early access + 4K) launching soon — everything else stays unlocked for everyone.
+Yes. 100% free, forever. Core library stays free. A Pro tier (no ads + early access + 4K clips) is launching soon — everything else stays unlocked for everyone.
 
 **Q: Do I need an account?**
-No. All 353K clips are accessible without signup. Accounts just let you sync favorites and history across devices.
-
-**Q: Where do the videos come from?**
-We aggregate from 5 public sources: Danbooru, Gelbooru, Rule34.xxx, Rule34Video, and a curated set of WordPress sites. We don't host originals — we stream via a proxy to handle IP-bound tokens.
+No. All 353K+ clips are accessible without signup. Accounts just let you sync favorites and history across devices, and give you a profile in the community.
 
 **Q: How is content moderated?**
-3 layers: (1) scrapers filter banned tags at import, (2) server filters at query time, (3) database-level hardcoded block list. We've purged 1,457 illegal videos. **Zero tolerance** for anything involving minors. Report via **#🐛-bug-reports** → gone within hours.
+**Zero tolerance** for anything involving minors. We run content filters at multiple layers. Report anything suspicious in **#🐛-bug-reports** — it's gone within hours.
 
-**Q: Some videos don't play. Why?**
-Some sources return IP-bound URLs that only work from their server. We resolve them server-side and proxy the bytes. First play can take 1-2 seconds; after that it's cached globally.
+**Q: Why do some clips take a second to start?**
+First playback of a clip may take 1–2 seconds. After that, it's instant.
 
-**Q: Can I download videos?**
-The original sources allow it but we don't add download buttons for now. Focus is streaming.
+**Q: Can I download clips?**
+Not via a download button for now. We focus on streaming quality.
 
 ## 🔐 Account & privacy
 
 **Q: Is my data safe?**
-We store: email, username (your choice), hashed password (bcrypt), DOB (for 18+ verification). That's it. No tracking, no third-party ad SDKs until monetization launches. Payments (when Pro launches) will go through Stripe.
+We store: email, username (your choice), hashed password, and date of birth (for 18+ verification). That's it. No third-party tracking. Payments (when Pro launches) go through Stripe.
 
 **Q: Can I delete my account?**
-Yes — DM a mod for now, self-serve delete button is coming.
+Yes — DM a mod for now, a self-serve delete button is coming.
 
 **Q: Why do you need my date of birth?**
-Legal requirement for 18+ verification (US 2257, EU AVMSD). It's never shown publicly, never shared with third parties.
+Legal requirement for 18+ verification (US 2257, EU AVMSD). Never shown publicly, never shared.
 
 ## 🎭 Community
 
-**Q: Can I submit my own videos / art?**
-Not yet, but the **Creator Program** is coming. If you're an animator/artist, DM a mod with your portfolio to get **🎨 Verified Creator** early.
+**Q: Can I submit my own art or animations?**
+The **Creator Program** is coming. If you're an animator/artist, DM a mod with your portfolio to get the **🎨 Verified Creator** role early.
 
 **Q: How do I become OG?**
-You already are, if you're here before the public launch. OG role is auto-assigned to early members.
+You already are, if you joined before the public launch. The role is auto-assigned to early members.
 
 **Q: Can I advertise my Patreon / Fanbox?**
 Only in **#💼-commissions** and **#🖌️-artist-showcase**. No self-promo in general chat.
