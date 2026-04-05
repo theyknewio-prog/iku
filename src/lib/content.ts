@@ -479,6 +479,93 @@ export function decodeCursor(raw: string | null | undefined): FeedCursor | null 
 }
 
 /**
+ * Pick a random starting cursor for the feed. Used on first page requests
+ * to ensure refreshing /feed shows different videos each time.
+ *
+ * Strategy: query a single row at a random OFFSET inside the top N rows
+ * (where N = max, default 5000) using the same sort/filter as the main
+ * query. That one row's sort value + id becomes the synthetic cursor that
+ * the main query uses as its starting point. Subsequent pagination is
+ * deterministic forward progress from there.
+ *
+ * Cost: one indexed LIMIT 1 OFFSET X query. Postgres skips X rows via the
+ * index without reading them — fast even on 351K total rows.
+ */
+async function pickRandomStartCursor(opts: {
+  order: "score" | "date" | "favcount";
+  source: "all" | "danbooru" | "gelbooru";
+  tags: string;
+  requireThumbnail: boolean;
+  max: number;
+}): Promise<FeedCursor | null> {
+  const { order, source, tags, requireThumbnail, max } = opts;
+  const offset = Math.floor(Math.random() * max);
+
+  const conditions: string[] = [];
+  const params: unknown[] = [];
+  let p = 1;
+
+  const banned = buildBannedSqlCondition("", params, p);
+  conditions.push(banned.condition);
+  p = banned.nextIdx;
+
+  if (requireThumbnail) {
+    conditions.push(`thumbnail IS NOT NULL AND thumbnail <> ''`);
+  }
+  if (source === "danbooru") {
+    conditions.push(`source = $${p}`);
+    params.push("danbooru");
+    p++;
+  } else if (source === "gelbooru") {
+    conditions.push(`source = $${p}`);
+    params.push("gelbooru");
+    p++;
+  }
+  if (tags) {
+    const terms = tags.toLowerCase().split(/\s+/).filter(Boolean);
+    for (const term of terms) {
+      conditions.push(
+        `($${p} = ANY(tags) OR $${p} = ANY(characters) OR $${p} = ANY(copyrights))`
+      );
+      params.push(term);
+      p++;
+    }
+  }
+
+  const sortCol =
+    order === "score" ? "score" :
+    order === "favcount" ? "favorites" :
+    "created_at";
+  const sortExpr = order === "date"
+    ? `EXTRACT(EPOCH FROM ${sortCol})::bigint`
+    : sortCol;
+
+  const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
+
+  params.push(offset);
+  const query = `
+    SELECT ${sortExpr} AS v, source_id AS id
+    FROM videos
+    ${whereClause}
+    ORDER BY ${sortCol} DESC, source_id DESC
+    LIMIT 1 OFFSET $${p}
+  `;
+
+  try {
+    const { rows } = await pool.query(query, params);
+    if (rows.length === 0) return null;
+    return {
+      v: Number(rows[0].v),
+      id: Number(rows[0].id),
+      order,
+    };
+  } catch (err) {
+    console.error("pickRandomStartCursor error:", err);
+    return null;
+  }
+}
+
+/**
  * Keyset-paginated fetch used by the Shorts feed. Avoids OFFSET entirely so
  * deep scrolls stay O(log n) on the sort index instead of O(n).
  *
@@ -494,17 +581,39 @@ export async function getFeedKeyset(options: {
   tags?: string;
   source?: "all" | "danbooru" | "gelbooru";
   requireThumbnail?: boolean;
+  /**
+   * When `cursor` is null AND `randomStart` is true, the function picks a
+   * random starting offset inside the top N rows (default 5000) and
+   * synthesizes an initial cursor from that. Result: refreshing /feed shows
+   * a different slice each time, without paying the cost of a full random
+   * shuffle. Uses LIMIT 1 OFFSET N on the indexed sort — single index probe,
+   * fast even on 351K rows.
+   */
+  randomStart?: boolean;
+  randomStartMax?: number;
 }): Promise<{ data: Video[]; nextCursor: FeedCursor | null }> {
   const {
     limit = 60,
     order = "score",
-    cursor = null,
+    cursor: inputCursor = null,
     tags = "",
     source = "all",
     requireThumbnail = false,
+    randomStart = false,
+    randomStartMax = 5000,
   } = options;
 
   const clampedLimit = Math.min(limit, 200);
+
+  // Resolve the effective cursor: either the user-provided one, or a random
+  // synthetic start if requested and the user didn't provide a cursor.
+  let cursor: FeedCursor | null = inputCursor;
+  if (!cursor && randomStart) {
+    cursor = await pickRandomStartCursor({ order, source, tags, requireThumbnail, max: randomStartMax });
+    // If the random probe failed (empty table, etc.), fall through with null
+    // cursor — the regular query will just return the top rows.
+  }
+
   const conditions: string[] = [];
   const params: unknown[] = [];
   let p = 1;

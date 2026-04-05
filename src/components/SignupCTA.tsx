@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { MagneticButton } from "./MagneticButton";
 
 /**
  * SignupCTA
@@ -70,9 +71,11 @@ export function SignupCTA({
           <li><span aria-hidden>🎮</span> Discord Pro channel access</li>
         </ul>
         <div className="signup-cta__actions">
-          <Link href={signupHref} className="signup-cta__btn">
-            Create my account ✨
-          </Link>
+          <MagneticButton>
+            <Link href={signupHref} className="signup-cta__btn">
+              Create my account ✨
+            </Link>
+          </MagneticButton>
           <Link href={loginHref} className="signup-cta__btn-ghost">
             Already have one?
           </Link>

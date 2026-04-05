@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { MagneticButton } from "@/components/MagneticButton";
 
 interface Plan {
   id: string;
@@ -121,14 +122,16 @@ export function PricingClient({ plans, isAuthenticated, currentPlan }: Props) {
                   Coming soon
                 </button>
               ) : (
-                <button
-                  type="button"
-                  className="pricing-card__cta"
-                  onClick={() => checkout(plan.id)}
-                  disabled={loading !== null}
-                >
-                  {loading === plan.id ? "Loading…" : isAuthenticated ? "Get Pro" : "Sign in to subscribe"}
-                </button>
+                <MagneticButton>
+                  <button
+                    type="button"
+                    className="pricing-card__cta"
+                    onClick={() => checkout(plan.id)}
+                    disabled={loading !== null}
+                  >
+                    {loading === plan.id ? "Loading…" : isAuthenticated ? "Get Pro" : "Sign in to subscribe"}
+                  </button>
+                </MagneticButton>
               )}
             </div>
           );

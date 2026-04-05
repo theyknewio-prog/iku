@@ -57,6 +57,11 @@ export async function GET(request: NextRequest) {
       source,
       // Feed cards without a thumbnail look broken on swipe — exclude.
       requireThumbnail: true,
+      // First page (no client cursor) = random starting offset inside top 5000.
+      // Refreshing /feed now shows a different slice each time while keeping
+      // the O(log n) keyset pagination for subsequent pages.
+      randomStart: !cursor,
+      randomStartMax: 5000,
     });
 
     // Filter: must have a direct playable URL and stay under a reasonable
