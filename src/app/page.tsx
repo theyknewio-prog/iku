@@ -5,11 +5,12 @@ import { AgeGate } from "@/components/AgeGate";
 import { PosterCard } from "@/components/PosterCard";
 import { Carousel } from "@/components/Carousel";
 import { getPopularCharacters } from "@/lib/danbooru";
-import { getVideos, getCuratedGenreCounts, getVideoOfTheDay } from "@/lib/content";
+import { getVideos, getCuratedGenreCounts, getVideoOfTheDay, getThumbnailsForTags } from "@/lib/content";
 import { buildTitle, pickGenreTag } from "@/lib/video-display";
 import { SERIES } from "@/data/series";
 import { OnlineCounter } from "@/components/OnlineCounter";
 import { JoinDiscordCTA } from "@/components/JoinDiscordCTA";
+import { SignupCTA } from "@/components/SignupCTA";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai Videos | Stream Animated Hentai Online",
@@ -99,6 +100,10 @@ export default async function HomePage() {
     getPopularCharacters(12),
     getVideoOfTheDay(),
   ]);
+
+  // Fetch a cover thumbnail for every genre so the stories-circle row has
+  // real images. All memoized (1h TTL), so this adds zero cost on warm cache.
+  const genreThumbs = await getThumbnailsForTags(genres.map((g) => g.name));
 
   const hero = trending.data[0];
 
@@ -384,7 +389,8 @@ export default async function HomePage() {
           </section>
 
           {/* ================================================================
-              BROWSE BY GENRE -- Colorful pastel pill tags
+              BROWSE BY GENRE -- Instagram-stories style circle row
+              Horizontal scrollable, real cover thumbnails per tag.
           ================================================================ */}
           <section aria-label="Browse by Genre">
             <div className="hp-section-header">
@@ -392,19 +398,41 @@ export default async function HomePage() {
               <Link href="/tags" className="hp-section-link">See all &#8594;</Link>
             </div>
 
-            <div className="hp-tags-cloud" role="list">
+            <div className="hp-tag-stories" role="list">
               {genres.map((genre, i) => {
+                const thumb = genreThumbs[genre.name] || "";
                 const colorClass = TAG_COLORS[i % TAG_COLORS.length];
                 const count = genre.count >= 1000 ? `${(genre.count / 1000).toFixed(1)}k` : String(genre.count);
                 return (
                   <Link
                     key={genre.name}
                     href={`/tag/${encodeURIComponent(genre.name)}`}
-                    className={`hp-genre-tag ${colorClass}`}
+                    className="hp-tag-story"
                     role="listitem"
+                    aria-label={`${genre.name} — ${count} videos`}
                   >
-                    {genre.emoji} {genre.name.charAt(0).toUpperCase() + genre.name.slice(1)}
-                    <span className="hp-genre-tag__count">{count}</span>
+                    <div className={`hp-tag-story__ring ${colorClass}`}>
+                      <div className="hp-tag-story__avatar">
+                        {thumb ? (
+                          <Image
+                            src={thumb}
+                            alt=""
+                            fill
+                            sizes="(max-width: 768px) 88px, 104px"
+                            className="hp-tag-story__img"
+                            unoptimized
+                          />
+                        ) : (
+                          <span className="hp-tag-story__emoji" aria-hidden>
+                            {genre.emoji}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <span className="hp-tag-story__name">
+                      {genre.name.charAt(0).toUpperCase() + genre.name.slice(1)}
+                    </span>
+                    <span className="hp-tag-story__count">{count}</span>
                   </Link>
                 );
               })}
@@ -419,6 +447,9 @@ export default async function HomePage() {
               <PosterCard key={video.id} video={video} badge="NEW" />
             ))}
           </Carousel>
+
+          {/* Signup CTA — anon visitors only, before the Pro pitch */}
+          <SignupCTA placement="homepage" />
 
           {/* ================================================================
               GO PRO CTA — prominent, animated, above the footer

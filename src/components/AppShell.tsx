@@ -236,12 +236,16 @@ function UserMenu() {
 
 /* ── Nav definitions ─────────────────────────────────────────── */
 
-/* Sidebar sections — Discover */
+/* Sidebar sections — Discover
+ *
+ * Note: "Top Rated" used to live here but pointed at /explore?sort=top,
+ * which was functionally identical to /trending (both sort by score DESC).
+ * Removed to avoid user confusion — use /trending instead.
+ */
 const DISCOVER_ITEMS = [
   { href: "/",         label: "Home",         Icon: IconHome,     emoji: "🏠" },
   { href: "/trending", label: "Trending",     Icon: IconTrending, emoji: "🔥", badge: "Hot" },
   { href: "/new",      label: "New Releases", Icon: IconNew,      emoji: "🆕" },
-  { href: "/explore?sort=top", label: "Top Rated", Icon: IconStar, emoji: "⭐" },
   { href: "/feed",     label: "Shorts",       Icon: IconFeed,     emoji: "⚡", badge: "New", badgeGradient: true },
   { href: "/explore",  label: "Explore",      Icon: IconBrowse,   emoji: "🔎" },
 ] as const;

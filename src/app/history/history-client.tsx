@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { getHistory, clearHistory, type HistoryItem } from "@/lib/history";
+import { SignupCTA } from "@/components/SignupCTA";
 
 export interface InitialHistoryItem {
   id: number;
@@ -134,6 +135,9 @@ export function HistoryClient({ initialItems, isAuthenticated }: Props) {
             ))}
           </div>
         )}
+
+        {/* Conversion CTA — anon users watching a lot are high-intent. */}
+        {!isAuthenticated && items.length > 0 && <SignupCTA placement="history" />}
       </div>
     </main>
   );

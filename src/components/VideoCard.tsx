@@ -201,51 +201,28 @@ function ActionBtn({
   ariaLabel,
   children,
   count,
+  label,
   animating,
+  active,
 }: {
   onClick: (e: React.MouseEvent) => void;
   ariaLabel: string;
   children: React.ReactNode;
   count?: string;
+  label?: string;
   animating?: boolean;
+  active?: boolean;
 }) {
   return (
     <button
       onClick={onClick}
       aria-label={ariaLabel}
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 4,
-        background: "none",
-        border: "none",
-        cursor: "pointer",
-        padding: 0,
-        /* 44px touch target */
-        minWidth: 44,
-        minHeight: 44,
-        justifyContent: "center",
-        WebkitTapHighlightColor: "transparent",
-        userSelect: "none",
-        animation: animating ? "vc-btn-pop 0.35s ease forwards" : undefined,
-      }}
+      aria-pressed={active}
+      className={`feed-action${active ? " feed-action--active" : ""}${animating ? " feed-action--animating" : ""}`}
     >
-      {children}
-      {count !== undefined && (
-        <span
-          style={{
-            color: "#fff",
-            fontSize: 11,
-            fontWeight: 700,
-            letterSpacing: "0.01em",
-            textShadow: "0 1px 4px rgba(0,0,0,0.8)",
-            lineHeight: 1,
-          }}
-        >
-          {count}
-        </span>
-      )}
+      <span className="feed-action__circle">{children}</span>
+      {count !== undefined && <span className="feed-action__count">{count}</span>}
+      {label && <span className="feed-action__label">{label}</span>}
     </button>
   );
 }
@@ -596,18 +573,7 @@ export function VideoCard({
       ))}
 
       {/* ── Right action sidebar ─────────────────────────── */}
-      <div
-        style={{
-          position: "absolute",
-          right: 12,
-          bottom: "max(110px, calc(env(safe-area-inset-bottom) + 90px))",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 16,
-          zIndex: 10,
-        }}
-      >
+      <div className="feed-actions-rail">
         {/* Heart / Like */}
         <ActionBtn
           onClick={(e) => {
@@ -621,7 +587,9 @@ export function VideoCard({
           }}
           ariaLabel={liked ? "Unlike" : "Like"}
           count={formatScore(video.score + (liked ? 1 : 0))}
+          label="Like"
           animating={likeAnimating}
+          active={liked}
         >
           <IconHeart filled={liked} />
         </ActionBtn>
@@ -638,7 +606,9 @@ export function VideoCard({
             }
           }}
           ariaLabel={saved ? "Unsave" : "Save"}
+          label="Save"
           animating={saveAnimating}
+          active={saved}
         >
           <IconBookmark filled={saved} />
         </ActionBtn>
@@ -661,6 +631,7 @@ export function VideoCard({
             }
           }}
           ariaLabel="Share"
+          label="Share"
         >
           <IconShare />
         </ActionBtn>
@@ -672,6 +643,7 @@ export function VideoCard({
             toggleMute();
           }}
           ariaLabel={muted ? "Unmute" : "Mute"}
+          label={muted ? "Sound" : "Mute"}
         >
           {muted ? <IconSoundOff /> : <IconSoundOn />}
         </ActionBtn>
@@ -682,17 +654,12 @@ export function VideoCard({
             href={watchHref}
             aria-label="Watch full video"
             onClick={(e) => e.stopPropagation()}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              minWidth: 44,
-              minHeight: 44,
-              justifyContent: "center",
-              WebkitTapHighlightColor: "transparent",
-            }}
+            className="feed-action"
           >
-            <IconExternalLink />
+            <span className="feed-action__circle">
+              <IconExternalLink />
+            </span>
+            <span className="feed-action__label">Watch</span>
           </Link>
         ) : null}
       </div>

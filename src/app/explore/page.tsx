@@ -4,6 +4,7 @@ import Image from "next/image";
 import { getVideos, getThumbnailsForTags } from "@/lib/content";
 import { AgeGate } from "@/components/AgeGate";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
+import { SignupCTA } from "@/components/SignupCTA";
 import { CHARACTERS } from "@/data/characters";
 import { SERIES } from "@/data/series";
 
@@ -448,6 +449,9 @@ export default async function ExplorePage(props: {
               )}
             </nav>
           </section>
+
+          {/* Signup CTA — shown only for anonymous visitors */}
+          <SignupCTA placement="explore" />
         </div>
 
         <footer className="site-footer">

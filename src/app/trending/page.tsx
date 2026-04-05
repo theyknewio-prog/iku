@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
+import { SignupCTA } from "@/components/SignupCTA";
 import { searchPosts } from "@/lib/danbooru";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
@@ -97,6 +98,9 @@ export default async function TrendingPage() {
               ))}
             </div>
           )}
+
+          {/* ── Signup CTA (shown only for anonymous visitors) ───── */}
+          <SignupCTA placement="trending" />
 
           {/* ── Bottom CTA ────────────────────────────────────── */}
           <div

@@ -546,6 +546,148 @@ body {
   filter: drop-shadow(0 0 6px rgba(255, 32, 128, 0.8));
 }
 
+/* ──────────────────────────────────────────────────────────────
+   Shorts/feed action rail v2
+   Mobile-first TikTok style + desktop upgrade with larger targets,
+   hover states, and a subtle translucent panel.
+   ────────────────────────────────────────────────────────────── */
+.feed-actions-rail {
+  position: absolute;
+  right: 12px;
+  bottom: max(110px, calc(env(safe-area-inset-bottom) + 90px));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  z-index: 10;
+}
+@media (min-width: 1024px) {
+  /* Desktop: push the rail further out, add a subtle backdrop panel to
+     visually group the actions, and widen the spacing for mouse precision. */
+  .feed-actions-rail {
+    right: 20px;
+    bottom: 40px;
+    gap: 14px;
+    padding: 18px 10px;
+    background: rgba(15, 10, 25, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 22px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+}
+
+.feed-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: #fff;
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  text-decoration: none;
+  min-width: 48px;
+}
+
+.feed-action__circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: transform 180ms var(--v2-ease-spring, cubic-bezier(0.34,1.56,0.64,1)),
+              background 180ms,
+              border-color 180ms,
+              box-shadow 220ms;
+}
+.feed-action__circle svg {
+  width: 24px;
+  height: 24px;
+}
+
+@media (min-width: 1024px) {
+  /* Bigger, clearer targets on desktop — mouse users notice the polish */
+  .feed-action { min-width: 64px; }
+  .feed-action__circle {
+    width: 56px;
+    height: 56px;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.16);
+  }
+  .feed-action__circle svg {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+@media (hover: hover) {
+  .feed-action:hover .feed-action__circle {
+    transform: scale(1.08);
+    background: rgba(255, 107, 157, 0.22);
+    border-color: rgba(255, 107, 157, 0.45);
+    box-shadow: 0 8px 22px rgba(255, 107, 157, 0.28);
+  }
+}
+
+.feed-action:active .feed-action__circle {
+  transform: scale(0.92);
+}
+
+/* Active (liked/saved) state — persistent pink tint */
+.feed-action--active .feed-action__circle {
+  background: rgba(255, 32, 128, 0.28);
+  border-color: rgba(255, 32, 128, 0.65);
+  box-shadow: 0 0 20px rgba(255, 32, 128, 0.38);
+}
+.feed-action--active .feed-action__circle svg {
+  filter: drop-shadow(0 0 6px rgba(255, 32, 128, 0.7));
+}
+
+/* Bounce animation when toggling */
+.feed-action--animating .feed-action__circle {
+  animation: feed-action-pop 0.35s ease forwards;
+}
+@keyframes feed-action-pop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.feed-action__count {
+  font-size: 11px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+  line-height: 1;
+}
+@media (min-width: 1024px) {
+  .feed-action__count { font-size: 13px; }
+}
+
+.feed-action__label {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.75);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1;
+  /* On mobile we hide the label to save vertical space; desktop shows it. */
+  display: none;
+}
+@media (min-width: 1024px) {
+  .feed-action__label { display: block; font-size: 11px; }
+}
+
 /* Like float animation */
 .like-float {
   position: absolute;
@@ -7210,6 +7352,109 @@ body {
   100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
 }
 
+/* ── Tag stories row — Instagram-stories style circles ──────────── */
+.hp-tag-stories {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px 2px 18px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+.hp-tag-stories::-webkit-scrollbar { display: none; }
+
+.hp-tag-story {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 92px;
+  scroll-snap-align: start;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+@media (min-width: 768px) {
+  .hp-tag-story { width: 108px; }
+}
+
+.hp-tag-story__ring {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 220ms var(--v2-ease-spring, cubic-bezier(0.34,1.56,0.64,1));
+  /* Fallback — overridden by per-color classes below */
+  background: linear-gradient(135deg, #ff6b9d, #c084fc);
+}
+@media (min-width: 768px) {
+  .hp-tag-story__ring { width: 104px; height: 104px; padding: 3px; }
+}
+
+.hp-tag-story__avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  background: #0d0818;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #0d0818;
+}
+.hp-tag-story__img {
+  position: absolute;
+  inset: 0;
+  object-fit: cover;
+}
+.hp-tag-story__emoji {
+  font-size: 32px;
+  line-height: 1;
+  user-select: none;
+}
+
+@media (hover: hover) {
+  .hp-tag-story:hover .hp-tag-story__ring {
+    transform: scale(1.05);
+  }
+}
+
+.hp-tag-story__name {
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  font-family: var(--font-sans);
+  text-transform: capitalize;
+  max-width: 92px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hp-tag-story__count {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.45);
+  font-family: var(--font-sans);
+  margin-top: 1px;
+}
+
+/* Per-color rings — maps existing TAG_COLORS classes onto gradient rings. */
+.hp-tag-story__ring.hp-gt-pink   { background: linear-gradient(135deg, #ff6b9d, #f472b6); }
+.hp-tag-story__ring.hp-gt-purple { background: linear-gradient(135deg, #a855f7, #c084fc); }
+.hp-tag-story__ring.hp-gt-cyan   { background: linear-gradient(135deg, #06b6d4, #67e8f9); }
+.hp-tag-story__ring.hp-gt-gold   { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+.hp-tag-story__ring.hp-gt-green  { background: linear-gradient(135deg, #10b981, #4ade80); }
+.hp-tag-story__ring.hp-gt-red    { background: linear-gradient(135deg, #ef4444, #f87171); }
+.hp-tag-story__ring.hp-gt-orange { background: linear-gradient(135deg, #f97316, #fb923c); }
+.hp-tag-story__ring.hp-gt-blue   { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
+
 /* ── Online Counter ──────────────────────────────────────────── */
 /* Petit point vert animé + compteur "X online now" */
 .hp-online-dot {
@@ -8971,6 +9216,166 @@ body {
 .hp-vod__card:hover .hp-vod__cta {
   transform: translateY(-1px);
   box-shadow: 0 8px 24px rgba(255,107,157,0.4);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Signup CTA (conversion banner for anon users)
+   ────────────────────────────────────────────────────────────── */
+.signup-cta {
+  position: relative;
+  font-family: var(--font-sans);
+}
+
+.signup-cta--inline {
+  margin: 36px auto;
+  max-width: 960px;
+  padding: 32px 28px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #1e1430 0%, #120820 100%);
+  border: 1px solid rgba(255, 107, 157, 0.22);
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+.signup-cta__glow {
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 360px;
+  height: 360px;
+  background: radial-gradient(circle, rgba(255, 107, 157, 0.25) 0%, transparent 70%);
+  pointer-events: none;
+  animation: signup-cta-glow 8s ease-in-out infinite;
+}
+@keyframes signup-cta-glow {
+  0%, 100% { transform: translate(0, 0); opacity: 0.85; }
+  50% { transform: translate(-20px, 30px); opacity: 1; }
+}
+
+.signup-cta__content {
+  position: relative;
+  z-index: 1;
+}
+
+.signup-cta__eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ff6b9d;
+  background: rgba(255, 107, 157, 0.1);
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 107, 157, 0.28);
+  margin-bottom: 14px;
+}
+
+.signup-cta__headline {
+  font-size: clamp(22px, 3.2vw, 32px);
+  font-weight: 900;
+  color: #fff;
+  margin: 0 0 10px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.signup-cta__headline-accent {
+  background: linear-gradient(135deg, #ff6b9d, #c084fc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.signup-cta__sub {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 0 0 18px;
+  max-width: 560px;
+  line-height: 1.55;
+}
+
+.signup-cta__perks {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 8px 16px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.82);
+}
+.signup-cta__perks li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.signup-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.signup-cta__btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 14px 28px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ff6b9d, #c084fc);
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+  text-decoration: none;
+  transition: transform 0.18s, box-shadow 0.18s;
+  box-shadow: 0 10px 28px rgba(255, 107, 157, 0.38);
+}
+.signup-cta__btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px rgba(255, 107, 157, 0.5);
+}
+.signup-cta__btn--sm {
+  padding: 10px 18px;
+  font-size: 13px;
+  box-shadow: 0 6px 16px rgba(255, 107, 157, 0.32);
+}
+
+.signup-cta__btn-ghost {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 8px 12px;
+  transition: color 0.15s;
+}
+.signup-cta__btn-ghost:hover { color: #fff; }
+
+/* Compact variant — thin single-line banner */
+.signup-cta--compact {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  margin: 24px 0;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(255, 107, 157, 0.08), rgba(192, 132, 252, 0.08));
+  border: 1px solid rgba(255, 107, 157, 0.22);
+  flex-wrap: wrap;
+}
+.signup-cta__headline-sm {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  min-width: 220px;
+}
+
+@media (max-width: 640px) {
+  .signup-cta--inline { padding: 24px 20px; margin: 24px auto; }
+  .signup-cta__actions { flex-direction: column; align-items: stretch; }
+  .signup-cta__btn { justify-content: center; text-align: center; }
+  .signup-cta__btn-ghost { text-align: center; }
 }
 
 /* ──────────────────────────────────────────────────────────────

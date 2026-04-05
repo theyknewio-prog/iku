@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { SignupCTA } from "@/components/SignupCTA";
 import {
   getFavorites,
   clearFavorites,
@@ -156,6 +157,10 @@ export function FavoritesClient({ initialItems, isAuthenticated }: Props) {
             ))}
           </div>
         )}
+
+        {/* Conversion CTA — anon user who already started saving favorites
+            is a high-intent signup candidate. */}
+        {!isAuthenticated && items.length > 0 && <SignupCTA placement="favorites" />}
       </div>
     </main>
   );
