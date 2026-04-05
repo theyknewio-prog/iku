@@ -11,6 +11,16 @@ RUN npm ci
 
 # Copy source and build with high memory for the 353K+ pages
 COPY . .
+
+# NEXT_PUBLIC_* env vars must be present at build time — Next.js bakes them
+# into the client bundle. Coolify passes these via --build-arg when is_buildtime=true.
+ARG NEXT_PUBLIC_POSTHOG_KEY
+ARG NEXT_PUBLIC_POSTHOG_HOST
+ARG NEXT_PUBLIC_SITE_URL
+ENV NEXT_PUBLIC_POSTHOG_KEY=$NEXT_PUBLIC_POSTHOG_KEY
+ENV NEXT_PUBLIC_POSTHOG_HOST=$NEXT_PUBLIC_POSTHOG_HOST
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
+
 ENV NODE_OPTIONS="--max-old-space-size=6144"
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
