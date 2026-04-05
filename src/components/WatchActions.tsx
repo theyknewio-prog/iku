@@ -16,9 +16,9 @@ export function WatchActions({ videoId, slug, title, thumbnail }: WatchActionsPr
 
   /* Record watch + hydrate favorite state on mount */
   useEffect(() => {
-    addToHistory(videoId, slug);
+    addToHistory(videoId, slug, thumbnail, title);
     setFavorited(isFavorite(videoId));
-  }, [videoId, slug]);
+  }, [videoId, slug, thumbnail, title]);
 
   function handleToggleFavorite(e: React.MouseEvent) {
     e.preventDefault();

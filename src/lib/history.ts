@@ -5,6 +5,11 @@ export interface HistoryItem {
   id: number;
   slug: string;
   timestamp: number;
+  /** Optional cover image — populated from 2026-04-05 onwards; older entries
+   *  saved before this change will be missing it until the user rewatches. */
+  thumbnail?: string;
+  /** Optional display title for the card — same backfill story as thumbnail. */
+  title?: string;
 }
 
 function read(): HistoryItem[] {
@@ -48,11 +53,16 @@ function syncToServer(slug: string): void {
   });
 }
 
-export function addToHistory(id: number, slug: string): void {
+export function addToHistory(
+  id: number,
+  slug: string,
+  thumbnail?: string,
+  title?: string
+): void {
   if (typeof window === "undefined") return;
   const existing = read().filter((item) => item.id !== id);
   const updated: HistoryItem[] = [
-    { id, slug, timestamp: Date.now() },
+    { id, slug, timestamp: Date.now(), thumbnail, title },
     ...existing,
   ].slice(0, MAX_HISTORY);
   write(updated);

@@ -4784,6 +4784,153 @@ body {
 }
 
 /* ============================================================
+   INDEX PAGE GRIDS — /character and /series
+   Responsive grid of circular character avatars + rectangular
+   series posters, reusing the v2-char-card visual language.
+   ============================================================ */
+.index-char-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 20px 16px;
+  padding: 8px 0 16px;
+}
+@media (min-width: 768px) {
+  .index-char-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+}
+.index-char-card {
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.index-char-card__avatar {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.08);
+  background: linear-gradient(135deg, rgba(255,107,157,0.25), rgba(192,132,252,0.25));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 220ms, transform 220ms var(--v2-ease-spring), box-shadow 220ms;
+}
+.index-char-card__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.index-char-card__fallback {
+  font-size: 26px;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  user-select: none;
+}
+@media (hover: hover) {
+  .index-char-card:hover .index-char-card__avatar {
+    border-color: var(--v2-accent-start);
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(232,70,124,0.32);
+  }
+}
+.index-char-card__name {
+  display: block;
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--v2-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: var(--font-sans);
+  transition: color 120ms;
+}
+.index-char-card__series {
+  display: block;
+  font-size: 11px;
+  color: var(--v2-text-sec);
+  margin-top: 2px;
+  font-family: var(--font-sans);
+}
+@media (hover: hover) {
+  .index-char-card:hover .index-char-card__name { color: var(--v2-accent-start); }
+}
+
+/* Series poster grid — rectangular cards */
+.index-series-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 18px;
+  padding: 8px 0 16px;
+}
+@media (min-width: 768px) {
+  .index-series-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+}
+.index-series-card {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.index-series-card__poster {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: linear-gradient(135deg, rgba(255,107,157,0.2), rgba(192,132,252,0.2));
+  transition: border-color 220ms, transform 220ms var(--v2-ease-spring), box-shadow 220ms;
+}
+.index-series-card__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.index-series-card__poster::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.75) 100%);
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .index-series-card:hover .index-series-card__poster {
+    border-color: var(--v2-accent-start);
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(232,70,124,0.28);
+  }
+}
+.index-series-card__name {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 10px;
+  z-index: 2;
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  font-family: var(--font-sans);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.index-series-card__count {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--v2-text-sec);
+  font-family: var(--font-sans);
+}
+
+/* ============================================================
    V2 POPULAR TAGS SECTION
    ============================================================ */
 
@@ -5880,6 +6027,26 @@ body {
   inset: 0;
   background: linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.55) 100%);
   pointer-events: none;
+  z-index: 1;
+}
+
+/* Backdrop image layer (behind the gradient + overlay) */
+.ex-hub-card__bg {
+  object-fit: cover;
+  opacity: 0.55;
+  mix-blend-mode: screen;
+  z-index: 0;
+  transition: opacity 220ms, transform 500ms var(--v2-ease-out, ease);
+}
+@media (hover: hover) {
+  .ex-hub-card--with-image:hover .ex-hub-card__bg {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+/* Push the gradient down when we have an image, so the image shows through */
+.ex-hub-card--with-image {
+  background-blend-mode: multiply;
 }
 
 .ex-hub-card__icon {
@@ -6039,8 +6206,23 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.60) 0%, transparent 60%);
+  background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 60%);
   pointer-events: none;
+  z-index: 1;
+}
+
+/* Backdrop cover image for series cards with real thumbnails */
+.ex-series-card__bg {
+  object-fit: cover;
+  opacity: 0.75;
+  z-index: 0;
+  transition: opacity 220ms, transform 500ms var(--v2-ease-out, ease);
+}
+@media (hover: hover) {
+  .ex-series-card--with-image:hover .ex-series-card__bg {
+    opacity: 0.95;
+    transform: scale(1.06);
+  }
 }
 
 .ex-series-card__content {
@@ -6357,11 +6539,14 @@ body {
   backdrop-filter: blur(16px);
   border: 1px solid rgba(255,255,255,0.15);
   border-radius: 20px;
-  padding: 24px;
+  padding: 28px;
   text-align: center;
-  width: 200px;
+  width: 280px;
   text-decoration: none;
   transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+@media (min-width: 1280px) {
+  .hp-hero-play-card { width: 320px; padding: 32px; }
 }
 .hp-hero-play-card:hover { transform: scale(1.05); }
 .hp-hero-play-card__thumb {
@@ -6369,7 +6554,7 @@ body {
   aspect-ratio: 16/9;
   border-radius: 12px;
   background: linear-gradient(135deg, #ff6b9d, #c084fc, #67e8f9);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -6378,18 +6563,22 @@ body {
   position: relative;
 }
 .hp-hero-play-card__title {
-  font-size: 13px;
-  font-weight: 700;
-  color: #f0e6ff;
+  font-size: 17px;
+  font-weight: 800;
+  color: #fff;
   margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+@media (min-width: 1280px) {
+  .hp-hero-play-card__title { font-size: 19px; }
 }
 .hp-hero-play-card__meta {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  font-size: 11px;
-  color: #8b7fa8;
+  gap: 10px;
+  font-size: 13px;
+  color: #bfb0d4;
 }
 .hp-hero-play-card__stars {
   color: #fbbf24;

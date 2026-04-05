@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getVideos } from "@/lib/content";
-import { ThumbnailCard } from "@/components/ThumbnailCard";
+import Image from "next/image";
+import { getVideos, getThumbnailsForTags } from "@/lib/content";
 import { AgeGate } from "@/components/AgeGate";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { CHARACTERS } from "@/data/characters";
@@ -152,6 +152,27 @@ export default async function ExplorePage(props: {
     source: "all",
   });
 
+  // Fetch real cover thumbnails in parallel for the hub cards, the character
+  // scroll row, and the series scroll row. All batched via getThumbnailsForTags
+  // which is memoized (1h TTL) — effectively free on warm cache.
+  const charTags = FEATURED_CHARS.map((c) => c.tags[0]).filter(Boolean);
+  const seriesTags = FEATURED_SERIES.map((s) => s.tags[0]).filter(Boolean);
+  // Hub cards use one representative tag each (or a top video thumbnail for
+  // the generic "Trending / New / Feed" hubs).
+  const hubTags = [
+    "tsunade_(naruto)", // Popular Characters → Tsunade (most iconic)
+    "naruto",           // Popular Series → Naruto top
+    "animated",         // Trending Now → animated top
+    "original",         // New Releases → generic
+    "large_breasts",    // Tags → aesthetic
+    "animated",         // Swipe Feed → reuse animated
+  ];
+  const [charThumbs, seriesThumbs, hubThumbs] = await Promise.all([
+    getThumbnailsForTags(charTags),
+    getThumbnailsForTags(seriesTags),
+    getThumbnailsForTags(hubTags),
+  ]);
+
   const windowStart = Math.max(1, page - 3);
   const windowEnd   = windowStart + 6;
   const pageNumbers = Array.from({ length: windowEnd - windowStart + 1 }, (_, i) => windowStart + i);
@@ -171,25 +192,40 @@ export default async function ExplorePage(props: {
 
           {/* ════════════════════════════════════════════════
               SECTION 1 — Category hub cards
-              Six large clickable cards, gradient backgrounds.
+              Six large clickable cards with real backdrop images
+              layered behind a gradient tint for legibility.
           ════════════════════════════════════════════════ */}
           <section className="ex-hub" aria-label="Browse categories">
             <div className="ex-hub__grid">
-              {HUB_CARDS.map((card) => (
-                <Link
-                  key={card.href}
-                  href={card.href}
-                  className="ex-hub-card"
-                  style={{ background: card.gradient }}
-                >
-                  <span className="ex-hub-card__icon" aria-hidden="true">
-                    {card.icon}
-                  </span>
-                  <strong className="ex-hub-card__label">{card.label}</strong>
-                  <span className="ex-hub-card__sub">{card.sub}</span>
-                  <span className="ex-hub-card__arrow" aria-hidden="true">→</span>
-                </Link>
-              ))}
+              {HUB_CARDS.map((card, i) => {
+                const thumb = hubThumbs[hubTags[i]] || "";
+                return (
+                  <Link
+                    key={card.href}
+                    href={card.href}
+                    className="ex-hub-card ex-hub-card--with-image"
+                    style={{ background: card.gradient }}
+                  >
+                    {thumb && (
+                      <Image
+                        src={thumb}
+                        alt=""
+                        fill
+                        sizes="(max-width: 768px) 50vw, 33vw"
+                        className="ex-hub-card__bg"
+                        unoptimized
+                        aria-hidden="true"
+                      />
+                    )}
+                    <span className="ex-hub-card__icon" aria-hidden="true">
+                      {card.icon}
+                    </span>
+                    <strong className="ex-hub-card__label">{card.label}</strong>
+                    <span className="ex-hub-card__sub">{card.sub}</span>
+                    <span className="ex-hub-card__arrow" aria-hidden="true">→</span>
+                  </Link>
+                );
+              })}
             </div>
           </section>
 
@@ -205,27 +241,46 @@ export default async function ExplorePage(props: {
             </div>
 
             <div className="ex-scroll-row" role="list">
-              {FEATURED_CHARS.map((char, i) => (
-                <Link
-                  key={char.slug}
-                  href={`/character/${char.slug}`}
-                  className="v2-char-card"
-                  role="listitem"
-                  aria-label={`${char.name} — ${char.seriesName}`}
-                >
-                  {/* Circular gradient avatar */}
-                  <div
-                    className="v2-char-card__avatar"
-                    style={{ background: CHAR_GRADIENTS[i % CHAR_GRADIENTS.length] }}
+              {FEATURED_CHARS.map((char, i) => {
+                const thumb = charThumbs[char.tags[0]] || "";
+                return (
+                  <Link
+                    key={char.slug}
+                    href={`/character/${char.slug}`}
+                    className="v2-char-card"
+                    role="listitem"
+                    aria-label={`${char.name} — ${char.seriesName}`}
                   >
-                    <span className="v2-char-card__initials">
-                      {initials(char.name)}
-                    </span>
-                  </div>
-                  <div className="v2-char-card__name">{char.name}</div>
-                  <div className="v2-char-card__count">{char.seriesName}</div>
-                </Link>
-              ))}
+                    {/* Circular avatar — real thumbnail when available,
+                        gradient + initials fallback otherwise. */}
+                    <div
+                      className="v2-char-card__avatar"
+                      style={
+                        thumb
+                          ? undefined
+                          : { background: CHAR_GRADIENTS[i % CHAR_GRADIENTS.length] }
+                      }
+                    >
+                      {thumb ? (
+                        <Image
+                          src={thumb}
+                          alt={char.name}
+                          fill
+                          sizes="(max-width: 1024px) 120px, 130px"
+                          style={{ objectFit: "cover" }}
+                          unoptimized
+                        />
+                      ) : (
+                        <span className="v2-char-card__initials">
+                          {initials(char.name)}
+                        </span>
+                      )}
+                    </div>
+                    <div className="v2-char-card__name">{char.name}</div>
+                    <div className="v2-char-card__count">{char.seriesName}</div>
+                  </Link>
+                );
+              })}
             </div>
           </section>
 
@@ -241,27 +296,43 @@ export default async function ExplorePage(props: {
             </div>
 
             <div className="ex-scroll-row ex-scroll-row--series" role="list">
-              {FEATURED_SERIES.map((s, i) => (
-                <Link
-                  key={s.slug}
-                  href={`/series/${s.slug}`}
-                  className="ex-series-card"
-                  role="listitem"
-                  aria-label={s.name}
-                  style={{ background: SERIES_GRADIENTS[i % SERIES_GRADIENTS.length] }}
-                >
-                  {/* Decorative faint title watermark */}
-                  <span className="ex-series-card__watermark" aria-hidden="true">
-                    {s.name.slice(0, 2).toUpperCase()}
-                  </span>
-                  <div className="ex-series-card__content">
-                    <strong className="ex-series-card__name">{s.name}</strong>
-                    <span className="ex-series-card__chars">
-                      {s.characters.length} character{s.characters.length !== 1 ? "s" : ""}
-                    </span>
-                  </div>
-                </Link>
-              ))}
+              {FEATURED_SERIES.map((s, i) => {
+                const thumb = seriesThumbs[s.tags[0]] || "";
+                return (
+                  <Link
+                    key={s.slug}
+                    href={`/series/${s.slug}`}
+                    className="ex-series-card ex-series-card--with-image"
+                    role="listitem"
+                    aria-label={s.name}
+                    style={{ background: SERIES_GRADIENTS[i % SERIES_GRADIENTS.length] }}
+                  >
+                    {thumb && (
+                      <Image
+                        src={thumb}
+                        alt=""
+                        fill
+                        sizes="(max-width: 768px) 260px, 300px"
+                        className="ex-series-card__bg"
+                        unoptimized
+                        aria-hidden="true"
+                      />
+                    )}
+                    {/* Decorative faint title watermark (only when no image) */}
+                    {!thumb && (
+                      <span className="ex-series-card__watermark" aria-hidden="true">
+                        {s.name.slice(0, 2).toUpperCase()}
+                      </span>
+                    )}
+                    <div className="ex-series-card__content">
+                      <strong className="ex-series-card__name">{s.name}</strong>
+                      <span className="ex-series-card__chars">
+                        {s.characters.length} character{s.characters.length !== 1 ? "s" : ""}
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </section>
 

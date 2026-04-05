@@ -1,5 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { SERIES } from "@/data/series";
+import { getThumbnailsForTags } from "@/lib/content";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -18,9 +20,15 @@ export const metadata: Metadata = {
   },
 };
 
+// PG-backed thumbnails aren't available at build time — force dynamic + ISR.
 export const revalidate = 86400;
+export const dynamic = "force-dynamic";
 
-export default function SeriesIndexPage() {
+export default async function SeriesIndexPage() {
+  // Batch-fetch real poster thumbnails for every series using the primary tag.
+  const allTags = SERIES.map((s) => s.tags[0]).filter(Boolean);
+  const thumbnails = await getThumbnailsForTags(allTags);
+
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -56,19 +64,34 @@ export default function SeriesIndexPage() {
                 All Anime Series
               </h2>
             </div>
-            <div className="tag-grid">
-              {SERIES.map((s) => (
-                <Link
-                  key={s.slug}
-                  href={`/series/${s.slug}`}
-                  className="tag-pill tag-pill--dark"
-                >
-                  {s.name}
-                  <span className="tag-pill__count">
-                    {s.characters.length} characters
-                  </span>
-                </Link>
-              ))}
+            <div className="index-series-grid">
+              {SERIES.map((s) => {
+                const thumb = thumbnails[s.tags[0]] || "";
+                return (
+                  <Link
+                    key={s.slug}
+                    href={`/series/${s.slug}`}
+                    className="index-series-card"
+                  >
+                    <div className="index-series-card__poster">
+                      {thumb && (
+                        <Image
+                          src={thumb}
+                          alt={s.name}
+                          fill
+                          sizes="(max-width: 768px) 160px, 200px"
+                          className="index-series-card__img"
+                          unoptimized
+                        />
+                      )}
+                      <span className="index-series-card__name">{s.name}</span>
+                    </div>
+                    <span className="index-series-card__count">
+                      {s.characters.length} {s.characters.length === 1 ? "character" : "characters"}
+                    </span>
+                  </Link>
+                );
+              })}
             </div>
           </section>
 
