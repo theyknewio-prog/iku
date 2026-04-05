@@ -17,7 +17,7 @@ Sab — débutant en code. Toujours expliquer les changements de manière pédag
 - **Framework** : Next.js 16.2.2 (App Router, Server Components, React 19)
 - **Styling** : CSS vanilla via `globals.css` (pas de Tailwind, pas de CSS Modules)
 - **Fonts** : Inter (body), Poppins (headings), Righteous (logo/branding)
-- **Video player** : Custom `<WatchPlayer>` avec HLS.js, double-tap seek, PiP, theater mode
+- **Video player** : Custom `<WatchPlayer>` vanilla HTML5 (~1650 lignes), double-tap seek, PiP, theater mode. Pas de HLS.js (malgré ce qu'on croyait) — migration seulement si on héberge nos propres streams multi-bitrate
 - **Database** : PostgreSQL 16 (Alpine) — 351K+ vidéos, container Docker `iku-postgres` sur le réseau Coolify
 - **Déploiement** : Docker multi-stage (runtime 3GB heap) + PostgreSQL 16 → Coolify → Hetzner CX33
 - **CI/CD** : GitHub Actions — daily scrape à 4h UTC (5 scrapers + thumbnail enrichment)
@@ -89,7 +89,8 @@ interface Video {
 | Route | Rate Limit | Description |
 |-------|------------|-------------|
 | `/api/proxy` | 60/min/IP | Proxy pour CDN Gelbooru (bypass hotlink protection). CORS restreint à `iku.gg`. Validation https + port strict |
-| `/api/resolve-video` | 10/min/IP, 3 concurrent | Résout les URLs vidéo via **yt-dlp** (execFile, pas de shell). Cache in-memory borné (500 max, TTL 1h) |
+| `/api/resolve-video` | 10/min/IP, 3 concurrent | Résout les URLs vidéo. Fast path : parser HTML direct pour `rule34video.com` (380ms). Fallback : yt-dlp execFile (1,4s) pour les sites WP. Cache L1 mémoire (500 max, TTL 1h) + L2 PostgreSQL `resolved_urls` (persistant, 1h TTL) |
+| `/api/video-stream` | 30/min/IP | **CRITIQUE — Streaming proxy pour Rule34Video + sites WP.** Les tokens `v-acctoken` sont IP-bound côté source, donc URLs résolues serveur = 403 dans le navigateur user. Cet endpoint fetch depuis notre serveur (avec IP valide) et stream les bytes avec support des Range requests pour le seek. Sans ça, 78% du catalogue est cassé (voir section "Silent bugs") |
 | `/api/resolve` | 20/min/IP | Proxy vers un service externe (`PROXY_URL`). Validation slug par regex |
 | `/api/feed` | 30/min/IP | API pour le swipe feed |
 | `/api/health` | — | Health check (uptime, mémoire RAM) |
@@ -333,7 +334,7 @@ scripts/
 
 ## Skills disponibles (`.claude/skills/`)
 
-18 skills installés. **Consulte le skill pertinent AVANT de coder.**
+**46 skills installées** (12 custom iku + 7 base + 27 ajoutées le 2026-04-04). **Consulte le skill pertinent AVANT de coder.** Tracking via `skills-lock.json`.
 
 ### Skills custom iku.gg (12)
 | Skill | Quand l'utiliser |
@@ -351,15 +352,55 @@ scripts/
 | `iku-i18n-global` | Internationalisation, hreflang, expansion mondiale, traduction |
 | `iku-analytics-growth` | Google Search Console, analytics, KPIs, crawl budget, A/B testing |
 
-### Skills communautaires (6)
+### Skills communautaires de base (7)
 | Skill | Source | Usage |
 |-------|--------|-------|
-| `next-best-practices` | Vercel Labs | Conventions Next.js 16, App Router, RSC |
+| `next-best-practices` | vercel-labs/next-skills | Conventions Next.js 16, App Router, RSC |
 | `systematic-debugging` | obra/superpowers | Méthodologie de debug structurée |
 | `verification-before-completion` | obra/superpowers | Vérification avant de déclarer terminé |
-| `programmatic-seo` | marketingskills | SEO programmatique pour 353K pages |
+| `programmatic-seo` | coreyhaines31/marketingskills | SEO programmatique pour 353K pages |
 | `harden` | pbakaus/impeccable | Hardening sécurité |
 | `optimize` | pbakaus/impeccable | Optimisation performance |
+| `ui-ux-pro-max` | nextlevelbuilder | UI/UX intelligence multi-stack |
+
+### Skills ajoutées le 2026-04-04 (27)
+
+Parcours exhaustif des 2315 skills sur 106 pages de claudemarketplaces.com, filtrage par pertinence iku.gg, installation des plus valuables depuis des sources réputées.
+
+**🔒 Security — `ghostsecurity/skills` (7)** — Scanners Ghost Security pour secrets, code SAST, deps vulnérables
+- `ghost-scan-secrets` — détecte API keys / tokens / creds leaked
+- `ghost-scan-code` — SAST (SQL inj, XSS, SSRF, etc.)
+- `ghost-scan-deps` — audit deps vulnérables
+- `ghost-validate` — patterns de vulnérabilités connus
+- `ghost-report` / `ghost-proxy` / `ghost-repo-context` — orchestration
+
+**🎯 Web Quality — `addyosmani/web-quality-skills` (6)** — Addy Osmani (Chrome DevRel)
+- `core-web-vitals` — LCP / FID / CLS
+- `performance` / `accessibility` / `seo` / `web-quality-audit` / `best-practices`
+
+**🗄️ PostgreSQL (5)**
+- `postgres-pro` *(jeffallan)* — refs complets : JSONB, replication, maintenance, performance, extensions
+- `database-optimizer` *(jeffallan)* — index strategies, query optimization, PG/MySQL tuning
+- `postgres-patterns` *(affaan-m/everything-claude-code)*
+- `postgresql-optimization` *(github/awesome-copilot)* — Microsoft
+- `postgresql-table-design` *(wshobson/agents)*
+
+**📐 SQL (2)**
+- `sql-optimization` *(github/awesome-copilot)*
+- `sql-optimization-patterns` *(wshobson/agents)*
+
+**⚛️ Next.js / React (4)**
+- `next-cache-components` *(vercel-labs/next-skills)* — **nouveau pattern Next.js 16**
+- `next-upgrade` *(vercel-labs/next-skills)*
+- `nextjs-app-router-patterns` *(wshobson/agents)*
+- `verify` *(facebook/react)* — officiel React team
+
+**🛡️ Security review (2)**
+- `security-reviewer` *(jeffallan)* — SAST, pentest, secret-scanning, vulnerability-patterns
+- `security-review` *(affaan-m)* — cloud-infrastructure-security
+
+**⚖️ Legal (1)**
+- `gdpr-data-handling` *(wshobson/agents)*
 
 ---
 
@@ -374,19 +415,60 @@ scripts/
 
 ---
 
-## Performance — ISR Cache (ajouté le 2026-04-03)
+## Performance — Architecture multi-tier (mise à jour 2026-04-04)
 
-Toutes les pages utilisent l'ISR (Incremental Static Regeneration) pour réduire la charge serveur :
+### 1. ISR (Incremental Static Regeneration)
 
-| Pages | Revalidation | Raison |
-|-------|-------------|--------|
-| `/trending`, `/new` | 30 min | Contenu fréquemment mis à jour |
-| `/`, `/explore`, `/tag/*`, `/character/*`, `/series/*` | 1h | Bon équilibre fraîcheur/perf |
-| `/watch/*`, `/tags`, `/character`, `/series`, `/blog`, `/glossary` | 24h | Contenu quasi-statique |
+| Pages | Revalidation | Dynamic? | Notes |
+|-------|-------------|----------|-------|
+| `/trending`, `/new` | 30 min | `force-dynamic` | PG pas dispo au build Docker |
+| `/`, `/explore`, `/tag/*`, `/character/*`, `/series/*` | 1h | `force-dynamic` | idem |
+| `/watch/[slug]` | 24h | `generateStaticParams = []` | Static + ISR ← **fix 2026-04-04** |
+| `/tags`, `/character`, `/series`, `/blog`, `/glossary` | 24h | Static | Contenu stable |
 
-Avant : SSR complet à chaque requête. Maintenant : première visite = génération + cache, visites suivantes = réponse instantanée depuis le disque.
+**Piège Next.js 16** : une route `[slug]` SANS `generateStaticParams` est 100% dynamique même avec `revalidate`. Le fix est d'exporter `generateStaticParams = async () => []` + `dynamicParams = true` → ISR caching activé. Sans ça : chaque hit = full render + PG query.
 
-**Note PostgreSQL** : Les pages utilisant PostgreSQL ont `export const dynamic = 'force-dynamic'` — pas de pré-rendu au build (PG pas disponible dans Docker build), première requête runtime génère la page puis l'ISR cache prend le relais.
+### 2. Cache L1/L2 des URLs vidéo résolues
+
+```
+/api/resolve-video & /api/video-stream
+  → L1 cache (Map mémoire, 500 entries, 1h TTL)
+  → L2 cache (PostgreSQL resolved_urls, illimité, 1h TTL, survit aux deploys)
+  → Fresh resolve (parser HTML direct ou yt-dlp)
+```
+
+Table `resolved_urls` (schéma dans `scripts/init-db.sql`) : `page_url PRIMARY KEY, video_url, expires_at`.
+
+### 3. Warmup loop (`src/lib/url-warmup.ts`)
+
+Tourne à l'intérieur du process Next.js (pas via GH Actions, car les tokens Rule34Video sont IP-bound).
+- Démarre 30s après le container start + toutes les 30 min
+- Résout les top 500 URLs Rule34Video par score
+- Upsert dans `resolved_urls` avec TTL 1h
+- Résultat : premier visiteur sur toute vidéo trending → 0ms resolve (cache hit L2)
+
+### 4. Application-layer memoize (`src/lib/memo.ts`)
+
+TTL-based deduplication pour les queries PG expensive :
+- `getVideos()` → memoize 5 min (absorbe les bursts d'ISR regeneration)
+- `getThumbnailForTag()` → memoize 1h (très stable, tag→thumbnail mapping)
+
+### 5. Hover prefetch (`src/lib/prefetch-video.ts`)
+
+`PosterCard` et `ThumbnailCard` déclenchent un fetch background vers `/api/resolve-video` au hover (debounce 200ms, dédup in-flight). Au moment du clic, l'URL est déjà dans le cache L1.
+
+### 6. Cache warmup post-deploy (`warmup.sh`)
+
+Après chaque deploy Coolify, visite les 7 pages principales pour pré-remplir le cache ISR avant qu'un vrai user arrive.
+
+### Benchmarks
+
+| Scénario | Avant | Après |
+|----------|-------|-------|
+| Resolve Rule34Video (uncached) | 1 400ms (yt-dlp) | **380ms** (parser HTML direct, 3,7×) |
+| Resolve cached L1 | 250ms | **156–241ms** |
+| Resolve cached L2 | N/A | **~220ms** (PG query indexée) |
+| Survive deploys | ❌ cache perdu | ✅ L2 persistant |
 
 ---
 
@@ -445,6 +527,34 @@ Home | Search | Shorts (pulse glow quand inactif, gradient quand actif) | Trendi
 ---
 
 ## Prochaines étapes (priorité)
+
+### FAIT ✅ (session 2026-04-04 — audit profond + fixes silencieux)
+
+**Bugs silencieux découverts et fixés :**
+- **Rule34Video (78% du catalogue) ne jouait pas dans le browser** depuis le lancement. Les `v-acctoken` sont IP-bound : URL résolue serveur = 403 côté user. Jamais remonté parce que homepage tri = score → Rule34.xxx (direct MP4) domine. Fix : `/api/video-stream` proxy qui stream depuis notre serveur.
+- **Search autocomplete** dropdown n'apparaissait jamais. Cause : CSP `connect-src` n'autorisait que `cdn.donmai.us`, pas `danbooru.donmai.us` (API host). Fetch silencieusement bloqué.
+- **Gelbooru thumbnails** bloqués par CSP. `https://*.gelbooru.com` wildcard ne matche PAS `https://gelbooru.com` bare domain. Fix : ajouter les deux.
+- **`/character/hatsune_miku` → 404.** Homepage linkait vers les noms Danbooru (underscore) mais la route `[slug]` n'avait que les CHARACTERS statiques (dash-slug). Fix : `resolveCharacter()` fallback qui synthétise un Character virtuel pour les noms Danbooru inconnus.
+- **PosterCard affichait titre+sub en double** (bottom overlay + info below). Fix : suppression de l'overlay dupliqué.
+- **Barre de recherche invisible** à cause d'une règle legacy `.v2-topbar__search { display: none }` qui cachait le form. Fix : override scoped avec `display: flex !important`.
+- **Fix son du player** : React re-rendait avec `muted={muted}` (state stale) et re-mutait la vidéo après le clic user. Fix : `setMuted(false)` immédiat dans `toggleMute` + `handleUnmuteClick` + slider + swipe + molette.
+- **`/watch/[slug]` ISR désactivée** : sans `generateStaticParams`, Next.js 16 traite la route comme 100% dynamique. Chaque hit = full render + PG query. Fix : export `generateStaticParams = async () => []`.
+- **277 lignes de contenu banni** dormaient dans PG (legacy pré-filtre). Purgées. Safety net ajouté dans `scripts/db.ts > upsertVideos()` : rejette toute row avec tags/slug/title bannis avant INSERT.
+- **`/api/video-stream`** n'avait ni rate limit ni try-catch upstream : bandwidth DoS + crash sur erreurs réseau. Fix : 30/min/IP + try-catch + abort signal 20s.
+- **Pages légales** `/terms`, `/privacy`, `/dmca` liées depuis le footer → 404. Créées avec vraies metadata + contenu compliance 18+ + notice 18 U.S.C. § 2257.
+
+**Perf + UI pixel-perfect (mockup anime colorful) :**
+- Tout le layout passé en pixel-perfect vs le mockup : sidebar 220px avec emojis partout (🏠🔥🆕⭐⚡🔎❤️🕐⚙️👤📺🏷️), topbar search + stats chip ✨, titres sections avec emojis (🔥 Trending, ⭐ Top Rated, 💖 Characters, 🏷️ Browse, 🆕 New), "⚡ Try Shorts" CTA, "🔥 Hot" badges, "👤" avant noms personnages, Popular Characters emoji fallback (⚔️🌸🧙🐉🏹😈) au lieu d'initiales "HM HR"
+- Logo "iku.gg ✨", font stack Nunito + Quicksand
+- Parser HTML direct pour Rule34Video (1,4s → 380ms)
+- Cache L1 mémoire + L2 PG persistant `resolved_urls`
+- Warmup loop inside-process (IP-compatible avec Rule34Video)
+- `memoize()` helper pour getVideos (5min) et getThumbnailForTag (1h)
+- Prefetch on hover sur les cards
+
+**Audit skills marketplace (2026-04-04) :**
+- Parcouru les 2315 skills sur 106 pages de claudemarketplaces.com
+- Installé 27 nouvelles skills depuis des sources réputées (ghostsecurity, Addy Osmani, Vercel, Microsoft, React team, wshobson, jeffallan)
 
 ### FAIT ✅ (2026-04-03/04)
 
@@ -512,9 +622,70 @@ Home | Search | Shorts (pulse glow quand inactif, gradient quand actif) | Trendi
 
 ---
 
+## Silent bugs / Pièges connus (à retenir)
+
+Bugs qui ne produisent PAS d'erreur visible et qui restent silencieux jusqu'à un test manuel exhaustif. Si tu modifies quoi que ce soit qui touche ces zones, vérifie que tu ne les ré-introduis pas.
+
+### Rule34Video + sites WP = tokens IP-bound
+- Les URLs MP4 retournées par leur server contiennent un `v-acctoken` lié à l'IP du fetcher.
+- URL résolue côté serveur = **403 quand le browser du user tente avec une autre IP**.
+- C'est pour ça que `/api/video-stream` existe : il fetch depuis notre serveur (IP valide) et stream les bytes au browser.
+- **Ne JAMAIS** envoyer une URL `rule34video.com/get_file/...` directement au browser. Toujours via `/api/video-stream?url=<page_url>`.
+- 78% du catalogue était cassé silencieusement avant ce fix (découvert 2026-04-04).
+
+### CSP wildcards ne couvrent pas les bare domains
+- `https://*.gelbooru.com` matche `media.gelbooru.com` mais PAS `gelbooru.com`.
+- Si tu ajoutes un nouveau domaine tiers à CSP, ajoute LES DEUX : `https://domain.com https://*.domain.com`.
+- Symptôme : images/API calls silencieusement bloqués, aucune erreur console sauf une ligne CSP discrète.
+
+### Next.js 16 : routes `[slug]` sans `generateStaticParams` = 100% dynamic
+- Un `export const revalidate = N` SEUL ne suffit pas pour ISR sur une route dynamique.
+- Il faut AUSSI `export async function generateStaticParams() { return []; }` pour dire à Next.js "pre-render zéro, mais cache on-demand".
+- Sans ça : `ƒ` (dynamic) dans le build output, aucun cache ISR, chaque hit refait tout.
+
+### React controlled props + mutation impérative = race
+- `<video muted={muted}>` est contrôlé par React. Faire `v.muted = false` sur le DOM est annulé au prochain render qui réapplique `muted={true}`.
+- Toujours faire `setMuted(false)` EN MÊME TEMPS que `v.muted = false`.
+- Pattern à surveiller partout où du code touche directement les props contrôlées du `<video>`.
+
+### Legacy CSS `display: none` oublié
+- Une règle `.v2-topbar__search { display: none }` trainait dans `globals.css`, léguée d'un ancien redesign. Elle cachait la search bar depuis des mois.
+- Si un élément "devrait exister" mais n'apparaît pas, grep `globals.css` pour `display: none` sur la classe.
+
+### Banned content peut slipper via legacy rows
+- Les filtres scrapers bloquent à l'ingestion. Mais les rows insérées AVANT l'ajout du filtre restent dans la DB.
+- Safety net ajouté dans `upsertVideos()` qui re-vérifie à chaque INSERT/UPDATE, mais le vrai nettoyage se fait avec une query `DELETE FROM videos WHERE tags && ARRAY[...]::text[] OR slug ~* '...'`.
+- Vérifier périodiquement avec : `SELECT COUNT(*) FROM videos WHERE tags && ARRAY['loli','shota','lolicon',...]`
+
+### Rate limits (Map check-then-increment) NE sont PAS racy
+- Les 4 rate limiters API utilisent `const rl = cache.get(ip); if (rl.count >= MAX) return 429; rl.count++`.
+- **C'est atomique en Node.js** car il n'y a pas d'`await` entre le check et l'increment. Mono-thread.
+- N'essaie pas de "fixer" cette race — elle n'existe pas. (Faux positif remonté par un audit agent.)
+
+### `/watch/sitemap.xml` retourne 404 (c'est normal)
+- Les 8 chunks sont à `/watch/sitemap/0.xml` à `/watch/sitemap/7.xml` (45k URLs chacun, 36k pour le dernier).
+- `robots.txt` les référence individuellement. Google trouve tout via robots.
+- Le path parent `/watch/sitemap.xml` (sans chunk id) n'est pas une route valide, c'est attendu. N'essaie pas de le "fixer".
+
+### IP detection via headers
+- Utilise `x-real-ip` (set par Traefik, non-spoofable) en priorité, fallback `x-forwarded-for.pop()` (dernier IP = le plus proche du reverse proxy, non-spoofable aussi).
+- `x-forwarded-for[0]` (premier IP) est user-controllable → spoofable. **Ne pas utiliser**.
+
+---
+
+## Telegram bot (pour recaps de session)
+
+- **Bot** : `@Addictives_bot` (créé 2026-04-04)
+- **Chat ID** : `5617056258` (Sab)
+- **Token** : dans un secret, JAMAIS committé ni loggé. Demander au user ou lire via `BOT_TOKEN` env.
+- **Usage** : envoyer un recap de fin de session quand le user quitte le PC. Format : headline + sections avec emojis + état final (deploy, next steps).
+- **Envoi** via curl POST JSON (Windows bash + curl a des soucis d'encoding UTF-8 sur les emojis en ligne de commande — passer par un fichier JSON généré avec Node ou Python pour éviter les problèmes d'encoding).
+
+---
+
 ## Notes pour Claude Code
 
-- **JAMAIS affaiblir le filtrage de contenu banni** — `content.ts` et `scripts/banned-tags.ts` sont critiques. Tolérance zéro.
+- **JAMAIS affaiblir le filtrage de contenu banni** — `content.ts` et `scripts/banned-tags.ts` et `scripts/db.ts > upsertVideos` sont critiques. Tolérance zéro.
 - **Toujours tester avec `npm run build`** avant de push
 - **Les clés API sont dans `.env.local` et Coolify** — NE PLUS les hardcoder dans le code
 - **DATABASE_URL** est requis — en dev dans `.env.local`, en prod dans Coolify, dans GitHub Actions secrets
@@ -526,7 +697,18 @@ Home | Search | Shorts (pulse glow quand inactif, gradient quand actif) | Trendi
 - **Consulter le skill approprié** avant toute modification importante — chaque skill contient les conventions, contraintes et patterns spécifiques à son domaine
 - **Toute nouvelle route API doit avoir un rate limit** — voir les patterns dans les routes existantes
 - **Le Dockerfile est multi-stage** — le runtime n'a que 3GB de heap
-- **Le player custom fait ~1500 lignes** (`WatchPlayer.tsx`) — pas de librairie externe (Video.js, Plyr), tout est maison. Bon choix tant qu'on agrège du contenu externe (MP4 direct). Migration vers Video.js seulement si on héberge nos propres vidéos HLS multi-bitrate
-- **Deploy Coolify** se fait via `docker exec coolify php artisan tinker` avec `queue_application_deployment()` — le webhook GitHub ne déclenche pas toujours le deploy automatiquement
+- **Le player custom fait ~1650 lignes** (`WatchPlayer.tsx`) — pas de librairie externe (Video.js, Plyr, HLS.js), vanilla HTML5 `<video>` + React state. Bon choix tant qu'on agrège du contenu externe (MP4 direct). Migration vers HLS.js/Video.js seulement si on héberge nos propres streams multi-bitrate
+- **Deploy Coolify** se fait via `docker exec coolify php artisan tinker` avec `queue_application_deployment()` — le webhook GitHub ne déclenche pas toujours le deploy automatiquement. Pattern à utiliser :
+  ```bash
+  ssh root@204.168.233.29 'docker exec -i coolify php artisan tinker << EOF
+  $app = \App\Models\Application::where("uuid", "hjta50cv9nfem56atjtwmlx1")->first();
+  $uuid = (new \Visus\Cuid2\Cuid2)->toString();
+  queue_application_deployment(application: $app, deployment_uuid: $uuid, force_rebuild: false, is_webhook: false);
+  EOF'
+  ```
 - **Repo GitHub est PRIVÉ** — Coolify clone via token HTTPS (pas SSH). Le token est dans la config Coolify DB
-- **Cache warmup** — après chaque deploy, le script `warmup.sh` visite les 7 pages principales pour pré-remplir le cache ISR
+- **Cache warmup** — deux niveaux : (1) `warmup.sh` post-deploy visite les 7 pages ISR, (2) `src/lib/url-warmup.ts` tourne dans le process Next.js pour résoudre les URLs vidéo toutes les 30 min
+- **Vidéos Rule34Video + WP** → toujours passer par `/api/video-stream?url=<page_url>`. Les URLs directes ne marchent pas côté browser (tokens IP-bound)
+- **`/character/[slug]`** utilise `resolveCharacter()` qui fallback sur un Character virtuel synthétisé pour les noms Danbooru (underscore) non présents dans le fichier `CHARACTERS` statique
+- **CSP** (`next.config.ts`) — si tu ajoutes un domaine tiers, toujours ajouter les DEUX variantes : `https://domain.com https://*.domain.com`. Les wildcards ne couvrent pas les bare domains.
+- **Rate limiters Map** — le pattern `get→check→increment` est atomique en Node mono-thread, pas besoin de "fixer" les races.
