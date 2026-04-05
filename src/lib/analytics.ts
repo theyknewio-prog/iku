@@ -22,7 +22,7 @@ function getClient(): Promise<PostHog | null> {
   if (initPromise) return initPromise;
 
   const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-  const host = process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://eu.i.posthog.com";
+  const host = process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com";
   if (!key) return Promise.resolve(null);
 
   initPromise = import("posthog-js").then((mod) => {
