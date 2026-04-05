@@ -648,7 +648,73 @@ Après la méga session du matin (gamification + Pro + Discord + email), Sab a f
 **Tâches restantes / next priorities** :
 - ⏳ Lever le flag GitHub (support ticket) → automation crons reprennent
 - ⏳ ExoClick integration (ad zones déjà en place dans le design)
-- ⏳ Deep audit technique avant lancement subscriptions live (user wants no bug surprises)
+- ⏳ Backlinks + content marketing (Reddit, forums anime, Discord communities)
+
+### FAIT ✅ (session 2026-04-06 — deep audit 130+ fixes + animations GSAP + Shorts randomisé)
+
+**Méga session audit** : 7 agents d'audit en parallèle ont trouvé 130+ problèmes dont 37 blockers existentiels. Tous fixés, testés, déployés. Détail complet dans `.audit/MASTER.md`. Récap visuel dans `session-recap.html`.
+
+**Phase A — Légal + argent (commits `ba1d083` → `88144b6`)**
+- Banned content filter étendu à characters/copyrights/title/slug (pas juste tags) — appliqué dans 7 fichiers source
+- 5 browse pages (`/new`, `/trending`, `/tag`, `/character`, `/series`) routées via `getVideos()` au lieu de `searchPosts` Danbooru → **96% du catalogue débloqué** (353K au lieu de 17K)
+- `getRelatedVideos()` remplace `getRelatedPosts()` : PG-backed pour toutes les sources
+- Stripe webhook : 10 fixes (lifetime guard, strict price→plan, return 500 sur erreurs, dunning email, past_due immédiat, customer_id fallback, dedup après handler)
+- Stripe checkout : Waifu coupon crash fixé, origin non-trusté, idempotency key, guard déjà-Pro
+- Discord OAuth hijack : refuse lier à un compte non-vérifié, check `profile.verified`
+- Email case-insensitive UNIQUE index (migration SQL)
+
+**Phase B — UX blockers**
+- `/profile?upgraded=1` : welcome card Pro + badge permanent
+- Shorts Like/Save/Heart-burst câblés à `toggleFavorite` (server sync + score events)
+- Favorites `removeFavorite()` fix (plus de ghost re-add)
+- Favorites bulk `DELETE /api/favorites?all=1`
+- `useVideoShortcuts` : Space/Enter ne volent plus les boutons focused
+- Nouvelle page `/search` avec input autofocus pour mobile
+
+**Phase C — Sécurité + data hygiene**
+- Password reset : atomic UPDATE ... RETURNING (race fix)
+- `/api/auth/verify` : origin non-trusté
+- `/api/resolve` : map bounded 10K
+- bcrypt 10 → 12 (signup, change password, reset)
+- CSP : `unsafe-eval` retiré, middleware avec nonces per-request (128 bits)
+- upsertVideos ON CONFLICT met à jour page_url/site/title (stale fix)
+- 19,640 thumbnails gelbooru bare domain réparées (migration SQL)
+
+**Phase D — Performance**
+- Watch page : `getDanbooruVideo()` PG-first (200-1500ms → ~5ms)
+- Keyset cursor pagination `/api/feed` (OFFSET → composite tuple)
+- WatchPlayer splitté : icônes/helpers extraits dans `WatchPlayer.ui.tsx`
+- globals.css : table des matières 48 sections
+
+**Phase E — Qualité code**
+- 5 fichiers JSON legacy supprimés (124 MB dead weight)
+- Rate limiter factoré : `src/lib/rate-limit.ts` remplace 9 duplications
+- 15 `.catch(() => {})` annotés ou corrigés (1 vrai bug fixé dans `history.ts`)
+- **21 tests unitaires Stripe webhook** (vitest, premier test du repo, 201ms)
+
+**Animations GSAP (commit `0995cf5`)**
+- `ScrollReveal` : fade+slide au scroll, stagger, reduced-motion aware
+- `MagneticButton` : hover magnétique + click ripple, touch-disabled
+- `CountUp` : animation compteur au scroll (prêt pour futurs stats)
+- Appliqué : hero CTAs, Go Pro section, pricing buttons, SignupCTA
+- **Shorts feed randomisé** : `pickRandomStartCursor()` dans top 5K → refresh = contenu différent
+
+**GSC (Google Search Console) à J+3** :
+- 68 impressions, 2 clics, 6 mots-clés indexés
+- Position #1 sur "best hentai artists recommendations 2025 2026"
+- Position #2 sur "3d hentai studios"
+- 20 pays touchés, USA = 30 impressions (marché #1)
+- Volume = ultra long-tail (50-200 rech/mois max), normal pour un nouveau domaine
+- Article star : `/blog/best-hentai-studios` = 100% du trafic organique actuel
+- **Next step SEO** : attendre indexation des 353K pages watch + pousser backlinks organiques
+
+**Commits session (6)** :
+- `ba1d083` Phase A+B+C (35 files, +939/-192)
+- `5012e7a` Phase D+E (20 files, +870/-303)
+- `88144b6` Watch force-dynamic fix
+- `9bb3305` Phase E finale — dead code, rate limiter, tests (25 files, +1448/-292)
+- `de0173a` session-recap.html
+- `0995cf5` GSAP animations + Shorts randomisé (8 files, +546/-51)
 
 ### FAIT ✅ (session 2026-04-05 matin — méga session : gamification, Pro, Discord, email, SEO)
 
