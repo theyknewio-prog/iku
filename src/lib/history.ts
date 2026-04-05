@@ -81,6 +81,10 @@ export function isWatched(id: number): boolean {
 export function clearHistory(): void {
   if (typeof window === "undefined") return;
   write([]);
-  // Also clear server-side (fire-and-forget, 401 for anon)
-  fetch("/api/history", { method: "DELETE" }).catch(() => {});
+  // Also clear server-side. Log failures — a silent swallow here would mean
+  // the user cleared locally but the server still has old history that
+  // resurfaces on next device login.
+  fetch("/api/history", { method: "DELETE" }).catch((err) => {
+    console.error("clearHistory server sync failed:", err);
+  });
 }

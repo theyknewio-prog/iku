@@ -1,37 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
 
 const PROXY_URL = process.env.PROXY_URL || "http://10.0.0.1:3001";
-
-// Rate limit: 20 requests/min per IP
-// Map is capped at 10k entries to prevent unbounded growth under attack.
-const RATE_LIMIT_MAX_ENTRIES = 10_000;
-const resolveRateLimit = new Map<string, { count: number; resetAt: number }>();
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, val] of resolveRateLimit) {
-    if (now > val.resetAt) resolveRateLimit.delete(key);
-  }
-  // Hard cap: if cleanup didn't shrink enough, drop oldest entries.
-  while (resolveRateLimit.size > RATE_LIMIT_MAX_ENTRIES) {
-    const firstKey = resolveRateLimit.keys().next().value;
-    if (firstKey === undefined) break;
-    resolveRateLimit.delete(firstKey);
-  }
-}, 5 * 60_000);
+const limiter = createRateLimiter({ name: "resolve", max: 20, windowMs: 60_000 });
 
 export async function GET(request: NextRequest) {
-  const ip = request.headers.get("x-real-ip")
-    || request.headers.get("x-forwarded-for")?.split(",").pop()?.trim()
-    || "unknown";
-  const now = Date.now();
-  const rl = resolveRateLimit.get(ip);
-  if (rl && now < rl.resetAt) {
-    if (rl.count >= 20) {
-      return NextResponse.json({ error: "too many requests" }, { status: 429 });
-    }
-    rl.count++;
-  } else {
-    resolveRateLimit.set(ip, { count: 1, resetAt: now + 60_000 });
+  if (limiter.consume(getClientIp(request))) {
+    return NextResponse.json({ error: "too many requests" }, { status: 429 });
   }
 
   const { searchParams } = new URL(request.url);

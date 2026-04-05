@@ -2,7 +2,7 @@
  * scrape-danbooru.ts
  *
  * Fetches ALL animated MP4+WebM explicit posts from Danbooru
- * and writes them to src/data/videos.json as a local cache.
+ * and upserts them directly into PostgreSQL via scripts/db.ts.
  *
  * Usage: npx tsx scripts/scrape-danbooru.ts
  *

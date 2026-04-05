@@ -181,7 +181,8 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
     setShowUnmuteHint(false);
     if (unmuteHintTimerRef.current) clearTimeout(unmuteHintTimerRef.current);
     // Re-trigger play to satisfy browser autoplay policy for unmuting.
-    v.play().catch(() => {});
+    // Rejection is fine — browser pauses if it can't play with audio.
+    v.play().catch(() => { /* autoplay policy rejected unmute */ });
   }, [volume]);
 
   /* ── Feature 3: End-of-video overlay + countdown ───────── */
@@ -431,7 +432,7 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
         setShowUnmuteHint(false);
         // Re-trigger play() so the browser allows audio output on the
         // current user gesture (autoplay policy requirement).
-        v.play().catch(() => {});
+        v.play().catch(() => { /* autoplay policy — benign */ });
       }
       // IMPORTANT: never touch v.muted here — it's a React-controlled prop
       // (<video muted={muted}>), so returning `next` from this updater lets
@@ -458,7 +459,7 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
       setMuted(val === 0);
       if (val > 0) {
         setShowUnmuteHint(false);
-        v.play().catch(() => {});
+        v.play().catch(() => { /* autoplay policy — benign */ });
       }
     },
     []
@@ -476,9 +477,9 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
     const el = containerRef.current;
     if (!el) return;
     if (!document.fullscreenElement) {
-      el.requestFullscreen().catch(() => {});
+      el.requestFullscreen().catch(() => { /* permissions-policy / iframe deny */ });
     } else {
-      document.exitFullscreen().catch(() => {});
+      document.exitFullscreen().catch(() => { /* no active fullscreen */ });
     }
   }, []);
 

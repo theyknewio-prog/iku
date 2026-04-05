@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
 
 /**
  * Video proxy for Gelbooru CDN.
@@ -22,26 +23,7 @@ const ALLOWED_HOSTS = [
   "gelbooru.com",
 ];
 
-// Rate limit: max 60 proxy requests per minute per IP
-const proxyRateLimit = new Map<string, { count: number; resetAt: number }>();
-const PROXY_RL_WINDOW = 60_000;
-const PROXY_RL_MAX = 60;
-
-// Cleanup every 5 min, bounded to 10K entries
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, val] of proxyRateLimit) {
-    if (now > val.resetAt) proxyRateLimit.delete(key);
-  }
-  if (proxyRateLimit.size > 10000) {
-    let i = 0;
-    const toDelete = proxyRateLimit.size - 10000;
-    for (const key of proxyRateLimit.keys()) {
-      if (i++ >= toDelete) break;
-      proxyRateLimit.delete(key);
-    }
-  }
-}, 5 * 60_000);
+const limiter = createRateLimiter({ name: "proxy", max: 60, windowMs: 60_000 });
 
 export async function GET(request: NextRequest) {
   const targetUrl = request.nextUrl.searchParams.get("url");
@@ -50,22 +32,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Missing url param" }, { status: 400 });
   }
 
-  // Rate limit
-  const ip = request.headers.get("x-real-ip")
-    || request.headers.get("x-forwarded-for")?.split(",").pop()?.trim()
-    || "unknown";
-  const now = Date.now();
-  const rl = proxyRateLimit.get(ip);
-  if (rl && now < rl.resetAt) {
-    if (rl.count >= PROXY_RL_MAX) {
-      return NextResponse.json(
-        { error: "too many requests" },
-        { status: 429, headers: { "Retry-After": "60" } }
-      );
-    }
-    rl.count++;
-  } else {
-    proxyRateLimit.set(ip, { count: 1, resetAt: now + PROXY_RL_WINDOW });
+  if (limiter.consume(getClientIp(request))) {
+    return NextResponse.json(
+      { error: "too many requests" },
+      { status: 429, headers: { "Retry-After": "60" } }
+    );
   }
 
   // Validate host — strict domain + protocol check

@@ -76,10 +76,14 @@ export function useVideoShortcuts(
         case "f":
         case "F":
           e.preventDefault();
+          // Intentional silent failure: fullscreen requires a user gesture.
+          // The Space/F keydown IS a user gesture so this usually succeeds,
+          // but a cross-origin iframe or permissions-policy deny will reject
+          // — nothing we can do except not log on every rejection.
           if (!document.fullscreenElement) {
-            el.requestFullscreen().catch(() => {});
+            el.requestFullscreen().catch(() => { /* permission / cross-origin deny */ });
           } else {
-            document.exitFullscreen().catch(() => {});
+            document.exitFullscreen().catch(() => { /* no active fullscreen */ });
           }
           break;
 

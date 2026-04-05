@@ -95,7 +95,9 @@ export function ThumbnailCard({
         el.src = video.url;
         el.load();
       }
-      el.play().catch(() => {});
+      // Silent: hover-triggered preview may be rejected (not a user gesture
+      // in autoplay-restricted browsers). We just stay on the thumbnail.
+      el.play().catch(() => { /* hover preview autoplay denied */ });
       setPreviewActive(true);
     }, 300);
   }, [video.url, video.slug, canPreview]);

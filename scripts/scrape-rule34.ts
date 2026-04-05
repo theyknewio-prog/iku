@@ -2,7 +2,7 @@
  * scrape-rule34.ts
  *
  * Fetches animated video posts from Rule34.xxx
- * and writes them to src/data/rule34-videos.json.
+ * and upserts them directly into PostgreSQL via scripts/db.ts.
  *
  * Usage: npx tsx scripts/scrape-rule34.ts
  *

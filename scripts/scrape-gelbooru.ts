@@ -2,7 +2,7 @@
  * scrape-gelbooru.ts
  *
  * Fetches ALL animated MP4+WebM explicit posts from Gelbooru
- * and writes them to src/data/gelbooru-videos.json.
+ * and upserts them directly into PostgreSQL via scripts/db.ts.
  *
  * Usage: npx tsx scripts/scrape-gelbooru.ts
  *

@@ -1,21 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getFeedKeyset, decodeCursor, encodeCursor } from "@/lib/content";
+import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
 
-// Rate limit: 30 requests/min per IP
-const feedRateLimit = new Map<string, { count: number; resetAt: number }>();
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, val] of feedRateLimit) {
-    if (now > val.resetAt) feedRateLimit.delete(key);
-  }
-  if (feedRateLimit.size > 10000) {
-    let i = 0;
-    for (const key of feedRateLimit.keys()) {
-      if (i++ >= feedRateLimit.size - 10000) break;
-      feedRateLimit.delete(key);
-    }
-  }
-}, 5 * 60_000);
+const limiter = createRateLimiter({ name: "feed", max: 30, windowMs: 60_000 });
 
 // On the very first request (no cursor) we want session variety — pick a
 // random sort from this set so two users landing on /feed don't get the
@@ -27,22 +14,11 @@ const FIRST_PAGE_SORTS: Array<"score" | "date" | "favcount"> = [
 ];
 
 export async function GET(request: NextRequest) {
-  // Rate limit
-  const ip = request.headers.get("x-real-ip")
-    || request.headers.get("x-forwarded-for")?.split(",").pop()?.trim()
-    || "unknown";
-  const now = Date.now();
-  const rl = feedRateLimit.get(ip);
-  if (rl && now < rl.resetAt) {
-    if (rl.count >= 30) {
-      return NextResponse.json(
-        { error: "too many requests" },
-        { status: 429, headers: { "Retry-After": "60" } }
-      );
-    }
-    rl.count++;
-  } else {
-    feedRateLimit.set(ip, { count: 1, resetAt: now + 60_000 });
+  if (limiter.consume(getClientIp(request))) {
+    return NextResponse.json(
+      { error: "too many requests" },
+      { status: 429, headers: { "Retry-After": "60" } }
+    );
   }
 
   const { searchParams } = new URL(request.url);

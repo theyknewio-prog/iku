@@ -171,7 +171,9 @@ function VideoPlayerCard({
     }
 
     if (isActive) {
-      el.play().catch(() => {});
+      // Silent: browser autoplay policy may reject until user gestures.
+      // We don't log — it fires on every first-load before interaction.
+      el.play().catch(() => { /* autoplay policy */ });
     } else {
       el.pause();
     }
@@ -220,7 +222,8 @@ function VideoPlayerCard({
     const el = videoRef.current;
     if (!el) return;
     if (el.paused) {
-      el.play().catch(() => {});
+      // Click IS a user gesture — play() shouldn't reject, but guard anyway.
+      el.play().catch(() => { /* gesture already consumed */ });
     } else {
       el.pause();
     }
@@ -263,9 +266,10 @@ function VideoPlayerCard({
       e.stopPropagation();
       const url = `https://iku.gg/watch/${video.slug}`;
       if (navigator.share) {
-        navigator.share({ title, url }).catch(() => {});
+        // Silent: user can cancel the share sheet. That rejection is not an error.
+        navigator.share({ title, url }).catch(() => { /* user dismissed */ });
       } else {
-        navigator.clipboard?.writeText(url).catch(() => {});
+        navigator.clipboard?.writeText(url).catch(() => { /* permission denied */ });
       }
     },
     [video.slug, title]

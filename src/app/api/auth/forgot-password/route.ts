@@ -11,38 +11,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/lib/db";
 import { sendPasswordResetEmail } from "@/lib/email";
+import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
 
-const rateLimit = new Map<string, { count: number; resetAt: number }>();
-setInterval(() => {
-  const now = Date.now();
-  for (const [k, v] of rateLimit) if (now > v.resetAt) rateLimit.delete(k);
-  if (rateLimit.size > 10000) {
-    let i = 0;
-    for (const k of rateLimit.keys()) {
-      if (i++ >= rateLimit.size - 10000) break;
-      rateLimit.delete(k);
-    }
-  }
-}, 5 * 60_000);
+const limiter = createRateLimiter({ name: "forgot-password", max: 5, windowMs: 3600_000 });
 
 export async function POST(request: NextRequest) {
-  const ip =
-    request.headers.get("x-real-ip") ||
-    request.headers.get("x-forwarded-for")?.split(",").pop()?.trim() ||
-    "unknown";
-
-  const now = Date.now();
-  const rl = rateLimit.get(ip);
-  if (rl && now < rl.resetAt) {
-    if (rl.count >= 5) {
-      return NextResponse.json(
-        { error: "Too many requests — try again later." },
-        { status: 429 }
-      );
-    }
-    rl.count++;
-  } else {
-    rateLimit.set(ip, { count: 1, resetAt: now + 3600_000 });
+  if (limiter.consume(getClientIp(request))) {
+    return NextResponse.json(
+      { error: "Too many requests — try again later." },
+      { status: 429 }
+    );
   }
 
   let body: unknown;

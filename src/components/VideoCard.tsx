@@ -299,7 +299,8 @@ export function VideoCard({
     if (!el) return;
     if (isActive) {
       el.currentTime = 0;
-      el.play().catch(() => {});
+      // Silent: autoplay policy may reject on first mount before user gesture.
+      el.play().catch(() => { /* autoplay policy */ });
     } else {
       el.pause();
       setProgress(0);
@@ -371,7 +372,7 @@ export function VideoCard({
         if (!next) {
           // Unmuting — ensure audio is audible and the video is playing.
           if (el.volume === 0) el.volume = 0.5;
-          el.play().catch(() => {});
+          el.play().catch(() => { /* autoplay policy rejected unmute — benign */ });
         }
       }
       setShowMuteHint(true);

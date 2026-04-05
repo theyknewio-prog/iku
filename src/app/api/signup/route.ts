@@ -16,21 +16,9 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import pool from "@/lib/db";
 import { sendVerificationEmail } from "@/lib/email";
+import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
 
-const signupRateLimit = new Map<string, { count: number; resetAt: number }>();
-setInterval(() => {
-  const now = Date.now();
-  for (const [k, v] of signupRateLimit) {
-    if (now > v.resetAt) signupRateLimit.delete(k);
-  }
-  if (signupRateLimit.size > 10000) {
-    let i = 0;
-    for (const k of signupRateLimit.keys()) {
-      if (i++ >= signupRateLimit.size - 10000) break;
-      signupRateLimit.delete(k);
-    }
-  }
-}, 5 * 60_000);
+const limiter = createRateLimiter({ name: "signup", max: 5, windowMs: 3600_000 });
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const USERNAME_RE = /^[a-zA-Z0-9_-]{3,20}$/;
@@ -48,23 +36,11 @@ function is18Plus(dobStr: string): boolean {
 }
 
 export async function POST(request: NextRequest) {
-  // Rate limit
-  const ip =
-    request.headers.get("x-real-ip") ||
-    request.headers.get("x-forwarded-for")?.split(",").pop()?.trim() ||
-    "unknown";
-  const now = Date.now();
-  const rl = signupRateLimit.get(ip);
-  if (rl && now < rl.resetAt) {
-    if (rl.count >= 5) {
-      return NextResponse.json(
-        { error: "Too many signup attempts. Try again later." },
-        { status: 429, headers: { "Retry-After": "3600" } }
-      );
-    }
-    rl.count++;
-  } else {
-    signupRateLimit.set(ip, { count: 1, resetAt: now + 3600_000 });
+  if (limiter.consume(getClientIp(request))) {
+    return NextResponse.json(
+      { error: "Too many signup attempts. Try again later." },
+      { status: 429, headers: { "Retry-After": "3600" } }
+    );
   }
 
   let body: unknown;

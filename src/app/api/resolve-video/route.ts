@@ -3,6 +3,7 @@ import { execFile } from "child_process";
 import { promisify } from "util";
 import pool from "@/lib/db";
 import { startWarmup } from "@/lib/url-warmup";
+import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
 
 // Kick off the background warmup loop on first module load.
 // Singleton inside, safe to call repeatedly.
@@ -29,20 +30,14 @@ const l1Cache = new Map<string, { videoUrl: string; expiresAt: number }>();
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour (URLs typically expire in 2h)
 const L1_MAX_SIZE = 500;
 
-// Rate limit: IP → { count, resetAt }
-const rateLimit = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT_WINDOW = 60 * 1000;
-const RATE_LIMIT_MAX = 10;
-const RATE_LIMIT_MAX_SIZE = 10000;
+// Rate limit: 10/min/IP (yt-dlp path is expensive — keep tight)
+const limiter = createRateLimiter({ name: "resolve-video", max: 10, windowMs: 60_000 });
 
-// Periodic cleanup — expired entries + hard caps
-setInterval(() => {
+// Periodic cleanup — L1 cache expiry + PG GC. Rate limiter cleans itself.
+const cleanupTimer = setInterval(() => {
   const now = Date.now();
   for (const [key, val] of l1Cache) {
     if (now > val.expiresAt) l1Cache.delete(key);
-  }
-  for (const [key, val] of rateLimit) {
-    if (now > val.resetAt) rateLimit.delete(key);
   }
   if (l1Cache.size > L1_MAX_SIZE) {
     const toDelete = l1Cache.size - L1_MAX_SIZE;
@@ -52,17 +47,18 @@ setInterval(() => {
       l1Cache.delete(key);
     }
   }
-  if (rateLimit.size > RATE_LIMIT_MAX_SIZE) {
-    const toDelete = rateLimit.size - RATE_LIMIT_MAX_SIZE;
-    let i = 0;
-    for (const key of rateLimit.keys()) {
-      if (i++ >= toDelete) break;
-      rateLimit.delete(key);
-    }
-  }
-  // Purge expired rows from PG (best-effort, ignore errors)
-  pool.query("DELETE FROM resolved_urls WHERE expires_at < NOW()").catch(() => {});
+  // Purge expired rows from PG (best-effort — see comment in catch).
+  pool
+    .query("DELETE FROM resolved_urls WHERE expires_at < NOW()")
+    .catch((err) => {
+      // GC failure just means the table grows a bit — not user-facing. Log so
+      // we notice if it's persistent (e.g. DB permissions regression).
+      console.warn("[resolve-video] resolved_urls GC failed:", err?.message ?? err);
+    });
 }, 5 * 60 * 1000);
+if (typeof (cleanupTimer as unknown as { unref?: () => void }).unref === "function") {
+  (cleanupTimer as unknown as { unref: () => void }).unref();
+}
 
 // Max concurrent resolve processes (yt-dlp fallback path)
 let activeResolves = 0;
@@ -172,22 +168,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "url parameter required" }, { status: 400 });
   }
 
-  // Rate limit by IP
-  const xRealIp = request.headers.get("x-real-ip");
-  const xForwardedFor = request.headers.get("x-forwarded-for");
-  const ip = xRealIp || (xForwardedFor ? xForwardedFor.split(",").pop()?.trim() : null) || "unknown";
-  const now = Date.now();
-  const rl = rateLimit.get(ip);
-  if (rl && now < rl.resetAt) {
-    if (rl.count >= RATE_LIMIT_MAX) {
-      return NextResponse.json(
-        { error: "too many requests, try again in a minute" },
-        { status: 429, headers: { "Retry-After": "60" } }
-      );
-    }
-    rl.count++;
-  } else {
-    rateLimit.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW });
+  if (limiter.consume(getClientIp(request))) {
+    return NextResponse.json(
+      { error: "too many requests, try again in a minute" },
+      { status: 429, headers: { "Retry-After": "60" } }
+    );
   }
 
   // Validate allowed domains (SSRF guard)

@@ -1,10 +1,13 @@
 /**
- * migrate-json-to-pg.ts
+ * migrate-json-to-pg.ts — HISTORICAL / NO LONGER RUNNABLE
  *
- * One-time migration: reads all 5 JSON data files and inserts into PostgreSQL.
- * Idempotent: uses INSERT ... ON CONFLICT DO NOTHING.
+ * One-time migration that read the 5 legacy JSON data files and inserted them
+ * into PostgreSQL. This ran once on 2026-04-04 and the source JSONs were
+ * subsequently deleted from the repo (124 MB of dead weight).
  *
- * Usage: DATABASE_URL=postgresql://... npx tsx scripts/migrate-json-to-pg.ts
+ * Kept for documentation only — do NOT run. If you need to re-migrate from a
+ * fresh JSON dump, restore the files from git history (commits ~2026-04-03)
+ * and rerun with: `DATABASE_URL=postgresql://... npx tsx scripts/migrate-json-to-pg.ts`
  */
 
 import { Pool } from "pg";

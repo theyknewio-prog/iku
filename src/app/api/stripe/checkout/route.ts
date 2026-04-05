@@ -12,12 +12,10 @@ import { auth } from "@/auth";
 import { stripe, PLANS, getPlan } from "@/lib/stripe";
 import pool from "@/lib/db";
 import { getVerifyStatus } from "@/lib/email-verify-guard";
+import { createRateLimiter } from "@/lib/rate-limit";
 
-const rateLimit = new Map<string, { count: number; resetAt: number }>();
-setInterval(() => {
-  const now = Date.now();
-  for (const [k, v] of rateLimit) if (now > v.resetAt) rateLimit.delete(k);
-}, 5 * 60_000);
+// Keyed by userId — not ip — since checkout requires auth anyway.
+const limiter = createRateLimiter({ name: "checkout", max: 10, windowMs: 3600_000 });
 
 export async function POST(request: NextRequest) {
   if (!stripe) {
@@ -42,17 +40,9 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Rate limit: 10 checkout attempts per hour per user (anti-abuse)
   const userId = session.user.id;
-  const now = Date.now();
-  const rl = rateLimit.get(userId);
-  if (rl && now < rl.resetAt) {
-    if (rl.count >= 10) {
-      return NextResponse.json({ error: "too many checkout attempts" }, { status: 429 });
-    }
-    rl.count++;
-  } else {
-    rateLimit.set(userId, { count: 1, resetAt: now + 3600_000 });
+  if (limiter.consume(userId)) {
+    return NextResponse.json({ error: "too many checkout attempts" }, { status: 429 });
   }
 
   let body: unknown;

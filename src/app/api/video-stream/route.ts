@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { execFile } from "child_process";
 import { promisify } from "util";
 import pool from "@/lib/db";
+import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
 
 const execFileAsync = promisify(execFile);
 
@@ -32,26 +33,17 @@ const CACHE_TTL_MS = 60 * 60 * 1000;
 // Rate limit: 30 video stream requests per minute per IP.
 // Higher than resolve-video (10/min) because a single video playback triggers
 // multiple range requests, but still bounded to prevent bandwidth abuse.
-const rateLimit = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT_WINDOW = 60 * 1000;
-const RATE_LIMIT_MAX = 30;
-const RATE_LIMIT_MAX_SIZE = 10000;
+const limiter = createRateLimiter({ name: "video-stream", max: 30, windowMs: 60_000 });
 
-// Periodic cleanup of expired rate-limit entries
+// L1 cleanup — rate limiter has its own.
 if (typeof setInterval !== "undefined") {
-  setInterval(() => {
+  const l1Timer = setInterval(() => {
     const now = Date.now();
-    for (const [k, v] of rateLimit) if (now > v.resetAt) rateLimit.delete(k);
-    if (rateLimit.size > RATE_LIMIT_MAX_SIZE) {
-      const toDelete = rateLimit.size - RATE_LIMIT_MAX_SIZE;
-      let i = 0;
-      for (const k of rateLimit.keys()) {
-        if (i++ >= toDelete) break;
-        rateLimit.delete(k);
-      }
-    }
     for (const [k, v] of l1Cache) if (now > v.expiresAt) l1Cache.delete(k);
   }, 5 * 60 * 1000);
+  if (typeof (l1Timer as unknown as { unref?: () => void }).unref === "function") {
+    (l1Timer as unknown as { unref: () => void }).unref();
+  }
 }
 
 async function getFromPgCache(pageUrl: string): Promise<string | null> {
@@ -174,21 +166,11 @@ export async function GET(request: NextRequest) {
   }
 
   // Rate limit by IP (prevents bandwidth DoS)
-  const xRealIp = request.headers.get("x-real-ip");
-  const xForwardedFor = request.headers.get("x-forwarded-for");
-  const ip = xRealIp || (xForwardedFor ? xForwardedFor.split(",").pop()?.trim() : null) || "unknown";
-  const now = Date.now();
-  const rl = rateLimit.get(ip);
-  if (rl && now < rl.resetAt) {
-    if (rl.count >= RATE_LIMIT_MAX) {
-      return NextResponse.json(
-        { error: "too many requests" },
-        { status: 429, headers: { "Retry-After": "60" } }
-      );
-    }
-    rl.count++;
-  } else {
-    rateLimit.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW });
+  if (limiter.consume(getClientIp(request))) {
+    return NextResponse.json(
+      { error: "too many requests" },
+      { status: 429, headers: { "Retry-After": "60" } }
+    );
   }
 
   // SSRF guard — same domain whitelist as resolve-video

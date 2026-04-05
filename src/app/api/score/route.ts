@@ -13,24 +13,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { recordScore, POINTS, type ScoreEventType } from "@/lib/gamification";
 import { advanceDailyQuests } from "@/lib/daily-quests";
+import { createRateLimiter } from "@/lib/rate-limit";
 
 const ALLOWED_EVENTS = new Set<ScoreEventType>(
   Object.keys(POINTS) as ScoreEventType[]
 );
 
-// Per-user rate limit — in-memory, bounded
-const rateLimit = new Map<string, { count: number; resetAt: number }>();
-setInterval(() => {
-  const now = Date.now();
-  for (const [k, v] of rateLimit) if (now > v.resetAt) rateLimit.delete(k);
-  if (rateLimit.size > 10000) {
-    let i = 0;
-    for (const k of rateLimit.keys()) {
-      if (i++ >= rateLimit.size - 10000) break;
-      rateLimit.delete(k);
-    }
-  }
-}, 5 * 60_000);
+// Per-user rate limit (anti point-farming). 30 events/min is more than enough
+// for legitimate watch+favorite+quest flows.
+const limiter = createRateLimiter({ name: "score", max: 30, windowMs: 60_000 });
 
 export async function POST(request: NextRequest) {
   const session = await auth();
@@ -39,17 +30,8 @@ export async function POST(request: NextRequest) {
   }
 
   const userId = session.user.id;
-
-  // Rate limit
-  const now = Date.now();
-  const rl = rateLimit.get(userId);
-  if (rl && now < rl.resetAt) {
-    if (rl.count >= 30) {
-      return NextResponse.json({ error: "rate limited" }, { status: 429 });
-    }
-    rl.count++;
-  } else {
-    rateLimit.set(userId, { count: 1, resetAt: now + 60_000 });
+  if (limiter.consume(userId)) {
+    return NextResponse.json({ error: "rate limited" }, { status: 429 });
   }
 
   let body: unknown;

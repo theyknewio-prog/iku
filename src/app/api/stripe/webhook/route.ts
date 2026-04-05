@@ -161,8 +161,11 @@ export async function POST(request: NextRequest) {
  * Resolve a user_id from a subscription: prefer metadata, fallback to
  * stripe_customer_id lookup so subs created outside our checkout flow
  * (customer portal, manual recreate, dunning swap) still get routed.
+ *
+ * Exported for unit tests — do not import from app code (go through the POST
+ * route so the full webhook pipeline is exercised).
  */
-async function resolveUserIdFromSub(sub: Stripe.Subscription): Promise<string | null> {
+export async function resolveUserIdFromSub(sub: Stripe.Subscription): Promise<string | null> {
   const metaUserId = sub.metadata?.user_id;
   if (metaUserId) return metaUserId;
 
@@ -179,8 +182,9 @@ async function resolveUserIdFromSub(sub: Stripe.Subscription): Promise<string | 
 
 /**
  * Strict price-id → plan mapping. No substring magic.
+ * Exported for unit tests.
  */
-function planFromPriceId(priceId: string | undefined): "monthly" | "yearly" | "lifetime" | null {
+export function planFromPriceId(priceId: string | undefined): "monthly" | "yearly" | "lifetime" | null {
   if (!priceId) return null;
   if (priceId === process.env.STRIPE_PRICE_MONTHLY) return "monthly";
   if (priceId === process.env.STRIPE_PRICE_YEARLY) return "yearly";
@@ -192,7 +196,7 @@ function planFromPriceId(priceId: string | undefined): "monthly" | "yearly" | "l
 // Handlers
 // ─────────────────────────────────────────────────────────────
 
-async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
+export async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   const userId = session.metadata?.user_id || session.client_reference_id;
   const plan = session.metadata?.plan;
   if (!userId) {
@@ -248,7 +252,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   // ── Subscription — the subscription.created event will handle the details ──
 }
 
-async function handleSubscriptionUpdate(sub: Stripe.Subscription) {
+export async function handleSubscriptionUpdate(sub: Stripe.Subscription) {
   const userId = await resolveUserIdFromSub(sub);
   if (!userId) {
     console.error("subscription without user_id metadata or customer link:", sub.id);
@@ -308,7 +312,7 @@ async function handleSubscriptionUpdate(sub: Stripe.Subscription) {
   console.log(`pro ${proStatus} for user ${userId} (${plan})`);
 }
 
-async function handleSubscriptionDeleted(sub: Stripe.Subscription) {
+export async function handleSubscriptionDeleted(sub: Stripe.Subscription) {
   const userId = await resolveUserIdFromSub(sub);
   if (!userId) return;
 
