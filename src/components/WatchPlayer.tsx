@@ -1492,9 +1492,20 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
               {playing ? <IconPause /> : <IconPlay />}
             </ControlBtn>
 
-            {/* Volume — tap toggles popup slider, long press mutes */}
-            <div style={{ position: "relative" }}>
-              <ControlBtn onClick={() => setVolumeSliderOpen((o) => !o)} label={muted ? "Unmute" : "Mute"}>
+            {/*
+              Volume button:
+              - CLICK toggles mute/unmute (primary action — the most common
+                thing users want when they tap a volume icon).
+              - HOVER opens the popup volume slider (desktop).
+              Previously click-opened the slider and users had to find the
+              nested mute button inside it, which made mute feel broken.
+            */}
+            <div
+              style={{ position: "relative" }}
+              onMouseEnter={() => setVolumeSliderOpen(true)}
+              onMouseLeave={() => setVolumeSliderOpen(false)}
+            >
+              <ControlBtn onClick={toggleMute} label={muted ? "Unmute" : "Mute"}>
                 {muted || volume === 0 ? <IconVolumeMuted /> : <IconVolumeFull />}
               </ControlBtn>
               {volumeSliderOpen && (
