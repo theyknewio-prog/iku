@@ -19,14 +19,16 @@ import {
 import { containsBannedContent, getRelatedVideos, getDanbooruVideo } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
 
-export const revalidate = 86400;
-// Enable ISR for dynamic slugs: no pre-built params, but cache on-demand
-// renders for 86400s (1 day). Without this, Next.js treats the route as
-// fully dynamic and skips ISR — every hit does a fresh PG query + render.
-export const dynamicParams = true;
-export async function generateStaticParams() {
-  return [];
-}
+// Dynamic rendering: we call headers() via getNonce() to stamp the CSP nonce
+// on JSON-LD scripts, which is incompatible with the old ISR-via-empty-
+// generateStaticParams hack (Next.js would classify as static then throw at
+// runtime with "Page changed from static to dynamic"). The perf hit is
+// absorbed by:
+//   1. memoize() on getVideos / getDanbooruVideo (5 min TTL)
+//   2. PG-first lookup (~5ms) instead of Danbooru live API (200-1500ms)
+//   3. resolved_urls L2 cache for Rule34Video/WP stream URLs (1h TTL)
+// Net: cold watch-page render is ~50-100ms despite being "dynamic".
+export const dynamic = "force-dynamic";
 
 /* ─────────────────────────────────────────────────────────────
    Types

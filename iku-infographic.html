@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iku.gg — Project Overview</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #06060a;
+  --surface: #0d0d14;
+  --surface2: #13131f;
+  --border: #1a1a2e;
+  --pink: #e8467c;
+  --purple: #7b2ff7;
+  --cyan: #06d6a0;
+  --orange: #ff9a44;
+  --yellow: #f5c542;
+  --red: #ff4444;
+  --text: #e8e8f0;
+  --text2: #8888a8;
+  --text3: #555570;
+  --gradient: linear-gradient(135deg, #e8467c 0%, #7b2ff7 50%, #06d6a0 100%);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Sora', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Noise texture overlay ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+/* ── HERO ── */
+.hero {
+  text-align: center;
+  padding: 60px 0 50px;
+  position: relative;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(232,70,124,0.08) 0%, rgba(123,47,247,0.04) 40%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-logo {
+  font-family: 'Space Mono', monospace;
+  font-size: 72px;
+  font-weight: 700;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -2px;
+  margin-bottom: 12px;
+  animation: glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from { filter: drop-shadow(0 0 20px rgba(232,70,124,0.3)); }
+  to { filter: drop-shadow(0 0 40px rgba(123,47,247,0.4)); }
+}
+
+.hero-tagline {
+  font-size: 18px;
+  color: var(--text2);
+  font-weight: 300;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+
+.hero-stat-row {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.hero-stat {
+  text-align: center;
+}
+
+.hero-stat__num {
+  font-family: 'Space Mono', monospace;
+  font-size: 42px;
+  font-weight: 700;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+}
+
+.hero-stat__label {
+  font-size: 11px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: 6px;
+}
+
+/* ── SECTION ── */
+.section {
+  margin-top: 56px;
+}
+
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--pink);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border), transparent);
+}
+
+/* ── CARDS GRID ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; }
+
+@media (max-width: 768px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .hero-stat__num { font-size: 32px; }
+  .hero-logo { font-size: 48px; }
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease, transform 0.2s ease;
+}
+
+.card:hover {
+  border-color: var(--pink);
+  transform: translateY(-2px);
+}
+
+.card--accent { border-left: 3px solid var(--pink); }
+.card--purple { border-left: 3px solid var(--purple); }
+.card--cyan { border-left: 3px solid var(--cyan); }
+.card--orange { border-left: 3px solid var(--orange); }
+
+.card__icon {
+  font-size: 28px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.card__title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.card__desc {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+.card__badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: rgba(232,70,124,0.15);
+  color: var(--pink);
+}
+
+.card__badge--live {
+  background: rgba(6,214,160,0.15);
+  color: var(--cyan);
+}
+
+.card__badge--auto {
+  background: rgba(123,47,247,0.15);
+  color: var(--purple);
+}
+
+.card__badge--pending {
+  background: rgba(255,154,68,0.15);
+  color: var(--orange);
+}
+
+/* ── PIPELINE ── */
+.pipeline {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  margin-top: 8px;
+  position: relative;
+}
+
+.pipeline__step {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 20px 16px;
+  text-align: center;
+  position: relative;
+}
+
+.pipeline__step:first-child { border-radius: 14px 0 0 14px; }
+.pipeline__step:last-child { border-radius: 0 14px 14px 0; }
+
+.pipeline__step::after {
+  content: '→';
+  position: absolute;
+  right: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--pink);
+  font-size: 18px;
+  font-weight: 700;
+  z-index: 1;
+}
+
+.pipeline__step:last-child::after { display: none; }
+
+.pipeline__icon { font-size: 24px; margin-bottom: 8px; display: block; }
+.pipeline__label { font-size: 12px; font-weight: 600; color: var(--text); }
+.pipeline__sub { font-size: 10px; color: var(--text3); margin-top: 4px; }
+
+/* ── TIMELINE ── */
+.timeline {
+  position: relative;
+  padding-left: 28px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--pink), var(--purple), var(--cyan), var(--text3));
+}
+
+.timeline__item {
+  position: relative;
+  padding: 12px 0 24px 20px;
+}
+
+.timeline__item::before {
+  content: '';
+  position: absolute;
+  left: -24px;
+  top: 16px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--pink);
+  background: var(--bg);
+}
+
+.timeline__item--done::before {
+  background: var(--cyan);
+  border-color: var(--cyan);
+}
+
+.timeline__item--active::before {
+  background: var(--pink);
+  border-color: var(--pink);
+  box-shadow: 0 0 12px rgba(232,70,124,0.5);
+}
+
+.timeline__date {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+  margin-bottom: 4px;
+}
+
+.timeline__title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.timeline__desc {
+  font-size: 12px;
+  color: var(--text2);
+  margin-top: 4px;
+}
+
+/* ── METER ── */
+.meter {
+  background: var(--surface2);
+  border-radius: 8px;
+  height: 10px;
+  overflow: hidden;
+  margin: 8px 0;
+}
+
+.meter__fill {
+  height: 100%;
+  border-radius: 8px;
+  background: var(--gradient);
+  transition: width 1s ease;
+}
+
+/* ── TABLE ── */
+.table-wrap {
+  overflow-x: auto;
+  margin-top: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th {
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text3);
+  border-bottom: 1px solid var(--border);
+}
+
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(26,26,46,0.5);
+  color: var(--text2);
+}
+
+tr:hover td { color: var(--text); background: rgba(232,70,124,0.03); }
+
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.tag--live { background: rgba(6,214,160,0.15); color: var(--cyan); }
+.tag--auto { background: rgba(123,47,247,0.15); color: var(--purple); }
+.tag--pending { background: rgba(255,154,68,0.15); color: var(--orange); }
+.tag--blocked { background: rgba(255,68,68,0.15); color: var(--red); }
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  margin-top: 60px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+  color: var(--text3);
+  font-size: 12px;
+}
+
+.footer span {
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ════════════════ HERO ════════════════ -->
+  <div class="hero">
+    <div class="hero-logo">iku.gg</div>
+    <div class="hero-tagline">The TikTok of Hentai</div>
+    <div class="hero-stat-row">
+      <div class="hero-stat">
+        <div class="hero-stat__num">37,176</div>
+        <div class="hero-stat__label">Video Pages</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat__num">17,098</div>
+        <div class="hero-stat__label">Danbooru</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat__num">20,078</div>
+        <div class="hero-stat__label">Gelbooru</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat__num">72</div>
+        <div class="hero-stat__label">Blog + Glossary</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════ WHAT IS IKU ════════════════ -->
+  <div class="section">
+    <div class="section-title">What is iku.gg</div>
+    <div class="grid-3">
+      <div class="card card--accent">
+        <span class="card__icon">🎬</span>
+        <div class="card__title">Hentai Video Hub</div>
+        <div class="card__desc">37K+ animated hentai videos from Danbooru & Gelbooru. Swipe feed, browse by tag/character, watch with custom player. Free, no account needed.</div>
+      </div>
+      <div class="card card--purple">
+        <span class="card__icon">🔍</span>
+        <div class="card__title">SEO-First Architecture</div>
+        <div class="card__desc">Every video page has unique meta, JSON-LD schema (VideoObject, FAQ, Breadcrumb), alt texts, internal linking. 37K indexable pages growing daily.</div>
+      </div>
+      <div class="card card--cyan">
+        <span class="card__icon">💰</span>
+        <div class="card__title">Revenue Model</div>
+        <div class="card__desc">Organic traffic → ad revenue. Future: DMM/FANZA affiliate (Japanese hentai marketplace), affiliate links on video pages.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════ TECH STACK ════════════════ -->
+  <div class="section">
+    <div class="section-title">Tech Stack</div>
+    <div class="grid-4">
+      <div class="card">
+        <span class="card__icon">⚡</span>
+        <div class="card__title">Next.js 16</div>
+        <div class="card__desc">App Router, React 19, Server Components, ISR</div>
+      </div>
+      <div class="card">
+        <span class="card__icon">🖥️</span>
+        <div class="card__title">Hetzner CX23</div>
+        <div class="card__desc">2 vCPU, 4GB RAM, Helsinki. €4.79/mo</div>
+      </div>
+      <div class="card">
+        <span class="card__icon">🚀</span>
+        <div class="card__title">Coolify</div>
+        <div class="card__desc">Self-hosted PaaS, Traefik proxy, Let's Encrypt SSL</div>
+      </div>
+      <div class="card">
+        <span class="card__icon">🔄</span>
+        <div class="card__title">GitHub Actions</div>
+        <div class="card__desc">Daily cron: scrape + publish + deploy. Zero manual work.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════ CONTENT SOURCES ════════════════ -->
+  <div class="section">
+    <div class="section-title">Content Sources</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Source</th>
+            <th>Videos</th>
+            <th>Method</th>
+            <th>Hotlink</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Danbooru</strong></td>
+            <td>17,098</td>
+            <td>REST API — direct CDN embed</td>
+            <td>CORS: * ✅</td>
+            <td><span class="tag tag--live">LIVE</span></td>
+          </tr>
+          <tr>
+            <td><strong>Gelbooru</strong></td>
+            <td>20,078</td>
+            <td>REST API — proxied via /api/proxy</td>
+            <td>Proxy bypass ✅</td>
+            <td><span class="tag tag--live">LIVE</span></td>
+          </tr>
+          <tr>
+            <td><strong>DMM / FANZA</strong></td>
+            <td>100K+ catalog</td>
+            <td>Official Affiliate API</td>
+            <td>Embed previews</td>
+            <td><span class="tag tag--pending">PENDING</span></td>
+          </tr>
+          <tr>
+            <td><strong>Iwara.tv</strong></td>
+            <td>Massive (MMD/3D)</td>
+            <td>Undocumented API</td>
+            <td>Cloudflare blocked</td>
+            <td><span class="tag tag--blocked">BLOCKED</span></td>
+          </tr>
+          <tr>
+            <td><strong>Sankaku</strong></td>
+            <td>2M+ posts</td>
+            <td>Unofficial API</td>
+            <td>Hotlink blocked</td>
+            <td><span class="tag tag--blocked">BLOCKED</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ════════════════ AUTOMATION ════════════════ -->
+  <div class="section">
+    <div class="section-title">What's Automated (Daily Cron — 6h Paris)</div>
+    <div class="pipeline">
+      <div class="pipeline__step">
+        <span class="pipeline__icon">📝</span>
+        <span class="pipeline__label">Publish Content</span>
+        <span class="pipeline__sub">Blog + Glossary from queue</span>
+      </div>
+      <div class="pipeline__step">
+        <span class="pipeline__icon">🔍</span>
+        <span class="pipeline__label">Scrape Danbooru</span>
+        <span class="pipeline__sub">17K+ MP4/WebM videos</span>
+      </div>
+      <div class="pipeline__step">
+        <span class="pipeline__icon">🔍</span>
+        <span class="pipeline__label">Scrape Gelbooru</span>
+        <span class="pipeline__sub">20K+ animated videos</span>
+      </div>
+      <div class="pipeline__step">
+        <span class="pipeline__icon">📦</span>
+        <span class="pipeline__label">Git Commit</span>
+        <span class="pipeline__sub">Auto if changes detected</span>
+      </div>
+      <div class="pipeline__step">
+        <span class="pipeline__icon">🚀</span>
+        <span class="pipeline__label">Deploy</span>
+        <span class="pipeline__sub">Coolify API → Hetzner</span>
+      </div>
+    </div>
+
+    <div style="margin-top: 24px;" class="grid-2">
+      <div class="card card--cyan">
+        <span class="card__badge card__badge--auto">AUTO</span>
+        <span class="card__icon">📰</span>
+        <div class="card__title">Content Publishing</div>
+        <div class="card__desc">
+          8 semaines de contenu pré-généré :<br>
+          • <strong>Lundi</strong> : 1 article de blog (1500-2000 mots)<br>
+          • <strong>Jeudi</strong> : 3-5 termes glossaire<br>
+          • Maillage interne auto (tags, glossary, blog)<br>
+          • Prochain : 7 avril — "What is NTR?"
+        </div>
+      </div>
+      <div class="card card--purple">
+        <span class="card__badge card__badge--auto">AUTO</span>
+        <span class="card__icon">📊</span>
+        <div class="card__title">Video Index</div>
+        <div class="card__desc">
+          Scraping quotidien des 2 sources :<br>
+          • Danbooru: 17,098 vidéos (toutes les animated MP4+WebM)<br>
+          • Gelbooru: 20,078 vidéos (proxifiées via /api/proxy)<br>
+          • Sitemap mis à jour auto (37K+ URLs)<br>
+          • Nouveaux uploads détectés chaque jour
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════ SEO STATUS ════════════════ -->
+  <div class="section">
+    <div class="section-title">SEO Completion</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card__title">Technical SEO</div>
+        <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text2); margin-bottom: 4px;">
+          <span>Schema, Meta, Sitemap, Robots</span>
+          <span style="color: var(--cyan); font-weight: 700;">95%</span>
+        </div>
+        <div class="meter"><div class="meter__fill" style="width: 95%;"></div></div>
+        <div class="card__desc" style="margin-top: 8px;">
+          ✅ VideoObject, FAQPage, BreadcrumbList, CollectionPage, WebSite schemas<br>
+          ✅ 37K sitemap URLs (watch + tags + blog + glossary)<br>
+          ✅ Dynamic meta title/desc per page<br>
+          ✅ OpenGraph + Twitter Cards<br>
+          ⬜ rel=next/prev pagination
+        </div>
+      </div>
+      <div class="card">
+        <div class="card__title">Content SEO</div>
+        <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text2); margin-bottom: 4px;">
+          <span>Blog, Glossary, Maillage</span>
+          <span style="color: var(--orange); font-weight: 700;">60%</span>
+        </div>
+        <div class="meter"><div class="meter__fill" style="width: 60%;"></div></div>
+        <div class="card__desc" style="margin-top: 8px;">
+          ✅ 12 articles blog live (Article schema)<br>
+          ✅ 60 termes glossaire live<br>
+          ✅ 8 articles + 24 termes en queue (auto)<br>
+          ⬜ Character pages (50 planned)<br>
+          ⬜ Series pages (30 planned)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════ ROADMAP ════════════════ -->
+  <div class="section">
+    <div class="section-title">Roadmap</div>
+    <div class="grid-2">
+      <div>
+        <div class="timeline">
+          <div class="timeline__item timeline__item--done">
+            <div class="timeline__date">✅ DONE — April 3</div>
+            <div class="timeline__title">Core Platform</div>
+            <div class="timeline__desc">37K video pages, swipe feed, watch player, tag system, hover preview, favorites, history, settings</div>
+          </div>
+          <div class="timeline__item timeline__item--done">
+            <div class="timeline__date">✅ DONE — April 3</div>
+            <div class="timeline__title">Gelbooru Proxy</div>
+            <div class="timeline__desc">Server-side proxy bypasses hotlink protection. +20K videos. Cache 24h client, 7d CDN.</div>
+          </div>
+          <div class="timeline__item timeline__item--done">
+            <div class="timeline__date">✅ DONE — April 3</div>
+            <div class="timeline__title">Daily Cron Automation</div>
+            <div class="timeline__desc">GitHub Action: scrape + publish content + deploy. Zero manual work.</div>
+          </div>
+          <div class="timeline__item timeline__item--done">
+            <div class="timeline__date">✅ DONE — April 3</div>
+            <div class="timeline__title">SEO Foundation</div>
+            <div class="timeline__desc">All schemas, sitemaps, meta, alt text, maillage interne, content auto-publisher.</div>
+          </div>
+          <div class="timeline__item timeline__item--active">
+            <div class="timeline__date">🔥 NOW — April 3</div>
+            <div class="timeline__title">Content Auto-Publishing</div>
+            <div class="timeline__desc">8 semaines de blog + glossaire en queue. Premier publish: 7 avril.</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="timeline">
+          <div class="timeline__item">
+            <div class="timeline__date">📅 April 7–28</div>
+            <div class="timeline__title">Content Wave 1</div>
+            <div class="timeline__desc">4 articles blog + 12 glossaire terms publiés automatiquement. NTR, Uncensored, Futanari, Yaoi guides.</div>
+          </div>
+          <div class="timeline__item">
+            <div class="timeline__date">📅 May</div>
+            <div class="timeline__title">Character + Series Pages</div>
+            <div class="timeline__desc">50 character landing pages (Tsunade, Hinata, Zero Two...) + 30 series pages. Maillage cocon sémantique.</div>
+          </div>
+          <div class="timeline__item">
+            <div class="timeline__date">📅 May–June</div>
+            <div class="timeline__title">DMM/FANZA Integration</div>
+            <div class="timeline__desc">Affiliate API → embed previews/trailers du plus gros catalogue hentai JP. Commission sur chaque vente.</div>
+          </div>
+          <div class="timeline__item">
+            <div class="timeline__date">📅 June+</div>
+            <div class="timeline__title">Monetization</div>
+            <div class="timeline__desc">Ads (ExoClick/TrafficJunky), DMM affiliate revenue, premium features, scaling to 100K+ pages.</div>
+          </div>
+          <div class="timeline__item">
+            <div class="timeline__date">🎯 GOAL</div>
+            <div class="timeline__title">Biggest Hentai Video Hub</div>
+            <div class="timeline__desc">100K+ indexed pages, #1 on long-tail hentai queries, automated content machine, passive revenue.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════ COSTS ════════════════ -->
+  <div class="section">
+    <div class="section-title">Monthly Costs</div>
+    <div class="grid-3">
+      <div class="card card--cyan">
+        <div class="card__title" style="font-family: 'Space Mono', monospace; font-size: 28px;">€4.79</div>
+        <div class="card__desc">Hetzner CX23 — server + Coolify</div>
+      </div>
+      <div class="card card--cyan">
+        <div class="card__title" style="font-family: 'Space Mono', monospace; font-size: 28px;">€1.50</div>
+        <div class="card__desc">iku.gg domain — Porkbun</div>
+      </div>
+      <div class="card card--cyan">
+        <div class="card__title" style="font-family: 'Space Mono', monospace; font-size: 28px;">€0</div>
+        <div class="card__desc">GitHub Actions, APIs, SSL — all free</div>
+      </div>
+    </div>
+    <div style="text-align: center; margin-top: 16px; font-family: 'Space Mono', monospace; font-size: 14px; color: var(--text3);">
+      Total : <span style="color: var(--cyan); font-weight: 700;">~€6.30/mois</span> pour 37K+ pages
+    </div>
+  </div>
+
+  <!-- ════════════════ FOOTER ════════════════ -->
+  <div class="footer">
+    <span>iku.gg</span> — Project Overview — April 3, 2026<br>
+    <span style="-webkit-text-fill-color: var(--text3); background: none;">37,176 video pages • 2 content sources • fully automated • €6.30/mo</span>
+  </div>
+
+</div>
+</body>
+</html>
