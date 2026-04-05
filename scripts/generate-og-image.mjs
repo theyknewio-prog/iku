@@ -63,32 +63,31 @@ const SVG = `
         font-weight="900" font-size="500" fill="#ffffff" opacity="0.04"
         letter-spacing="20">イク</text>
 
-  <!-- Sunset sun (centered vertically, slightly right) -->
-  <circle cx="600" cy="440" r="220" fill="url(#sunset)" opacity="0.25" filter="url(#bigGlow)"/>
-  <circle cx="600" cy="440" r="180" fill="url(#sunset)" opacity="0.55"/>
-  <circle cx="600" cy="440" r="140" fill="url(#sunset)" opacity="0.85"/>
+  <!-- Sunset sun (lower, smaller — doesn't overlap the tagline) -->
+  <circle cx="600" cy="555" r="170" fill="url(#sunset)" opacity="0.25" filter="url(#bigGlow)"/>
+  <circle cx="600" cy="555" r="140" fill="url(#sunset)" opacity="0.50"/>
+  <circle cx="600" cy="555" r="105" fill="url(#sunset)" opacity="0.80"/>
 
-  <!-- Horizon cut line -->
-  <rect x="0" y="440" width="1200" height="190" fill="#0a0514" opacity="0.35"/>
+  <!-- Horizon cut line (dark floor area) -->
+  <rect x="0" y="510" width="1200" height="120" fill="#0a0514" opacity="0.45"/>
 
   <!-- Retro perspective grid (vaporwave floor) -->
   <g stroke="#ff6b9d" stroke-width="2" opacity="0.45">
-    <line x1="0"    y1="630" x2="600" y2="440"/>
-    <line x1="150"  y1="630" x2="600" y2="440"/>
-    <line x1="300"  y1="630" x2="600" y2="440"/>
-    <line x1="450"  y1="630" x2="600" y2="440"/>
-    <line x1="600"  y1="630" x2="600" y2="440"/>
-    <line x1="750"  y1="630" x2="600" y2="440"/>
-    <line x1="900"  y1="630" x2="600" y2="440"/>
-    <line x1="1050" y1="630" x2="600" y2="440"/>
-    <line x1="1200" y1="630" x2="600" y2="440"/>
+    <line x1="0"    y1="630" x2="600" y2="510"/>
+    <line x1="150"  y1="630" x2="600" y2="510"/>
+    <line x1="300"  y1="630" x2="600" y2="510"/>
+    <line x1="450"  y1="630" x2="600" y2="510"/>
+    <line x1="600"  y1="630" x2="600" y2="510"/>
+    <line x1="750"  y1="630" x2="600" y2="510"/>
+    <line x1="900"  y1="630" x2="600" y2="510"/>
+    <line x1="1050" y1="630" x2="600" y2="510"/>
+    <line x1="1200" y1="630" x2="600" y2="510"/>
   </g>
   <g stroke="#ff6b9d" opacity="0.4">
-    <line x1="0" y1="465" x2="1200" y2="465" stroke-width="1"/>
-    <line x1="0" y1="495" x2="1200" y2="495" stroke-width="1.3"/>
-    <line x1="0" y1="530" x2="1200" y2="530" stroke-width="1.6"/>
-    <line x1="0" y1="570" x2="1200" y2="570" stroke-width="1.9"/>
-    <line x1="0" y1="615" x2="1200" y2="615" stroke-width="2.3"/>
+    <line x1="0" y1="535" x2="1200" y2="535" stroke-width="1.2"/>
+    <line x1="0" y1="560" x2="1200" y2="560" stroke-width="1.5"/>
+    <line x1="0" y1="590" x2="1200" y2="590" stroke-width="1.8"/>
+    <line x1="0" y1="620" x2="1200" y2="620" stroke-width="2.2"/>
   </g>
 
   <!-- Top-left ornaments -->
