@@ -7465,3 +7465,189 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* ============================================================
+   SCORE TOAST — appears top-right when user earns badge/tier
+   ============================================================ */
+#score-toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.score-toast {
+  background: linear-gradient(135deg, rgba(26,11,46,0.98), rgba(45,27,78,0.98));
+  border: 1px solid rgba(255,107,157,0.45);
+  border-radius: 14px;
+  padding: 14px 18px;
+  box-shadow:
+    0 16px 40px rgba(0,0,0,0.55),
+    0 0 30px rgba(255,107,157,0.25);
+  backdrop-filter: blur(16px);
+  color: #fff;
+  font-family: var(--font-sans);
+  min-width: 240px;
+  max-width: 340px;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events: auto;
+}
+
+.score-toast--in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.score-toast--out {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+.score-toast__title {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.score-toast__sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  #score-toast-container {
+    top: auto;
+    bottom: 80px;
+    left: 16px;
+    right: 16px;
+  }
+  .score-toast { max-width: none; }
+}
+
+/* Profile gamification sections */
+.profile-tier {
+  margin-top: 10px;
+  font-size: 15px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.profile-tier__score {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.55);
+  background: rgba(255,255,255,0.06);
+  padding: 3px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+}
+
+.profile-progress {
+  margin-bottom: 14px;
+}
+.profile-progress__labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #fff;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.profile-progress__bar {
+  height: 10px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.profile-progress__fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.8s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.profile-perks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.profile-perks li {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(192,132,252,0.12);
+  border: 1px solid rgba(192,132,252,0.3);
+  color: #c084fc;
+}
+
+.profile-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+@media (min-width: 640px) {
+  .profile-stats-grid { grid-template-columns: repeat(4, 1fr); }
+}
+.profile-stat {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+.profile-stat__value {
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+}
+.profile-stat__label {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 4px;
+}
+
+.profile-badges {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 12px;
+}
+.profile-badge {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 12px 8px;
+  text-align: center;
+  transition: all 0.2s;
+  cursor: help;
+}
+.profile-badge:hover {
+  background: rgba(255,107,157,0.08);
+  border-color: rgba(255,107,157,0.35);
+  transform: translateY(-2px);
+}
+.profile-badge__emoji {
+  font-size: 32px;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.profile-badge__name {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+}

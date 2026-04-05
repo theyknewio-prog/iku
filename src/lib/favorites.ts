@@ -43,6 +43,13 @@ function syncToServer(method: "POST" | "DELETE", slug: string): void {
   }).catch(() => {
     /* silent — anon users return 401, offline returns network error */
   });
+
+  // Fire scoring event for favorite_add (silently handles anon + badges)
+  if (method === "POST") {
+    import("./score-client").then(({ recordScoreEvent }) => {
+      recordScoreEvent("favorite_add", { slug });
+    });
+  }
 }
 
 /**

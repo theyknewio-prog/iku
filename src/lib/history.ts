@@ -36,6 +36,11 @@ function syncToServer(slug: string): void {
   }).catch(() => {
     /* silent — anon users return 401 */
   });
+
+  // Fire scoring event for video_view (silently handles anon + streaks)
+  import("./score-client").then(({ recordScoreEvent }) => {
+    recordScoreEvent("video_view", { slug });
+  });
 }
 
 export function addToHistory(id: number, slug: string): void {
