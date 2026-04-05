@@ -84,6 +84,8 @@ export interface GetVideosOptions {
   order?: "score" | "date" | "favcount";
   tags?: string;
   source?: "all" | "danbooru" | "gelbooru";
+  /** Exclude videos without a thumbnail (WP sources). Use on homepage/carousels. */
+  requireThumbnail?: boolean;
 }
 
 /** Map a database row to a Video object */
@@ -122,6 +124,7 @@ async function _getVideos(
     order = "score",
     tags = "",
     source = "all",
+    requireThumbnail = false,
   } = options;
 
   const clampedLimit = Math.min(limit, 200);
@@ -135,6 +138,11 @@ async function _getVideos(
   conditions.push(`NOT (tags && $${paramIndex}::text[])`);
   params.push(BANNED_TAGS_ARRAY);
   paramIndex++;
+
+  // Thumbnail filter — hide WP entries that still lack a poster image
+  if (requireThumbnail) {
+    conditions.push(`thumbnail IS NOT NULL AND thumbnail <> ''`);
+  }
 
   // Source filter
   if (source === "danbooru") {

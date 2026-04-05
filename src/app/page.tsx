@@ -5,7 +5,7 @@ import { AgeGate } from "@/components/AgeGate";
 import { PosterCard } from "@/components/PosterCard";
 import { Carousel } from "@/components/Carousel";
 import { getPopularTags, getPopularCharacters } from "@/lib/danbooru";
-import { getVideos, getThumbnailsForTags } from "@/lib/content";
+import { getVideos } from "@/lib/content";
 import { SERIES } from "@/data/series";
 import { OnlineCounter } from "@/components/OnlineCounter";
 
@@ -121,18 +121,15 @@ function formatViews(score: number): string {
 }
 
 export default async function HomePage() {
-  const trending = await getVideos({ limit: 20, order: "score", source: "all" });
+  const trending = await getVideos({ limit: 20, order: "score", source: "all", requireThumbnail: true });
   // Random offset (pages 1–5) so "New Releases" shows different content on each load.
   const newReleasesPage = Math.floor(Math.random() * 5) + 1;
-  const newest = await getVideos({ limit: 10, page: newReleasesPage, order: "date", source: "all" });
-  const topRated = await getVideos({ limit: 8, order: "favcount", source: "all" });
+  const newest = await getVideos({ limit: 10, page: newReleasesPage, order: "date", source: "all", requireThumbnail: true });
+  const topRated = await getVideos({ limit: 8, order: "favcount", source: "all", requireThumbnail: true });
   const [tags, characters] = await Promise.all([
     getPopularTags(24),
     getPopularCharacters(12),
   ]);
-
-  const characterTags = characters.map((c) => c.name);
-  const thumbnailMap = await getThumbnailsForTags(characterTags);
 
   const hero = trending.data[0];
 
@@ -354,7 +351,6 @@ export default async function HomePage() {
             <div className="hp-chars-scroll" role="list">
               {characters.map((char, i) => {
                 const ringClass = CHAR_RING_CLASSES[i % CHAR_RING_CLASSES.length];
-                const thumb = thumbnailMap[char.name];
                 const displayName = char.name.replace(/_/g, " ");
                 const count = char.count >= 1000 ? `${(char.count / 1000).toFixed(1)}k` : String(char.count);
 
@@ -367,20 +363,9 @@ export default async function HomePage() {
                   >
                     <div className={`hp-char-avatar-wrap ${ringClass}`}>
                       <div className="hp-char-avatar">
-                        {thumb ? (
-                          <Image
-                            src={thumb}
-                            alt={displayName}
-                            fill
-                            sizes="66px"
-                            style={{ objectFit: "cover", borderRadius: "50%" }}
-                            unoptimized
-                          />
-                        ) : (
-                          <span className="hp-char-avatar__emoji" style={{ fontSize: "28px", lineHeight: 1 }}>
-                            {CHAR_EMOJIS[i % CHAR_EMOJIS.length]}
-                          </span>
-                        )}
+                        <span className="hp-char-avatar__emoji" style={{ fontSize: "28px", lineHeight: 1 }}>
+                          {CHAR_EMOJIS[i % CHAR_EMOJIS.length]}
+                        </span>
                       </div>
                     </div>
                     <span className="hp-char-name">{displayName}</span>

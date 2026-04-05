@@ -7,27 +7,74 @@ import type { Video } from "@/types/video";
 import { isWatched } from "@/lib/history";
 import { prefetchVideoUrl, cancelPrefetch } from "@/lib/prefetch-video";
 
-/* ── Gradient palette for fallback backgrounds ─────────────── */
+/* ── Gradient palette for fallback backgrounds (mockup thumb-grad-*) ─── */
 const GRADIENTS = [
-  "linear-gradient(160deg, #1a0a2e 0%, #e8467c 100%)",
-  "linear-gradient(160deg, #0d1a2e 0%, #7b2ff7 100%)",
-  "linear-gradient(160deg, #2e0d0d 0%, #e8467c 60%, #ff9a44 100%)",
-  "linear-gradient(160deg, #0a2e1a 0%, #22c55e 100%)",
-  "linear-gradient(160deg, #2e1a0a 0%, #f59e0b 100%)",
-  "linear-gradient(160deg, #1a0a2e 0%, #06b6d4 100%)",
-  "linear-gradient(160deg, #2e0a1a 0%, #f43f5e 100%)",
-  "linear-gradient(160deg, #0a1a2e 0%, #3b82f6 100%)",
-  "linear-gradient(160deg, #1e0a30 0%, #a855f7 100%)",
-  "linear-gradient(160deg, #2e1a00 0%, #fb923c 100%)",
+  "linear-gradient(160deg, #ff6b9d 0%, #c084fc 50%, #67e8f9 100%)",
+  "linear-gradient(160deg, #f87171 0%, #fb923c 50%, #fbbf24 100%)",
+  "linear-gradient(160deg, #4ade80 0%, #67e8f9 50%, #c084fc 100%)",
+  "linear-gradient(160deg, #c084fc 0%, #818cf8 50%, #38bdf8 100%)",
+  "linear-gradient(160deg, #fbbf24 0%, #f87171 50%, #ff6b9d 100%)",
+  "linear-gradient(160deg, #67e8f9 0%, #4ade80 50%, #fbbf24 100%)",
+  "linear-gradient(160deg, #ff6b9d 0%, #fbbf24 50%, #4ade80 100%)",
+  "linear-gradient(160deg, #818cf8 0%, #c084fc 50%, #ff6b9d 100%)",
+  "linear-gradient(160deg, #fb923c 0%, #fbbf24 50%, #67e8f9 100%)",
+  "linear-gradient(160deg, #38bdf8 0%, #818cf8 50%, #f87171 100%)",
+  "linear-gradient(160deg, #4ade80 0%, #c084fc 50%, #fb923c 100%)",
+  "linear-gradient(160deg, #ff6b9d 0%, #c084fc 40%, #4ade80 100%)",
 ];
 
 function pickGradient(id: number): string {
-  return GRADIENTS[id % GRADIENTS.length];
+  return GRADIENTS[Math.abs(id) % GRADIENTS.length];
 }
 
-function formatScore(n: number): string {
-  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
+/* ── Genre tag colors (match mockup gt-*) ──────────────────── */
+const TAG_COLORS = [
+  { cls: "gt-pink",    bg: "linear-gradient(135deg, #ff6b9d, #c084fc)" },
+  { cls: "gt-purple",  bg: "linear-gradient(135deg, #c084fc, #818cf8)" },
+  { cls: "gt-cyan",    bg: "linear-gradient(135deg, #67e8f9, #4ade80)" },
+  { cls: "gt-gold",    bg: "linear-gradient(135deg, #fbbf24, #fb923c)" },
+  { cls: "gt-red",     bg: "linear-gradient(135deg, #f87171, #ff6b9d)" },
+  { cls: "gt-green",   bg: "linear-gradient(135deg, #4ade80, #67e8f9)" },
+];
+
+const GENERIC_TAGS = new Set([
+  "animated", "video", "sound", "tagme", "highres", "absurdres",
+  "original", "solo", "1girl", "1boy", "2girls", "3girls", "multiple_girls",
+  "nude", "nipples", "breasts", "pussy", "completely_nude",
+]);
+
+function pickGenreTag(video: Video): string {
+  const candidate = video.tags.find((t) => !GENERIC_TAGS.has(t.toLowerCase()));
+  if (candidate) return candidate.replace(/_/g, " ");
+  if (video.tags.length > 0) return video.tags[0].replace(/_/g, " ");
+  return "Hentai";
+}
+
+function hashString(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+
+function formatDuration(seconds: number | null): string | null {
+  if (!seconds || seconds <= 0) return null;
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${m}:${s.toString().padStart(2, "0")}`;
+}
+
+function formatViews(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1000) return `${Math.round(n / 1000)}K`;
   return String(n);
+}
+
+function computeStars(score: number): number {
+  // 3 to 5 stars based on score tiers (scores are inflated, so use generous thresholds)
+  if (score >= 5000) return 5;
+  if (score >= 2000) return 5;
+  if (score >= 800) return 4;
+  return 4;
 }
 
 function isNew(createdAt: Date): boolean {
@@ -62,9 +109,11 @@ export function PosterCard({ video, rank, badge, priority = false }: PosterCardP
       ? video.copyrights[0].replace(/_/g, " ")
       : video.tags.slice(0, 2).map((t) => t.replace(/_/g, " ")).join(", ");
 
-  const sub = video.copyrights[0]
-    ? video.copyrights[0].replace(/_/g, " ")
-    : `Score ${formatScore(video.score)}`;
+  const genreTag = pickGenreTag(video);
+  const tagColor = TAG_COLORS[hashString(genreTag) % TAG_COLORS.length];
+  const duration = formatDuration(video.duration);
+  const stars = computeStars(video.score);
+  const views = formatViews(video.score);
 
   return (
     <Link
@@ -83,7 +132,7 @@ export function PosterCard({ video, rank, badge, priority = false }: PosterCardP
             src={video.thumbnail}
             alt={title}
             fill
-            sizes="(max-width: 640px) 140px, 180px"
+            sizes="(max-width: 640px) 150px, 180px"
             className="poster-card__img"
             loading={priority ? "eager" : "lazy"}
             priority={priority}
@@ -91,38 +140,23 @@ export function PosterCard({ video, rank, badge, priority = false }: PosterCardP
           />
         )}
 
-        {/* Badge */}
-        {autoBadge && (
+        {/* Rank badge (top-left circle, replaces old badge when rank is set) */}
+        {rank !== undefined ? (
+          <span className="poster-card__rank-badge">{rank}</span>
+        ) : autoBadge ? (
           <span
             className={`poster-card__badge poster-card__badge--${autoBadge.toLowerCase()}`}
           >
             {autoBadge}
           </span>
-        )}
+        ) : null}
 
-        {/* Rank number (top10 style) */}
-        {rank !== undefined && (
-          <span className="poster-card__rank">{rank}</span>
-        )}
+        {/* Duration badge (bottom-right) */}
+        {duration && <span className="poster-card__duration">{duration}</span>}
 
         {/* Watched checkmark */}
         {watched && (
-          <span
-            aria-label="Watched"
-            style={{
-              position: "absolute",
-              top: "6px",
-              right: "6px",
-              width: "20px",
-              height: "20px",
-              borderRadius: "50%",
-              background: "rgba(0,0,0,0.65)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              zIndex: 4,
-            }}
-          >
+          <span className="poster-card__watched" aria-label="Watched">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="20 6 9 17 4 12" />
             </svg>
@@ -132,21 +166,25 @@ export function PosterCard({ video, rank, badge, priority = false }: PosterCardP
         {/* Shine overlay */}
         <div className="poster-card__shine" />
 
-        {/* Play hint */}
-        <div className="poster-card__play-hint">
-          <div className="poster-card__play-inner">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
-              <polygon points="5,3 19,12 5,21" />
-            </svg>
-          </div>
+        {/* Play overlay (hover) */}
+        <div className="poster-card__play-overlay">
+          <div className="poster-card__play-btn">▶</div>
         </div>
-
       </div>
 
       {/* Info below card */}
       <div className="poster-card__info">
-        <div className="poster-card__name">{title}</div>
-        <div className="poster-card__sub">{sub}</div>
+        <span className={`poster-card__tag ${tagColor.cls}`} style={{ background: tagColor.bg }}>
+          {genreTag}
+        </span>
+        <div className="poster-card__title">{title}</div>
+        <div className="poster-card__meta">
+          <div className="poster-card__stars">
+            {"★".repeat(stars)}
+            <span className="poster-card__star-empty">{"★".repeat(5 - stars)}</span>
+          </div>
+          <span className="poster-card__views">{views} views</span>
+        </div>
       </div>
     </Link>
   );
