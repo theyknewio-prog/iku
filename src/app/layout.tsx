@@ -52,13 +52,13 @@ export const metadata: Metadata = {
     description: "Stream 353,000+ free hentai videos. Browse animated hentai by tag, character, and score.",
     siteName: "iku",
     type: "website",
-    images: [{ url: "/og-default.svg", width: 1200, height: 630, alt: "iku.gg — Free Animated Hentai" }],
+    images: [{ url: "/og-default.png", width: 1200, height: 630, alt: "iku.gg — Free Animated Hentai" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "iku.gg — Free Hentai Videos",
     description: "Stream 353,000+ free hentai videos. Browse animated hentai by tag, character, and score.",
-    images: ["/og-default.svg"],
+    images: ["/og-default.png"],
   },
 };
 
