@@ -145,6 +145,16 @@ function IconMore({ size = 20 }: { size?: number }) {
   );
 }
 
+function IconMenu({ size = 22 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <line x1="4" y1="7" x2="20" y2="7" />
+      <line x1="4" y1="12" x2="20" y2="12" />
+      <line x1="4" y1="17" x2="20" y2="17" />
+    </svg>
+  );
+}
+
 function IconClose({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -251,6 +261,13 @@ const BROWSE_ITEMS = [
   { href: "/tags",      label: "Tags",       Icon: IconTag,       emoji: "🏷️" },
 ] as const;
 
+/* Extras — content pages that weren't previously reachable from mobile */
+const EXTRA_ITEMS = [
+  { href: "/blog",     label: "Blog",     Icon: IconBrowse, emoji: "📰" },
+  { href: "/pricing",  label: "Pricing",  Icon: IconStar,   emoji: "💎" },
+  { href: "/glossary", label: "Glossary", Icon: IconTag,    emoji: "📖" },
+] as const;
+
 /* Quick tags for sidebar bottom */
 const QUICK_TAGS = [
   { label: "animated",   href: "/tag/animated",   color: "pink" },
@@ -273,12 +290,6 @@ const BOTTOM_ITEMS = [
   { href: "/trending", label: "Trending", Icon: IconTrending, featured: false },
 ] as const;
 
-const MORE_ITEMS = [
-  { href: "/history",   label: "History",   Icon: IconHistory },
-  { href: "/favorites", label: "Favorites", Icon: IconHeart },
-  { href: "/tags",      label: "Tags",      Icon: IconTag },
-  { href: "/settings",  label: "Settings",  Icon: IconSettings },
-] as const;
 
 /* ── AppShell ─────────────────────────────────────────────────── */
 
@@ -286,7 +297,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(false);
 
   useEffect(() => {
     function onScroll() {
@@ -296,9 +306,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  /* Lock body scroll while the full drawer is open */
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    if (menuOpen) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => { document.body.style.overflow = prev; };
+    }
+  }, [menuOpen]);
+
   /* Close drawer on navigation */
   useEffect(() => {
-    setMoreOpen(false);
     setMenuOpen(false);
   }, [pathname]);
 
@@ -411,6 +430,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* TOPBAR */}
       <header className={`v2-topbar${scrolled ? " v2-topbar--scrolled" : ""}`}>
 
+        {/* Mobile hamburger — opens the full nav drawer */}
+        <button
+          type="button"
+          className="v2-topbar-hamburger"
+          aria-label="Open navigation menu"
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((v) => !v)}
+        >
+          {menuOpen ? <IconClose size={22} /> : <IconMenu size={22} />}
+        </button>
+
         {/* Mobile logo */}
         <Link href="/" prefetch={true} className="v2-topbar__logo" aria-label="iku home">
           <span className="v2-topbar__logo-text">iku</span>
@@ -464,45 +494,147 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </Link>
       ))}
 
-      {/* More -- opens slide-up drawer */}
+      {/* More -- opens the same full drawer as the topbar hamburger */}
       <button
         type="button"
-        className={`v2-bottom-nav__item${moreOpen ? " v2-bottom-nav__item--active" : ""}`}
+        className={`v2-bottom-nav__item${menuOpen ? " v2-bottom-nav__item--active" : ""}`}
         aria-label="More options"
-        aria-expanded={moreOpen}
-        onClick={() => setMoreOpen((v) => !v)}
+        aria-expanded={menuOpen}
+        onClick={() => setMenuOpen((v) => !v)}
       >
-        {moreOpen ? <IconClose size={22} /> : <IconMore size={22} />}
+        {menuOpen ? <IconClose size={22} /> : <IconMore size={22} />}
         <span className="v2-bottom-nav__label">More</span>
       </button>
     </nav>
 
-    {/* MORE DRAWER */}
-    {moreOpen && (
+    {/* FULL MOBILE DRAWER — shared between topbar hamburger and bottom "More" */}
+    {menuOpen && (
       <>
         <div
-          className="v2-more-overlay"
-          onClick={() => setMoreOpen(false)}
+          className="v2-nav-drawer-overlay"
+          onClick={() => setMenuOpen(false)}
           aria-hidden="true"
         />
-        <div
+        <aside
           role="dialog"
           aria-modal="true"
-          aria-label="More navigation options"
-          className="v2-more-drawer"
+          aria-label="Full navigation menu"
+          className="v2-nav-drawer"
         >
-          {MORE_ITEMS.map(({ href, label, Icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`v2-more-drawer__item${isActive(href) ? " v2-more-drawer__item--active" : ""}`}
-              aria-current={isActive(href) ? "page" : undefined}
-            >
-              <Icon size={22} />
-              <span className="v2-bottom-nav__label">{label}</span>
+          <div className="v2-nav-drawer__header">
+            <Link href="/" className="v2-nav-drawer__logo" onClick={() => setMenuOpen(false)}>
+              <span>iku.gg ✨</span>
+              <small>353K+ free videos</small>
             </Link>
-          ))}
-        </div>
+            <button
+              type="button"
+              className="v2-nav-drawer__close"
+              onClick={() => setMenuOpen(false)}
+              aria-label="Close menu"
+            >
+              <IconClose size={22} />
+            </button>
+          </div>
+
+          <div className="v2-nav-drawer__body">
+            <div className="v2-nav-drawer__section">
+              <div className="v2-nav-drawer__section-label">Discover</div>
+              {(DISCOVER_ITEMS as unknown as NavItem[]).map((item) => (
+                <Link
+                  key={item.href + item.label}
+                  href={item.href}
+                  className={`v2-nav-drawer__item${isActive(item.href) ? " v2-nav-drawer__item--active" : ""}`}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <span className="v2-nav-drawer__emoji" aria-hidden>{item.emoji}</span>
+                  <span className="v2-nav-drawer__label">{item.label}</span>
+                  {item.badge && (
+                    <span className={`v2-nav-drawer__badge${item.badgeGradient ? " v2-nav-drawer__badge--gradient" : ""}`}>
+                      {item.badge}
+                    </span>
+                  )}
+                </Link>
+              ))}
+            </div>
+
+            <div className="v2-nav-drawer__section">
+              <div className="v2-nav-drawer__section-label">My Library</div>
+              {LIBRARY_ITEMS.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`v2-nav-drawer__item${isActive(item.href) ? " v2-nav-drawer__item--active" : ""}`}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <span className="v2-nav-drawer__emoji" aria-hidden>{item.emoji}</span>
+                  <span className="v2-nav-drawer__label">{item.label}</span>
+                </Link>
+              ))}
+            </div>
+
+            <div className="v2-nav-drawer__section">
+              <div className="v2-nav-drawer__section-label">Browse</div>
+              {BROWSE_ITEMS.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`v2-nav-drawer__item${isActive(item.href) ? " v2-nav-drawer__item--active" : ""}`}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <span className="v2-nav-drawer__emoji" aria-hidden>{item.emoji}</span>
+                  <span className="v2-nav-drawer__label">{item.label}</span>
+                </Link>
+              ))}
+            </div>
+
+            <div className="v2-nav-drawer__section">
+              <div className="v2-nav-drawer__section-label">More</div>
+              {EXTRA_ITEMS.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`v2-nav-drawer__item${isActive(item.href) ? " v2-nav-drawer__item--active" : ""}`}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <span className="v2-nav-drawer__emoji" aria-hidden>{item.emoji}</span>
+                  <span className="v2-nav-drawer__label">{item.label}</span>
+                </Link>
+              ))}
+            </div>
+
+            <div className="v2-nav-drawer__section">
+              <div className="v2-nav-drawer__section-label">Quick Tags</div>
+              <div className="v2-nav-drawer__tags">
+                {QUICK_TAGS.map((tag) => (
+                  <Link
+                    key={tag.label}
+                    href={tag.href}
+                    className={`v2-nav-drawer__tag v2-nav-drawer__tag--${tag.color}`}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    {tag.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <a
+              href="https://discord.gg/cQZc8trq8N"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="v2-nav-drawer__discord"
+              onClick={() => setMenuOpen(false)}
+            >
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden>
+                <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+              </svg>
+              <div>
+                <strong>Join Discord</strong>
+                <small>Daily drops · watch parties</small>
+              </div>
+            </a>
+          </div>
+        </aside>
       </>
     )}
   </>
