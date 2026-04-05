@@ -896,6 +896,10 @@ export const BLOG_ARTICLES: BlogArticle[] = [
 import { NEW_BLOG_ARTICLES } from "./blog-new";
 BLOG_ARTICLES.push(...NEW_BLOG_ARTICLES);
 
+// Merge SEO push articles (2026-04-05 — 20 listicles cloning best-hentai-studios)
+import { SEO_PUSH_ARTICLES } from "./blog-seo-push";
+BLOG_ARTICLES.push(...SEO_PUSH_ARTICLES);
+
 export function getArticleBySlug(slug: string): BlogArticle | undefined {
   return BLOG_ARTICLES.find((a) => a.slug === slug);
 }
