@@ -23,7 +23,8 @@ ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 
 ENV NODE_OPTIONS="--max-old-space-size=6144"
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm run build
+# Force fresh build — clear any leftover cache from previous layer
+RUN rm -rf .next && npm run build
 
 # ============================================
 # Stage 2: Production runtime
