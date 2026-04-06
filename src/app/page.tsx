@@ -139,29 +139,20 @@ export default async function HomePage() {
 
               <h1 className="hp-hero-title">
                 The largest<br />
-                <span className="hp-hero-gradient-text">free hentai</span>{" "}
-                <span className="hp-hero-face" aria-hidden="true">
-                  <svg width="42" height="42" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    {/* Ahegao face — heart eyes + tongue out */}
-                    <circle cx="32" cy="32" r="30" fill="#FFD9E8" stroke="#e8467c" strokeWidth="2"/>
-                    {/* Left heart eye */}
-                    <path d="M18 24c1.5-3 4-4 6-2s2 5 0 8c-2-3-4.5-4-6-2s-1.5 5 0 8" fill="#e8467c" transform="translate(0,-2) scale(0.7) translate(8,8)"/>
-                    {/* Right heart eye */}
-                    <path d="M18 24c1.5-3 4-4 6-2s2 5 0 8c-2-3-4.5-4-6-2s-1.5 5 0 8" fill="#e8467c" transform="translate(22,-2) scale(0.7) translate(8,8)"/>
-                    {/* Blush */}
-                    <ellipse cx="16" cy="38" rx="6" ry="3" fill="#FFB3C6" opacity="0.6"/>
-                    <ellipse cx="48" cy="38" rx="6" ry="3" fill="#FFB3C6" opacity="0.6"/>
-                    {/* Open mouth */}
-                    <ellipse cx="32" cy="44" rx="8" ry="6" fill="#2a0a1a"/>
-                    {/* Tongue */}
-                    <ellipse cx="32" cy="48" rx="5" ry="4" fill="#e8467c"/>
-                    {/* Tongue highlight */}
-                    <ellipse cx="31" cy="47" rx="2.5" ry="1.5" fill="#ff6b9d" opacity="0.6"/>
-                  </svg>
-                </span>
-                <br />
+                <span className="hp-hero-gradient-text">free hentai</span><br />
                 collection online
               </h1>
+              {/* Ahegao character — fills the empty zone top-right of hero text */}
+              <div className="hp-hero-face" aria-hidden="true">
+                <img
+                  src="/ahegao-hero.webp"
+                  alt=""
+                  width={160}
+                  height={168}
+                  loading="eager"
+                  style={{ width: "100%", height: "auto", objectFit: "contain" }}
+                />
+              </div>
 
               <p className="hp-hero-sub">
                 <strong>353,000+</strong> animated clips from your favourite series,

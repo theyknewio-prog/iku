@@ -6794,15 +6794,28 @@ body {
   animation: hp-slide-up 0.5s 0.1s ease both;
 }
 .hp-hero-face {
-  display: inline-block;
-  vertical-align: middle;
-  animation: hp-face-bounce 2s ease-in-out infinite;
-  filter: drop-shadow(0 0 12px rgba(232,70,124,0.5));
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 140px;
+  height: auto;
+  border-radius: 16px;
+  overflow: hidden;
+  filter: drop-shadow(0 0 20px rgba(232,70,124,0.4));
+  animation: hp-face-float 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 2;
 }
-@keyframes hp-face-bounce {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  25% { transform: translateY(-3px) rotate(3deg); }
-  75% { transform: translateY(2px) rotate(-2deg); }
+@media (min-width: 768px) {
+  .hp-hero-face { width: 180px; top: -20px; right: -20px; }
+}
+/* Hide on very large screens where there's a hero image/video on the right */
+@media (min-width: 1200px) {
+  .hp-hero-face { width: 200px; top: -30px; right: 0; }
+}
+@keyframes hp-face-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }
 
 .hp-hero-gradient-text {
