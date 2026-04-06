@@ -905,15 +905,15 @@ export function VideoCard({
           onClick={(e) => e.stopPropagation()}
           style={{
             position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: progressExpanded ? 28 : 20, /* tall touch target for easy mobile scrubbing */
+            bottom: 12,
+            left: 12,
+            right: 12,
+            height: progressExpanded ? 32 : 24,
             zIndex: 20,
             cursor: "pointer",
             touchAction: "none",
             display: "flex",
-            alignItems: "flex-end",
+            alignItems: "center",
           }}
         >
           {/* Visual track */}
@@ -921,47 +921,54 @@ export function VideoCard({
             style={{
               position: "relative",
               width: "100%",
-              height: progressExpanded ? 5 : 3,
-              background: "rgba(255,255,255,0.18)",
+              height: progressExpanded ? 6 : 4,
+              background: "rgba(255,255,255,0.2)",
+              borderRadius: 99,
               transition: seeking ? "none" : "height 0.12s ease",
+              overflow: "visible",
             }}
           >
             {/* Buffered */}
             <div
               style={{
                 position: "absolute",
-                inset: 0,
+                left: 0,
+                top: 0,
+                bottom: 0,
                 width: `${buffered}%`,
-                background: "rgba(255,255,255,0.35)",
+                background: "rgba(255,255,255,0.25)",
+                borderRadius: 99,
               }}
             />
             {/* Played */}
             <div
               style={{
                 position: "absolute",
-                inset: 0,
+                left: 0,
+                top: 0,
+                bottom: 0,
                 width: `${progress}%`,
                 background: "#e8467c",
+                borderRadius: 99,
                 transition: seeking ? "none" : "width 0.1s linear",
               }}
             />
-            {/* Thumb — visible when expanded */}
-            {progressExpanded && (
-              <div
-                style={{
-                  position: "absolute",
-                  left: `${progress}%`,
-                  top: "50%",
-                  transform: "translate(-50%, -50%)",
-                  width: 12,
-                  height: 12,
-                  borderRadius: "50%",
-                  background: "#fff",
-                  boxShadow: "0 0 4px rgba(0,0,0,0.5)",
-                  pointerEvents: "none",
-                }}
-              />
-            )}
+            {/* Thumb — always visible */}
+            <div
+              style={{
+                position: "absolute",
+                left: `${progress}%`,
+                top: "50%",
+                transform: "translate(-50%, -50%)",
+                width: progressExpanded ? 16 : 12,
+                height: progressExpanded ? 16 : 12,
+                borderRadius: "50%",
+                background: "#fff",
+                boxShadow: "0 0 6px rgba(0,0,0,0.5)",
+                pointerEvents: "none",
+                transition: "width 0.12s, height 0.12s",
+              }}
+            />
           </div>
         </div>
       )}
