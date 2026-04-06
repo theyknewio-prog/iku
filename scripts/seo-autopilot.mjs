@@ -485,6 +485,25 @@ function gitCommitAndPush(articlesAdded) {
   }
 }
 
+// ── 7. Telegram notification ───────────────────────────────────
+function sendTelegram(text) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = "5617056258";
+  if (!token) { log("TELEGRAM_BOT_TOKEN not set — skipping notification"); return Promise.resolve(); }
+
+  const payload = JSON.stringify({ chat_id: chatId, text, parse_mode: "HTML" });
+  return new Promise((resolve) => {
+    const req = https.request(
+      `https://api.telegram.org/bot${token}/sendMessage`,
+      { method: "POST", headers: { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(payload) } },
+      (res) => { res.on("data", () => {}); res.on("end", resolve); }
+    );
+    req.on("error", () => resolve());
+    req.write(payload);
+    req.end();
+  });
+}
+
 // ── Main Pipeline ───────────────────────────────────────────────
 async function main() {
   console.log("\n====================================================");
@@ -536,9 +555,40 @@ async function main() {
   log(`Articles generated: ${articles.length}`);
   log(`Articles added to queue: ${added}`);
   log(`Next run: ${DRY_RUN ? "N/A (dry run)" : "automatic (cron)"}\n`);
+
+  // 7. Telegram recap
+  const topKw = gsc.queries.slice(0, 5).map((q) => `  ${q.kw} — pos ${q.pos}, ${q.imp} imp`).join("\n");
+  const totalClicks = gsc.queries.reduce((s, q) => s + q.clicks, 0);
+  const totalImp = gsc.queries.reduce((s, q) => s + q.imp, 0);
+  const articleList = articles.length > 0
+    ? articles.map((a) => `  - ${a.title}`).join("\n")
+    : "  (aucun nouveau — keywords deja couverts)";
+
+  const msg = `<b>SEO Autopilot — iku.gg</b>
+${new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" })}
+
+<b>GSC 7 jours:</b>
+  ${totalClicks} clics | ${totalImp} impressions | ${gsc.queries.length} keywords
+
+<b>Top 5 keywords:</b>
+${topKw}
+
+<b>Recherche:</b>
+  ${research.newKeywords.length} nouveaux mots-cles trouves
+
+<b>Opportunites:</b> ${opportunities.length}
+<b>Articles generes:</b> ${articles.length}
+${articleList}
+
+<b>Articles en queue:</b> ${added} ajoutes
+${added > 0 ? "Git push OK — deploy en cours" : "Rien a publier"}`;
+
+  await sendTelegram(msg);
 }
 
-main().catch((err) => {
+main().catch(async (err) => {
   console.error("AUTOPILOT FATAL:", err);
+  // Notify on crash too
+  await sendTelegram(`<b>SEO Autopilot CRASH</b>\n${err.message}`).catch(() => {});
   process.exit(1);
 });
