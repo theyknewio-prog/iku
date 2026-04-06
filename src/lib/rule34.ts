@@ -1,5 +1,6 @@
 import type { Video } from "@/types/video";
-import { containsBannedContent } from "./content";
+import { containsBannedContent, BANNED_TAGS_ARRAY } from "./content";
+import { pool } from "./db";
 
 const BASE_URL = "https://api.rule34.xxx/index.php";
 const API_KEY = process.env.RULE34_API_KEY ?? "";
@@ -62,6 +63,46 @@ function mapToVideo(post: R34Post): Video | null {
 }
 
 export async function getRule34Post(id: number): Promise<Video | null> {
+  // PG-first: faster and uses our curated tags (avoids live API tag mismatch)
+  try {
+    const { rows } = await pool.query(
+      `SELECT * FROM videos
+       WHERE source = 'rule34' AND source_id = $1
+         AND NOT (tags && $2::text[])
+         AND NOT (COALESCE(characters, ARRAY[]::text[]) && $2::text[])
+         AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $2::text[])
+       LIMIT 1`,
+      [id, BANNED_TAGS_ARRAY]
+    );
+    if (rows.length > 0) {
+      const row = rows[0];
+      const video: Video = {
+        id: row.id,
+        slug: row.slug,
+        url: row.url || "",
+        thumbnail: row.thumbnail || "",
+        preview: row.preview || row.thumbnail || "",
+        score: row.score || 0,
+        favorites: row.favorites || 0,
+        tags: row.tags || [],
+        characters: row.characters || [],
+        copyrights: row.copyrights || [],
+        artists: row.artists || [],
+        width: row.width || 0,
+        height: row.height || 0,
+        fileSize: row.file_size || 0,
+        duration: row.duration || null,
+        createdAt: row.created_at ? new Date(row.created_at) : new Date(),
+        source: "rule34",
+      };
+      if (containsBannedContent(video)) return null;
+      return video;
+    }
+  } catch {
+    // PG failed, fall through
+  }
+
+  // Fallback: live API
   try {
     const url = `${BASE_URL}?page=dapi&s=post&q=index&json=1&api_key=${API_KEY}&user_id=${USER_ID}&tags=id:${id}&limit=1`;
     const res = await fetch(url, {

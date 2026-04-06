@@ -1,5 +1,6 @@
 import type { Video, PaginatedResult } from "@/types/video";
-import { filterBannedContent, containsBannedContent } from "./content";
+import { filterBannedContent, containsBannedContent, BANNED_TAGS_ARRAY } from "./content";
+import { pool } from "./db";
 
 // ---------------------------------------------------------------------------
 // Config
@@ -269,6 +270,47 @@ export async function searchGelbooru(
  * Fetch a single Gelbooru post by ID.
  */
 export async function getGelbooruPost(id: number): Promise<Video | null> {
+  // PG-first: use our curated/filtered data, not the live API which has
+  // more tags (15+ that we don't store) that may trigger banned-content 404s.
+  try {
+    const { rows } = await pool.query(
+      `SELECT * FROM videos
+       WHERE source = 'gelbooru' AND source_id = $1
+         AND NOT (tags && $2::text[])
+         AND NOT (COALESCE(characters, ARRAY[]::text[]) && $2::text[])
+         AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $2::text[])
+       LIMIT 1`,
+      [id, BANNED_TAGS_ARRAY]
+    );
+    if (rows.length > 0) {
+      const row = rows[0];
+      const video: Video = {
+        id: row.id,
+        slug: row.slug,
+        url: row.url || "",
+        thumbnail: row.thumbnail || "",
+        preview: row.preview || row.thumbnail || "",
+        score: row.score || 0,
+        favorites: row.favorites || 0,
+        tags: row.tags || [],
+        characters: row.characters || [],
+        copyrights: row.copyrights || [],
+        artists: row.artists || [],
+        width: row.width || 0,
+        height: row.height || 0,
+        fileSize: row.file_size || 0,
+        duration: row.duration || null,
+        createdAt: row.created_at ? new Date(row.created_at) : new Date(),
+        source: "gelbooru",
+      };
+      if (containsBannedContent(video)) return null;
+      return video;
+    }
+  } catch {
+    // PG failed, fall through to live API
+  }
+
+  // Fallback: live API (for posts not yet in DB)
   try {
     const json = await fetchGelbooru({
       tags: `id:${id}`,
