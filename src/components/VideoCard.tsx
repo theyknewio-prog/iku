@@ -897,7 +897,7 @@ export function VideoCard({
             bottom: 0,
             left: 0,
             right: 0,
-            height: progressExpanded ? 20 : 14, /* tall touch target, thin visual bar */
+            height: progressExpanded ? 28 : 20, /* tall touch target for easy mobile scrubbing */
             zIndex: 20,
             cursor: "pointer",
             touchAction: "none",

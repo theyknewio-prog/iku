@@ -590,17 +590,96 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
 
   /* ── Progress bar ─────────────────────────────────────── */
 
-  const seek = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+  /* ── Scrub / Seek — supports click, drag (desktop), and touch drag (mobile) ── */
+
+  const scrubbingRef = useRef(false);
+
+  /** Compute seek ratio from a clientX position */
+  const getRatio = useCallback((clientX: number) => {
     const bar = progressRef.current;
-    const v = videoRef.current;
-    if (!bar || !v || !isFinite(v.duration)) return;
+    if (!bar) return 0;
     const rect = bar.getBoundingClientRect();
-    const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    return Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+  }, []);
+
+  /** Apply seek to the given ratio */
+  const seekTo = useCallback((ratio: number) => {
+    const v = videoRef.current;
+    if (!v || !isFinite(v.duration)) return;
     v.currentTime = ratio * v.duration;
   }, []);
 
+  /** Click to seek (instant) */
+  const seek = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (scrubbingRef.current) return; // ignore click at end of drag
+    seekTo(getRatio(e.clientX));
+  }, [seekTo, getRatio]);
+
+  /** Mouse drag — start */
+  const handleScrubStart = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    scrubbingRef.current = true;
+    seekTo(getRatio(e.clientX));
+
+    const onMove = (ev: MouseEvent) => {
+      const ratio = getRatio(ev.clientX);
+      seekTo(ratio);
+      const bar = progressRef.current;
+      if (bar) {
+        const rect = bar.getBoundingClientRect();
+        const v = videoRef.current;
+        if (v && isFinite(v.duration)) {
+          setSeekTooltip({ visible: true, time: ratio * v.duration, x: ev.clientX - rect.left });
+        }
+      }
+    };
+    const onUp = () => {
+      scrubbingRef.current = false;
+      setSeekTooltip((s) => ({ ...s, visible: false }));
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  }, [seekTo, getRatio]);
+
+  /** Touch drag — start (mobile) */
+  const handleTouchScrubStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    e.stopPropagation(); // prevent feed swipe while scrubbing
+    scrubbingRef.current = true;
+    const touch = e.touches[0];
+    seekTo(getRatio(touch.clientX));
+
+    const bar = progressRef.current;
+    const barEl = bar!;
+
+    const onMove = (ev: TouchEvent) => {
+      ev.preventDefault(); // prevent scroll while scrubbing
+      const t = ev.touches[0];
+      const ratio = getRatio(t.clientX);
+      seekTo(ratio);
+      const rect = barEl.getBoundingClientRect();
+      const v = videoRef.current;
+      if (v && isFinite(v.duration)) {
+        setSeekTooltip({ visible: true, time: ratio * v.duration, x: t.clientX - rect.left });
+      }
+    };
+    const onEnd = () => {
+      scrubbingRef.current = false;
+      setSeekTooltip((s) => ({ ...s, visible: false }));
+      document.removeEventListener("touchmove", onMove);
+      document.removeEventListener("touchend", onEnd);
+      document.removeEventListener("touchcancel", onEnd);
+    };
+    document.addEventListener("touchmove", onMove, { passive: false });
+    document.addEventListener("touchend", onEnd);
+    document.addEventListener("touchcancel", onEnd);
+  }, [seekTo, getRatio]);
+
+  /** Hover tooltip (desktop) */
   const handleProgressMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
+      if (scrubbingRef.current) return; // drag handler shows its own tooltip
       const bar = progressRef.current;
       const v = videoRef.current;
       if (!bar || !v || !isFinite(v.duration)) return;
@@ -612,7 +691,7 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
   );
 
   const handleProgressMouseLeave = useCallback(() => {
-    setSeekTooltip((s) => ({ ...s, visible: false }));
+    if (!scrubbingRef.current) setSeekTooltip((s) => ({ ...s, visible: false }));
   }, []);
 
   /* ── Derived ──────────────────────────────────────────── */
@@ -688,7 +767,7 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
           background: #fff;
           border: none;
         }
-        .wp-progress-track:hover { height: 6px !important; }
+        .wp-progress-track:hover { height: 8px !important; }
         .wp-end-thumb:hover { opacity: 0.8; }
         @keyframes wp-heart-main {
           0%   { opacity: 1; transform: translate(-50%, -50%) scale(0.3); }
@@ -1221,17 +1300,20 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
               </div>
             )}
 
-            {/* Clickable seek area */}
+            {/* Scrub area — large touch target, supports drag */}
             <div
               ref={progressRef}
               onClick={seek}
+              onMouseDown={handleScrubStart}
               onMouseMove={handleProgressMouseMove}
               onMouseLeave={handleProgressMouseLeave}
+              onTouchStart={handleTouchScrubStart}
               style={{
-                height: 16,
+                height: 32,
                 display: "flex",
                 alignItems: "flex-end",
                 cursor: "pointer",
+                touchAction: "none",
               }}
             >
               <div
@@ -1239,10 +1321,10 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
                 style={{
                   position: "relative",
                   width: "100%",
-                  height: 3,
+                  height: 4,
                   background: "rgba(255,255,255,0.18)",
                   borderRadius: "99px 99px 0 0",
-                  overflow: "hidden",
+                  overflow: "visible",
                   transition: "height 0.12s ease",
                 }}
               >
@@ -1270,19 +1352,20 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
                     borderRadius: 99,
                   }}
                 />
-                {/* Scrub thumb */}
+                {/* Scrub thumb — larger on mobile for easier grabbing */}
                 <div
                   style={{
                     position: "absolute",
                     top: "50%",
                     left: `${playedPct}%`,
                     transform: "translate(-50%, -50%)",
-                    width: 10,
-                    height: 10,
+                    width: 14,
+                    height: 14,
                     borderRadius: "50%",
                     background: "#e8467c",
-                    boxShadow: "0 0 5px rgba(232,70,124,0.85)",
+                    boxShadow: "0 0 8px rgba(232,70,124,0.85)",
                     pointerEvents: "none",
+                    transition: "width 0.15s, height 0.15s",
                   }}
                 />
               </div>
