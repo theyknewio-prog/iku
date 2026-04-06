@@ -76,12 +76,11 @@ export async function GET(request: NextRequest) {
       .filter((v) => (v.url || v.pageUrl) && (v.fileSize === 0 || v.fileSize < 60_000_000))
       .map((v) => {
         // Route ALL videos through CDN cache for edge-cached playback.
-        // Direct MP4 URLs (rule34, gelbooru, danbooru) get cached on first view.
-        // Proxy URLs (rule34video, WP) resolve via our server then cache in R2.
+        // Use base64url-encoded path to avoid Chrome's URL safety check
+        // which rejects <video src> containing encoded URLs in query params.
         const sourceUrl = v.url || (v.pageUrl ? v.pageUrl : "");
-        const playableUrl = sourceUrl
-          ? `${CDN}/stream?url=${encodeURIComponent(sourceUrl)}`
-          : "";
+        const b64 = sourceUrl ? Buffer.from(sourceUrl).toString("base64url") : "";
+        const playableUrl = b64 ? `${CDN}/v/${b64}` : "";
 
         return {
           id: v.id,

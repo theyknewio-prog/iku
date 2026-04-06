@@ -79,17 +79,23 @@ export default {
       return handleStream(request, env, ctx, sourceUrl);
     }
 
-    // Route: /v/{slug} — lookup by slug (future: when we store slug→url mapping)
+    // Route: /v/{base64url} — decode base64url to get the source URL
+    // Chrome rejects <video src> with encoded URLs in query params (URL safety check).
+    // Using path-based base64url encoding avoids this entirely.
     if (url.pathname.startsWith("/v/")) {
-      const slug = url.pathname.slice(3);
-      if (!slug) return new Response("Missing slug", { status: 400 });
-      // For now, slug-based lookup requires the URL in a query param
-      // Future: store slug→sourceUrl mapping in KV or R2 metadata
-      const sourceUrl = url.searchParams.get("url");
-      if (!sourceUrl) {
-        return new Response("Slug-based lookup not yet implemented. Use /stream?url=", { status: 400 });
+      const b64 = url.pathname.slice(3);
+      if (!b64) return new Response("Missing video ID", { status: 400 });
+      try {
+        // Decode base64url → source URL
+        const bytes = Uint8Array.from(atob(b64.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
+        const sourceUrl = new TextDecoder().decode(bytes);
+        if (!sourceUrl.startsWith("http")) {
+          return new Response("Invalid video ID", { status: 400 });
+        }
+        return handleStream(request, env, ctx, sourceUrl);
+      } catch {
+        return new Response("Invalid video ID encoding", { status: 400 });
       }
-      return handleStream(request, env, ctx, sourceUrl);
     }
 
     return new Response("Not found. Use /stream?url={video_url}", { status: 404 });
