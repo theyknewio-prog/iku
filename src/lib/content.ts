@@ -32,13 +32,9 @@ export const BANNED_TAGS_ARRAY = Array.from(BANNED_TAGS);
 // Substring patterns for title/slug scanning. Intentionally broad because
 // Danbooru/Gelbooru embed these words in titles even when they're not in
 // general tags. A positive match on any of these kills the row.
-const BANNED_SUBSTRINGS = [
-  "loli", "shota", "lolicon", "shotacon",
-  "child", "minor", "underage", "toddler", "infant",
-  "young_girl", "young girl", "young_boy", "young boy",
-  "cub ", "baby ",
-  "oppai_loli", "legal_loli",
-];
+/** Words that must appear as whole words (word-boundary match) to avoid
+ *  false positives like "hololive" matching "loli". */
+const BANNED_WORD_RE = /(?:^|[\s_\-/])(?:loli|shota|lolicon|shotacon|toddlercon|child|minor|underage|toddler|infant|young[_ ]girl|young[_ ]boy|oppai[_ ]loli|legal[_ ]loli|cub|baby)(?:$|[\s_\-/])/i;
 
 /**
  * Check if a single video contains banned content.
@@ -68,11 +64,9 @@ export function containsBannedContent(video: {
       if (BANNED_TAGS.has(t.toLowerCase())) return true;
     }
   }
-  const hay = `${video.slug ?? ""} ${video.title ?? ""}`.toLowerCase();
+  const hay = ` ${video.slug ?? ""} ${video.title ?? ""} `.toLowerCase();
   if (hay.trim()) {
-    for (const s of BANNED_SUBSTRINGS) {
-      if (hay.includes(s)) return true;
-    }
+    if (BANNED_WORD_RE.test(hay)) return true;
   }
   return false;
 }
