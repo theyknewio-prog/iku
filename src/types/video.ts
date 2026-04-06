@@ -47,6 +47,8 @@ export interface Video {
   source: "danbooru" | "gelbooru" | "rule34" | "rule34video" | "wp";
   /** Scraped title (rule34video, WP sources). Empty for booru sources. */
   title?: string;
+  /** Original page URL for sources that need proxy resolution (rule34video, WP). */
+  pageUrl?: string;
 }
 
 export interface SearchOptions {

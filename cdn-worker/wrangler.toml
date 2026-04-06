@@ -1,0 +1,17 @@
+name = "iku-cdn"
+main = "src/index.ts"
+compatibility_date = "2024-09-25"
+account_id = "1610af4dab58c5077e26b327e30888ff"
+
+# R2 bucket binding
+[[r2_buckets]]
+binding = "VIDEOS"
+bucket_name = "iku-videos"
+
+# Custom domain
+routes = [
+  { pattern = "cdn.iku.gg/*", zone_id = "5507efa73817cda6ef4648297ebd1584" }
+]
+
+[vars]
+ORIGIN = "https://iku.gg"

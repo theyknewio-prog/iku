@@ -293,6 +293,25 @@ export function VideoCard({
 
   /* Keyboard shortcuts — only when active */
 
+  /* Warm the proxy cache for proxied videos (rule34video, WP) as soon as the
+   * card enters the preload buffer — well before it becomes active. This fires
+   * a HEAD-like request to /api/video-stream which triggers the URL resolve
+   * (380ms–1.4s) and caches the result. When the card actually becomes active,
+   * the resolve is already done and streaming starts instantly from cache. */
+  useEffect(() => {
+    if (!preloadNext || isActive) return;
+    const url = video.videoUrl;
+    if (!url || !url.startsWith("/api/video-stream")) return;
+    // Fire-and-forget fetch with range 0-1 to trigger resolve without
+    // downloading the full video. AbortController prevents lingering requests.
+    const ac = new AbortController();
+    fetch(url, {
+      signal: ac.signal,
+      headers: { Range: "bytes=0-1" },
+    }).catch(() => { /* benign: prefetch failed, will retry on play */ });
+    return () => ac.abort();
+  }, [preloadNext, isActive, video.videoUrl]);
+
   /* Auto-play / pause */
   useEffect(() => {
     const el = videoRef.current;
@@ -560,21 +579,34 @@ export function VideoCard({
       {/* Inject keyframe animations once */}
       <style>{HEART_BURST_STYLES}</style>
 
-      {/* Poster while loading */}
-      {!loaded && isActive && video.thumbnail && (
-        <img
-          src={video.thumbnail}
-          alt=""
-          style={{
+      {/* Poster + spinner while loading */}
+      {!loaded && isActive && (
+        <>
+          {video.thumbnail && (
+            <img
+              src={video.thumbnail}
+              alt=""
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+                zIndex: 5,
+                background: "#000",
+              }}
+            />
+          )}
+          <div className="feed-loading-spinner" style={{
             position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "contain",
-            zIndex: 5,
-            background: "#000",
-          }}
-        />
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            zIndex: 6,
+          }}>
+            <div className="loader" />
+          </div>
+        </>
       )}
 
       {/* Video — tap zone */}
@@ -589,7 +621,7 @@ export function VideoCard({
           loop
           muted={muted}
           playsInline
-          preload={isActive ? "auto" : "none"}
+          preload={isActive ? "auto" : shouldLoad ? "metadata" : "none"}
           style={{ width: "100%", height: "100%", objectFit: "contain", background: "#000" }}
           onLoadedData={() => setLoaded(true)}
           onTimeUpdate={handleTimeUpdate}

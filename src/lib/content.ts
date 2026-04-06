@@ -187,6 +187,7 @@ function rowToVideo(row: Record<string, unknown>): Video {
     createdAt: new Date(row.created_at as string),
     source: row.source as Video["source"],
     title: (row.title as string) || undefined,
+    pageUrl: (row.page_url as string) || undefined,
   };
 }
 

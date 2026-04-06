@@ -64,31 +64,46 @@ export async function GET(request: NextRequest) {
       randomStartMax: 5000,
     });
 
-    // Filter: must have a direct playable URL and stay under a reasonable
-    // streaming budget (60MB keeps the cap for pathological files without
-    // dropping the long-tail of 2-3 min high-quality clips).
+    // CDN base URL — all videos route through our Cloudflare R2 cache-through
+    // Worker. First view = fetch from source + cache in R2. Subsequent views =
+    // served from Cloudflare edge (~10-30ms globally). This eliminates the
+    // proxy latency for Rule34Video/WP sources and adds edge caching for all.
+    const CDN = process.env.CDN_URL || "https://iku-cdn.mejdi-sabri.workers.dev";
+
+    // Filter: must have a playable URL (direct or via proxy) and stay under
+    // a reasonable streaming budget.
     const videos = data
-      .filter((v) => v.url && (v.fileSize === 0 || v.fileSize < 60_000_000))
-      .map((v) => ({
-        id: v.id,
-        slug: v.slug,
-        // Both field names for compatibility (HomeFeed uses `url`, SwipeFeed uses `videoUrl`)
-        url: v.url,
-        videoUrl: v.url,
-        thumbnail: v.thumbnail,
-        score: v.score,
-        tags: v.tags.slice(0, 6),
-        characters: v.characters.slice(0, 3),
-        artists: v.artists.slice(0, 2),
-        copyrights: v.copyrights.slice(0, 2),
-        character: v.characters[0] || "",
-        artist: v.artists[0] || "",
-        copyright: v.copyrights[0] || "",
-        duration: v.duration,
-        width: v.width || 0,
-        height: v.height || 0,
-        size: v.fileSize || 0,
-      }));
+      .filter((v) => (v.url || v.pageUrl) && (v.fileSize === 0 || v.fileSize < 60_000_000))
+      .map((v) => {
+        // Route ALL videos through CDN cache for edge-cached playback.
+        // Direct MP4 URLs (rule34, gelbooru, danbooru) get cached on first view.
+        // Proxy URLs (rule34video, WP) resolve via our server then cache in R2.
+        const sourceUrl = v.url || (v.pageUrl ? v.pageUrl : "");
+        const playableUrl = sourceUrl
+          ? `${CDN}/stream?url=${encodeURIComponent(sourceUrl)}`
+          : "";
+
+        return {
+          id: v.id,
+          slug: v.slug,
+          // Both field names for compatibility (HomeFeed uses `url`, SwipeFeed uses `videoUrl`)
+          url: playableUrl,
+          videoUrl: playableUrl,
+          thumbnail: v.thumbnail,
+          score: v.score,
+          tags: v.tags.slice(0, 6),
+          characters: v.characters.slice(0, 3),
+          artists: v.artists.slice(0, 2),
+          copyrights: v.copyrights.slice(0, 2),
+          character: v.characters[0] || "",
+          artist: v.artists[0] || "",
+          copyright: v.copyrights[0] || "",
+          duration: v.duration,
+          width: v.width || 0,
+          height: v.height || 0,
+          size: v.fileSize || 0,
+        };
+      });
 
     return NextResponse.json({
       videos,
