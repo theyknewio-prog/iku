@@ -563,21 +563,40 @@ export function VideoCard({
 
   const shouldLoad = isActive || preloadNext;
 
-  /* Display metadata */
+  /* Display metadata — curated for readability */
   const artistDisplay = video.artist
     ? `@${video.artist.replace(/_/g, "").toLowerCase()}`
     : null;
 
-  const title = video.character
-    ? `${video.character.replace(/_/g, " ")}${
-        video.copyright ? ` — ${video.copyright.replace(/_/g, " ")}` : ""
-      }`
-    : video.tags
-        .slice(0, 3)
-        .map((t) => t.replace(/_/g, " "))
-        .join(", ");
+  // Tags to exclude from display (generic/meta tags that add no value)
+  const HIDDEN_TAGS = new Set([
+    "animated", "video", "sound", "has_audio", "webm", "mp4",
+    "1boy", "1girl", "1girls", "2girls", "1futa", "2boys",
+    "solo", "solo_female", "solo_male", "tagme",
+    "3d", "2d", "highres", "absurdres", "commentary",
+    "english_commentary", "japanese_text",
+  ]);
 
-  const displayTags = video.tags.slice(0, 5).filter(Boolean);
+  // Build a clean title: character name > copyright > curated tags
+  const charName = video.character?.replace(/_/g, " ");
+  const seriesName = video.copyright?.replace(/_/g, " ");
+  const title = charName
+    ? seriesName
+      ? `${charName} — ${seriesName}`
+      : charName
+    : seriesName
+      ? seriesName
+      : video.tags
+          .filter((t) => !HIDDEN_TAGS.has(t))
+          .slice(0, 2)
+          .map((t) => t.replace(/_/g, " "))
+          .join(", ") || "Untitled";
+
+  // Curated tags: filter out noise, show the interesting ones
+  const displayTags = video.tags
+    .filter((t) => !HIDDEN_TAGS.has(t) && t !== video.character && t !== video.copyright)
+    .slice(0, 4)
+    .filter(Boolean);
 
   const watchHref = video.slug ? `/watch/${video.slug}` : null;
 
@@ -806,10 +825,10 @@ export function VideoCard({
           bottom: 0,
           left: 0,
           right: 0,
-          /* leave right side clear for action bar */
+          /* leave right side clear for action bar, bottom clear for progress bar */
           paddingRight: 70,
           paddingLeft: 16,
-          paddingBottom: "max(20px, calc(env(safe-area-inset-bottom) + 12px))",
+          paddingBottom: "max(52px, calc(env(safe-area-inset-bottom) + 48px))",
           paddingTop: 80,
           background:
             "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.55) 50%, transparent 100%)",
