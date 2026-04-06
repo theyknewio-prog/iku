@@ -6793,6 +6793,17 @@ body {
   color: #f0e6ff;
   animation: hp-slide-up 0.5s 0.1s ease both;
 }
+.hp-hero-face {
+  display: inline-block;
+  vertical-align: middle;
+  animation: hp-face-bounce 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 12px rgba(232,70,124,0.5));
+}
+@keyframes hp-face-bounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-3px) rotate(3deg); }
+  75% { transform: translateY(2px) rotate(-2deg); }
+}
 
 .hp-hero-gradient-text {
   background: linear-gradient(90deg, #ff6b9d, #c084fc, #67e8f9);
