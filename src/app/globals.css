@@ -6796,7 +6796,7 @@ body {
 .hp-hero-face {
   position: absolute;
   top: -60px;
-  right: -10px;
+  right: 20px;
   width: 140px;
   height: auto;
   border-radius: 16px;
