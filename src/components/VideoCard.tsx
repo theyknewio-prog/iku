@@ -236,11 +236,15 @@ export function VideoCard({
   index,
   isActive,
   preloadNext = false,
+  globalMuted = true,
+  onMuteChange,
 }: {
   video: FeedVideo;
   index: number;
   isActive: boolean;
   preloadNext?: boolean;
+  globalMuted?: boolean;
+  onMuteChange?: (muted: boolean) => void;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressTrackRef = useRef<HTMLDivElement>(null);
@@ -260,7 +264,7 @@ export function VideoCard({
   // cycle. Reset when the card unmounts so a user who actually re-opens the
   // feed later still gets a fresh view event.
   const viewedRef = useRef(false);
-  const [muted, setMuted] = useState(true);
+  const [muted, setMuted] = useState(globalMuted);
   const [loaded, setLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
   const [buffered, setBuffered] = useState(0);
@@ -290,6 +294,12 @@ export function VideoCard({
       el.muted = muted;
     }
   }, [muted]);
+
+  // Sync local muted state when parent's globalMuted changes
+  // (e.g. user unmuted on another card, now this card should also be unmuted)
+  useEffect(() => {
+    setMuted(globalMuted);
+  }, [globalMuted]);
 
   /* Keyboard shortcuts — only when active */
 
@@ -389,17 +399,18 @@ export function VideoCard({
       const el = videoRef.current;
       if (el) {
         if (!next) {
-          // Unmuting — ensure audio is audible and the video is playing.
           if (el.volume === 0) el.volume = 0.5;
-          el.play().catch(() => { /* autoplay policy rejected unmute — benign */ });
+          el.play().catch(() => {});
         }
       }
+      // Propagate to parent so ALL subsequent cards inherit this mute state
+      onMuteChange?.(next);
       setShowMuteHint(true);
       if (muteTimerRef.current) clearTimeout(muteTimerRef.current);
       muteTimerRef.current = setTimeout(() => setShowMuteHint(false), 900);
       return next;
     });
-  }, []);
+  }, [onMuteChange]);
 
   // Keyboard shortcuts — route mute through toggleMute so React state stays
   // in sync with the DOM (see CLAUDE.md silent-bug section).

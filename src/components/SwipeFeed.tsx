@@ -24,6 +24,9 @@ export function SwipeFeed() {
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
   const [exhausted, setExhausted] = useState(false);
+  // Global mute state — shared across all cards. Once the user unmutes,
+  // all subsequent videos play with sound (like TikTok/RedGIFs).
+  const [globalMuted, setGlobalMuted] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const loadingRef = useRef(false);
   // Keyset cursor forwarded on each subsequent request. null = first request
@@ -163,6 +166,8 @@ export function SwipeFeed() {
             index={index}
             isActive={index === activeIndex}
             preloadNext={index > activeIndex && index <= activeIndex + 4}
+            globalMuted={globalMuted}
+            onMuteChange={setGlobalMuted}
           />
         ))}
       </div>
