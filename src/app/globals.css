@@ -6795,7 +6795,7 @@ body {
 }
 .hp-hero-face {
   position: absolute;
-  top: -10px;
+  top: -60px;
   right: -10px;
   width: 140px;
   height: auto;
@@ -6804,14 +6804,13 @@ body {
   filter: drop-shadow(0 0 20px rgba(232,70,124,0.4));
   animation: hp-face-float 3s ease-in-out infinite;
   pointer-events: none;
-  z-index: 2;
+  z-index: 10;
 }
 @media (min-width: 768px) {
-  .hp-hero-face { width: 180px; top: -20px; right: -20px; }
+  .hp-hero-face { width: 180px; top: -70px; right: -20px; }
 }
-/* Hide on very large screens where there's a hero image/video on the right */
 @media (min-width: 1200px) {
-  .hp-hero-face { width: 200px; top: -30px; right: 0; }
+  .hp-hero-face { width: 200px; top: -80px; right: 0; }
 }
 @keyframes hp-face-float {
   0%, 100% { transform: translateY(0); }
