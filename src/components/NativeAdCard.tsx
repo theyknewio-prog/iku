@@ -6,17 +6,14 @@
  * Renders inside video grids every N positions. Matches the dark theme
  * and card dimensions so it blends with ThumbnailCard/PosterCard.
  * Pro users see nothing.
+ *
+ * Fix 2026-04-07: Uses waitForAdProvider() so the push() fires only after
+ * ExoClick's script has bootstrapped.
  */
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { AD_ZONES } from "@/lib/ad-config";
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-declare global {
-  interface Window {
-    AdProvider?: any[];
-  }
-}
+import { insertExoClickZone } from "@/lib/ad-utils";
 
 const ZONE_ID = AD_ZONES.exoclick.nativeGrid;
 
@@ -31,15 +28,8 @@ export function NativeAdCard({ className = "" }: { className?: string }) {
 
   const insertAd = useCallback(() => {
     const container = containerRef.current;
-    if (!container || insertedRef.current) return;
-    insertedRef.current = true;
-
-    const ins = document.createElement("ins");
-    ins.className = "eas6a97888e2";
-    ins.dataset.zoneid = ZONE_ID;
-    container.appendChild(ins);
-
-    (window.AdProvider = window.AdProvider || []).push({ serve: {} });
+    if (!container) return;
+    insertExoClickZone(container, ZONE_ID, insertedRef);
   }, []);
 
   useEffect(() => {

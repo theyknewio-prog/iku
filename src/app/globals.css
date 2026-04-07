@@ -6736,6 +6736,12 @@ body {
   position: relative;
   border: 1px solid rgba(255,255,255,0.06);
 }
+@media (min-width: 1280px) {
+  .hp-hero { grid-template-columns: 1fr 1.5fr; gap: 40px; }
+}
+@media (min-width: 1600px) {
+  .hp-hero { grid-template-columns: 1fr 1.6fr; gap: 48px; }
+}
 .hp-hero::before {
   content: '';
   position: absolute;
@@ -7020,10 +7026,10 @@ body {
   transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
 }
 @media (min-width: 1280px) {
-  .hp-hero-play-card { width: 500px; padding: 36px; }
+  .hp-hero-play-card { width: 100%; max-width: 680px; padding: 40px; }
 }
 @media (min-width: 1600px) {
-  .hp-hero-play-card { width: 560px; padding: 40px; }
+  .hp-hero-play-card { width: 100%; max-width: 780px; padding: 48px; }
 }
 .hp-hero-play-card:hover { transform: scale(1.05); }
 .hp-hero-play-card__thumb {
@@ -7047,7 +7053,10 @@ body {
   letter-spacing: -0.01em;
 }
 @media (min-width: 1280px) {
-  .hp-hero-play-card__title { font-size: 24px; }
+  .hp-hero-play-card__title { font-size: 28px; }
+}
+@media (min-width: 1600px) {
+  .hp-hero-play-card__title { font-size: 32px; }
 }
 .hp-hero-play-card__meta {
   display: flex;

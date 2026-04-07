@@ -8,16 +8,14 @@
  * IntersectionObserver for lazy loading below-fold ads.
  *
  * Pro users: renders nothing (checked via data-pro on <body>).
+ *
+ * Fix 2026-04-07: Uses waitForAdProvider() so the push() only fires after
+ * ExoClick's script has bootstrapped, eliminating the race where the zone
+ * push happened before ad-provider.js finished loading.
  */
 
 import { useEffect, useRef, useState, useCallback } from "react";
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-declare global {
-  interface Window {
-    AdProvider?: any[];
-  }
-}
+import { insertExoClickZone } from "@/lib/ad-utils";
 
 interface AdZoneProps {
   zoneId: string;
@@ -43,7 +41,9 @@ export function AdZoneClient({ zoneId, size, lazy = false, className = "" }: AdZ
     setIsPro(document.body.dataset.pro === "1");
   }, []);
 
-  // IntersectionObserver for lazy ads
+  // IntersectionObserver for lazy ads.
+  // Guard: skip entirely until isPro is resolved (avoids creating observer
+  // for Pro users who will never need it).
   useEffect(() => {
     if (!lazy || visible || isPro) return;
     const el = containerRef.current;
@@ -56,7 +56,7 @@ export function AdZoneClient({ zoneId, size, lazy = false, className = "" }: AdZ
           observer.disconnect();
         }
       },
-      { rootMargin: "200px" } // start loading 200px before viewport
+      { rootMargin: "200px" }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -64,17 +64,8 @@ export function AdZoneClient({ zoneId, size, lazy = false, className = "" }: AdZ
 
   const insertAd = useCallback(() => {
     const container = containerRef.current;
-    if (!container || insertedRef.current) return;
-    insertedRef.current = true;
-
-    // Create the <ins> element ExoClick expects
-    const ins = document.createElement("ins");
-    ins.className = "eas6a97888e2";
-    ins.dataset.zoneid = zoneId;
-    container.appendChild(ins);
-
-    // Trigger ExoClick to fill the zone
-    (window.AdProvider = window.AdProvider || []).push({ serve: {} });
+    if (!container) return;
+    insertExoClickZone(container, zoneId, insertedRef);
   }, [zoneId]);
 
   // Insert ad when visible and not Pro
@@ -88,7 +79,6 @@ export function AdZoneClient({ zoneId, size, lazy = false, className = "" }: AdZ
     return () => {
       const container = containerRef.current;
       if (container) {
-        // Remove the <ins> element ExoClick added
         const ins = container.querySelector("ins");
         if (ins) ins.remove();
       }

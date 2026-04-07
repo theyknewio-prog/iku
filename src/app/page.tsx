@@ -218,7 +218,7 @@ export default async function HomePage() {
                           src={hero.preview}
                           alt="Trending now"
                           fill
-                          sizes="(min-width:1600px) 500px, (min-width:1280px) 440px, 380px"
+                          sizes="(min-width:1600px) 780px, (min-width:1280px) 680px, 420px"
                           style={{ objectFit: "cover" }}
                           unoptimized
                         />

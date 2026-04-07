@@ -5,17 +5,14 @@
  *
  * Shows an ExoClick interstitial zone (fullpage overlay).
  * Close button appears after 3 seconds. Pro users never see this.
+ *
+ * Fix 2026-04-07: Uses waitForAdProvider() so the push() fires only after
+ * ExoClick's script has bootstrapped.
  */
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AD_ZONES } from "@/lib/ad-config";
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-declare global {
-  interface Window {
-    AdProvider?: any[];
-  }
-}
+import { insertExoClickZone } from "@/lib/ad-utils";
 
 const ZONE_ID = AD_ZONES.exoclick.feedInterstitial;
 const CLOSE_DELAY = 3000; // close button appears after 3s
@@ -32,15 +29,8 @@ export function FeedInterstitial({ onClose }: FeedInterstitialProps) {
   // Insert ad zone
   useEffect(() => {
     const container = containerRef.current;
-    if (!container || insertedRef.current) return;
-    insertedRef.current = true;
-
-    const ins = document.createElement("ins");
-    ins.className = "eas6a97888e2";
-    ins.dataset.zoneid = ZONE_ID;
-    container.appendChild(ins);
-
-    (window.AdProvider = window.AdProvider || []).push({ serve: {} });
+    if (!container) return;
+    insertExoClickZone(container, ZONE_ID, insertedRef);
   }, []);
 
   // Show close button after delay
@@ -89,7 +79,7 @@ export function FeedInterstitial({ onClose }: FeedInterstitialProps) {
         </button>
       ) : (
         <div className="feed-interstitial__wait">
-          Ad closes in {Math.ceil((CLOSE_DELAY - 0) / 1000)}s...
+          Ad closes in {Math.ceil(CLOSE_DELAY / 1000)}s...
         </div>
       )}
     </div>

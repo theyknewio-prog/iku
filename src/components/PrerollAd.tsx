@@ -9,17 +9,20 @@
  * - Skip button appears at 5 seconds
  * - Auto-skips after 15 seconds or if ad fails to load within 3 seconds
  * - Pro users are skipped entirely
+ *
+ * Fix 2026-04-07:
+ * 1. Uses waitForAdProvider() — the push() now fires only after ExoClick's
+ *    script has bootstrapped (eliminates the "ad-provider not ready" race).
+ * 2. The overlay is rendered with a guaranteed min-height (300px) so that
+ *    position:absolute inset:0 has a real bounding box to fill, even before
+ *    the video's natural dimensions are known.
  */
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { AD_ZONES } from "@/lib/ad-config";
+import { waitForAdProvider } from "@/lib/ad-utils";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-declare global {
-  interface Window {
-    AdProvider?: any[];
-  }
-}
 
 interface PrerollAdProps {
   onComplete: () => void;
@@ -49,15 +52,15 @@ export function PrerollAd({ onComplete }: PrerollAdProps) {
     onComplete();
   }, [onComplete]);
 
-  // Check if should skip immediately (Pro users only — no session check,
-  // pre-roll shows on EVERY video like Pornhub/xHamster)
   useEffect(() => {
+    // Pro users skip immediately
     if (document.body.dataset.pro === "1") {
       finish();
       return;
     }
 
-    // Insert the ExoClick ad zone
+    // Insert the <ins> element immediately so it's in the DOM.
+    // The actual AdProvider.push() fires once the script is ready.
     const container = containerRef.current;
     if (container && !insertedRef.current) {
       insertedRef.current = true;
@@ -65,7 +68,10 @@ export function PrerollAd({ onComplete }: PrerollAdProps) {
       ins.className = "eas6a97888e2";
       ins.dataset.zoneid = ZONE_ID;
       container.appendChild(ins);
-      (window.AdProvider = window.AdProvider || []).push({ serve: {} });
+
+      waitForAdProvider(() => {
+        (window.AdProvider = window.AdProvider || []).push({ serve: {} });
+      });
     }
 
     // Start countdown
@@ -81,18 +87,16 @@ export function PrerollAd({ onComplete }: PrerollAdProps) {
 
     // Ad load timeout — if nothing renders in 3s, skip
     loadTimerRef.current = setTimeout(() => {
-      const container = containerRef.current;
-      if (container) {
-        // Check if ExoClick injected any content (iframe, img, video, etc.)
+      const c = containerRef.current;
+      if (c) {
         const hasContent =
-          container.querySelector("iframe") ||
-          container.querySelector("img") ||
-          container.querySelector("video") ||
-          container.querySelector("a");
+          c.querySelector("iframe") ||
+          c.querySelector("img") ||
+          c.querySelector("video") ||
+          c.querySelector("a");
         if (hasContent) {
           setAdLoaded(true);
         } else {
-          // No ad loaded — skip immediately
           finish();
         }
       }
@@ -104,7 +108,7 @@ export function PrerollAd({ onComplete }: PrerollAdProps) {
     };
   }, [finish]);
 
-  // Also watch for ad content appearing (MutationObserver)
+  // MutationObserver: detect when ExoClick injects content
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -145,7 +149,7 @@ export function PrerollAd({ onComplete }: PrerollAdProps) {
           </button>
         ) : (
           <span className="preroll-countdown">
-            Skip in {TOTAL_SECONDS - SKIP_AFTER - (TOTAL_SECONDS - secondsLeft)}s
+            Skip in {SKIP_AFTER - (TOTAL_SECONDS - secondsLeft)}s
           </span>
         )}
       </div>
