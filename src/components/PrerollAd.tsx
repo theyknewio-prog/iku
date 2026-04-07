@@ -3,8 +3,9 @@
 /**
  * PrerollAd — Pre-roll ad overlay for the watch page.
  *
- * Shows a 15-second ExoClick ad zone before the main video plays.
- * - Only once per session (sessionStorage "iku-preroll-shown")
+ * Shows a 15-second ExoClick ad zone before EVERY video plays.
+ * Industry standard: Pornhub, xHamster, and all major tubes show pre-rolls
+ * on every video load — not once per session. This is 5-10x more revenue.
  * - Skip button appears at 5 seconds
  * - Auto-skips after 15 seconds or if ad fails to load within 3 seconds
  * - Pro users are skipped entirely
@@ -45,24 +46,16 @@ export function PrerollAd({ onComplete }: PrerollAdProps) {
     setDismissed(true);
     if (timerRef.current) clearInterval(timerRef.current);
     if (loadTimerRef.current) clearTimeout(loadTimerRef.current);
-    try {
-      sessionStorage.setItem("iku-preroll-shown", "1");
-    } catch { /* quota */ }
     onComplete();
   }, [onComplete]);
 
-  // Check if should skip immediately (Pro user or already shown)
+  // Check if should skip immediately (Pro users only — no session check,
+  // pre-roll shows on EVERY video like Pornhub/xHamster)
   useEffect(() => {
     if (document.body.dataset.pro === "1") {
       finish();
       return;
     }
-    try {
-      if (sessionStorage.getItem("iku-preroll-shown") === "1") {
-        finish();
-        return;
-      }
-    } catch { /* private browsing */ }
 
     // Insert the ExoClick ad zone
     const container = containerRef.current;

@@ -20,6 +20,7 @@ import { containsBannedContent, getRelatedVideos, getDanbooruVideo } from "@/lib
 import { getNonce } from "@/lib/csp-nonce";
 import { AdZoneClient } from "@/components/AdZoneClient";
 import { AD_ZONES } from "@/lib/ad-config";
+import { RemoveAdsCTA } from "@/components/RemoveAdsCTA";
 
 // Dynamic rendering: we call headers() via getNonce() to stamp the CSP nonce
 // on JSON-LD scripts, which is incompatible with the old ISR-via-empty-
@@ -381,6 +382,9 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 ))}
               </nav>
 
+              {/* Ad zone — above player (728x90 desktop, highest visibility) */}
+              <AdZoneClient zoneId={AD_ZONES.exoclick.watchUnderplayer728} size="728x90" className="ad-zone--above-player" />
+
               {/* Video player — Gelbooru URLs are proxied through /api/proxy,
                   Rule34Video + WP are proxied through /api/video-stream to
                   bypass IP-bound access tokens. */}
@@ -394,6 +398,9 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
               {/* Ad zone — under player, above title (728x90 desktop / 320x50 mobile) */}
               <AdZoneClient zoneId={AD_ZONES.exoclick.watchUnderplayer728} size="728x90" />
+
+              {/* Remove Ads CTA — only for non-Pro, non-logged-in users */}
+              <RemoveAdsCTA />
 
               {/* H1 — must contain "hentai" for SEO */}
               <h1 className="player-title">

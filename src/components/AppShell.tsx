@@ -265,6 +265,13 @@ const BROWSE_ITEMS = [
   { href: "/tags",      label: "Tags",       Icon: IconTag,       emoji: "🏷️" },
 ] as const;
 
+/* Affiliate partners — external links, open in new tab */
+const AFFILIATE_ITEMS = [
+  { href: "https://www.nutaku.net/home/?af=ikugg", label: "Hentai Games", emoji: "\uD83C\uDFAE" },
+  // TODO: Replace with real CrakRevenue SmartLink URL when account is approved
+  { href: "https://crakrevenue.com", label: "AI Hentai", emoji: "\u2728" },
+] as const;
+
 /* Extras — content pages that weren't previously reachable from mobile */
 const EXTRA_ITEMS = [
   { href: "/blog",     label: "Blog",     Icon: IconBrowse, emoji: "📰" },
@@ -390,6 +397,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="v2-sidebar-section">
           <div className="v2-sidebar-section__label">Browse</div>
           {(BROWSE_ITEMS as unknown as NavItem[]).map(renderNavItem)}
+        </div>
+
+        {/* Affiliate Partners */}
+        <div className="v2-sidebar-section">
+          <div className="v2-sidebar-section__label">Partners</div>
+          {AFFILIATE_ITEMS.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="v2-nav-item v2-nav-item--affiliate"
+            >
+              <span className="v2-nav-icon" aria-hidden="true">{item.emoji}</span>
+              <span className="v2-nav-item__label">{item.label}</span>
+              <span className="v2-nav-badge v2-nav-badge--gradient">Ad</span>
+            </a>
+          ))}
         </div>
 
         {/* Quick Tags */}
@@ -588,6 +613,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   <span className="v2-nav-drawer__emoji" aria-hidden>{item.emoji}</span>
                   <span className="v2-nav-drawer__label">{item.label}</span>
                 </Link>
+              ))}
+            </div>
+
+            <div className="v2-nav-drawer__section">
+              <div className="v2-nav-drawer__section-label">Partners</div>
+              {AFFILIATE_ITEMS.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="v2-nav-drawer__item v2-nav-drawer__item--affiliate"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <span className="v2-nav-drawer__emoji" aria-hidden>{item.emoji}</span>
+                  <span className="v2-nav-drawer__label">{item.label}</span>
+                  <span className="v2-nav-drawer__badge v2-nav-drawer__badge--gradient">Ad</span>
+                </a>
               ))}
             </div>
 

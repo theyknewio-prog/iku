@@ -9770,3 +9770,179 @@ body {
   font-size: 13px;
   z-index: 2;
 }
+
+/* ============================================================
+   CAM WIDGET — Floating Chaturbate affiliate (bottom-right)
+   ============================================================ */
+
+.cam-widget {
+  position: fixed;
+  bottom: 80px;
+  right: 16px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: linear-gradient(135deg, rgba(30, 10, 20, 0.95), rgba(40, 12, 28, 0.95));
+  border: 1px solid rgba(255, 50, 80, 0.35);
+  border-radius: 12px;
+  box-shadow: 0 0 16px rgba(255, 40, 60, 0.25), 0 4px 12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  animation: cam-widget-in 0.4s ease-out;
+}
+
+@keyframes cam-widget-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.cam-widget__link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  text-decoration: none;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.cam-widget__link:hover {
+  background: rgba(255, 50, 80, 0.12);
+}
+
+.cam-widget__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff2040;
+  box-shadow: 0 0 6px rgba(255, 32, 64, 0.8);
+  animation: cam-dot-pulse 1.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes cam-dot-pulse {
+  0%, 100% { box-shadow: 0 0 4px rgba(255, 32, 64, 0.6); }
+  50%      { box-shadow: 0 0 12px rgba(255, 32, 64, 1), 0 0 20px rgba(255, 32, 64, 0.4); }
+}
+
+.cam-widget__label {
+  background: linear-gradient(90deg, #ff6090, #ff2060);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.cam-widget__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 100%;
+  min-height: 40px;
+  padding: 0;
+  border: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: #888;
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+.cam-widget__close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Desktop: larger */
+@media (min-width: 768px) {
+  .cam-widget {
+    bottom: 24px;
+  }
+  .cam-widget__link {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+}
+
+/* ============================================================
+   REMOVE ADS CTA — Watch page, below ad zone
+   ============================================================ */
+
+.remove-ads-cta {
+  width: 100%;
+  max-width: 728px;
+  margin: 6px auto 10px;
+}
+
+.remove-ads-cta__link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: rgba(255, 32, 128, 0.06);
+  border: 1px solid rgba(255, 32, 128, 0.15);
+  text-decoration: none;
+  color: var(--color-text-secondary, #aaa);
+  font-size: 13px;
+  transition: background 0.15s, border-color 0.15s;
+}
+.remove-ads-cta__link:hover {
+  background: rgba(255, 32, 128, 0.12);
+  border-color: rgba(255, 32, 128, 0.3);
+}
+
+.remove-ads-cta__emoji {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.remove-ads-cta__text {
+  flex: 1;
+}
+.remove-ads-cta__text strong {
+  color: #ff4090;
+  font-weight: 700;
+}
+
+.remove-ads-cta__arrow {
+  font-size: 18px;
+  color: #ff4090;
+  font-weight: 700;
+}
+
+/* ============================================================
+   AFFILIATE NAV ITEMS — Sidebar + Drawer
+   ============================================================ */
+
+.v2-nav-item--affiliate {
+  background: linear-gradient(135deg, rgba(255, 32, 128, 0.06), rgba(124, 58, 255, 0.06));
+  border-left: 2px solid rgba(255, 32, 128, 0.4);
+  margin-left: 4px;
+  margin-right: 4px;
+  border-radius: 6px;
+  transition: background 0.15s, border-color 0.15s;
+}
+.v2-nav-item--affiliate:hover {
+  background: linear-gradient(135deg, rgba(255, 32, 128, 0.12), rgba(124, 58, 255, 0.12));
+  border-left-color: rgba(255, 32, 128, 0.7);
+}
+
+.v2-nav-drawer__item--affiliate {
+  background: linear-gradient(135deg, rgba(255, 32, 128, 0.06), rgba(124, 58, 255, 0.06));
+  border-left: 2px solid rgba(255, 32, 128, 0.4);
+  margin-left: 4px;
+  margin-right: 4px;
+  border-radius: 6px;
+}
+.v2-nav-drawer__item--affiliate:hover {
+  background: linear-gradient(135deg, rgba(255, 32, 128, 0.12), rgba(124, 58, 255, 0.12));
+}
+
+/* Above-player ad zone — small margin below for breathing room */
+.ad-zone--above-player {
+  margin-bottom: 8px;
+}

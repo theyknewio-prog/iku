@@ -10,6 +10,7 @@ import { auth } from "@/auth";
 import pool from "@/lib/db";
 import { AdScript } from "@/components/AdScript";
 import { PopunderAd } from "@/components/PopunderAd";
+import { CamWidget } from "@/components/CamWidget";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -134,6 +135,7 @@ export default async function RootLayout({
           <UserDataSync />
           <AdScript />
           <PopunderAd />
+          <CamWidget />
           <AppShell>{children}</AppShell>
         </SessionProviderClient>
       </body>
