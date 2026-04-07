@@ -9683,15 +9683,25 @@ body {
   border-radius: var(--radius-lg, 12px);
   overflow: hidden;
   min-height: 200px;
+  max-width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 1px solid rgba(255,255,255,0.06);
 }
+/* In carousels, match PosterCard width */
+.native-ad-card.poster-card-size {
+  flex: 0 0 auto;
+  width: 150px;
+  min-height: 220px;
+}
+@media (min-width: 640px) { .native-ad-card.poster-card-size { width: 180px; } }
 .native-ad-card ins {
   display: block;
   width: 100%;
+  max-width: 100%;
   min-height: 180px;
+  overflow: hidden;
 }
 .native-ad-card__badge {
   position: absolute;
