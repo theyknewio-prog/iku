@@ -6,6 +6,10 @@ import { SessionProviderClient } from "@/components/SessionProviderClient";
 import { UserDataSync } from "@/components/UserDataSync";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { getNonce } from "@/lib/csp-nonce";
+import { auth } from "@/auth";
+import pool from "@/lib/db";
+import { AdScript } from "@/components/AdScript";
+import { PopunderAd } from "@/components/PopunderAd";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -79,6 +83,23 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const nonce = await getNonce();
+
+  // Determine Pro status for ad gating — lightweight PG query, JWT-only fallback
+  let isPro = false;
+  try {
+    const session = await auth();
+    if (session?.user?.id) {
+      const { rows } = await pool.query(
+        `SELECT pro_status FROM users WHERE id = $1 LIMIT 1`,
+        [session.user.id]
+      );
+      const status = rows[0]?.pro_status;
+      isPro = status === "active" || status === "lifetime";
+    }
+  } catch {
+    // Auth or DB unavailable — default to showing ads (non-Pro)
+  }
+
   return (
     <html lang="en" className={`${inter.variable} ${poppins.variable} ${righteous.variable} ${nunito.variable} ${quicksand.variable}`} data-theme="dark">
       <head>
@@ -101,7 +122,7 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body>
+      <body data-pro={isPro ? "1" : "0"}>
         <div className="sparkles-bg" aria-hidden="true">
           <div className="sparkle" /><div className="sparkle" /><div className="sparkle" />
           <div className="sparkle" /><div className="sparkle" /><div className="sparkle" />
@@ -111,6 +132,8 @@ export default async function RootLayout({
         <SessionProviderClient>
           <AnalyticsProvider />
           <UserDataSync />
+          <AdScript />
+          <PopunderAd />
           <AppShell>{children}</AppShell>
         </SessionProviderClient>
       </body>

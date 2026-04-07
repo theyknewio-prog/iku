@@ -13,6 +13,8 @@ import { JoinDiscordCTA } from "@/components/JoinDiscordCTA";
 import { SignupCTA } from "@/components/SignupCTA";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { MagneticButton } from "@/components/MagneticButton";
+import { AdZoneClient } from "@/components/AdZoneClient";
+import { AD_ZONES } from "@/lib/ad-config";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai Videos | Stream Animated Hentai Online",
@@ -61,12 +63,6 @@ const GRID_CATEGORY_COLORS = [
   "hp-gt-orange",
   "hp-gt-blue",
 ];
-
-function AdZone({ id, size }: { id: string; size: "leaderboard" | "medium-rect" }) {
-  return (
-    <div className={`hp-ad-zone hp-ad-zone--${size}`} data-ad-slot={id} aria-hidden="true" />
-  );
-}
 
 function formatDuration(seconds: number | null): string {
   if (!seconds) return "";
@@ -239,8 +235,8 @@ export default async function HomePage() {
             </div>
           </section>
 
-          {/* ── Ad zone — Leaderboard ──────────────────────────── */}
-          <AdZone id="hp-leaderboard-1" size="leaderboard" />
+          {/* ── Ad zone — Leaderboard (728x90, responsive to 320x50 on mobile) ── */}
+          <AdZoneClient zoneId={AD_ZONES.exoclick.watchUnderplayer728} size="728x90" />
 
           {/* ================================================================
               TRENDING NOW -- Horizontal poster scroll
@@ -365,8 +361,8 @@ export default async function HomePage() {
             </div>
           </section>
 
-          {/* ── Ad zone — Medium rect ──────────────────────────── */}
-          <AdZone id="hp-medium-1" size="medium-rect" />
+          {/* ── Ad zone — 300x250 in-content ──────────────────── */}
+          <AdZoneClient zoneId={AD_ZONES.exoclick.sidebar300} size="300x250" lazy />
 
           {/* ================================================================
               POPULAR CHARACTERS -- Circular avatars with gradient rings

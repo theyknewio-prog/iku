@@ -7,6 +7,8 @@ import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { SignupCTA } from "@/components/SignupCTA";
 import { CHARACTERS } from "@/data/characters";
 import { SERIES } from "@/data/series";
+import { AdZoneClient } from "@/components/AdZoneClient";
+import { AD_ZONES } from "@/lib/ad-config";
 
 export const revalidate = 3600;
 export const dynamic = "force-dynamic";
@@ -182,6 +184,9 @@ export default async function ExplorePage(props: {
     <AgeGate>
       <main className="shell-content">
         <div className="page-container">
+
+          {/* ── Ad zone — Leaderboard top ─────────────────── */}
+          <AdZoneClient zoneId={AD_ZONES.exoclick.watchUnderplayer728} size="728x90" />
 
           {/* ── Page header ───────────────────────────────── */}
           <div className="explore-header">

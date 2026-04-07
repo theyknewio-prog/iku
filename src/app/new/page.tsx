@@ -5,6 +5,8 @@ import { Pagination } from "@/components/Pagination";
 import { getVideos } from "@/lib/content";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
+import { AdZoneClient } from "@/components/AdZoneClient";
+import { AD_ZONES } from "@/lib/ad-config";
 
 export const metadata: Metadata = {
   title: "New Hentai Videos — Latest Uploads | iku.gg",
@@ -43,6 +45,9 @@ export default async function NewPage({ searchParams }: Props) {
     <div className="shell-content">
       <main>
         <div className="page-container">
+          {/* ── Ad zone — Leaderboard top ─────────────────── */}
+          <AdZoneClient zoneId={AD_ZONES.exoclick.watchUnderplayer728} size="728x90" />
+
           {/* ── Page hero ─────────────────────────────────────── */}
           <div className="tag-hero">
             <p className="tag-hero__label">Fresh Uploads</p>

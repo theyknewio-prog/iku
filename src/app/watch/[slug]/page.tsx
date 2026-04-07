@@ -18,6 +18,8 @@ import {
 } from "@/lib/content-generator";
 import { containsBannedContent, getRelatedVideos, getDanbooruVideo } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
+import { AdZoneClient } from "@/components/AdZoneClient";
+import { AD_ZONES } from "@/lib/ad-config";
 
 // Dynamic rendering: we call headers() via getNonce() to stamp the CSP nonce
 // on JSON-LD scripts, which is incompatible with the old ISR-via-empty-
@@ -390,8 +392,8 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 />
               </div>
 
-              {/* Ad zone — under player, above title */}
-              <div className="hp-ad-zone hp-ad-zone--leaderboard" data-ad-slot="watch-underplayer" aria-hidden="true" />
+              {/* Ad zone — under player, above title (728x90 desktop / 320x50 mobile) */}
+              <AdZoneClient zoneId={AD_ZONES.exoclick.watchUnderplayer728} size="728x90" />
 
               {/* H1 — must contain "hentai" for SEO */}
               <h1 className="player-title">
@@ -662,6 +664,8 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
             {/* ── Sidebar (desktop) ─────────────────────────── */}
             <aside className="player-sidebar">
+              {/* Sidebar ad — 300x250, desktop only */}
+              <AdZoneClient zoneId={AD_ZONES.exoclick.sidebar300} size="300x250" className="ad-zone--desktop-only" lazy />
               <div className="player-sidebar__title">Up next</div>
               <Suspense
                 fallback={Array.from({ length: 10 }).map((_, i) => (
