@@ -1,3 +1,4 @@
+import React from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -14,6 +15,7 @@ import { SignupCTA } from "@/components/SignupCTA";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { MagneticButton } from "@/components/MagneticButton";
 import { AdZoneClient } from "@/components/AdZoneClient";
+import { NativeAdCard } from "@/components/NativeAdCard";
 import { AD_ZONES } from "@/lib/ad-config";
 
 export const metadata: Metadata = {
@@ -243,7 +245,10 @@ export default async function HomePage() {
           ================================================================ */}
           <Carousel title="🔥 Trending Now" badge="HOT" seeAllHref="/trending">
             {trending.data.map((video, i) => (
-              <PosterCard key={video.id} video={video} rank={i < 8 ? i + 1 : undefined} priority={i < 5} />
+              <React.Fragment key={video.id}>
+                {i === 8 && <NativeAdCard className="poster-card-size" />}
+                <PosterCard video={video} rank={i < 8 ? i + 1 : undefined} priority={i < 5} />
+              </React.Fragment>
             ))}
           </Carousel>
 

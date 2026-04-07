@@ -1,3 +1,4 @@
+import React from "react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
@@ -6,6 +7,7 @@ import { getVideos } from "@/lib/content";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 import { AdZoneClient } from "@/components/AdZoneClient";
+import { NativeAdCard } from "@/components/NativeAdCard";
 import { AD_ZONES } from "@/lib/ad-config";
 
 export const metadata: Metadata = {
@@ -88,12 +90,14 @@ export default async function NewPage({ searchParams }: Props) {
           ) : (
             <div className="video-grid">
               {videos.map((video: Video, i) => (
-                <ThumbnailCard
-                  key={video.id}
-                  video={video}
-                  priority={i < 4}
-                  lazy={i >= 4}
-                />
+                <React.Fragment key={video.id}>
+                  {i > 0 && i % 12 === 0 && <NativeAdCard />}
+                  <ThumbnailCard
+                    video={video}
+                    priority={i < 4}
+                    lazy={i >= 4}
+                  />
+                </React.Fragment>
               ))}
             </div>
           )}

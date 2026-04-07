@@ -1,0 +1,171 @@
+"use client";
+
+/**
+ * PrerollAd — Pre-roll ad overlay for the watch page.
+ *
+ * Shows a 15-second ExoClick ad zone before the main video plays.
+ * - Only once per session (sessionStorage "iku-preroll-shown")
+ * - Skip button appears at 5 seconds
+ * - Auto-skips after 15 seconds or if ad fails to load within 3 seconds
+ * - Pro users are skipped entirely
+ */
+
+import { useEffect, useRef, useState, useCallback } from "react";
+import { AD_ZONES } from "@/lib/ad-config";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+declare global {
+  interface Window {
+    AdProvider?: any[];
+  }
+}
+
+interface PrerollAdProps {
+  onComplete: () => void;
+}
+
+const ZONE_ID = AD_ZONES.exoclick.videoPreroll;
+const TOTAL_SECONDS = 15;
+const SKIP_AFTER = 5;
+const LOAD_TIMEOUT = 3000; // auto-skip if ad doesn't load within 3s
+
+export function PrerollAd({ onComplete }: PrerollAdProps) {
+  const [secondsLeft, setSecondsLeft] = useState(TOTAL_SECONDS);
+  const [adLoaded, setAdLoaded] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const insertedRef = useRef(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const loadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const completedRef = useRef(false);
+
+  const finish = useCallback(() => {
+    if (completedRef.current) return;
+    completedRef.current = true;
+    setDismissed(true);
+    if (timerRef.current) clearInterval(timerRef.current);
+    if (loadTimerRef.current) clearTimeout(loadTimerRef.current);
+    try {
+      sessionStorage.setItem("iku-preroll-shown", "1");
+    } catch { /* quota */ }
+    onComplete();
+  }, [onComplete]);
+
+  // Check if should skip immediately (Pro user or already shown)
+  useEffect(() => {
+    if (document.body.dataset.pro === "1") {
+      finish();
+      return;
+    }
+    try {
+      if (sessionStorage.getItem("iku-preroll-shown") === "1") {
+        finish();
+        return;
+      }
+    } catch { /* private browsing */ }
+
+    // Insert the ExoClick ad zone
+    const container = containerRef.current;
+    if (container && !insertedRef.current) {
+      insertedRef.current = true;
+      const ins = document.createElement("ins");
+      ins.className = "eas6a97888e2";
+      ins.dataset.zoneid = ZONE_ID;
+      container.appendChild(ins);
+      (window.AdProvider = window.AdProvider || []).push({ serve: {} });
+    }
+
+    // Start countdown
+    timerRef.current = setInterval(() => {
+      setSecondsLeft((prev) => {
+        if (prev <= 1) {
+          finish();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    // Ad load timeout — if nothing renders in 3s, skip
+    loadTimerRef.current = setTimeout(() => {
+      const container = containerRef.current;
+      if (container) {
+        // Check if ExoClick injected any content (iframe, img, video, etc.)
+        const hasContent =
+          container.querySelector("iframe") ||
+          container.querySelector("img") ||
+          container.querySelector("video") ||
+          container.querySelector("a");
+        if (hasContent) {
+          setAdLoaded(true);
+        } else {
+          // No ad loaded — skip immediately
+          finish();
+        }
+      }
+    }, LOAD_TIMEOUT);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (loadTimerRef.current) clearTimeout(loadTimerRef.current);
+    };
+  }, [finish]);
+
+  // Also watch for ad content appearing (MutationObserver)
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const observer = new MutationObserver(() => {
+      if (
+        container.querySelector("iframe") ||
+        container.querySelector("img") ||
+        container.querySelector("video") ||
+        container.querySelector("a")
+      ) {
+        setAdLoaded(true);
+        observer.disconnect();
+      }
+    });
+    observer.observe(container, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, []);
+
+  if (dismissed) return null;
+
+  const canSkip = secondsLeft <= TOTAL_SECONDS - SKIP_AFTER;
+
+  return (
+    <div className="preroll-overlay" aria-label="Advertisement">
+      {/* Ad container */}
+      <div ref={containerRef} className="preroll-ad-container" />
+
+      {/* Top-left label */}
+      <div className="preroll-label">
+        Ad {adLoaded ? "" : "loading..."}
+      </div>
+
+      {/* Bottom-right countdown / skip */}
+      <div className="preroll-controls">
+        {canSkip ? (
+          <button className="preroll-skip-btn" onClick={finish}>
+            Skip Ad &rsaquo;
+          </button>
+        ) : (
+          <span className="preroll-countdown">
+            Skip in {TOTAL_SECONDS - SKIP_AFTER - (TOTAL_SECONDS - secondsLeft)}s
+          </span>
+        )}
+      </div>
+
+      {/* Progress bar at bottom */}
+      <div className="preroll-progress">
+        <div
+          className="preroll-progress__bar"
+          style={{
+            width: `${((TOTAL_SECONDS - secondsLeft) / TOTAL_SECONDS) * 100}%`,
+          }}
+        />
+      </div>
+    </div>
+  );
+}

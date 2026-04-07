@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { VideoCard } from "./VideoCard";
+import { FeedInterstitial } from "./FeedInterstitial";
 
 export interface FeedVideo {
   id: number;
@@ -27,6 +28,11 @@ export function SwipeFeed() {
   // Global mute state — shared across all cards. Once the user unmutes,
   // all subsequent videos play with sound (like TikTok/RedGIFs).
   const [globalMuted, setGlobalMuted] = useState(true);
+  // Interstitial ad tracking
+  const [showInterstitial, setShowInterstitial] = useState(false);
+  const interstitialCountRef = useRef(0);
+  const lastInterstitialIndexRef = useRef(-10);
+  const isPro = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const loadingRef = useRef(false);
   // Keyset cursor forwarded on each subsequent request. null = first request
@@ -96,6 +102,34 @@ export function SwipeFeed() {
     }
   }, [videos.length, activeIndex, exhausted, fetchVideos]);
 
+  // Detect Pro user on mount
+  useEffect(() => {
+    isPro.current = document.body.dataset.pro === "1";
+    // Restore interstitial count from sessionStorage
+    try {
+      const stored = sessionStorage.getItem("iku-interstitial-count");
+      if (stored) interstitialCountRef.current = parseInt(stored) || 0;
+    } catch { /* private browsing */ }
+  }, []);
+
+  // Trigger interstitial every 10 swipes (max 3 per session, not for Pro)
+  useEffect(() => {
+    if (
+      activeIndex > 0 &&
+      activeIndex % 10 === 0 &&
+      activeIndex !== lastInterstitialIndexRef.current &&
+      interstitialCountRef.current < 3 &&
+      !isPro.current
+    ) {
+      lastInterstitialIndexRef.current = activeIndex;
+      setShowInterstitial(true);
+      interstitialCountRef.current += 1;
+      try {
+        sessionStorage.setItem("iku-interstitial-count", String(interstitialCountRef.current));
+      } catch { /* quota */ }
+    }
+  }, [activeIndex]);
+
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -136,6 +170,11 @@ export function SwipeFeed() {
 
   return (
     <div style={{ position: "relative" }}>
+      {/* Feed interstitial ad — shown every 10 swipes, max 3 per session */}
+      {showInterstitial && (
+        <FeedInterstitial onClose={() => setShowInterstitial(false)} />
+      )}
+
       {/* Fixed close button — top-left, above everything */}
       <Link
         href="/"

@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
-import { WatchPlayer } from "@/components/WatchPlayer";
+import { WatchPlayerWithPreroll } from "@/components/WatchPlayerWithPreroll";
 import { WatchActions } from "@/components/WatchActions";
 import { getGelbooruPost } from "@/lib/gelbooru";
 import { getRule34Post } from "@/lib/rule34";
@@ -385,7 +385,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
                   Rule34Video + WP are proxied through /api/video-stream to
                   bypass IP-bound access tokens. */}
               <div className="player-video-wrap">
-                <WatchPlayer
+                <WatchPlayerWithPreroll
                   src={video.url || streamProxyUrl || ""}
                   poster={video.thumbnail || undefined}
                   relatedVideos={relatedForPlayer}
