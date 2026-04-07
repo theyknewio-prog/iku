@@ -1,47 +1,23 @@
 "use client";
 
 /**
- * PopunderAd — ExoClick popunder (zone 5893290).
+ * PopunderAd — DISABLED.
  *
- * Popunders use a different script tag than banners.
- * Fires once per session. Skips for Pro users.
+ * ExoClick popunder (zone 5893290) was hijacking Next.js client-side
+ * navigation on SPA pages. The popunder script intercepts clicks at
+ * the document level, which conflicts with React Router/Next.js Link
+ * navigation, causing random page redirects.
+ *
+ * Revenue from popunders (~$0.50-1 CPM) is not worth destroying the
+ * browsing experience. We keep the pre-roll + banners + native +
+ * interstitial which together generate much more.
+ *
+ * If we want popunders back later, use Adsterra's popunder (28986138)
+ * which may handle SPAs better, or only trigger on actual external
+ * link clicks (not navigation).
  */
 
-import { useEffect, useRef } from "react";
-import { AD_ZONES } from "@/lib/ad-config";
-
 export function PopunderAd() {
-  const firedRef = useRef(false);
-
-  useEffect(() => {
-    if (document.body.dataset.pro === "1") return;
-    if (firedRef.current) return;
-    if (sessionStorage.getItem("iku-popunder-fired")) return;
-
-    firedRef.current = true;
-    sessionStorage.setItem("iku-popunder-fired", "1");
-
-    // ExoClick popunders load via a separate script URL pattern
-    const script = document.createElement("script");
-    script.src = `https://a.magsrv.com/ad-provider.js`;
-    script.async = true;
-    document.body.appendChild(script);
-
-    const ins = document.createElement("ins");
-    ins.className = "eas6a97888e2";
-    ins.dataset.zoneid = AD_ZONES.exoclick.popunder;
-    ins.style.display = "none";
-    document.body.appendChild(ins);
-
-    script.onload = () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ((window as any).AdProvider = (window as any).AdProvider || []).push({ serve: {} });
-    };
-
-    return () => {
-      if (ins.parentNode) ins.parentNode.removeChild(ins);
-    };
-  }, []);
-
+  // Intentionally disabled — see comment above
   return null;
 }
