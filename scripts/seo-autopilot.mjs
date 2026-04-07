@@ -1,14 +1,18 @@
 #!/usr/bin/env node
 /**
- * SEO Autopilot v2 — Semrush-driven content generation for iku.gg
+ * SEO Autopilot v3 — MAXIMUM POWER for iku.gg
  *
  * Runs 2x/day (8h + 20h Paris time). Does:
  *   1. Pull GSC data (3-day window, excluding today)
- *   2. Pick next 2 unhit keywords from Semrush priority list (sorted by KD asc)
- *   3. Generate SEO articles with dense internal links
- *   4. Add to content-queue.json
- *   5. Git commit + push (triggers deploy)
- *   6. Telegram notification with keyword targets + GSC stats
+ *   2. Mine Semrush CSVs for additional keywords (local dev only)
+ *   3. Pick next 2 unhit keywords from priority list (sorted by KD asc)
+ *   4. Generate SEO articles with dense internal links
+ *   5. Enrich top 30 character pages with SEO descriptions + FAQs
+ *   6. Generate internal link maps for existing blog articles
+ *   7. Submit priority URLs to Google Indexing API
+ *   8. Add to content-queue.json
+ *   9. Git commit + push (triggers deploy)
+ *  10. Telegram notification with keyword targets + GSC stats
  *
  * Usage:
  *   node scripts/seo-autopilot.mjs              # full run
@@ -24,6 +28,8 @@ import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 import { execSync } from "child_process";
 import https from "https";
+import { createReadStream } from "fs";
+import { createInterface } from "readline";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
@@ -35,6 +41,19 @@ const SITE_URL = "sc-domain:iku.gg";
 const DRY_RUN = process.argv.includes("--dry-run");
 const RESEARCH_ONLY = process.argv.includes("--research");
 const YEAR = new Date().getFullYear();
+
+// New paths for v3 features
+const CHARACTERS_SEO_PATH = resolve(ROOT, "src/data/characters-seo.ts");
+const BLOG_LINKS_PATH = resolve(ROOT, "src/data/blog-internal-links.ts");
+const MINED_KEYWORDS_PATH = resolve(ROOT, "data/semrush-mined-keywords.json");
+const ENRICHMENT_FLAG_PATH = resolve(ROOT, "data/character-enrichment-last.json");
+const INTERNAL_LINKS_FLAG_PATH = resolve(ROOT, "data/internal-links-last.json");
+
+// Semrush CSV paths (local dev only — these don't exist on the server)
+const SEMRUSH_CSV_PATHS = [
+  resolve(ROOT, "hentai_all-keywords_us_2026-04-02.csv"),
+  resolve(ROOT, "anime-porn_all-keywords_us_2026-04-02.csv"),
+];
 
 // ── Logging ─────────────────────────────────────────────────────
 const log = (msg) => console.log(`  ${msg}`);
@@ -337,13 +356,14 @@ function isKeywordCovered(kw, existingSlugs) {
   return variations.some((v) => existingSlugs.has(v));
 }
 
-// ── 4. Pick next keywords to target ─────────────────────────────
-function pickNextKeywords(existingSlugs, maxCount = 2) {
+// ── 4. Pick next keywords to target (with Semrush mined fallback) ─
+function pickNextKeywords(existingSlugs, minedKeywords = [], maxCount = 2) {
   section("KEYWORD SELECTION");
   // Already sorted by KD ascending in the array
   const candidates = [];
   const skipped = [];
 
+  // First pass: PRIORITY_KEYWORDS (hardcoded, highest confidence)
   for (const entry of PRIORITY_KEYWORDS) {
     if (isKeywordCovered(entry.kw, existingSlugs)) {
       skipped.push(entry.kw);
@@ -351,6 +371,22 @@ function pickNextKeywords(existingSlugs, maxCount = 2) {
     }
     candidates.push(entry);
     if (candidates.length >= maxCount) break;
+  }
+
+  // Second pass: mined keywords (if priority list is exhausted)
+  if (candidates.length < maxCount && minedKeywords.length > 0) {
+    log(`Priority keywords exhausted — mining Semrush CSV keywords...`);
+    for (const entry of minedKeywords) {
+      if (candidates.length >= maxCount) break;
+      if (isKeywordCovered(entry.kw, existingSlugs)) continue;
+      // Ensure it has the right shape
+      candidates.push({
+        kw: entry.kw,
+        volume: entry.volume,
+        kd: entry.kd,
+        type: entry.type || "blog",
+      });
+    }
   }
 
   log(`Skipped (already covered): ${skipped.length} keywords`);
@@ -724,15 +760,41 @@ function addToQueue(articles) {
 }
 
 // ── 7. Git commit + push ────────────────────────────────────────
-function gitCommitAndPush(articlesAdded) {
-  if (DRY_RUN || articlesAdded === 0) return;
+function gitCommitAndPush(articlesAdded, charsEnriched = 0, linksUpdated = 0) {
+  const totalChanges = articlesAdded + charsEnriched + linksUpdated;
+  if (DRY_RUN || totalChanges === 0) return;
 
   section("GIT COMMIT & PUSH");
   try {
-    execSync("git add src/data/content-queue.json data/gsc-snapshots/", { cwd: ROOT, stdio: "pipe" });
-    const msg = `chore(seo): autopilot v2 — ${articlesAdded} article(s) + GSC snapshot
+    // Stage all generated files
+    const filesToAdd = [
+      "src/data/content-queue.json",
+      "data/gsc-snapshots/",
+      "src/data/characters-seo.ts",
+      "src/data/blog-internal-links.ts",
+      "data/semrush-mined-keywords.json",
+      "data/character-enrichment-last.json",
+      "data/internal-links-last.json",
+      "data/submitted-urls.json",
+    ];
 
-Generated by scripts/seo-autopilot.mjs targeting Semrush keywords.`;
+    for (const f of filesToAdd) {
+      const fullPath = resolve(ROOT, f);
+      if (existsSync(fullPath)) {
+        try {
+          execSync(`git add "${f}"`, { cwd: ROOT, stdio: "pipe" });
+        } catch { /* file might not have changes */ }
+      }
+    }
+
+    const parts = [];
+    if (articlesAdded > 0) parts.push(`${articlesAdded} article(s)`);
+    if (charsEnriched > 0) parts.push(`${charsEnriched} char SEO`);
+    if (linksUpdated > 0) parts.push(`${linksUpdated} internal link maps`);
+
+    const msg = `chore(seo): autopilot v3 — ${parts.join(" + ")} + GSC snapshot
+
+Generated by scripts/seo-autopilot.mjs (MAXIMUM POWER).`;
     execSync(`git commit -m "${msg}"`, { cwd: ROOT, stdio: "pipe" });
     log("Committed to git");
 
@@ -766,10 +828,451 @@ function sendTelegram(text) {
   });
 }
 
+// ── UPGRADE 1: Enrich Character Pages ─────────────────────────
+// Top 30 characters by Semrush search volume
+const TOP_30_CHARACTERS = [
+  { slug: "hinata-hyuga", name: "Hinata Hyuga", series: "Naruto", volume: 14800, tags: ["hyuuga_hinata", "naruto", "byakugan", "big_breasts"] },
+  { slug: "tsunade", name: "Tsunade", series: "Naruto", volume: 14800, tags: ["tsunade_(naruto)", "naruto", "milf", "big_breasts"] },
+  { slug: "nami", name: "Nami", series: "One Piece", volume: 14800, tags: ["nami_(one_piece)", "one_piece", "orange_hair", "big_breasts"] },
+  { slug: "tatsumaki", name: "Tatsumaki", series: "One Punch Man", volume: 14800, tags: ["tatsumaki", "one_punch_man", "green_hair", "petite"] },
+  { slug: "bulma", name: "Bulma", series: "Dragon Ball", volume: 14800, tags: ["bulma", "dragon_ball", "blue_hair", "milf"] },
+  { slug: "boa-hancock", name: "Boa Hancock", series: "One Piece", volume: 12100, tags: ["boa_hancock", "one_piece", "amazon_lily", "big_breasts"] },
+  { slug: "starfire", name: "Starfire", series: "Teen Titans", volume: 12100, tags: ["starfire", "teen_titans", "alien", "orange_skin"] },
+  { slug: "raven", name: "Raven", series: "Teen Titans", volume: 12100, tags: ["raven_(dc)", "teen_titans", "dark_skin", "magic"] },
+  { slug: "zelda", name: "Princess Zelda", series: "The Legend of Zelda", volume: 12100, tags: ["princess_zelda", "zelda", "elf", "pointy_ears"] },
+  { slug: "android-18", name: "Android 18", series: "Dragon Ball", volume: 8100, tags: ["android_18", "dragon_ball", "blonde_hair", "cyborg"] },
+  { slug: "2b", name: "2B", series: "Nier: Automata", volume: 5400, tags: ["yorha_no._2_type_b", "nier_automata", "blindfold", "thighhighs"] },
+  { slug: "mikasa-ackerman", name: "Mikasa Ackerman", series: "Attack on Titan", volume: 5400, tags: ["mikasa_ackerman", "attack_on_titan", "short_hair", "abs"] },
+  { slug: "nico-robin", name: "Nico Robin", series: "One Piece", volume: 5400, tags: ["nico_robin", "one_piece", "dark_skin", "black_hair"] },
+  { slug: "robin-one-piece", name: "Robin", series: "One Piece", volume: 5400, tags: ["nico_robin", "one_piece", "mature", "dark_hair"] },
+  { slug: "makima", name: "Makima", series: "Chainsaw Man", volume: 4400, tags: ["makima_(chainsaw_man)", "chainsaw_man", "red_hair", "domination"] },
+  { slug: "yor-forger", name: "Yor Forger", series: "Spy x Family", volume: 4400, tags: ["yor_forger", "spy_x_family", "black_hair", "assassin"] },
+  { slug: "tifa-lockhart", name: "Tifa Lockhart", series: "Final Fantasy VII", volume: 4400, tags: ["tifa_lockhart", "final_fantasy", "big_breasts", "brunette"] },
+  { slug: "sakura-haruno", name: "Sakura Haruno", series: "Naruto", volume: 4400, tags: ["haruno_sakura", "naruto", "pink_hair", "medical_ninja"] },
+  { slug: "ochako-uraraka", name: "Ochako Uraraka", series: "My Hero Academia", volume: 4400, tags: ["uraraka_ochako", "boku_no_hero_academia", "brown_hair", "hero"] },
+  { slug: "megumin", name: "Megumin", series: "Konosuba", volume: 4400, tags: ["megumin", "kono_subarashii_sekai", "explosion_magic", "witch"] },
+  { slug: "aqua", name: "Aqua", series: "Konosuba", volume: 4400, tags: ["aqua_(konosuba)", "kono_subarashii_sekai", "blue_hair", "goddess"] },
+  { slug: "rem", name: "Rem", series: "Re:Zero", volume: 4400, tags: ["rem_(re_zero)", "re_zero", "blue_hair", "maid"] },
+  { slug: "emilia-re-zero", name: "Emilia", series: "Re:Zero", volume: 4400, tags: ["emilia_(re_zero)", "re_zero", "silver_hair", "elf"] },
+  { slug: "asuka-langley", name: "Asuka Langley", series: "Neon Genesis Evangelion", volume: 4400, tags: ["souryuu_asuka_langley", "evangelion", "red_hair", "plugsuit"] },
+  { slug: "rei-ayanami", name: "Rei Ayanami", series: "Neon Genesis Evangelion", volume: 4400, tags: ["ayanami_rei", "evangelion", "blue_hair", "plugsuit"] },
+  { slug: "erza-scarlet", name: "Erza Scarlet", series: "Fairy Tail", volume: 4400, tags: ["erza_scarlet", "fairy_tail", "red_hair", "armor"] },
+  { slug: "lucy-heartfilia", name: "Lucy Heartfilia", series: "Fairy Tail", volume: 4400, tags: ["lucy_heartfilia", "fairy_tail", "blonde_hair", "celestial"] },
+  { slug: "rangiku-matsumoto", name: "Rangiku Matsumoto", series: "Bleach", volume: 2900, tags: ["matsumoto_rangiku", "bleach", "blonde_hair", "big_breasts"] },
+  { slug: "yoruichi", name: "Yoruichi Shihouin", series: "Bleach", volume: 2900, tags: ["shihouin_yoruichi", "bleach", "dark_skin", "purple_hair"] },
+  { slug: "misato-katsuragi", name: "Misato Katsuragi", series: "Neon Genesis Evangelion", volume: 2900, tags: ["katsuragi_misato", "evangelion", "purple_hair", "milf"] },
+];
+
+function enrichCharacterPages() {
+  section("ENRICHING CHARACTER PAGES (Top 30)");
+
+  // Check if we already ran today
+  if (existsSync(ENRICHMENT_FLAG_PATH)) {
+    try {
+      const flag = JSON.parse(readFileSync(ENRICHMENT_FLAG_PATH, "utf8"));
+      const today = new Date().toISOString().split("T")[0];
+      if (flag.lastRun === today) {
+        log("Already enriched today — skipping");
+        return 0;
+      }
+    } catch { /* proceed */ }
+  }
+
+  // Read existing characters-seo.ts to find already-enriched slugs
+  let existingContent = "";
+  const existingSlugs = new Set();
+  if (existsSync(CHARACTERS_SEO_PATH)) {
+    existingContent = readFileSync(CHARACTERS_SEO_PATH, "utf8");
+    const matches = existingContent.matchAll(/slug:\s*"([^"]+)"/g);
+    for (const m of matches) existingSlugs.add(m[1]);
+  }
+
+  const toEnrich = TOP_30_CHARACTERS.filter((c) => !existingSlugs.has(c.slug));
+  if (toEnrich.length === 0) {
+    log("All 30 characters already enriched");
+    if (!DRY_RUN) {
+      writeFileSync(ENRICHMENT_FLAG_PATH, JSON.stringify({ lastRun: new Date().toISOString().split("T")[0] }));
+    }
+    return 0;
+  }
+
+  log(`${toEnrich.length} characters to enrich`);
+
+  const entries = toEnrich.map((char) => {
+    const tagsDisplay = char.tags.map((t) => t.replace(/_/g, " ")).join(", ");
+    const description = `${char.name} from ${char.series} is one of the most searched anime characters in hentai, with approximately ${char.volume.toLocaleString()} monthly searches globally. As a beloved character from the ${char.series} franchise, ${char.name} has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with ${char.name} hentai include ${tagsDisplay}, reflecting the character's distinctive visual traits and the diverse scenarios fans create. ${char.name} consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated ${char.name} hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from ${char.series}. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of ${char.series}.`;
+
+    const faq = [
+      {
+        question: `Where can I watch ${char.name} hentai for free?`,
+        answer: `You can watch free ${char.name} hentai on iku.gg. Browse the ${char.name} character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine ${char.name} with other tags like uncensored, 3D, or vanilla for more specific results.`,
+      },
+      {
+        question: `What are the most popular ${char.name} hentai tags?`,
+        answer: `The most popular tags associated with ${char.name} hentai include ${tagsDisplay}. These tags reflect both the character's visual traits from ${char.series} and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of ${char.name} content you prefer.`,
+      },
+      {
+        question: `How much ${char.name} hentai content exists?`,
+        answer: `${char.name} is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the ${char.name} collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New ${char.name} hentai is added daily as creators continue to produce content featuring this popular ${char.series} character.`,
+      },
+    ];
+
+    return { ...char, seoDescription: description, faq, generatedAt: new Date().toISOString().split("T")[0] };
+  });
+
+  if (DRY_RUN) {
+    log(`DRY RUN: would enrich ${entries.length} characters`);
+    return entries.length;
+  }
+
+  // Build the TypeScript file content
+  const tsEntries = entries.map((e) => {
+    const faqStr = e.faq.map((f) =>
+      `    { question: ${JSON.stringify(f.question)}, answer: ${JSON.stringify(f.answer)} }`
+    ).join(",\n");
+    return `  {
+    slug: ${JSON.stringify(e.slug)},
+    name: ${JSON.stringify(e.name)},
+    series: ${JSON.stringify(e.series)},
+    searchVolume: ${e.volume},
+    seoDescription: ${JSON.stringify(e.seoDescription)},
+    faq: [
+${faqStr}
+    ],
+    generatedAt: ${JSON.stringify(e.generatedAt)},
+  }`;
+  }).join(",\n");
+
+  const fileContent = `/**
+ * characters-seo.ts — SEO-enriched descriptions and FAQs for top 30 characters
+ *
+ * Auto-generated by seo-autopilot.mjs enrichCharacterPages().
+ * DO NOT EDIT MANUALLY — this file is regenerated on each run.
+ */
+
+export interface CharacterSEO {
+  slug: string;
+  name: string;
+  series: string;
+  searchVolume: number;
+  seoDescription: string;
+  faq: Array<{ question: string; answer: string }>;
+  generatedAt: string;
+}
+
+export const CHARACTERS_SEO: CharacterSEO[] = [
+${tsEntries}
+];
+
+/**
+ * Lookup a character's SEO data by slug.
+ */
+export function getCharacterSEO(slug: string): CharacterSEO | undefined {
+  return CHARACTERS_SEO.find((c) => c.slug === slug);
+}
+`;
+
+  writeFileSync(CHARACTERS_SEO_PATH, fileContent);
+  log(`Wrote ${entries.length} character SEO entries to characters-seo.ts`);
+
+  // Save flag
+  const flagDir = dirname(ENRICHMENT_FLAG_PATH);
+  if (!existsSync(flagDir)) mkdirSync(flagDir, { recursive: true });
+  writeFileSync(ENRICHMENT_FLAG_PATH, JSON.stringify({ lastRun: new Date().toISOString().split("T")[0], count: entries.length }));
+
+  return entries.length;
+}
+
+// ── UPGRADE 2: Mine Semrush CSVs ──────────────────────────────
+// Navigational site names to exclude
+const NAV_EXCLUSIONS = new Set([
+  "hanime", "nhentai", "pornhub", "xvideos", "xhamster", "hentaihaven",
+  "hentai haven", "rule34", "gelbooru", "danbooru", "e621", "r34",
+  "fakku", "tsumino", "hitomi", "simply hentai", "animeidhentai",
+  "3dhentai", "hentai stream", "hentai mama", "hentaigasm", "muchohentai",
+  "animehentai", "rule 34", "xnxx", "redtube",
+]);
+
+async function readCSVLines(path) {
+  return new Promise((resolve, reject) => {
+    const lines = [];
+    const rl = createInterface({ input: createReadStream(path), crlfDelay: Infinity });
+    rl.on("line", (line) => lines.push(line));
+    rl.on("close", () => resolve(lines));
+    rl.on("error", reject);
+  });
+}
+
+async function mineSemrushKeywords() {
+  section("MINING SEMRUSH CSVS");
+
+  // Check if CSVs exist (local dev only)
+  const availableCSVs = SEMRUSH_CSV_PATHS.filter((p) => existsSync(p));
+
+  if (availableCSVs.length === 0) {
+    // Check for previously mined keywords
+    if (existsSync(MINED_KEYWORDS_PATH)) {
+      try {
+        const mined = JSON.parse(readFileSync(MINED_KEYWORDS_PATH, "utf8"));
+        log(`No CSVs found — loaded ${mined.length} previously mined keywords from JSON`);
+        return mined;
+      } catch {
+        log("No CSVs found and no cached keywords — using PRIORITY_KEYWORDS only");
+        return [];
+      }
+    }
+    log("No Semrush CSVs found (server mode) — using PRIORITY_KEYWORDS only");
+    return [];
+  }
+
+  log(`Found ${availableCSVs.length} CSV files`);
+
+  // Build set of existing priority keywords for dedup
+  const existingKW = new Set(PRIORITY_KEYWORDS.map((k) => k.kw.toLowerCase()));
+
+  const allKeywords = [];
+
+  for (const csvPath of availableCSVs) {
+    const lines = await readCSVLines(csvPath);
+    log(`  ${csvPath.split(/[/\\]/).pop()}: ${lines.length} rows`);
+
+    // Parse header
+    const header = lines[0].split(",").map((h) => h.trim());
+    const kwIdx = header.indexOf("Keyword");
+    const intentIdx = header.indexOf("Intent");
+    const volumeIdx = header.indexOf("Volume");
+    const kdIdx = header.indexOf("Keyword Difficulty");
+
+    if (kwIdx === -1 || volumeIdx === -1) {
+      log(`  WARNING: CSV missing required columns — skipping`);
+      continue;
+    }
+
+    for (let i = 1; i < lines.length; i++) {
+      // Simple CSV parse (handles most cases without quoted fields)
+      const cols = lines[i].split(",");
+      if (cols.length < Math.max(kwIdx, intentIdx, volumeIdx, kdIdx) + 1) continue;
+
+      const kw = cols[kwIdx].trim().toLowerCase();
+      const intent = intentIdx >= 0 ? cols[intentIdx].trim() : "";
+      const volume = parseInt(cols[volumeIdx].trim()) || 0;
+      const kd = parseInt(cols[kdIdx]?.trim()) || 0;
+
+      // Filter criteria
+      if (volume < 1000) continue;
+      if (kd >= 40) continue;
+      if (intent && !intent.includes("Informational") && !intent.includes("Commercial")) continue;
+
+      // Exclude navigational keywords
+      if (NAV_EXCLUSIONS.has(kw)) continue;
+      let isNav = false;
+      for (const nav of NAV_EXCLUSIONS) {
+        if (kw.startsWith(nav + " ") || kw.endsWith(" " + nav) || kw === nav) {
+          isNav = true;
+          break;
+        }
+      }
+      if (isNav) continue;
+
+      // Exclude already in PRIORITY_KEYWORDS
+      if (existingKW.has(kw)) continue;
+
+      // Calculate bang-for-buck: volume / (KD + 1) to avoid division by zero
+      const score = volume / (kd + 1);
+
+      // Determine type heuristic
+      const isCharacter = kw.match(/\b(hentai|porn)\b/) && !kw.match(/\b(best|top|how|what|guide|list|watch)\b/);
+      const type = isCharacter ? "character" : "blog";
+
+      allKeywords.push({ kw, volume, kd, type, score, intent });
+    }
+  }
+
+  // Deduplicate
+  const seen = new Set();
+  const unique = allKeywords.filter((k) => {
+    if (seen.has(k.kw)) return false;
+    seen.add(k.kw);
+    return true;
+  });
+
+  // Sort by bang-for-buck score descending, take top 50
+  unique.sort((a, b) => b.score - a.score);
+  const top50 = unique.slice(0, 50);
+
+  log(`Mined ${unique.length} qualifying keywords, selected top 50`);
+  for (const k of top50.slice(0, 10)) {
+    log(`  "${k.kw}" vol=${k.volume} KD=${k.kd} score=${k.score.toFixed(0)} type=${k.type}`);
+  }
+  if (top50.length > 10) log(`  ... and ${top50.length - 10} more`);
+
+  // Save to JSON so the server can use them on subsequent runs
+  if (!DRY_RUN) {
+    const dir = dirname(MINED_KEYWORDS_PATH);
+    if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+    writeFileSync(MINED_KEYWORDS_PATH, JSON.stringify(top50, null, 2));
+    log(`Saved ${top50.length} mined keywords to data/semrush-mined-keywords.json`);
+  }
+
+  return top50;
+}
+
+// ── UPGRADE 5: Internal Links Map ─────────────────────────────
+function updateInternalLinks() {
+  section("UPDATING BLOG INTERNAL LINKS");
+
+  // Check if we already ran today
+  if (existsSync(INTERNAL_LINKS_FLAG_PATH)) {
+    try {
+      const flag = JSON.parse(readFileSync(INTERNAL_LINKS_FLAG_PATH, "utf8"));
+      const today = new Date().toISOString().split("T")[0];
+      if (flag.lastRun === today) {
+        log("Already updated today — skipping");
+        return 0;
+      }
+    } catch { /* proceed */ }
+  }
+
+  // Collect all blog slugs
+  const allBlogSlugs = [];
+  for (const file of ["blog.ts", "blog-new.ts", "blog-seo-push.ts"]) {
+    const path = resolve(ROOT, "src/data", file);
+    if (!existsSync(path)) continue;
+    const content = readFileSync(path, "utf8");
+    const slugMatches = [...content.matchAll(/slug:\s*"([^"]+)"/g)];
+    const titleMatches = [...content.matchAll(/title:\s*"([^"]+)"/g)];
+    for (let i = 0; i < slugMatches.length && i < titleMatches.length; i++) {
+      allBlogSlugs.push({ slug: slugMatches[i][1], title: titleMatches[i][1] });
+    }
+  }
+
+  // Content queue published articles
+  if (existsSync(QUEUE_PATH)) {
+    try {
+      const queue = JSON.parse(readFileSync(QUEUE_PATH, "utf8"));
+      for (const item of queue) {
+        if (item.status === "published" && item.data?.slug && item.data?.title) {
+          allBlogSlugs.push({ slug: item.data.slug, title: item.data.title });
+        }
+      }
+    } catch { /* ignore */ }
+  }
+
+  // Collect character pages
+  const characterLinks = TOP_30_CHARACTERS.slice(0, 15).map((c) => ({
+    text: `${c.name} Hentai`,
+    href: `/character/${c.slug}`,
+  }));
+
+  // Collect top tags
+  const popularTags = [
+    "anal", "uncensored", "3d", "milf", "vanilla", "tentacle",
+    "big_breasts", "creampie", "blowjob", "group", "ahegao",
+    "femdom", "yuri", "cosplay", "monster",
+  ];
+  const tagLinks = popularTags.map((t) => ({
+    text: `${t.replace(/_/g, " ")} hentai`,
+    href: `/tag/${t}`,
+  }));
+
+  // Recent blog articles (last 10)
+  const recentBlogs = allBlogSlugs.slice(-10).map((b) => ({
+    text: b.title.length > 50 ? b.title.slice(0, 50) + "..." : b.title,
+    href: `/blog/${b.slug}`,
+  }));
+
+  // For key articles, generate enriched link sets
+  const keyArticleSlugs = [
+    "best-hentai-studios",
+    "what-is-hentai",
+    "popular-hentai-characters",
+    "best-hentai-anime-2025",
+    "understanding-hentai-tags",
+    "hentai-for-beginners-guide",
+    "hentai-vs-ecchi",
+  ];
+
+  const linkEntries = [];
+
+  for (const articleSlug of keyArticleSlugs) {
+    // Mix character + tag + recent blog links, avoiding self-references
+    const links = [
+      ...characterLinks.slice(0, 5),
+      ...tagLinks.slice(0, 5),
+      ...recentBlogs.filter((b) => b.href !== `/blog/${articleSlug}`).slice(0, 5),
+    ];
+
+    linkEntries.push({
+      articleSlug,
+      linksToAdd: links,
+      updatedAt: new Date().toISOString().split("T")[0],
+    });
+  }
+
+  if (DRY_RUN) {
+    log(`DRY RUN: would generate internal links for ${linkEntries.length} articles`);
+    return linkEntries.length;
+  }
+
+  // Build TypeScript file
+  const entriesStr = linkEntries.map((entry) => {
+    const linksStr = entry.linksToAdd.map((l) =>
+      `      { text: ${JSON.stringify(l.text)}, href: ${JSON.stringify(l.href)} }`
+    ).join(",\n");
+    return `  {
+    articleSlug: ${JSON.stringify(entry.articleSlug)},
+    linksToAdd: [
+${linksStr}
+    ],
+    updatedAt: ${JSON.stringify(entry.updatedAt)},
+  }`;
+  }).join(",\n");
+
+  const fileContent = `/**
+ * blog-internal-links.ts — Dynamic internal links appended to blog articles
+ *
+ * Auto-generated by seo-autopilot.mjs updateInternalLinks().
+ * DO NOT EDIT MANUALLY — this file is regenerated on each run.
+ */
+
+export interface InternalLink {
+  text: string;
+  href: string;
+}
+
+export interface ArticleLinks {
+  articleSlug: string;
+  linksToAdd: InternalLink[];
+  updatedAt: string;
+}
+
+export const BLOG_INTERNAL_LINKS: ArticleLinks[] = [
+${entriesStr}
+];
+
+/**
+ * Get internal links for a specific article slug.
+ */
+export function getInternalLinksForArticle(slug: string): ArticleLinks | undefined {
+  return BLOG_INTERNAL_LINKS.find((a) => a.articleSlug === slug);
+}
+`;
+
+  writeFileSync(BLOG_LINKS_PATH, fileContent);
+  log(`Wrote internal links for ${linkEntries.length} articles to blog-internal-links.ts`);
+
+  // Save flag
+  const flagDir = dirname(INTERNAL_LINKS_FLAG_PATH);
+  if (!existsSync(flagDir)) mkdirSync(flagDir, { recursive: true });
+  writeFileSync(INTERNAL_LINKS_FLAG_PATH, JSON.stringify({ lastRun: new Date().toISOString().split("T")[0], count: linkEntries.length }));
+
+  return linkEntries.length;
+}
+
 // ── Main Pipeline ───────────────────────────────────────────────
 async function main() {
   console.log("\n====================================================");
-  console.log("  SEO AUTOPILOT v2 — iku.gg (Semrush-driven)");
+  console.log("  SEO AUTOPILOT v3 — MAXIMUM POWER — iku.gg");
   console.log(`  ${new Date().toISOString()} ${DRY_RUN ? "(DRY RUN)" : ""}`);
   console.log("====================================================");
 
@@ -780,15 +1283,18 @@ async function main() {
   const prevSnapshot = loadPreviousSnapshot();
   const posChanges = getPositionChanges(gsc.queries, prevSnapshot);
 
-  // 3. Get existing slugs
+  // 3. Mine Semrush CSVs for additional keywords (Upgrade 2)
+  const minedKeywords = await mineSemrushKeywords();
+
+  // 4. Get existing slugs
   const existingSlugs = getExistingSlugs();
   log(`\n  Existing blog slugs: ${existingSlugs.size}`);
 
-  // 4. Pick next keywords
-  const targets = pickNextKeywords(existingSlugs, 2);
+  // 5. Pick next keywords (with mined fallback)
+  const targets = pickNextKeywords(existingSlugs, minedKeywords, 2);
 
   if (RESEARCH_ONLY) {
-    section("KEYWORD STATUS");
+    section("KEYWORD STATUS — PRIORITY KEYWORDS");
     let covered = 0;
     let remaining = 0;
     for (const entry of PRIORITY_KEYWORDS) {
@@ -799,6 +1305,18 @@ async function main() {
       else remaining++;
     }
     log(`\n  Covered: ${covered}/${PRIORITY_KEYWORDS.length} | Remaining: ${remaining}`);
+
+    if (minedKeywords.length > 0) {
+      section("KEYWORD STATUS — MINED FROM SEMRUSH CSV");
+      let minedCovered = 0;
+      for (const entry of minedKeywords.slice(0, 20)) {
+        const isCovered = isKeywordCovered(entry.kw, existingSlugs);
+        const marker = isCovered ? "DONE" : `TODO (KD ${entry.kd})`;
+        log(`  [${marker}] "${entry.kw}" — vol ${entry.volume}, score ${entry.score?.toFixed(0) || "?"}`);
+        if (isCovered) minedCovered++;
+      }
+      log(`\n  Mined keywords shown: 20/${minedKeywords.length} | Covered: ${minedCovered}`);
+    }
 
     // Show position changes
     if (posChanges.length > 0) {
@@ -813,7 +1331,7 @@ async function main() {
     return;
   }
 
-  // 5. Generate articles
+  // 6. Generate articles
   const articles = targets
     .map((entry) => {
       try {
@@ -827,13 +1345,38 @@ async function main() {
 
   log(`Generated ${articles.length} articles`);
 
-  // 6. Add to queue
+  // 7. Add to queue
   const added = addToQueue(articles);
 
-  // 7. Commit & push
-  gitCommitAndPush(added);
+  // 8. Enrich character pages (Upgrade 1)
+  let charsEnriched = 0;
+  try {
+    charsEnriched = enrichCharacterPages();
+  } catch (e) {
+    log(`Character enrichment error: ${e.message}`);
+  }
 
-  // 8. Summary
+  // 9. Update internal links (Upgrade 5)
+  let linksUpdated = 0;
+  try {
+    linksUpdated = updateInternalLinks();
+  } catch (e) {
+    log(`Internal links error: ${e.message}`);
+  }
+
+  // 10. Submit URLs to Google (Upgrade 3)
+  let urlsSubmitted = { submitted: 0, failed: 0, urls: [] };
+  try {
+    const { submitUrlsToGoogle } = await import("./submit-urls-to-google.mjs");
+    urlsSubmitted = await submitUrlsToGoogle();
+  } catch (e) {
+    log(`URL submission error: ${e.message}`);
+  }
+
+  // 11. Commit & push (include new generated files)
+  gitCommitAndPush(added, charsEnriched, linksUpdated);
+
+  // 12. Summary
   section("SUMMARY");
   const totalClicks = gsc.queries.reduce((s, q) => s + q.clicks, 0);
   const totalImp = gsc.queries.reduce((s, q) => s + q.imp, 0);
@@ -841,9 +1384,13 @@ async function main() {
   log(`GSC (3-day): ${totalClicks} clicks | ${totalImp} impressions | ${gsc.queries.length} keywords | ${pagesIndexed} pages`);
   log(`Articles generated: ${articles.length}`);
   log(`Articles added to queue: ${added}`);
+  log(`Characters enriched: ${charsEnriched}`);
+  log(`Blog internal links: ${linksUpdated} articles`);
+  log(`URLs submitted to Google: ${urlsSubmitted.submitted} OK, ${urlsSubmitted.failed} failed`);
+  log(`Mined keywords available: ${minedKeywords.length}`);
   log(`Semrush keywords covered: ${PRIORITY_KEYWORDS.filter((e) => isKeywordCovered(e.kw, getExistingSlugs())).length}/${PRIORITY_KEYWORDS.length}`);
 
-  // 9. Telegram recap
+  // 13. Telegram recap
   const topKw = gsc.queries
     .slice(0, 5)
     .map((q) => `  ${q.kw} — pos ${q.pos}, ${q.imp} imp, ${q.clicks} clics`)
@@ -862,7 +1409,7 @@ async function main() {
 
   const coveredCount = PRIORITY_KEYWORDS.filter((e) => isKeywordCovered(e.kw, getExistingSlugs())).length;
 
-  const msg = `<b>SEO Autopilot v2 — iku.gg</b>
+  const msg = `<b>SEO Autopilot v3 — MAXIMUM POWER</b>
 ${new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" })}
 
 <b>GSC 3 jours:</b>
@@ -878,14 +1425,18 @@ ${posChangesText}
 <b>Articles generes:</b>
 ${articleList}
 
-<b>Semrush pipeline:</b> ${coveredCount}/${PRIORITY_KEYWORDS.length} keywords couverts
-${added > 0 ? "Git commit OK" : "Rien a publier"}`;
+<b>Characters enrichis:</b> ${charsEnriched}
+<b>Internal links:</b> ${linksUpdated} articles
+<b>URLs Google:</b> ${urlsSubmitted.submitted} soumises
+<b>Mined keywords:</b> ${minedKeywords.length} disponibles
+<b>Semrush pipeline:</b> ${coveredCount}/${PRIORITY_KEYWORDS.length} priority + ${minedKeywords.length} mined
+${added > 0 || charsEnriched > 0 || linksUpdated > 0 ? "Git commit OK" : "Rien a publier"}`;
 
   await sendTelegram(msg);
 }
 
 main().catch(async (err) => {
   console.error("AUTOPILOT FATAL:", err);
-  await sendTelegram(`<b>SEO Autopilot v2 CRASH</b>\n${err.message}`).catch(() => {});
+  await sendTelegram(`<b>SEO Autopilot v3 CRASH</b>\n${err.message}`).catch(() => {});
   process.exit(1);
 });

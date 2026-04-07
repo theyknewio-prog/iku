@@ -7,6 +7,7 @@ import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { getVideos } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
 import { CHARACTERS, getCharacterBySlug, type Character } from "@/data/characters";
+import { getCharacterSEO } from "@/data/characters-seo";
 import { getSeriesBySlug } from "@/data/series";
 import type { Metadata } from "next";
 
@@ -132,10 +133,25 @@ export default async function CharacterPage({ params, searchParams }: Props) {
     ],
   };
 
+  // FAQPage JSON-LD from character SEO enrichment
+  const charSEO = getCharacterSEO(slug);
+  const faqJsonLd = charSEO?.faq?.length ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: charSEO.faq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer },
+    })),
+  } : null;
+
   return (
     <div className="shell-content">
       <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
+      {faqJsonLd && (
+        <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }} />
+      )}
       <main>
         <div className="page-container">
           {/* ── Character hero ──────────────────────────────────── */}
@@ -173,7 +189,7 @@ export default async function CharacterPage({ params, searchParams }: Props) {
             </div>
           </div>
 
-          {/* ── Description ──────────────────────────────────── */}
+          {/* ── Description (enriched with SEO data if available) ── */}
           <section className="page-section">
             <p style={{
               color: "var(--color-text-secondary)",
@@ -181,8 +197,27 @@ export default async function CharacterPage({ params, searchParams }: Props) {
               lineHeight: 1.7,
               maxWidth: "720px",
             }}>
-              {character.description}
+              {(() => {
+                const seoData = getCharacterSEO(slug);
+                return seoData?.seoDescription || character.description;
+              })()}
             </p>
+            {/* FAQ section from SEO enrichment */}
+            {(() => {
+              const seoData = getCharacterSEO(slug);
+              if (!seoData?.faq?.length) return null;
+              return (
+                <div className="watch-faq" style={{ marginTop: "24px" }}>
+                  <h2 className="watch-faq__heading">Frequently Asked Questions</h2>
+                  {seoData.faq.map((item, i) => (
+                    <details key={i} className="watch-faq__item">
+                      <summary className="watch-faq__question">{item.question}</summary>
+                      <p className="watch-faq__answer">{item.answer}</p>
+                    </details>
+                  ))}
+                </div>
+              );
+            })()}
           </section>
 
           {/* ── Sort filter bar ───────────────────────────────── */}

@@ -10,7 +10,7 @@
 import { useEffect, useState } from "react";
 
 const AFFILIATE_URL =
-  "https://chaturbate.com/in/?tour=dT8X&campaign=ikugg&track=default";
+  "https://chaturbate.com/in/?tour=LQps&campaign=bRWaZ&track=default";
 const STORAGE_KEY = "iku-cam-widget-dismissed";
 
 export function CamWidget() {

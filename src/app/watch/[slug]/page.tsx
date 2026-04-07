@@ -21,6 +21,7 @@ import { getNonce } from "@/lib/csp-nonce";
 import { AdZoneClient } from "@/components/AdZoneClient";
 import { AD_ZONES } from "@/lib/ad-config";
 import { RemoveAdsCTA } from "@/components/RemoveAdsCTA";
+import { buildSeoTitle } from "@/lib/video-display";
 
 // Dynamic rendering: we call headers() via getNonce() to stamp the CSP nonce
 // on JSON-LD scripts, which is incompatible with the old ISR-via-empty-
@@ -49,16 +50,9 @@ function fmt(raw: string): string {
   return raw.replace(/_/g, " ");
 }
 
+/** SEO-optimized title for metadata — delegates to shared buildSeoTitle */
 function buildTitle(video: Video): string {
-  const character = video.characters[0] ? fmt(video.characters[0]) : "";
-  const copyright = video.copyrights[0] ? fmt(video.copyrights[0]) : "";
-  if (character && copyright) return `${character} Hentai - ${copyright} | iku.gg`;
-  if (character) return `${character} Hentai | iku.gg`;
-  if (copyright) return `${copyright} Hentai | iku.gg`;
-  // Fallback for rule34video/WP sources: build title from tags (which come from video title)
-  const tagTitle = video.tags.slice(0, 5).map(fmt).join(" ");
-  if (tagTitle) return `${tagTitle} — Hentai | iku.gg`;
-  return `Hentai Video | iku.gg`;
+  return buildSeoTitle(video);
 }
 
 function buildDescription(video: Video): string {
