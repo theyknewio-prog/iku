@@ -59,7 +59,7 @@ export function middleware(request: NextRequest) {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: blob: https://cdn.donmai.us https://gelbooru.com https://*.gelbooru.com https://rule34.xxx https://*.rule34.xxx https://rule34video.com https://*.rule34video.com https://hentaimama.io https://hentai.tv https://animeidhentai.com https://watchhentai.net https://hentaiworld.tv https://hentaigasm.com https://hentaicity.com https://*.exoclick.com https://*.exosrv.com https://a.magsrv.com https://*.magsrv.com",
-    "media-src 'self' blob: https://cdn.donmai.us https://gelbooru.com https://*.gelbooru.com https://rule34.xxx https://*.rule34.xxx https://rule34video.com https://*.rule34video.com https://cdn.iku.gg https://*.workers.dev",
+    "media-src 'self' blob: https://cdn.donmai.us https://gelbooru.com https://*.gelbooru.com https://rule34.xxx https://*.rule34.xxx https://rule34video.com https://*.rule34video.com https://cdn.iku.gg https://*.workers.dev https://*.afcdn.net https://*.exoclick.com https://*.exosrv.com https://*.magsrv.com",
     "connect-src 'self' https://cdn.donmai.us https://danbooru.donmai.us https://gelbooru.com https://*.gelbooru.com https://rule34.xxx https://*.rule34.xxx https://rule34video.com https://*.rule34video.com https://us.i.posthog.com https://us-assets.i.posthog.com https://cdn.iku.gg https://*.workers.dev https://a.magsrv.com https://*.magsrv.com https://*.exoclick.com https://*.exosrv.com",
     "frame-src 'self' https://*.exoclick.com https://*.exosrv.com https://*.magsrv.com",
     "frame-ancestors 'none'",
