@@ -1,23 +1,27 @@
 "use client";
 
 /**
- * WatchPlayerWithPreroll — Wraps WatchPlayer with a pre-roll ad overlay.
+ * WatchPlayerWithPreroll — Wraps WatchPlayer with pre-roll and post-roll ads.
  *
- * The PrerollAd renders on top of the player area. Once the ad completes
- * (or is skipped / fails to load), it dismisses and the WatchPlayer is
- * revealed. The WatchPlayer is always mounted (for SEO/hydration), but
- * the preroll covers it until done.
+ * Flow:
+ *   1. PrerollAd renders on top of the player (15s, skippable after 5s).
+ *   2. Once preroll is done (skipped or timed out), WatchPlayer becomes active.
+ *   3. When the video ends (onEnded), PostrollAd is shown for 5 seconds.
+ *   4. After postroll, WatchPlayer shows its native "Up Next" countdown.
+ *
+ * The WatchPlayer is always mounted (for hydration / ISR), but the preroll
+ * overlay sits above it until dismissed. The postroll overlay also uses
+ * position:absolute inset:0 over the player area.
  *
  * Fix 2026-04-07: The wrapper div now has a guaranteed min-height (56.25vw,
- * i.e. 16:9 ratio, capped at 540px) so that the preroll overlay's
- * `position: absolute; inset: 0` has a real bounding box to fill before
- * the video's natural dimensions are known. Without this, the overlay
- * collapses to 0px and is invisible.
+ * i.e. 16:9 ratio, capped at 540px) so that overlay position:absolute has a
+ * real bounding box even before the video's natural dimensions are known.
  */
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { WatchPlayer } from "./WatchPlayer";
-import { PrerollAd } from "./PrerollAd";
+import { PrerollAd }   from "./PrerollAd";
+import { PostrollAd }  from "./PostrollAd";
 
 interface RelatedVideo {
   slug: string;
@@ -33,18 +37,40 @@ interface Props {
 }
 
 export function WatchPlayerWithPreroll({ src, poster, resolveUrl, relatedVideos }: Props) {
-  const [prerollDone, setPrerollDone] = useState(false);
+  const [prerollDone,  setPrerollDone]  = useState(false);
+  const [showPostroll, setShowPostroll] = useState(false);
+  const [postrollDone, setPostrollDone] = useState(false);
+
+  // Called by WatchPlayer when the video finishes playing
+  const handleEnded = useCallback(() => {
+    setShowPostroll(true);
+  }, []);
+
+  // Called by PostrollAd when it dismisses
+  const handlePostrollComplete = useCallback(() => {
+    setShowPostroll(false);
+    setPostrollDone(true);
+  }, []);
 
   return (
     <div style={{ position: "relative", minHeight: "min(56.25vw, 540px)" }}>
+      {/* Pre-roll — blocks the player until complete */}
       {!prerollDone && (
         <PrerollAd onComplete={() => setPrerollDone(true)} />
       )}
+
+      {/* Post-roll — shown as an overlay after the video ends */}
+      {showPostroll && !postrollDone && (
+        <PostrollAd onComplete={handlePostrollComplete} />
+      )}
+
       <WatchPlayer
         src={src}
         poster={poster}
         resolveUrl={resolveUrl}
         relatedVideos={relatedVideos}
+        onVideoEnded={handleEnded}
+        suppressEndOverlay={showPostroll && !postrollDone}
       />
     </div>
   );

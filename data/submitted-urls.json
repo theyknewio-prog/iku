@@ -1,102 +1,982 @@
 {
+  "https://iku.gg/": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "static page"
+  },
+  "https://iku.gg/explore": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "static page"
+  },
+  "https://iku.gg/trending": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "static page"
+  },
+  "https://iku.gg/new": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "static page"
+  },
+  "https://iku.gg/browse": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "static page"
+  },
+  "https://iku.gg/shorts": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "static page"
+  },
+  "https://iku.gg/tags": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "static page"
+  },
+  "https://iku.gg/character": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "static page"
+  },
+  "https://iku.gg/series": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "static page"
+  },
+  "https://iku.gg/blog": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "static page"
+  },
+  "https://iku.gg/glossary": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "static page"
+  },
+  "https://iku.gg/favorites": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "static page"
+  },
+  "https://iku.gg/history": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "static page"
+  },
   "https://iku.gg/character/hinata-hyuga": {
-    "submittedAt": "2026-04-07T18:00:05.162Z",
-    "method": "sitemap-ping",
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
     "reason": "character (vol 14800)"
   },
   "https://iku.gg/character/tsunade": {
-    "submittedAt": "2026-04-07T18:00:05.162Z",
-    "method": "sitemap-ping",
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
     "reason": "character (vol 14800)"
   },
   "https://iku.gg/character/nami": {
-    "submittedAt": "2026-04-07T18:00:05.162Z",
-    "method": "sitemap-ping",
-    "reason": "character (vol 14800)"
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
   },
   "https://iku.gg/character/tatsumaki": {
-    "submittedAt": "2026-04-07T18:00:05.162Z",
-    "method": "sitemap-ping",
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
     "reason": "character (vol 14800)"
   },
   "https://iku.gg/character/bulma": {
-    "submittedAt": "2026-04-07T18:00:05.162Z",
-    "method": "sitemap-ping",
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
     "reason": "character (vol 14800)"
   },
   "https://iku.gg/character/boa-hancock": {
-    "submittedAt": "2026-04-07T18:00:05.162Z",
-    "method": "sitemap-ping",
-    "reason": "character (vol 12100)"
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
   },
   "https://iku.gg/character/starfire": {
-    "submittedAt": "2026-04-07T18:00:05.162Z",
-    "method": "sitemap-ping",
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
     "reason": "character (vol 12100)"
   },
   "https://iku.gg/character/raven": {
-    "submittedAt": "2026-04-07T18:00:05.162Z",
-    "method": "sitemap-ping",
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
     "reason": "character (vol 12100)"
   },
   "https://iku.gg/character/zelda": {
-    "submittedAt": "2026-04-07T18:00:05.162Z",
-    "method": "sitemap-ping",
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
     "reason": "character (vol 12100)"
   },
   "https://iku.gg/character/android-18": {
-    "submittedAt": "2026-04-07T18:00:05.162Z",
-    "method": "sitemap-ping",
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
     "reason": "character (vol 8100)"
   },
   "https://iku.gg/character/2b": {
-    "submittedAt": "2026-04-08T06:00:06.007Z",
-    "method": "sitemap-ping",
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
     "reason": "character (vol 5400)"
   },
   "https://iku.gg/character/mikasa-ackerman": {
-    "submittedAt": "2026-04-08T06:00:06.007Z",
-    "method": "sitemap-ping",
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
     "reason": "character (vol 5400)"
   },
   "https://iku.gg/character/nico-robin": {
-    "submittedAt": "2026-04-08T06:00:06.007Z",
-    "method": "sitemap-ping",
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
     "reason": "character (vol 5400)"
   },
   "https://iku.gg/character/makima": {
-    "submittedAt": "2026-04-08T06:00:06.007Z",
-    "method": "sitemap-ping",
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
     "reason": "character (vol 4400)"
   },
   "https://iku.gg/character/yor-forger": {
-    "submittedAt": "2026-04-08T06:00:06.007Z",
-    "method": "sitemap-ping",
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
     "reason": "character (vol 4400)"
   },
   "https://iku.gg/character/tifa-lockhart": {
-    "submittedAt": "2026-04-08T06:00:06.007Z",
-    "method": "sitemap-ping",
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
     "reason": "character (vol 4400)"
   },
   "https://iku.gg/character/sakura-haruno": {
-    "submittedAt": "2026-04-08T06:00:06.007Z",
-    "method": "sitemap-ping",
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
     "reason": "character (vol 4400)"
   },
   "https://iku.gg/character/ochako-uraraka": {
-    "submittedAt": "2026-04-08T06:00:06.007Z",
-    "method": "sitemap-ping",
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
     "reason": "character (vol 4400)"
   },
   "https://iku.gg/character/megumin": {
-    "submittedAt": "2026-04-08T06:00:06.007Z",
-    "method": "sitemap-ping",
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
     "reason": "character (vol 4400)"
   },
   "https://iku.gg/character/aqua": {
-    "submittedAt": "2026-04-08T06:00:06.007Z",
-    "method": "sitemap-ping",
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
     "reason": "character (vol 4400)"
+  },
+  "https://iku.gg/character/misty": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/dawn": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/may": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/serena": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/cynthia": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/jessie": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/asuna": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/rem": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/emilia": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/raphtalia": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/darkness": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/wiz": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/mitsuri-kanroji": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/nezuko-kamado": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/power": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/himeno": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/robin": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/jinx": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/sona": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/ahri": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/lux": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/miss-fortune": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/dva": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/mercy": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/widowmaker": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/tracer": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/mei": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/sombra": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/raiden-shogun": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/ganyu": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/keqing": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/mona": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/lisa": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/jean": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/rias-gremory": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/akeno-himejima": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/koneko-toujou": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/erza-scarlet": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/lucy-heartfilia": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/mirajane-strauss": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/android-21": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/chi-chi": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/videl": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/caulifla": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/kefla": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/yoruichi-shihouin": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/rangiku-matsumoto": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/orihime-inoue": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/mt-lady": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/midnight": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/mirko": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/nejire-hado": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/momo-yaoyorozu": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/yamato": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/character/vivi": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "character page"
+  },
+  "https://iku.gg/series/naruto": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/one-piece": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/dragon-ball": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/my-hero-academia": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/fairy-tail": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/genshin-impact": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/overwatch": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/fate": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/demon-slayer": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/jujutsu-kaisen": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/pokemon": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/sword-art-online": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/re-zero": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/konosuba": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/attack-on-titan": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/bleach": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/high-school-dxd": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/league-of-legends": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/valorant": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/fortnite": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/final-fantasy": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/nier-automata": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/persona": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/chainsaw-man": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/spy-x-family": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/tokyo-revengers": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/blue-archive": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/honkai-star-rail": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/series/azur-lane": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "series page"
+  },
+  "https://iku.gg/tag/anal": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/uncensored": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/3d": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/milf": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/vanilla": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/tentacle": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/big_breasts": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/creampie": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/blowjob": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/group": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/futanari": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/gangbang": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/yuri": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/bondage": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/ahegao": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/femdom": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/maledom": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/harem": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/cosplay": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/stockings": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/glasses": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/maid": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/nurse": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/teacher": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/swimsuit": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/bikini": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/school_uniform": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/bunny_girl": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/monster": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/elf": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/demon_girl": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/angel": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/succubus": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/vampire": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/catgirl": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/fox_girl": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/dragon_girl": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/slime_girl": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/oral": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/deepthroat": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/paizuri": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/footjob": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/handjob": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/cowgirl": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/doggystyle": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/missionary": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/pov": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/cum": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/facial": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/swallow": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/bukkit": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/cum_inside": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/squirting": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/orgasm": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/multiple_orgasms": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/threesome": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/foursome": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/orgy": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/double_penetration": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/interracial": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/netorare": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/cheating": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/incest": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/public": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/outdoor": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/bathroom": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/pool": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/beach": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/onsen": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/rape": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/mind_control": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/hypnosis": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/corruption": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/pregnant": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/impregnation": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/lactation": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/size_difference": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/ugly_bastard": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
+  },
+  "https://iku.gg/tag/animated": {
+    "submittedAt": "2026-04-08T13:22:21.013Z",
+    "method": "indexing-api",
+    "reason": "popular tag"
   }
 }

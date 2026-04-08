@@ -665,6 +665,8 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
             {/* ── Sidebar (desktop) ─────────────────────────── */}
             <aside className="player-sidebar">
+              {/* Sidebar tower — 300x600, desktop only, above the 300x250 */}
+              <AdZoneClient zoneId={AD_ZONES.exoclick.sidebar300x600} size="300x600" className="ad-zone--desktop-only ad-zone--300x600" lazy />
               {/* Sidebar ad — 300x250, desktop only */}
               <AdZoneClient zoneId={AD_ZONES.exoclick.sidebar300} size="300x250" className="ad-zone--desktop-only" lazy />
               <div className="player-sidebar__title">Up next</div>

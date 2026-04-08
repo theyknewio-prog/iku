@@ -46,6 +46,10 @@ interface WatchPlayerProps {
   /** For rule34video: page URL to resolve via /api/resolve-video */
   resolveUrl?: string;
   relatedVideos?: RelatedVideo[];
+  /** Called when the video fires its native `ended` event (used by WatchPlayerWithPreroll to trigger post-roll). */
+  onVideoEnded?: () => void;
+  /** When true, suppresses the built-in "Up Next" end overlay so the post-roll ad overlay can occupy that space. */
+  suppressEndOverlay?: boolean;
 }
 
 interface SeekOverlay {
@@ -64,7 +68,7 @@ interface HeartBurst {
    (helpers, icons, ControlBtn, SPEEDS are imported from WatchPlayer.ui.tsx)
 ───────────────────────────────────────────────────────────── */
 
-export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPlayerProps) {
+export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnded, suppressEndOverlay }: WatchPlayerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -219,6 +223,11 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
 
   const handleEnded = useCallback(() => {
     if (looping) return; // video loops naturally, onEnded won't fire when loop=true, but guard anyway
+    // Notify parent (WatchPlayerWithPreroll) so post-roll can be triggered.
+    // We call this BEFORE showing the end overlay so the post-roll overlay
+    // renders on top first; once the post-roll completes, suppressEndOverlay
+    // becomes false and the native "Up Next" overlay becomes visible.
+    onVideoEnded?.();
     if (relatedVideos && relatedVideos.length > 0) {
       setEnded(true);
       setCountdown(5);
@@ -234,7 +243,7 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
         });
       }, 1000);
     }
-  }, [looping, relatedVideos]);
+  }, [looping, relatedVideos, onVideoEnded]);
 
   /* ── Feature 4: Mobile volume gesture (left-side vertical swipe) */
   const touchStartRef = useRef<{ x: number; y: number; isLeftSide: boolean; isVolumeGesture: boolean }>({
@@ -1119,7 +1128,10 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos }: WatchPla
         )}
 
         {/* ── Feature 3: End-of-video overlay ─────────────── */}
-        {ended && !looping && relatedVideos && relatedVideos.length > 0 && (
+        {/* suppressEndOverlay is true while PostrollAd is displayed so the
+            post-roll occupies the overlay space; once it completes the
+            native "Up Next" panel is revealed normally. */}
+        {ended && !looping && !suppressEndOverlay && relatedVideos && relatedVideos.length > 0 && (
           <div
             style={{
               position: "absolute",

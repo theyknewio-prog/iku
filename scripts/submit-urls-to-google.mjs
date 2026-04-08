@@ -34,7 +34,7 @@ const ROOT = resolve(__dirname, "..");
 const KEY_PATH = resolve(ROOT, "gsc-service-account.json");
 const SUBMITTED_PATH = resolve(ROOT, "data/submitted-urls.json");
 const SITE_URL = "https://iku.gg";
-const MAX_URLS_PER_RUN = 10;
+const MAX_URLS_PER_RUN = 200;
 const RESUBMIT_DAYS = 7;
 
 const DRY_RUN = process.argv.includes("--dry-run");
@@ -139,30 +139,104 @@ function collectPriorityUrls(submitted) {
     } catch { /* ignore */ }
   }
 
-  // 2. Top character pages
+  // 2. Static pages (high value, crawled once)
+  const staticPages = [
+    "/", "/explore", "/trending", "/new", "/browse", "/shorts",
+    "/tags", "/character", "/series",
+    "/blog", "/glossary", "/favorites", "/history",
+  ];
+  for (const page of staticPages) {
+    urls.push({ url: `${SITE_URL}${page}`, priority: 2, reason: "static page" });
+  }
+
+  // 3. Top character pages
   for (const char of TOP_CHARACTERS) {
-    urls.push({ url: `${SITE_URL}/character/${char.slug}`, priority: 2, reason: `character (vol ${char.volume})` });
+    urls.push({ url: `${SITE_URL}/character/${char.slug}`, priority: 3, reason: `character (vol ${char.volume})` });
   }
 
-  // 3. Top series pages
-  for (const series of TOP_SERIES) {
-    urls.push({ url: `${SITE_URL}/series/${series}`, priority: 3, reason: "series page" });
+  // 3b. More characters from the characters data file
+  const MORE_CHARACTERS = [
+    "misty", "dawn", "may", "serena", "cynthia", "jessie",
+    "asuna", "rem", "emilia", "raphtalia", "darkness", "wiz",
+    "mitsuri-kanroji", "nezuko-kamado", "power", "himeno",
+    "robin", "jinx", "sona", "ahri", "lux", "miss-fortune",
+    "dva", "mercy", "widowmaker", "tracer", "mei", "sombra",
+    "raiden-shogun", "ganyu", "keqing", "mona", "lisa", "jean",
+    "rias-gremory", "akeno-himejima", "koneko-toujou",
+    "erza-scarlet", "lucy-heartfilia", "mirajane-strauss",
+    "android-21", "chi-chi", "videl", "caulifla", "kefla",
+    "yoruichi-shihouin", "rangiku-matsumoto", "orihime-inoue",
+    "mt-lady", "midnight", "mirko", "nejire-hado", "momo-yaoyorozu",
+    "nami", "robin", "boa-hancock", "yamato", "vivi",
+  ];
+  for (const char of MORE_CHARACTERS) {
+    urls.push({ url: `${SITE_URL}/character/${char}`, priority: 4, reason: "character page" });
   }
 
-  // 4. Random /watch/ pages (pick from sitemap range)
-  // Generate 20 random IDs across the catalog range for discovery
-  const watchIds = [];
-  for (let i = 0; i < 20; i++) {
-    const randomId = Math.floor(Math.random() * 350000) + 1;
-    watchIds.push(randomId);
+  // 4. Top series pages
+  const ALL_SERIES = [
+    ...TOP_SERIES,
+    "pokemon", "sword-art-online", "re-zero", "konosuba",
+    "attack-on-titan", "bleach", "high-school-dxd",
+    "league-of-legends", "valorant", "fortnite",
+    "final-fantasy", "nier-automata", "persona",
+    "chainsaw-man", "spy-x-family", "tokyo-revengers",
+    "blue-archive", "honkai-star-rail", "azur-lane",
+  ];
+  for (const series of ALL_SERIES) {
+    urls.push({ url: `${SITE_URL}/series/${series}`, priority: 5, reason: "series page" });
   }
-  // We don't know the exact slugs, so submit tag pages instead as catch-all
+
+  // 5. Popular tags (100 top tags)
   const popularTags = [
     "anal", "uncensored", "3d", "milf", "vanilla", "tentacle",
-    "big_breasts", "creampie", "blowjob", "group",
+    "big_breasts", "creampie", "blowjob", "group", "futanari",
+    "gangbang", "yuri", "bondage", "ahegao", "femdom", "maledom",
+    "harem", "cosplay", "stockings", "glasses", "maid", "nurse",
+    "teacher", "swimsuit", "bikini", "school_uniform", "bunny_girl",
+    "monster", "elf", "demon_girl", "angel", "succubus", "vampire",
+    "catgirl", "fox_girl", "dragon_girl", "slime_girl",
+    "oral", "deepthroat", "paizuri", "footjob", "handjob",
+    "cowgirl", "doggystyle", "missionary", "pov",
+    "cum", "facial", "swallow", "bukkit", "cum_inside",
+    "squirting", "orgasm", "multiple_orgasms",
+    "threesome", "foursome", "orgy", "double_penetration",
+    "interracial", "netorare", "cheating", "incest",
+    "public", "outdoor", "bathroom", "pool", "beach", "onsen",
+    "rape", "mind_control", "hypnosis", "corruption",
+    "pregnant", "impregnation", "lactation",
+    "size_difference", "ugly_bastard", "old_man",
+    "animated", "sound", "high_quality", "long_video",
+    "japanese", "english_subtitles", "censored",
+    "solo_female", "masturbation", "dildo", "vibrator",
+    "ass", "thighs", "feet", "armpits", "navel",
+    "large_breasts", "huge_breasts", "flat_chest", "medium_breasts",
+    "short_hair", "long_hair", "twintails", "ponytail",
+    "blonde", "redhead", "blue_hair", "pink_hair", "white_hair",
   ];
   for (const tag of popularTags) {
-    urls.push({ url: `${SITE_URL}/tag/${tag}`, priority: 4, reason: "popular tag" });
+    urls.push({ url: `${SITE_URL}/tag/${tag}`, priority: 6, reason: "popular tag" });
+  }
+
+  // 6. Blog articles (ALL, not just recent)
+  for (const file of ["blog.ts", "blog-new.ts", "blog-seo-push.ts"]) {
+    const path = resolve(ROOT, "src/data", file);
+    if (!existsSync(path)) continue;
+    const content = readFileSync(path, "utf8");
+    const slugMatches = [...content.matchAll(/slug:\s*"([^"]+)"/g)];
+    for (const match of slugMatches) {
+      urls.push({ url: `${SITE_URL}/blog/${match[1]}`, priority: 7, reason: "blog article" });
+    }
+  }
+
+  // 7. Glossary terms
+  const glossaryPath = resolve(ROOT, "src/data/glossary.ts");
+  if (existsSync(glossaryPath)) {
+    const content = readFileSync(glossaryPath, "utf8");
+    const slugMatches = [...content.matchAll(/slug:\s*"([^"]+)"/g)];
+    for (const match of slugMatches) {
+      urls.push({ url: `${SITE_URL}/glossary/${match[1]}`, priority: 8, reason: "glossary term" });
+    }
   }
 
   // Filter out recently submitted

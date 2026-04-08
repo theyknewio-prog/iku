@@ -20,7 +20,7 @@ const ZONE_ID = AD_ZONES.exoclick.nativeGrid;
 export function NativeAdCard({ className = "" }: { className?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const insertedRef = useRef(false);
-  const [isPro, setIsPro] = useState(true); // default hidden until checked
+  const [isPro, setIsPro] = useState(false); // default show ads, hide if Pro detected
 
   useEffect(() => {
     setIsPro(document.body.dataset.pro === "1");

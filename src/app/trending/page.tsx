@@ -97,7 +97,7 @@ export default async function TrendingPage() {
             <div className="video-grid">
               {videos.map((video: Video, i) => (
                 <React.Fragment key={video.id}>
-                  {i > 0 && i % 12 === 0 && <NativeAdCard />}
+                  {i > 0 && i % 8 === 0 && <NativeAdCard />}
                   <ThumbnailCard
                     video={video}
                     rank={i + 1}

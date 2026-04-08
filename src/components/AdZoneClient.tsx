@@ -12,30 +12,66 @@
  * Fix 2026-04-07: Uses waitForAdProvider() so the push() only fires after
  * ExoClick's script has bootstrapped, eliminating the race where the zone
  * push happened before ad-provider.js finished loading.
+ *
+ * Ad refresh (2026-04-08): When `refresh` prop is true (default for banner
+ * sizes), a 30-second interval calls AdProvider.push({ serve: {} }) to
+ * request a fresh fill. The interval only fires while the zone is in
+ * viewport (IntersectionObserver). This matches industry-standard banner
+ * refresh rates and maximises fill RPM without wasting impressions on
+ * off-screen slots.
  */
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { insertExoClickZone } from "@/lib/ad-utils";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+declare global {
+  interface Window {
+    AdProvider?: any;
+  }
+}
+
+const REFRESH_INTERVAL_MS = 30_000;
+
 interface AdZoneProps {
   zoneId: string;
-  size: "728x90" | "300x250" | "320x50" | "native";
+  size: "728x90" | "300x250" | "300x600" | "320x50" | "native";
   lazy?: boolean;
   className?: string;
+  /**
+   * Whether to auto-refresh every 30s when in viewport.
+   * Defaults to true for banner sizes, false for native.
+   */
+  refresh?: boolean;
 }
 
 const SIZE_MAP: Record<string, { width: number; height: number }> = {
-  "728x90": { width: 728, height: 90 },
+  "728x90":  { width: 728, height: 90 },
   "300x250": { width: 300, height: 250 },
-  "320x50": { width: 320, height: 50 },
-  native: { width: 0, height: 250 }, // full-width, min-height
+  "300x600": { width: 300, height: 600 },
+  "320x50":  { width: 320, height: 50 },
+  native:    { width: 0,   height: 250 }, // full-width, min-height
 };
 
-export function AdZoneClient({ zoneId, size, lazy = false, className = "" }: AdZoneProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const insertedRef = useRef(false);
-  const [isPro, setIsPro] = useState(true); // default hidden until checked
-  const [visible, setVisible] = useState(!lazy);
+function defaultRefresh(size: AdZoneProps["size"]): boolean {
+  return size !== "native";
+}
+
+export function AdZoneClient({
+  zoneId,
+  size,
+  lazy = false,
+  className = "",
+  refresh,
+}: AdZoneProps) {
+  const containerRef  = useRef<HTMLDivElement>(null);
+  const insertedRef   = useRef(false);
+  const inViewportRef = useRef(false);
+  const refreshTimer  = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [isPro, setIsPro]       = useState(true); // default hidden until checked
+  const [visible, setVisible]   = useState(!lazy);
+
+  const shouldRefresh = refresh !== undefined ? refresh : defaultRefresh(size);
 
   useEffect(() => {
     setIsPro(document.body.dataset.pro === "1");
@@ -74,9 +110,37 @@ export function AdZoneClient({ zoneId, size, lazy = false, className = "" }: AdZ
     insertAd();
   }, [isPro, visible, insertAd]);
 
+  // Ad refresh — runs only when the zone is in the viewport.
+  // A separate IntersectionObserver tracks viewport state so the interval
+  // skips refreshes for off-screen banners (saves requests, avoids waste).
+  useEffect(() => {
+    if (isPro || !visible || !shouldRefresh) return;
+    const el = containerRef.current;
+    if (!el) return;
+
+    const viewportObserver = new IntersectionObserver(
+      (entries) => {
+        inViewportRef.current = !!entries[0]?.isIntersecting;
+      },
+      { threshold: 0.1 }
+    );
+    viewportObserver.observe(el);
+
+    refreshTimer.current = setInterval(() => {
+      if (!inViewportRef.current) return;
+      (window.AdProvider = window.AdProvider || []).push({ serve: {} });
+    }, REFRESH_INTERVAL_MS);
+
+    return () => {
+      viewportObserver.disconnect();
+      if (refreshTimer.current) clearInterval(refreshTimer.current);
+    };
+  }, [isPro, visible, shouldRefresh]);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
+      if (refreshTimer.current) clearInterval(refreshTimer.current);
       const container = containerRef.current;
       if (container) {
         const ins = container.querySelector("ins");

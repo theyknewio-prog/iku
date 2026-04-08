@@ -28,10 +28,15 @@ interface PrerollAdProps {
   onComplete: () => void;
 }
 
-const ZONE_ID = AD_ZONES.exoclick.videoPreroll;
+// Use the 300x250 banner zone as pre-roll — it has the best fill rate.
+// The video pre-roll zone (type 18) requires VAST integration which ExoClick
+// doesn't serve via simple <ins> tags. The 300x250 banner displays as a
+// centered ad in the overlay, which is the standard approach for sites
+// without VAST player integration.
+const ZONE_ID = AD_ZONES.exoclick.sidebar300;
 const TOTAL_SECONDS = 15;
 const SKIP_AFTER = 5;
-const LOAD_TIMEOUT = 3000; // auto-skip if ad doesn't load within 3s
+const LOAD_TIMEOUT = 5000; // auto-skip if ad doesn't load within 5s
 
 export function PrerollAd({ onComplete }: PrerollAdProps) {
   const [secondsLeft, setSecondsLeft] = useState(TOTAL_SECONDS);

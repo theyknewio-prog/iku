@@ -12,6 +12,8 @@ import { AdScript } from "@/components/AdScript";
 import { PopunderAd } from "@/components/PopunderAd";
 import { CamWidget } from "@/components/CamWidget";
 import { AdsterraSocialBar } from "@/components/AdsterraSocialBar";
+import { StickyFooterAd } from "@/components/StickyFooterAd";
+import { PushNotifications } from "@/components/PushNotifications";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -138,6 +140,8 @@ export default async function RootLayout({
           <PopunderAd />
           <AdsterraSocialBar />
           <CamWidget />
+          <StickyFooterAd />
+          <PushNotifications />
           <AppShell>{children}</AppShell>
         </SessionProviderClient>
       </body>

@@ -12,6 +12,8 @@ export const AD_ZONES = {
     watchUnderplayer728: '5893256',
     /** Banner 300x250 — sidebar + in-content placements */
     sidebar300: '5893266',
+    /** Banner 300x600 — tall sidebar tower, watch page desktop sidebar */
+    sidebar300x600: '5893266',
     /** Video Pre-roll — watch page (not used yet) */
     videoPreroll: '5893268',
     /** Popunder — 1 per session, no visual element */

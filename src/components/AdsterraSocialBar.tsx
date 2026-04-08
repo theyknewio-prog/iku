@@ -24,39 +24,15 @@ const ZONE_ID = "28986140";
 const SCRIPT_URL = `//www.topcreativeformat.com/${ZONE_ID}/invoke.js`;
 
 export function AdsterraSocialBar() {
-  useEffect(() => {
-    // Skip for Pro users
-    if (document.body.dataset.pro === "1") return;
-
-    // Skip if already injected (React StrictMode double-invoke guard)
-    if (document.getElementById("adsterra-social-bar")) return;
-
-    // Adsterra Social Bar requires an atOptions config object before its script.
-    // We inject a <script> tag with the config, then the invoke.js script.
-    const configScript = document.createElement("script");
-    configScript.id = "adsterra-social-bar";
-    configScript.type = "text/javascript";
-    configScript.text = [
-      "var atOptions = {",
-      `  'key': '${ZONE_ID}',`,
-      "  'format': 'iframe',",
-      "  'height': 0,",
-      "  'width': 0,",
-      "  'params': {}",
-      "};",
-    ].join("\n");
-    document.body.appendChild(configScript);
-
-    const invokeScript = document.createElement("script");
-    invokeScript.id = "adsterra-social-bar-invoke";
-    invokeScript.type = "text/javascript";
-    invokeScript.src = SCRIPT_URL;
-    invokeScript.async = true;
-    document.body.appendChild(invokeScript);
-
-    // No cleanup — Social Bar persists for the page session
-  }, []);
-
-  // Renders nothing in the React tree; all DOM work is imperative
+  // DISABLED 2026-04-08 — Adsterra Social Bar was causing aggressive redirects
+  // that hijacked browser navigation. The atOptions 'key' was set to a zone ID
+  // (28986140) instead of the actual Adsterra publisher key, causing the script
+  // to act as a SmartLink redirect.
+  //
+  // Revenue impact: Adsterra showed 0 impressions, 0 revenue across all 7 zones.
+  // Re-enable only after getting the correct publisher key from Adsterra dashboard
+  // AND confirming it doesn't redirect.
+  //
+  // ExoClick handles all ad placements for now.
   return null;
 }
