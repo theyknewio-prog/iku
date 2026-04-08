@@ -48,5 +48,55 @@
     "submittedAt": "2026-04-07T18:00:05.162Z",
     "method": "sitemap-ping",
     "reason": "character (vol 8100)"
+  },
+  "https://iku.gg/character/2b": {
+    "submittedAt": "2026-04-08T06:00:06.007Z",
+    "method": "sitemap-ping",
+    "reason": "character (vol 5400)"
+  },
+  "https://iku.gg/character/mikasa-ackerman": {
+    "submittedAt": "2026-04-08T06:00:06.007Z",
+    "method": "sitemap-ping",
+    "reason": "character (vol 5400)"
+  },
+  "https://iku.gg/character/nico-robin": {
+    "submittedAt": "2026-04-08T06:00:06.007Z",
+    "method": "sitemap-ping",
+    "reason": "character (vol 5400)"
+  },
+  "https://iku.gg/character/makima": {
+    "submittedAt": "2026-04-08T06:00:06.007Z",
+    "method": "sitemap-ping",
+    "reason": "character (vol 4400)"
+  },
+  "https://iku.gg/character/yor-forger": {
+    "submittedAt": "2026-04-08T06:00:06.007Z",
+    "method": "sitemap-ping",
+    "reason": "character (vol 4400)"
+  },
+  "https://iku.gg/character/tifa-lockhart": {
+    "submittedAt": "2026-04-08T06:00:06.007Z",
+    "method": "sitemap-ping",
+    "reason": "character (vol 4400)"
+  },
+  "https://iku.gg/character/sakura-haruno": {
+    "submittedAt": "2026-04-08T06:00:06.007Z",
+    "method": "sitemap-ping",
+    "reason": "character (vol 4400)"
+  },
+  "https://iku.gg/character/ochako-uraraka": {
+    "submittedAt": "2026-04-08T06:00:06.007Z",
+    "method": "sitemap-ping",
+    "reason": "character (vol 4400)"
+  },
+  "https://iku.gg/character/megumin": {
+    "submittedAt": "2026-04-08T06:00:06.007Z",
+    "method": "sitemap-ping",
+    "reason": "character (vol 4400)"
+  },
+  "https://iku.gg/character/aqua": {
+    "submittedAt": "2026-04-08T06:00:06.007Z",
+    "method": "sitemap-ping",
+    "reason": "character (vol 4400)"
   }
 }
