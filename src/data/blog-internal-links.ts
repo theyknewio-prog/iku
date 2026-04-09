@@ -36,7 +36,7 @@ export const BLOG_INTERNAL_LINKS: ArticleLinks[] = [
       { text: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, And...", href: "/blog/best-dragon-ball-hentai" },
       { text: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midn...", href: "/blog/best-my-hero-academia-hentai" }
     ],
-    updatedAt: "2026-04-08",
+    updatedAt: "2026-04-09",
   },
   {
     articleSlug: "what-is-hentai",
@@ -57,7 +57,7 @@ export const BLOG_INTERNAL_LINKS: ArticleLinks[] = [
       { text: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, And...", href: "/blog/best-dragon-ball-hentai" },
       { text: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midn...", href: "/blog/best-my-hero-academia-hentai" }
     ],
-    updatedAt: "2026-04-08",
+    updatedAt: "2026-04-09",
   },
   {
     articleSlug: "popular-hentai-characters",
@@ -78,7 +78,7 @@ export const BLOG_INTERNAL_LINKS: ArticleLinks[] = [
       { text: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, And...", href: "/blog/best-dragon-ball-hentai" },
       { text: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midn...", href: "/blog/best-my-hero-academia-hentai" }
     ],
-    updatedAt: "2026-04-08",
+    updatedAt: "2026-04-09",
   },
   {
     articleSlug: "best-hentai-anime-2025",
@@ -99,7 +99,7 @@ export const BLOG_INTERNAL_LINKS: ArticleLinks[] = [
       { text: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, And...", href: "/blog/best-dragon-ball-hentai" },
       { text: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midn...", href: "/blog/best-my-hero-academia-hentai" }
     ],
-    updatedAt: "2026-04-08",
+    updatedAt: "2026-04-09",
   },
   {
     articleSlug: "understanding-hentai-tags",
@@ -120,7 +120,7 @@ export const BLOG_INTERNAL_LINKS: ArticleLinks[] = [
       { text: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, And...", href: "/blog/best-dragon-ball-hentai" },
       { text: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midn...", href: "/blog/best-my-hero-academia-hentai" }
     ],
-    updatedAt: "2026-04-08",
+    updatedAt: "2026-04-09",
   },
   {
     articleSlug: "hentai-for-beginners-guide",
@@ -141,7 +141,7 @@ export const BLOG_INTERNAL_LINKS: ArticleLinks[] = [
       { text: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, And...", href: "/blog/best-dragon-ball-hentai" },
       { text: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midn...", href: "/blog/best-my-hero-academia-hentai" }
     ],
-    updatedAt: "2026-04-08",
+    updatedAt: "2026-04-09",
   },
   {
     articleSlug: "hentai-vs-ecchi",
@@ -162,7 +162,7 @@ export const BLOG_INTERNAL_LINKS: ArticleLinks[] = [
       { text: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, And...", href: "/blog/best-dragon-ball-hentai" },
       { text: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midn...", href: "/blog/best-my-hero-academia-hentai" }
     ],
-    updatedAt: "2026-04-08",
+    updatedAt: "2026-04-09",
   }
 ];
 
