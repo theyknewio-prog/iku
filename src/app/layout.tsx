@@ -88,30 +88,13 @@ export default async function RootLayout({
 }>) {
   const nonce = await getNonce();
 
-  // Determine Pro status for ad gating. Short-circuit for anonymous visitors
-  // (no session cookie) so we don't waste a JWT decrypt + PG round-trip on
-  // every page view — 99%+ of traffic is anonymous and anonymous = non-Pro.
-  // This saves 20-80ms TTFB on most requests.
-  let isPro = false;
-  try {
-    const { cookies: getCookies } = await import("next/headers");
-    const cookieStore = await getCookies();
-    const hasSessionCookie = cookieStore.has("authjs.session-token")
-      || cookieStore.has("__Secure-authjs.session-token");
-    if (hasSessionCookie) {
-      const session = await auth();
-      if (session?.user?.id) {
-        const { rows } = await pool.query(
-          `SELECT pro_status FROM users WHERE id = $1 LIMIT 1`,
-          [session.user.id]
-        );
-        const status = rows[0]?.pro_status;
-        isPro = status === "active" || status === "lifetime";
-      }
-    }
-  } catch {
-    // Auth or DB unavailable — default to showing ads (non-Pro)
-  }
+  // Pro status is determined CLIENT-SIDE via UserDataSync which calls
+  // /api/profile after hydration and sets document.body.dataset.pro.
+  // Previously we read auth() + PG at SSR time, which made the entire
+  // layout (and all child routes) dynamic and broke ISR on 346K watch
+  // pages. Rendering body with data-pro="0" is safe because ad
+  // components (AdZoneClient etc.) re-check the attribute after mount.
+  const isPro = false;
 
   return (
     <html lang="en" className={`${inter.variable} ${poppins.variable} ${righteous.variable} ${nunito.variable} ${quicksand.variable}`} data-theme="dark">

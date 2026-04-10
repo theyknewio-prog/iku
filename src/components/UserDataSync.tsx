@@ -44,6 +44,23 @@ function readJSON<T>(key: string, fallback: T): T {
 export function UserDataSync() {
   const { data: session, status } = useSession();
 
+  // Set body data-pro attribute from /api/user/stats. We can't read it at
+  // SSR time without making the whole layout dynamic (breaks ISR on 346K
+  // watch pages), so we fetch post-hydration. Ad components re-check the
+  // attribute after mount, so the flash is imperceptible for Pro users.
+  useEffect(() => {
+    if (status !== "authenticated" || !session?.user?.id) {
+      document.body.dataset.pro = "0";
+      return;
+    }
+    fetch("/api/user/stats")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        document.body.dataset.pro = data?.isPro ? "1" : "0";
+      })
+      .catch(() => { document.body.dataset.pro = "0"; });
+  }, [status, session?.user?.id]);
+
   useEffect(() => {
     if (status !== "authenticated" || !session?.user?.id) return;
     const userKey = `${SYNCED_KEY}:${session.user.id}`;

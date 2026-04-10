@@ -5,6 +5,7 @@
 
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
+import pool from "@/lib/db";
 import {
   getOrCreateUserStats,
   getUserBadges,
@@ -23,6 +24,19 @@ export async function GET() {
   const tier = tierFromScore(stats.score);
   const next = nextTierFor(stats.score);
 
+  // Pro status for client-side ad gating (body data-pro attribute).
+  let isPro = false;
+  try {
+    const { rows } = await pool.query(
+      `SELECT pro_status FROM users WHERE id = $1 LIMIT 1`,
+      [session.user.id]
+    );
+    const status = rows[0]?.pro_status;
+    isPro = status === "active" || status === "lifetime";
+  } catch {
+    // DB unavailable — default to non-Pro (shows ads)
+  }
+
   const progress = next
     ? {
         current:  stats.score - tier.threshold,
@@ -37,6 +51,7 @@ export async function GET() {
     : null;
 
   return NextResponse.json({
+    isPro,
     stats: {
       score:           stats.score,
       total_views:     stats.total_views,
