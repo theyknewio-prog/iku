@@ -23,13 +23,11 @@ import { AD_ZONES } from "@/lib/ad-config";
 import { RemoveAdsCTA } from "@/components/RemoveAdsCTA";
 import { buildSeoTitle, buildTitle as buildDisplayTitle } from "@/lib/video-display";
 
-// ISR: pre-render zero watch pages at build time (there are 346K), cache
-// each one on-demand for 24h. This pattern only works because csp-nonce.ts
-// no longer calls headers() — the page is now fully static at the SSR level.
-// Cold TTFB: ~50ms (PG query + memoize cache miss). Warm: <5ms from ISR cache.
-export const generateStaticParams = async (): Promise<{ slug: string }[]> => [];
-export const dynamicParams = true;
-export const revalidate = 86400; // 24h
+// TEMP ROLLBACK: ISR is throwing DYNAMIC_SERVER_USAGE at runtime even though
+// build-time generation worked. Reverting to force-dynamic until the dynamic
+// API call site is identified. The other audit fixes (streamProxyUrl, preroll
+// pause, loop default, etc.) still apply.
+export const dynamic = "force-dynamic";
 
 /* ─────────────────────────────────────────────────────────────
    Types

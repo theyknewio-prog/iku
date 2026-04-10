@@ -50,11 +50,9 @@ type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-// ISR: pre-render the curated CHARACTERS list at build time (~100 pages),
-// cache dynamic (virtual) characters on-demand for 1h. Back to real ISR
-// now that csp-nonce.ts no longer calls headers().
-export const dynamicParams = true;
+// TEMP ROLLBACK: ISR triggering DYNAMIC_SERVER_USAGE at runtime
 export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return CHARACTERS.map((c) => ({ slug: c.slug }));
