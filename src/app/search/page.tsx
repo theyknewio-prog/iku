@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { SearchClient } from "./search-client";
 
 export const metadata: Metadata = {
@@ -30,7 +31,9 @@ export default function SearchPage() {
             Type a character, tag, or series to find matching videos.
           </p>
         </div>
-        <SearchClient />
+        <Suspense fallback={null}>
+          <SearchClient />
+        </Suspense>
       </div>
     </main>
   );

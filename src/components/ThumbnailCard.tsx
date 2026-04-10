@@ -7,6 +7,7 @@ import type { Video } from "@/types/video";
 import { isFavorite, toggleFavorite } from "@/lib/favorites";
 import { isWatched } from "@/lib/history";
 import { prefetchVideoUrl, cancelPrefetch } from "@/lib/prefetch-video";
+import { buildTitle } from "@/lib/video-display";
 
 /* ── Helpers ─────────────────────────────────────────────── */
 
@@ -70,15 +71,9 @@ export function ThumbnailCard({
   const displayScore = formatNumber(video.score);
   const displayFavs  = formatNumber(video.favorites);
 
-  /* Title — character + copyright or fallback tags */
-  const title = video.characters[0]
-    ? `${video.characters[0].replace(/_/g, " ")}${
-        video.copyrights[0] ? ` — ${video.copyrights[0].replace(/_/g, " ")}` : ""
-      }`
-    : video.tags
-        .slice(0, 3)
-        .map((t) => t.replace(/_/g, " "))
-        .join(", ") || video.slug;
+  /* Title — uses buildTitle for consistent display across all cards
+     (scraped title → character → copyright → meaningful tag → fallback) */
+  const title = buildTitle(video);
 
   /* ── Hover handlers — 300ms debounce before loading video ── */
   const canPreview = !!video.url;

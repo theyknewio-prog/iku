@@ -50,6 +50,8 @@ interface WatchPlayerProps {
   onVideoEnded?: () => void;
   /** When true, suppresses the built-in "Up Next" end overlay so the post-roll ad overlay can occupy that space. */
   suppressEndOverlay?: boolean;
+  /** When true, pauses the video and rewinds to 0. Used by WatchPlayerWithPreroll to prevent the muted video from silently playing behind the pre-roll overlay. */
+  pausedByOverlay?: boolean;
 }
 
 interface SeekOverlay {
@@ -68,7 +70,7 @@ interface HeartBurst {
    (helpers, icons, ControlBtn, SPEEDS are imported from WatchPlayer.ui.tsx)
 ───────────────────────────────────────────────────────────── */
 
-export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnded, suppressEndOverlay }: WatchPlayerProps) {
+export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnded, suppressEndOverlay, pausedByOverlay }: WatchPlayerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -154,8 +156,30 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
     }
   }, [muted]);
 
-  /* ── Feature 1: Loop toggle ────────────────────────────── */
-  const [looping, setLooping] = useState(true);
+  /*
+   * Pause the video while an overlay (pre-roll ad) is covering it. Without
+   * this, the <video autoPlay> would silently play behind the opaque overlay
+   * and advance its currentTime — so when the user skips the ad after 10s,
+   * the video is already 10s in and appears to have "jumped". When the
+   * overlay dismisses, we reset currentTime to 0 and restart playback.
+   */
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (pausedByOverlay) {
+      try { v.pause(); } catch {}
+      try { v.currentTime = 0; } catch {}
+      setPlaying(false);
+    } else {
+      try { v.currentTime = 0; } catch {}
+      const p = v.play();
+      if (p && typeof p.catch === "function") p.catch(() => { /* autoplay blocked, user will tap */ });
+      setPlaying(true);
+    }
+  }, [pausedByOverlay]);
+
+  /* ── Feature 1: Loop toggle (default OFF so onEnded fires for postroll) ─ */
+  const [looping, setLooping] = useState(false);
   const toggleLoop = useCallback(() => { setLooping((l) => !l); }, []);
 
   /* ── Feature 2: Tap-to-unmute hint ────────────────────── */

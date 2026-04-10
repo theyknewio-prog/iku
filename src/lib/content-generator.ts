@@ -84,7 +84,17 @@ export function generateBreadcrumbs(video: Video): { name: string; url: string }
   const crumbs = [{ name: "Home", url: "https://iku.gg/" }];
   if (video.copyrights[0]) crumbs.push({ name: cap(fmt(video.copyrights[0])), url: `https://iku.gg/tag/${video.copyrights[0]}` });
   if (video.characters[0]) crumbs.push({ name: cap(fmt(video.characters[0])), url: `https://iku.gg/tag/${video.characters[0]}` });
-  const label = video.characters[0] ? `${cap(fmt(video.characters[0]))} hentai` : `Video #${video.id}`;
+  let label: string;
+  if (video.characters[0]) {
+    label = `${cap(fmt(video.characters[0]))} hentai`;
+  } else if (video.copyrights[0]) {
+    label = `${cap(fmt(video.copyrights[0]))} hentai`;
+  } else if (video.tags[0]) {
+    label = `${cap(fmt(video.tags[0]))} hentai`;
+  } else {
+    // Only use id if it's a valid truthy value — prevents "Video #undefined"
+    label = video.id ? `Video #${video.id}` : "Hentai video";
+  }
   crumbs.push({ name: label, url: `https://iku.gg/watch/${video.slug}` });
   return crumbs;
 }

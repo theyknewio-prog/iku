@@ -5,6 +5,8 @@ import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { Pagination } from "@/components/Pagination";
 import { getVideos } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
+import { AdZoneClient } from "@/components/AdZoneClient";
+import { AD_ZONES } from "@/lib/ad-config";
 import { SERIES, getSeriesBySlug } from "@/data/series";
 import { getCharacterBySlug } from "@/data/characters";
 import type { Metadata } from "next";
@@ -14,8 +16,9 @@ type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
+// ISR: pre-render curated SERIES at build, on-demand for anything else.
+export const dynamicParams = true;
 export const revalidate = 3600;
-export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return SERIES.map((s) => ({ slug: s.slug }));
@@ -105,6 +108,9 @@ export default async function SeriesPage({ params, searchParams }: Props) {
       <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
       <main>
         <div className="page-container">
+          {/* Top leaderboard */}
+          <AdZoneClient zoneId={AD_ZONES.exoclick.watchUnderplayer728} size="728x90" />
+
           {/* ── Series hero ─────────────────────────────────────── */}
           <div className="tag-hero">
             <nav style={{ fontSize: "var(--text-xs)", color: "var(--color-text-tertiary)", marginBottom: "8px" }}>
@@ -198,6 +204,13 @@ export default async function SeriesPage({ params, searchParams }: Props) {
             </div>
           ) : (
             <BlacklistFilter videos={videos} />
+          )}
+
+          {/* In-grid 300x250 ad before pagination */}
+          {videos.length > 0 && (
+            <div style={{ display: "flex", justifyContent: "center", margin: "32px 0" }}>
+              <AdZoneClient zoneId={AD_ZONES.exoclick.sidebar300} size="300x250" lazy />
+            </div>
           )}
 
           {/* ── Pagination ───────────────────────────────────── */}

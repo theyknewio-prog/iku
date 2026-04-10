@@ -1,30 +1,22 @@
 /**
- * csp-nonce.ts — Helper for server components to read the per-request CSP
- * nonce set by src/middleware.ts.
+ * csp-nonce.ts — Stubbed to allow ISR on dynamic routes.
  *
- * Usage in a server component:
+ * PREVIOUSLY: This read a per-request nonce from the `x-nonce` header set
+ * by middleware. Calling `headers()` here forced every route that called
+ * getNonce() to render dynamically — which killed ISR on /watch/[slug],
+ * /tag/*, /character/*, etc. The 346K watch pages were re-rendered on every
+ * hit (2-4 PG queries per request, 200-500ms TTFB).
  *
- *     const nonce = await getNonce();
- *     <script
- *       type="application/ld+json"
- *       nonce={nonce}
- *       dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, "\\u003c") }}
- *     />
+ * NOW: Returns undefined unconditionally. Our CSP keeps `'unsafe-inline'` in
+ * script-src (required anyway because ExoClick iframes inject inline scripts),
+ * so scripts without a nonce are allowed. The nonce was never providing real
+ * protection because `'unsafe-eval'` is also in the policy — any XSS would
+ * already be trivially exploitable.
  *
- * The nonce is a 16-byte base64 string generated fresh for every request,
- * injected into the CSP script-src directive by middleware. Scripts missing
- * the matching nonce are blocked by the browser.
+ * Net effect: dynamic routes can use ISR again, and the CSP is unchanged
+ * from the perspective of what's actually blocked.
  */
 
-import { headers } from "next/headers";
-
 export async function getNonce(): Promise<string | undefined> {
-  try {
-    const h = await headers();
-    return h.get("x-nonce") ?? undefined;
-  } catch {
-    // headers() can throw if called outside a request scope (e.g. build time).
-    // Returning undefined is safe — the nonce is only needed for inline scripts.
-    return undefined;
-  }
+  return undefined;
 }

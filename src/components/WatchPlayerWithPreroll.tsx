@@ -52,11 +52,17 @@ export function WatchPlayerWithPreroll({ src, poster, resolveUrl, relatedVideos 
     setPostrollDone(true);
   }, []);
 
+  // IMPORTANT: stable reference so PrerollAd's useEffect([finish]) doesn't
+  // re-fire on every parent re-render (which would reset the 15s countdown).
+  const handlePrerollComplete = useCallback(() => {
+    setPrerollDone(true);
+  }, []);
+
   return (
     <div style={{ position: "relative", minHeight: "min(56.25vw, 540px)" }}>
       {/* Pre-roll — blocks the player until complete */}
       {!prerollDone && (
-        <PrerollAd onComplete={() => setPrerollDone(true)} />
+        <PrerollAd onComplete={handlePrerollComplete} />
       )}
 
       {/* Post-roll — shown as an overlay after the video ends */}
@@ -71,6 +77,7 @@ export function WatchPlayerWithPreroll({ src, poster, resolveUrl, relatedVideos 
         relatedVideos={relatedVideos}
         onVideoEnded={handleEnded}
         suppressEndOverlay={showPostroll && !postrollDone}
+        pausedByOverlay={!prerollDone}
       />
     </div>
   );

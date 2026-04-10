@@ -6,6 +6,8 @@ import { Pagination } from "@/components/Pagination";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { getVideos } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
+import { AdZoneClient } from "@/components/AdZoneClient";
+import { AD_ZONES } from "@/lib/ad-config";
 import { CHARACTERS, getCharacterBySlug, type Character } from "@/data/characters";
 import { getCharacterSEO } from "@/data/characters-seo";
 import { getSeriesBySlug } from "@/data/series";
@@ -48,8 +50,11 @@ type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
+// ISR: pre-render the curated CHARACTERS list at build time (~100 pages),
+// cache dynamic (virtual) characters on-demand for 1h. Back to real ISR
+// now that csp-nonce.ts no longer calls headers().
+export const dynamicParams = true;
 export const revalidate = 3600;
-export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return CHARACTERS.map((c) => ({ slug: c.slug }));
@@ -154,6 +159,9 @@ export default async function CharacterPage({ params, searchParams }: Props) {
       )}
       <main>
         <div className="page-container">
+          {/* Top leaderboard */}
+          <AdZoneClient zoneId={AD_ZONES.exoclick.watchUnderplayer728} size="728x90" />
+
           {/* ── Character hero ──────────────────────────────────── */}
           <div className="tag-hero">
             <nav style={{ fontSize: "var(--text-xs)", color: "var(--color-text-tertiary)", marginBottom: "8px" }}>
@@ -249,6 +257,13 @@ export default async function CharacterPage({ params, searchParams }: Props) {
             </div>
           ) : (
             <BlacklistFilter videos={videos} />
+          )}
+
+          {/* In-grid 300x250 ad before pagination */}
+          {videos.length > 0 && (
+            <div style={{ display: "flex", justifyContent: "center", margin: "32px 0" }}>
+              <AdZoneClient zoneId={AD_ZONES.exoclick.sidebar300} size="300x250" lazy />
+            </div>
           )}
 
           {/* ── Pagination ───────────────────────────────────── */}

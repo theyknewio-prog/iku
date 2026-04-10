@@ -21,18 +21,15 @@ import { getNonce } from "@/lib/csp-nonce";
 import { AdZoneClient } from "@/components/AdZoneClient";
 import { AD_ZONES } from "@/lib/ad-config";
 import { RemoveAdsCTA } from "@/components/RemoveAdsCTA";
-import { buildSeoTitle } from "@/lib/video-display";
+import { buildSeoTitle, buildTitle as buildDisplayTitle } from "@/lib/video-display";
 
-// Dynamic rendering: we call headers() via getNonce() to stamp the CSP nonce
-// on JSON-LD scripts, which is incompatible with the old ISR-via-empty-
-// generateStaticParams hack (Next.js would classify as static then throw at
-// runtime with "Page changed from static to dynamic"). The perf hit is
-// absorbed by:
-//   1. memoize() on getVideos / getDanbooruVideo (5 min TTL)
-//   2. PG-first lookup (~5ms) instead of Danbooru live API (200-1500ms)
-//   3. resolved_urls L2 cache for Rule34Video/WP stream URLs (1h TTL)
-// Net: cold watch-page render is ~50-100ms despite being "dynamic".
-export const dynamic = "force-dynamic";
+// ISR: pre-render zero watch pages at build time (there are 346K), cache
+// each one on-demand for 24h. This pattern only works because csp-nonce.ts
+// no longer calls headers() — the page is now fully static at the SSR level.
+// Cold TTFB: ~50ms (PG query + memoize cache miss). Warm: <5ms from ISR cache.
+export const generateStaticParams = async (): Promise<{ slug: string }[]> => [];
+export const dynamicParams = true;
+export const revalidate = 86400; // 24h
 
 /* ─────────────────────────────────────────────────────────────
    Types
@@ -376,16 +373,23 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 ))}
               </nav>
 
-              {/* Ad zone — above player (728x90 desktop, highest visibility) */}
-              <AdZoneClient zoneId={AD_ZONES.exoclick.watchUnderplayer728} size="728x90" className="ad-zone--above-player" />
+              {/* Ad zone — above player. Uses nativeGrid zone (was duplicating
+                  watchUnderplayer728 which violates ExoClick TOS → blanks). */}
+              <AdZoneClient zoneId={AD_ZONES.exoclick.nativeGrid} size="728x90" className="ad-zone--above-player" />
 
               {/* Video player — Gelbooru URLs are proxied through /api/proxy,
                   Rule34Video + WP are proxied through /api/video-stream to
-                  bypass IP-bound access tokens. */}
+                  bypass IP-bound access tokens.
+                  CRITICAL: For rule34video/wp sources, video.url is the raw
+                  upstream MP4 with an IP-bound token that returns 403 in the
+                  browser (CLAUDE.md silent bug). We MUST use streamProxyUrl
+                  for those sources. Short-circuiting via `||` would always
+                  return the raw URL and break 78% of the catalog. */}
               <div className="player-video-wrap">
                 <WatchPlayerWithPreroll
-                  src={video.url || streamProxyUrl || ""}
+                  src={(video.source === "rule34video" || video.source === "wp") ? (streamProxyUrl || "") : (video.url || "")}
                   poster={video.thumbnail || undefined}
+                  resolveUrl={resolvePageUrl || undefined}
                   relatedVideos={relatedForPlayer}
                 />
               </div>
@@ -396,15 +400,14 @@ export default async function WatchPage({ params }: WatchPageProps) {
               {/* Remove Ads CTA — only for non-Pro, non-logged-in users */}
               <RemoveAdsCTA />
 
-              {/* H1 — must contain "hentai" for SEO */}
+              {/* H1 — uses buildDisplayTitle so videos without character/copy
+                  metadata still get a real title (scraped title or tag) instead
+                  of the generic "Hentai video" placeholder. */}
               <h1 className="player-title">
-                {video.characters[0]
-                  ? `${fmt(video.characters[0])} hentai${
-                      video.copyrights[0] ? ` — ${fmt(video.copyrights[0])}` : ""
-                    }`
-                  : video.copyrights[0]
-                  ? `${fmt(video.copyrights[0])} hentai`
-                  : "Hentai video"}
+                {(() => {
+                  const base = buildDisplayTitle(video);
+                  return /hentai/i.test(base) ? base : `${base} Hentai`;
+                })()}
               </h1>
 
               {/* Characters + copyrights */}
@@ -665,8 +668,11 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
             {/* ── Sidebar (desktop) ─────────────────────────── */}
             <aside className="player-sidebar">
-              {/* Sidebar tower — 300x600, desktop only, above the 300x250 */}
-              <AdZoneClient zoneId={AD_ZONES.exoclick.sidebar300x600} size="300x600" className="ad-zone--desktop-only ad-zone--300x600" lazy />
+              {/* Sidebar tower — 300x600 disabled until a real ExoClick zone
+                  is created (was pointing to the 300x250 zone → 350px gap). */}
+              {AD_ZONES.exoclick.sidebar300x600 && (
+                <AdZoneClient zoneId={AD_ZONES.exoclick.sidebar300x600} size="300x600" className="ad-zone--desktop-only ad-zone--300x600" lazy />
+              )}
               {/* Sidebar ad — 300x250, desktop only */}
               <AdZoneClient zoneId={AD_ZONES.exoclick.sidebar300} size="300x250" className="ad-zone--desktop-only" lazy />
               <div className="player-sidebar__title">Up next</div>

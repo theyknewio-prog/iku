@@ -68,9 +68,9 @@ function IconSearch({ size = 15 }: { size?: number }) {
 
 /* ── Component ──────────────────────────────────────────────── */
 
-export function SearchAutocomplete() {
+export function SearchAutocomplete({ initialQuery = "" }: { initialQuery?: string } = {}) {
   const router = useRouter();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const [suggestions, setSuggestions] = useState<DanbooruTag[]>([]);
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);

@@ -111,10 +111,13 @@ export function buildBannedSqlCondition(
 /** Get the best thumbnail for a tag (character name, series name, etc.) from database */
 async function _getThumbnailForTag(tag: string): Promise<string> {
   try {
+    // Search ALL sources — previously restricted to danbooru/gelbooru which
+    // meant characters only present in rule34/rule34video returned empty
+    // thumbnails and the card fell back to initials. We still rank by score
+    // so the best available thumbnail wins.
     const { rows } = await pool.query(
-      `SELECT thumbnail FROM videos
-       WHERE (source = 'danbooru' OR source = 'gelbooru')
-         AND thumbnail != ''
+      `SELECT thumbnail, source FROM videos
+       WHERE thumbnail != ''
          AND ($1 = ANY(characters) OR $1 = ANY(copyrights) OR $1 = ANY(tags))
          AND NOT (tags && $2::text[])
          AND NOT (COALESCE(characters, ARRAY[]::text[]) && $2::text[])
@@ -125,9 +128,13 @@ async function _getThumbnailForTag(tag: string): Promise<string> {
     );
 
     if (rows.length === 0 || !rows[0].thumbnail) return "";
-    return rows[0].thumbnail
-      .replace("/180x180/", "/720x720/")
-      .replace(/\.jpg$/, ".webp");
+    const raw = rows[0].thumbnail as string;
+    // Only upgrade size for danbooru URLs — gelbooru/rule34/etc use different
+    // thumbnail paths and the replacements would break them.
+    if (rows[0].source === "danbooru" && raw.includes("/180x180/")) {
+      return raw.replace("/180x180/", "/720x720/").replace(/\.jpg$/, ".webp");
+    }
+    return raw;
   } catch {
     return "";
   }

@@ -6,6 +6,8 @@ import { Pagination } from "@/components/Pagination";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { getVideos } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
+import { AdZoneClient } from "@/components/AdZoneClient";
+import { AD_ZONES } from "@/lib/ad-config";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 
@@ -14,8 +16,10 @@ type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
+// ISR: pre-render zero tag pages at build time, cache on-demand for 1h.
+export const generateStaticParams = async (): Promise<{ tag: string }[]> => [];
+export const dynamicParams = true;
 export const revalidate = 3600;
-export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { tag } = await params;
@@ -128,6 +132,9 @@ export default async function TagPage({ params, searchParams }: Props) {
       <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
       <main>
         <div className="page-container">
+          {/* Top leaderboard */}
+          <AdZoneClient zoneId={AD_ZONES.exoclick.watchUnderplayer728} size="728x90" />
+
           {/* ── Tag hero ─────────────────────────────────────── */}
           <div className="tag-hero">
             <p className="tag-hero__label">Hentai Tag</p>
@@ -184,6 +191,13 @@ export default async function TagPage({ params, searchParams }: Props) {
             </div>
           ) : (
             <BlacklistFilter videos={videos} />
+          )}
+
+          {/* In-grid 300x250 before pagination */}
+          {videos.length > 0 && (
+            <div style={{ display: "flex", justifyContent: "center", margin: "32px 0" }}>
+              <AdZoneClient zoneId={AD_ZONES.exoclick.sidebar300} size="300x250" lazy />
+            </div>
           )}
 
           {/* ── Pagination ───────────────────────────────────── */}

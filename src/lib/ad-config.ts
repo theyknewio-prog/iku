@@ -12,8 +12,12 @@ export const AD_ZONES = {
     watchUnderplayer728: '5893256',
     /** Banner 300x250 — sidebar + in-content placements */
     sidebar300: '5893266',
-    /** Banner 300x600 — tall sidebar tower, watch page desktop sidebar */
-    sidebar300x600: '5893266',
+    /** Banner 300x600 — NOT YET CREATED in ExoClick dashboard.
+     *  Previously this was set to the same ID as sidebar300 which caused
+     *  a 300x250 creative to render in a 300x600 container (visible black
+     *  300x350 gap). Until a real 300x600 zone exists, set to null and
+     *  the watch page falls back to not rendering this slot. */
+    sidebar300x600: null as string | null,
     /** Video Pre-roll — watch page (not used yet) */
     videoPreroll: '5893268',
     /** Popunder — 1 per session, no visual element */
