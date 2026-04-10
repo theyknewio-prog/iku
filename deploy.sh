@@ -161,22 +161,32 @@ else
 fi
 
 # ─────────────────────────────────────────────────────────────
-# 6. Purge Cloudflare cache so edge nodes pick up the new build
+# 6. Purge Cloudflare cache — TARGETED only (not purge_everything)
 # ─────────────────────────────────────────────────────────────
-# Requires:
-#   CF_ZONE_ID      — iku.gg zone id from Cloudflare dashboard
-#   CF_API_TOKEN    — scoped token with Zone.Cache Purge permission
-# Without these set, we silently skip so local devs aren't blocked.
+# Why targeted: `purge_everything` nukes the 346K /watch/* pages from
+# edge cache, and when Google re-crawls them all at once the origin
+# PG container melts (seq scans on banned-tag filter). We only purge
+# the handful of pages that actually change on deploy: homepage + the
+# few sitemap/robots routes. /watch/* ISR is left alone.
+#
+# To force a full purge (e.g. after a CSS/JS change that affects all
+# pages), run: PURGE_EVERYTHING=1 ./deploy.sh
 if [ -n "${CF_ZONE_ID:-}" ] && [ -n "${CF_API_TOKEN:-}" ]; then
-  step "Purging Cloudflare cache"
+  if [ "${PURGE_EVERYTHING:-0}" = "1" ]; then
+    step "Purging Cloudflare cache (EVERYTHING — explicit opt-in)"
+    CF_DATA='{"purge_everything":true}'
+  else
+    step "Purging Cloudflare cache (targeted — homepage + sitemaps)"
+    CF_DATA='{"files":["https://iku.gg/","https://iku.gg/robots.txt","https://iku.gg/sitemap.xml","https://iku.gg/trending","https://iku.gg/new","https://iku.gg/explore"]}'
+  fi
   CF_RESPONSE=$(curl -sS -X POST \
     "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/purge_cache" \
     -H "Authorization: Bearer ${CF_API_TOKEN}" \
     -H "Content-Type: application/json" \
-    --data '{"purge_everything":true}')
+    --data "$CF_DATA")
   CF_OK=$(echo "$CF_RESPONSE" | python -c "import sys,json; d=json.load(sys.stdin); print(d.get('success'))" 2>/dev/null || echo "False")
   if [ "$CF_OK" = "True" ]; then
-    ok "Cloudflare cache purged — edge nodes will pull fresh HTML"
+    ok "Cloudflare cache purged"
   else
     warn "Cloudflare purge failed: $CF_RESPONSE"
   fi
