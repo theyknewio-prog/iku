@@ -236,12 +236,20 @@ async function _getVideos(
     paramIndex++;
   }
 
-  // Tag search
+  // Tag search — uses GIN indexes on tags/characters/copyrights.
+  // Previously this also had `title ILIKE '%term%'` as a fallback, but the
+  // leading-wildcard LIKE cannot use any index and forced a sequential scan
+  // of 350K+ rows on every /tag/* and /character/* request. Under Google
+  // crawl load, concurrent seq scans piled up on BufferMapping locks and
+  // PG CPU climbed to 300%+ while pages timed out at 60s+. The GIN indexes
+  // on the three array columns cover every tag page that has any results
+  // (the tag lists are auto-generated from those same columns), so dropping
+  // the ILIKE has no coverage loss in practice.
   if (tags) {
     const searchTerms = tags.toLowerCase().split(/\s+/).filter(Boolean);
     for (const term of searchTerms) {
       conditions.push(
-        `($${paramIndex} = ANY(tags) OR $${paramIndex} = ANY(characters) OR $${paramIndex} = ANY(copyrights) OR (title IS NOT NULL AND title ILIKE '%' || $${paramIndex} || '%'))`
+        `(tags && ARRAY[$${paramIndex}]::text[] OR COALESCE(characters,ARRAY[]::text[]) && ARRAY[$${paramIndex}]::text[] OR COALESCE(copyrights,ARRAY[]::text[]) && ARRAY[$${paramIndex}]::text[])`
       );
       params.push(term);
       paramIndex++;
