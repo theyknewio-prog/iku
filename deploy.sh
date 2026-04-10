@@ -27,6 +27,17 @@
 set -e
 
 # ─────────────────────────────────────────────────────────────
+# Load local .deploy.env if present (not committed, gitignored)
+# ─────────────────────────────────────────────────────────────
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+if [ -f "$SCRIPT_DIR/.deploy.env" ]; then
+  # shellcheck disable=SC1091
+  set -a
+  . "$SCRIPT_DIR/.deploy.env"
+  set +a
+fi
+
+# ─────────────────────────────────────────────────────────────
 # Config
 # ─────────────────────────────────────────────────────────────
 : "${COOLIFY_TOKEN:?Set COOLIFY_TOKEN in your environment (Coolify API token)}"
