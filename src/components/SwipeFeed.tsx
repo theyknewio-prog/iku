@@ -175,11 +175,14 @@ export function SwipeFeed() {
         <FeedInterstitial onClose={() => setShowInterstitial(false)} />
       )}
 
-      {/* Fixed close button — top-left, above everything */}
+      {/* Fixed close button — top-left. Hidden when the interstitial ad
+          is up so we don't show two close buttons at once (the interstitial
+          has its own top-right close). */}
       <Link
         href="/"
         className="feed-close-btn"
         aria-label="Close feed and go back"
+        style={showInterstitial ? { display: "none" } : undefined}
       >
         <svg
           width="20"

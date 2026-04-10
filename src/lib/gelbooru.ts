@@ -1,6 +1,7 @@
 import type { Video, PaginatedResult } from "@/types/video";
 import { filterBannedContent, containsBannedContent, BANNED_TAGS_ARRAY } from "./content";
 import { pool } from "./db";
+import { memoize } from "./memo";
 
 // ---------------------------------------------------------------------------
 // Config
@@ -268,8 +269,9 @@ export async function searchGelbooru(
 
 /**
  * Fetch a single Gelbooru post by ID.
+ * Memoized 5min so generateMetadata + page render share one lookup.
  */
-export async function getGelbooruPost(id: number): Promise<Video | null> {
+async function _getGelbooruPost(id: number): Promise<Video | null> {
   // PG-first: use our curated/filtered data, not the live API which has
   // more tags (15+ that we don't store) that may trigger banned-content 404s.
   try {
@@ -326,3 +328,4 @@ export async function getGelbooruPost(id: number): Promise<Video | null> {
     return null;
   }
 }
+export const getGelbooruPost = memoize("gelbooru-post", _getGelbooruPost, 5 * 60 * 1000);

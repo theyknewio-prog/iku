@@ -7,6 +7,7 @@
 import pool from "@/lib/db";
 import type { Video, PaginatedResult } from "@/types/video";
 import { BANNED_TAGS_ARRAY, containsBannedContent, filterBannedContent } from "@/lib/content";
+import { memoize } from "@/lib/memo";
 
 function rowToVideo(row: Record<string, unknown>): Video {
   return {
@@ -27,10 +28,12 @@ function rowToVideo(row: Record<string, unknown>): Video {
     duration: row.duration as number | null,
     createdAt: new Date(row.created_at as string),
     source: "rule34video",
+    pageUrl: (row.page_url as string | undefined) || undefined,
+    title: (row.title as string | undefined) || undefined,
   };
 }
 
-export async function getRule34VideoPost(id: number): Promise<Video | null> {
+async function _getRule34VideoPost(id: number): Promise<Video | null> {
   const { rows } = await pool.query(
     `SELECT * FROM videos
      WHERE source = 'rule34video' AND source_id = $1
@@ -46,18 +49,18 @@ export async function getRule34VideoPost(id: number): Promise<Video | null> {
   if (containsBannedContent(video)) return null;
   return video;
 }
+// Memoized 5min — generateMetadata + page render share one PG hit.
+export const getRule34VideoPost = memoize(
+  "rule34video-post",
+  _getRule34VideoPost,
+  5 * 60 * 1000,
+);
 
+// Thin helper so existing call sites in the watch page keep working.
+// Pulls page_url straight from the memoized Video — zero extra PG queries.
 export async function getRule34VideoPageUrl(id: number): Promise<string | null> {
-  const { rows } = await pool.query(
-    `SELECT page_url FROM videos
-     WHERE source = 'rule34video' AND source_id = $1
-       AND NOT (tags && $2::text[])
-       AND NOT (COALESCE(characters, ARRAY[]::text[]) && $2::text[])
-       AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $2::text[])
-     LIMIT 1`,
-    [id, BANNED_TAGS_ARRAY]
-  );
-  return rows[0]?.page_url ?? null;
+  const v = await getRule34VideoPost(id);
+  return v?.pageUrl ?? null;
 }
 
 export interface Rule34VideoSearchOptions {

@@ -16,9 +16,9 @@ type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-// TEMP ROLLBACK: ISR triggering DYNAMIC_SERVER_USAGE at runtime
+// ISR: pre-render curated SERIES at build, on-demand cache for 1h.
+export const dynamicParams = true;
 export const revalidate = 3600;
-export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return SERIES.map((s) => ({ slug: s.slug }));

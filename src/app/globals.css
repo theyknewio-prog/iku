@@ -175,8 +175,8 @@
   --button-primary-shadow: 0 4px 20px rgba(255,107,157,0.35);
 
   /* Typography */
-  --font-sans: var(--font-nunito, 'Nunito'), var(--font-quicksand, 'Quicksand'), ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-display: var(--font-righteous, 'Righteous'), var(--font-inter, 'Inter'), ui-sans-serif, sans-serif;
+  --font-sans: var(--font-nunito, 'Nunito'), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-righteous, 'Righteous'), var(--font-nunito, 'Nunito'), ui-sans-serif, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
   /* Type scale — augmented 4th (1.414) */

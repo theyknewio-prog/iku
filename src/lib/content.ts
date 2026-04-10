@@ -405,9 +405,9 @@ export const getVideoOfTheDay = memoize("vod", _getVideoOfTheDay, 60 * 60 * 1000
  * (e.g. metadata generation) to keep cold renders snappy at the cost of
  * serving a generic "Hentai Video" title on unscraped posts.
  */
-export async function getDanbooruVideo(
+async function _getDanbooruVideo(
   id: number,
-  opts: { liveFallback?: boolean } = {}
+  liveFallback: boolean,
 ): Promise<Video | null> {
   try {
     const { rows } = await pool.query(
@@ -433,7 +433,7 @@ export async function getDanbooruVideo(
   }
 
   // Not in PG — optionally fall back to the live Danbooru API for fresh posts.
-  if (!opts.liveFallback) return null;
+  if (!liveFallback) return null;
   try {
     const { getPost } = await import("./danbooru");
     const live = await getPost(id);
@@ -442,6 +442,14 @@ export async function getDanbooruVideo(
     // fall through to null
   }
   return null;
+}
+const _getDanbooruVideoMemo = memoize("danbooru-video", _getDanbooruVideo, 5 * 60 * 1000);
+
+export async function getDanbooruVideo(
+  id: number,
+  opts: { liveFallback?: boolean } = {}
+): Promise<Video | null> {
+  return _getDanbooruVideoMemo(id, opts.liveFallback ?? false);
 }
 
 // ---------------------------------------------------------------------------
@@ -724,6 +732,57 @@ export async function getFeedKeyset(options: {
  *   4. Fall back to top-scored videos overall.
  * In all cases, exclude the current video from the results.
  */
+/**
+ * Internal: always fetch max related (12) then the caller slices.
+ * Memoized on video.slug so multiple callers on the same page render
+ * (player, grid, sidebar) share one PG round-trip instead of 3+.
+ */
+async function _getRelatedVideosMax(
+  slug: string,
+  firstCharacter: string | undefined,
+  firstCopyright: string | undefined,
+  firstTag: string | undefined,
+): Promise<Video[]> {
+  const MAX = 12;
+  const signals: string[] = [];
+  if (firstCharacter) signals.push(firstCharacter);
+  if (firstCopyright) signals.push(firstCopyright);
+  if (firstTag) signals.push(firstTag);
+
+  for (const tag of signals) {
+    try {
+      const { data } = await getVideos({
+        tags: tag,
+        limit: MAX + 5,
+        order: "score",
+        requireThumbnail: true,
+      });
+      const filtered = data.filter((v) => v.slug !== slug).slice(0, MAX);
+      if (filtered.length >= Math.min(4, MAX)) return filtered;
+    } catch (err) {
+      console.error("getRelatedVideos signal error:", err);
+    }
+  }
+
+  try {
+    const { data } = await getVideos({
+      limit: MAX + 5,
+      order: "score",
+      requireThumbnail: true,
+    });
+    return data.filter((v) => v.slug !== slug).slice(0, MAX);
+  } catch {
+    return [];
+  }
+}
+
+// Memoized 5 min on the slug so the 3 per-page callers share one hit.
+const _getRelatedVideosMaxMemo = memoize(
+  "related-videos-max",
+  _getRelatedVideosMax,
+  5 * 60 * 1000,
+);
+
 export async function getRelatedVideos(
   video: {
     id: number;
@@ -735,37 +794,13 @@ export async function getRelatedVideos(
   },
   limit: number = 12
 ): Promise<Video[]> {
-  const signals: string[] = [];
-  if (video.characters?.[0]) signals.push(video.characters[0]);
-  if (video.copyrights?.[0]) signals.push(video.copyrights[0]);
-  if (video.tags?.[0]) signals.push(video.tags[0]);
-
-  for (const tag of signals) {
-    try {
-      const { data } = await getVideos({
-        tags: tag,
-        limit: limit + 5,
-        order: "score",
-        requireThumbnail: true,
-      });
-      const filtered = data.filter((v) => v.slug !== video.slug).slice(0, limit);
-      if (filtered.length >= Math.min(4, limit)) return filtered;
-    } catch (err) {
-      console.error("getRelatedVideos signal error:", err);
-    }
-  }
-
-  // Last-resort fallback: top-scored videos, minus the current one.
-  try {
-    const { data } = await getVideos({
-      limit: limit + 5,
-      order: "score",
-      requireThumbnail: true,
-    });
-    return data.filter((v) => v.slug !== video.slug).slice(0, limit);
-  } catch {
-    return [];
-  }
+  const all = await _getRelatedVideosMaxMemo(
+    video.slug,
+    video.characters?.[0],
+    video.copyrights?.[0],
+    video.tags?.[0],
+  );
+  return all.slice(0, limit);
 }
 
 // ---------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 import type { Video } from "@/types/video";
 import { containsBannedContent, BANNED_TAGS_ARRAY } from "./content";
 import { pool } from "./db";
+import { memoize } from "./memo";
 
 const BASE_URL = "https://api.rule34.xxx/index.php";
 const API_KEY = process.env.RULE34_API_KEY ?? "";
@@ -62,7 +63,7 @@ function mapToVideo(post: R34Post): Video | null {
   };
 }
 
-export async function getRule34Post(id: number): Promise<Video | null> {
+async function _getRule34Post(id: number): Promise<Video | null> {
   // PG-first: faster and uses our curated tags (avoids live API tag mismatch)
   try {
     const { rows } = await pool.query(
@@ -125,3 +126,4 @@ export async function getRule34Post(id: number): Promise<Video | null> {
     return null;
   }
 }
+export const getRule34Post = memoize("rule34-post", _getRule34Post, 5 * 60 * 1000);

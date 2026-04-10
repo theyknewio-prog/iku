@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Poppins, Righteous, Nunito, Quicksand } from "next/font/google";
+import { Righteous, Nunito } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "@/components/AppShell";
 import { SessionProviderClient } from "@/components/SessionProviderClient";
@@ -15,20 +15,10 @@ import { AdsterraSocialBar } from "@/components/AdsterraSocialBar";
 import { StickyFooterAd } from "@/components/StickyFooterAd";
 import { PushNotifications } from "@/components/PushNotifications";
 
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-poppins",
-  display: "swap",
-});
-
+// Fonts: Nunito (primary body) + Righteous (display/headings).
+// Previously we also loaded Inter, Poppins, and Quicksand — they were
+// declared but only ever referenced as CSS fallbacks behind Nunito/Righteous,
+// which always load first. Removing saved ~80KB of font CSS + 3 preloads.
 const righteous = Righteous({
   subsets: ["latin"],
   weight: ["400"],
@@ -40,13 +30,6 @@ const nunito = Nunito({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800", "900"],
   variable: "--font-nunito",
-  display: "swap",
-});
-
-const quicksand = Quicksand({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-quicksand",
   display: "swap",
 });
 
@@ -97,7 +80,7 @@ export default async function RootLayout({
   const isPro = false;
 
   return (
-    <html lang="en" className={`${inter.variable} ${poppins.variable} ${righteous.variable} ${nunito.variable} ${quicksand.variable}`} data-theme="dark">
+    <html lang="en" className={`${righteous.variable} ${nunito.variable}`} data-theme="dark">
       <head>
         <script
           type="application/ld+json"

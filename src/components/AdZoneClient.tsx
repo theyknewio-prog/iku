@@ -43,6 +43,14 @@ interface AdZoneProps {
    * Defaults to true for banner sizes, false for native.
    */
   refresh?: boolean;
+  /**
+   * Optional mobile override. When the viewport is ≤767px, these replace
+   * `zoneId` and `size`. Use this to serve a true 320x50 creative on mobile
+   * instead of clipping a 728x90 in a narrow container. If omitted, the
+   * zone falls back to the desktop zoneId with CSS-only responsive sizing.
+   */
+  mobileZoneId?: string;
+  mobileSize?: "320x50" | "300x250" | "native";
 }
 
 const SIZE_MAP: Record<string, { width: number; height: number }> = {
@@ -58,11 +66,13 @@ function defaultRefresh(size: AdZoneProps["size"]): boolean {
 }
 
 export function AdZoneClient({
-  zoneId,
-  size,
+  zoneId: desktopZoneId,
+  size: desktopSize,
   lazy = false,
   className = "",
   refresh,
+  mobileZoneId,
+  mobileSize,
 }: AdZoneProps) {
   const containerRef  = useRef<HTMLDivElement>(null);
   const insertedRef   = useRef(false);
@@ -70,6 +80,17 @@ export function AdZoneClient({
   const refreshTimer  = useRef<ReturnType<typeof setInterval> | null>(null);
   const [isPro, setIsPro]       = useState(true); // default hidden until checked
   const [visible, setVisible]   = useState(!lazy);
+  // Track whether we're mobile at mount time. Client-only so it's safe to
+  // read window here. We don't listen for resize on purpose — ExoClick zones
+  // don't handle mid-life re-targeting well.
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(typeof window !== "undefined" && window.innerWidth <= 767);
+  }, []);
+
+  const zoneId = isMobile && mobileZoneId ? mobileZoneId : desktopZoneId;
+  const size = isMobile && mobileSize ? mobileSize : desktopSize;
 
   const shouldRefresh = refresh !== undefined ? refresh : defaultRefresh(size);
 

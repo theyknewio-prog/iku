@@ -16,9 +16,10 @@ type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-// TEMP ROLLBACK: ISR triggering DYNAMIC_SERVER_USAGE at runtime
+// ISR: pre-render zero pages at build, cache on-demand for 1h.
+export const generateStaticParams = async (): Promise<{ tag: string }[]> => [];
+export const dynamicParams = true;
 export const revalidate = 3600;
-export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { tag } = await params;

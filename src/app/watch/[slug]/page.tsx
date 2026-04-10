@@ -23,11 +23,15 @@ import { AD_ZONES } from "@/lib/ad-config";
 import { RemoveAdsCTA } from "@/components/RemoveAdsCTA";
 import { buildSeoTitle, buildTitle as buildDisplayTitle } from "@/lib/video-display";
 
-// TEMP ROLLBACK: ISR is throwing DYNAMIC_SERVER_USAGE at runtime even though
-// build-time generation worked. Reverting to force-dynamic until the dynamic
-// API call site is identified. The other audit fixes (streamProxyUrl, preroll
-// pause, loop default, etc.) still apply.
-export const dynamic = "force-dynamic";
+// ISR: pre-render zero pages at build, cache on-demand for 24h.
+// The "DYNAMIC_SERVER_USAGE" errors that rolled this back the first time
+// were actually PG pool exhaustion (20 conn max, 8-12 queries per render,
+// 47k timeouts in the old container) cascading into fake dynamic errors.
+// Fixed by bumping pool max to 50, memoizing source getPost functions,
+// and consolidating getRelatedVideos into a single max-12 fetch.
+export const generateStaticParams = async (): Promise<{ slug: string }[]> => [];
+export const dynamicParams = true;
+export const revalidate = 86400;
 
 /* ─────────────────────────────────────────────────────────────
    Types
@@ -372,8 +376,15 @@ export default async function WatchPage({ params }: WatchPageProps) {
               </nav>
 
               {/* Ad zone — above player. Uses nativeGrid zone (was duplicating
-                  watchUnderplayer728 which violates ExoClick TOS → blanks). */}
-              <AdZoneClient zoneId={AD_ZONES.exoclick.nativeGrid} size="728x90" className="ad-zone--above-player" />
+                  watchUnderplayer728 which violates ExoClick TOS → blanks).
+                  Mobile swaps to the 320x50 zone when one is configured. */}
+              <AdZoneClient
+                zoneId={AD_ZONES.exoclick.nativeGrid}
+                size="728x90"
+                className="ad-zone--above-player"
+                mobileZoneId={AD_ZONES.exoclick.mobileBanner320 ?? undefined}
+                mobileSize="320x50"
+              />
 
               {/* Video player — Gelbooru URLs are proxied through /api/proxy,
                   Rule34Video + WP are proxied through /api/video-stream to
@@ -393,7 +404,12 @@ export default async function WatchPage({ params }: WatchPageProps) {
               </div>
 
               {/* Ad zone — under player, above title (728x90 desktop / 320x50 mobile) */}
-              <AdZoneClient zoneId={AD_ZONES.exoclick.watchUnderplayer728} size="728x90" />
+              <AdZoneClient
+                zoneId={AD_ZONES.exoclick.watchUnderplayer728}
+                size="728x90"
+                mobileZoneId={AD_ZONES.exoclick.mobileBanner320 ?? undefined}
+                mobileSize="320x50"
+              />
 
               {/* Remove Ads CTA — only for non-Pro, non-logged-in users */}
               <RemoveAdsCTA />

@@ -149,5 +149,29 @@ else
   warn "$SITE_URL returned HTTP $HTTP_STATUS — check Coolify logs"
 fi
 
+# ─────────────────────────────────────────────────────────────
+# 6. Purge Cloudflare cache so edge nodes pick up the new build
+# ─────────────────────────────────────────────────────────────
+# Requires:
+#   CF_ZONE_ID      — iku.gg zone id from Cloudflare dashboard
+#   CF_API_TOKEN    — scoped token with Zone.Cache Purge permission
+# Without these set, we silently skip so local devs aren't blocked.
+if [ -n "${CF_ZONE_ID:-}" ] && [ -n "${CF_API_TOKEN:-}" ]; then
+  step "Purging Cloudflare cache"
+  CF_RESPONSE=$(curl -sS -X POST \
+    "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/purge_cache" \
+    -H "Authorization: Bearer ${CF_API_TOKEN}" \
+    -H "Content-Type: application/json" \
+    --data '{"purge_everything":true}')
+  CF_OK=$(echo "$CF_RESPONSE" | python -c "import sys,json; d=json.load(sys.stdin); print(d.get('success'))" 2>/dev/null || echo "False")
+  if [ "$CF_OK" = "True" ]; then
+    ok "Cloudflare cache purged — edge nodes will pull fresh HTML"
+  else
+    warn "Cloudflare purge failed: $CF_RESPONSE"
+  fi
+else
+  warn "CF_ZONE_ID or CF_API_TOKEN not set — skipping Cloudflare cache purge"
+fi
+
 echo
 echo -e "${GREEN}${BOLD}✅ Done.${RESET} Commit ${AFTER_SHA:0:7} is live on $SITE_URL"

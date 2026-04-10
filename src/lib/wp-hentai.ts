@@ -11,6 +11,7 @@
 import pool from "@/lib/db";
 import type { Video, PaginatedResult } from "@/types/video";
 import { BANNED_TAGS_ARRAY, containsBannedContent, filterBannedContent } from "@/lib/content";
+import { memoize } from "@/lib/memo";
 
 /** Known slug prefixes for each WP site */
 const WP_PREFIXES = ["hmm", "htv", "aid", "wh", "hw", "hg"] as const;
@@ -38,10 +39,12 @@ function rowToVideo(row: Record<string, unknown>): Video {
     duration: row.duration as number | null,
     createdAt: new Date(row.created_at as string),
     source: "wp",
+    pageUrl: (row.page_url as string | undefined) || undefined,
+    title: (row.title as string | undefined) || undefined,
   };
 }
 
-export async function getWPHentaiPost(id: number): Promise<Video | null> {
+async function _getWPHentaiPost(id: number): Promise<Video | null> {
   const { rows } = await pool.query(
     `SELECT * FROM videos
      WHERE source = 'wp' AND source_id = $1
@@ -56,18 +59,15 @@ export async function getWPHentaiPost(id: number): Promise<Video | null> {
   if (containsBannedContent(video)) return null;
   return video;
 }
+export const getWPHentaiPost = memoize(
+  "wp-hentai-post",
+  _getWPHentaiPost,
+  5 * 60 * 1000,
+);
 
 export async function getWPHentaiPageUrl(id: number): Promise<string | null> {
-  const { rows } = await pool.query(
-    `SELECT page_url FROM videos
-     WHERE source = 'wp' AND source_id = $1
-       AND NOT (tags && $2::text[])
-       AND NOT (COALESCE(characters, ARRAY[]::text[]) && $2::text[])
-       AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $2::text[])
-     LIMIT 1`,
-    [id, BANNED_TAGS_ARRAY]
-  );
-  return rows[0]?.page_url ?? null;
+  const v = await getWPHentaiPost(id);
+  return v?.pageUrl ?? null;
 }
 
 export interface WPHentaiSearchOptions {
