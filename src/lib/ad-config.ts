@@ -10,12 +10,11 @@ export const AD_ZONES = {
   exoclick: {
     /** Banner 728x90 — under the video player on desktop */
     watchUnderplayer728: '5893256',
-    /** Banner 320x50 — mobile version of the watch underplayer.
-     *  TODO: create this zone in the ExoClick dashboard (Zone Type: Banner,
-     *  Size: 320x50). Paste the id here. Until then, mobile uses the
-     *  Adsterra 320x50 fallback via a different rendering path, or clips
-     *  the 728x90 with overflow:hidden (current behavior). */
-    mobileBanner320: null as string | null,
+    /** Banner 300x50 — mobile "Sticky Mobile Banner" (ExoClick ad_type 10).
+     *  ExoClick doesn't sell 320x50; 300x50 is the closest equivalent and
+     *  fits perfectly inside a 320px mobile viewport with 10px of margin.
+     *  Created via ExoClick API on 2026-04-10. */
+    mobileBanner300x50: '5895978' as string | null,
     /** Banner 300x250 — sidebar + in-content placements */
     sidebar300: '5893266',
     /** Banner 300x600 — NOT YET CREATED in ExoClick dashboard.

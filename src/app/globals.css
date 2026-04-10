@@ -9600,6 +9600,7 @@ body {
 .ad-zone--728x90 { width: 728px; height: 90px; max-width: 100%; }
 .ad-zone--300x250 { width: 300px; height: 250px; }
 .ad-zone--320x50 { width: 320px; height: 50px; }
+.ad-zone--300x50 { width: 300px; height: 50px; }
 .ad-zone--native { width: 100%; min-height: 250px; }
 .ad-zone--desktop-only { display: flex; }
 @media (max-width: 767px) {

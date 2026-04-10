@@ -382,8 +382,8 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 zoneId={AD_ZONES.exoclick.nativeGrid}
                 size="728x90"
                 className="ad-zone--above-player"
-                mobileZoneId={AD_ZONES.exoclick.mobileBanner320 ?? undefined}
-                mobileSize="320x50"
+                mobileZoneId={AD_ZONES.exoclick.mobileBanner300x50 ?? undefined}
+                mobileSize="300x50"
               />
 
               {/* Video player — Gelbooru URLs are proxied through /api/proxy,
@@ -407,8 +407,8 @@ export default async function WatchPage({ params }: WatchPageProps) {
               <AdZoneClient
                 zoneId={AD_ZONES.exoclick.watchUnderplayer728}
                 size="728x90"
-                mobileZoneId={AD_ZONES.exoclick.mobileBanner320 ?? undefined}
-                mobileSize="320x50"
+                mobileZoneId={AD_ZONES.exoclick.mobileBanner300x50 ?? undefined}
+                mobileSize="300x50"
               />
 
               {/* Remove Ads CTA — only for non-Pro, non-logged-in users */}

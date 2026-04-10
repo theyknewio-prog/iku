@@ -35,7 +35,7 @@ const REFRESH_INTERVAL_MS = 30_000;
 
 interface AdZoneProps {
   zoneId: string;
-  size: "728x90" | "300x250" | "300x600" | "320x50" | "native";
+  size: "728x90" | "300x250" | "300x600" | "320x50" | "300x50" | "native";
   lazy?: boolean;
   className?: string;
   /**
@@ -45,12 +45,11 @@ interface AdZoneProps {
   refresh?: boolean;
   /**
    * Optional mobile override. When the viewport is ≤767px, these replace
-   * `zoneId` and `size`. Use this to serve a true 320x50 creative on mobile
-   * instead of clipping a 728x90 in a narrow container. If omitted, the
-   * zone falls back to the desktop zoneId with CSS-only responsive sizing.
+   * `zoneId` and `size`. ExoClick sells 300x50 (not 320x50) for mobile
+   * sticky banners — it fits any ≥300px viewport with no clipping.
    */
   mobileZoneId?: string;
-  mobileSize?: "320x50" | "300x250" | "native";
+  mobileSize?: "300x50" | "300x250" | "native";
 }
 
 const SIZE_MAP: Record<string, { width: number; height: number }> = {
@@ -58,6 +57,7 @@ const SIZE_MAP: Record<string, { width: number; height: number }> = {
   "300x250": { width: 300, height: 250 },
   "300x600": { width: 300, height: 600 },
   "320x50":  { width: 320, height: 50 },
+  "300x50":  { width: 300, height: 50 },
   native:    { width: 0,   height: 250 }, // full-width, min-height
 };
 
