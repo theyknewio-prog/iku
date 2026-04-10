@@ -17,12 +17,10 @@ type Props = {
 };
 
 // force-dynamic because this page awaits searchParams for pagination/sort.
+// generateStaticParams was removed — under force-dynamic it's inert and
+// just confuses future readers.
 export const dynamic = "force-dynamic";
 export const revalidate = 3600;
-
-export function generateStaticParams() {
-  return SERIES.map((s) => ({ slug: s.slug }));
-}
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { slug } = await params;

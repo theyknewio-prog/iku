@@ -267,22 +267,42 @@ async function _getVideos(
   `;
   params.push(clampedLimit + 1, offset);
 
-  try {
-    const { rows } = await pool.query(query, params);
-    const mapped = rows.slice(0, clampedLimit).map(rowToVideo);
-    // JS-side belt-and-suspenders: catches banned title/slug that SQL arrays miss
-    const data = filterBannedContent(mapped);
-    const hasMore = rows.length > clampedLimit;
-    return { data, hasMore };
-  } catch (err) {
-    console.error("getVideos PG error:", err);
-    return { data: [], hasMore: false };
-  }
+  // NOTE: this function deliberately does NOT catch PG errors. If the query
+  // fails (timeout, connection drop, etc.) we re-throw so the memoize wrapper
+  // above DOESN'T cache a bogus empty result for 5 minutes. The `getVideos`
+  // public wrapper below catches at the boundary and returns empty to
+  // callers — that way the empty response is only a per-request fallback,
+  // not a 5-min cached poison pill.
+  const { rows } = await pool.query(query, params);
+  const mapped = rows.slice(0, clampedLimit).map(rowToVideo);
+  // JS-side belt-and-suspenders: catches banned title/slug that SQL arrays miss
+  const data = filterBannedContent(mapped);
+  const hasMore = rows.length > clampedLimit;
+  return { data, hasMore };
 }
 
 // Memoize — 5 min TTL. Short enough to still feel fresh, long enough
 // to absorb bursts from ISR regeneration + warmup pings.
-export const getVideos = memoize("videos", _getVideos, 5 * 60 * 1000);
+const _getVideosMemo = memoize("videos", _getVideos, 5 * 60 * 1000);
+
+/**
+ * Public getVideos — catches PG errors at the boundary so callers always
+ * get a valid PaginatedResult. The underlying memoize only caches SUCCESSFUL
+ * results; failures are re-thrown inside _getVideos, memoize deletes the
+ * failed key, and this wrapper returns an empty page to the caller.
+ * Fixes the "poisoned cache" bug where a single PG timeout during warmup
+ * could wedge `/tag/<xxx>` into serving "0 videos" for 5 minutes.
+ */
+export async function getVideos(
+  opts: GetVideosOptions = {}
+): Promise<PaginatedResult<Video>> {
+  try {
+    return await _getVideosMemo(opts);
+  } catch (err) {
+    console.error("getVideos fallback:", err);
+    return { data: [], hasMore: false };
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Curated genre tags for the homepage "Browse by Genre" section.

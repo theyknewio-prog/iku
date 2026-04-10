@@ -241,9 +241,9 @@ export default async function WatchPage({ params }: WatchPageProps) {
     relatedForPlayer = related.map((v) => ({
       slug: v.slug,
       thumbnail: v.thumbnail || v.preview || "",
-      title: v.characters[0]
-        ? `${v.characters[0].replace(/_/g, " ")}${v.copyrights[0] ? ` — ${v.copyrights[0].replace(/_/g, " ")}` : ""}`
-        : v.tags.slice(0, 3).map((t) => t.replace(/_/g, " ")).join(", "),
+      // Use the shared buildDisplayTitle so "Up Next" labels match the rest
+      // of the app (card grid, h1, metadata).
+      title: buildDisplayTitle(v),
     }));
   } catch {
     // Related fetch failed, autoplay won't work but video still plays

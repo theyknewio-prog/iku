@@ -8,6 +8,8 @@ import {
 } from "react";
 import Link from "next/link";
 import { filterByBlacklist } from "@/lib/blacklist";
+import { buildTitle } from "@/lib/video-display";
+import type { Video } from "@/types/video";
 
 /* ─────────────────────────────────────────────
    Types
@@ -144,18 +146,11 @@ function VideoPlayerCard({
   const [remaining, setRemaining] = useState<string>("00:00");
   const [seeking, setSeeking] = useState(false);
 
-  // Derived display values
+  // Derived display values — shared buildTitle so Shorts labels match the
+  // rest of the app (cards, h1, metadata). FeedVideo is structurally compatible
+  // with Video's readable fields (characters/copyrights/tags/title).
   const artist = video.artists[0] ?? null;
-  const title = video.characters[0]
-    ? `${video.characters[0].replace(/_/g, " ")}${
-        video.copyrights[0]
-          ? ` — ${video.copyrights[0].replace(/_/g, " ")}`
-          : ""
-      }`
-    : video.tags
-        .slice(0, 3)
-        .map((t) => t.replace(/_/g, " "))
-        .join(", ");
+  const title = buildTitle(video as unknown as Video);
 
   // ── Autoplay / pause on visibility ──────────
   useEffect(() => {

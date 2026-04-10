@@ -6,8 +6,6 @@ import { SessionProviderClient } from "@/components/SessionProviderClient";
 import { UserDataSync } from "@/components/UserDataSync";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { getNonce } from "@/lib/csp-nonce";
-import { auth } from "@/auth";
-import pool from "@/lib/db";
 import { AdScript } from "@/components/AdScript";
 import { PopunderAd } from "@/components/PopunderAd";
 import { CamWidget } from "@/components/CamWidget";

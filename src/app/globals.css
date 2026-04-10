@@ -9787,7 +9787,11 @@ body {
 
 .cam-widget {
   position: fixed;
-  bottom: 80px;
+  /* Mobile stacking: sticky-footer-ad sits at bottom 64, ~58px tall. We
+     park cam-widget above it at 130 so the two widgets don't fight for
+     the same bottom-right corner (they were overlapping their close
+     buttons at nearly identical coordinates before). */
+  bottom: 130px;
   right: 16px;
   z-index: 50;
   display: flex;
