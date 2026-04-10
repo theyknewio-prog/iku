@@ -157,25 +157,52 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
   }, [muted]);
 
   /*
-   * Pause the video while an overlay (pre-roll ad) is covering it. Without
-   * this, the <video autoPlay> would silently play behind the opaque overlay
-   * and advance its currentTime — so when the user skips the ad after 10s,
-   * the video is already 10s in and appears to have "jumped". When the
-   * overlay dismisses, we reset currentTime to 0 and restart playback.
+   * Control video playback via overlay state.
+   *
+   * The <video> element has NO `autoPlay` attribute (see JSX below) — playback
+   * is driven entirely from here. On mount, pausedByOverlay defaults to true
+   * (preroll is showing), so we make sure the video is paused at 0. When the
+   * overlay dismisses we explicitly .play().
+   *
+   * We also guard against late autoplay attempts by re-pausing on canplay
+   * and timeupdate events when the overlay is still up — some browsers
+   * will try to start playback when metadata loads or when the tab regains
+   * focus, which used to advance currentTime silently behind the preroll.
    */
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
+
     if (pausedByOverlay) {
       try { v.pause(); } catch {}
       try { v.currentTime = 0; } catch {}
       setPlaying(false);
-    } else {
-      try { v.currentTime = 0; } catch {}
-      const p = v.play();
-      if (p && typeof p.catch === "function") p.catch(() => { /* autoplay blocked, user will tap */ });
-      setPlaying(true);
+
+      // Defensive: re-pause on any event that could have started playback
+      // while the overlay is still up.
+      const forcePause = () => {
+        if (!v.paused) {
+          try { v.pause(); } catch {}
+        }
+        if (v.currentTime > 0.1) {
+          try { v.currentTime = 0; } catch {}
+        }
+      };
+      v.addEventListener("canplay", forcePause);
+      v.addEventListener("play", forcePause);
+      v.addEventListener("timeupdate", forcePause);
+      return () => {
+        v.removeEventListener("canplay", forcePause);
+        v.removeEventListener("play", forcePause);
+        v.removeEventListener("timeupdate", forcePause);
+      };
     }
+
+    // Overlay gone — start playback from 0.
+    try { v.currentTime = 0; } catch {}
+    const p = v.play();
+    if (p && typeof p.catch === "function") p.catch(() => { /* autoplay blocked, user will tap */ });
+    setPlaying(true);
   }, [pausedByOverlay]);
 
   /* ── Feature 1: Loop toggle (default OFF so onEnded fires for postroll) ─ */
@@ -878,7 +905,12 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
           ref={videoRef}
           src={resolvedSrc || undefined}
           poster={poster}
-          autoPlay
+          /* NO autoPlay attribute — playback is controlled entirely via the
+             pausedByOverlay effect below. When the preroll overlay is up,
+             the video must stay paused at 0; when the overlay dismisses, we
+             explicitly call .play(). Previously autoPlay raced against the
+             pause effect and caused the video to silently advance 10-25s
+             behind the overlay. */
           muted={muted}
           loop={looping}
           playsInline
