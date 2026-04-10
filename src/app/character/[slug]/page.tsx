@@ -50,8 +50,8 @@ type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-// ISR: pre-render curated CHARACTERS at build, on-demand cache for 1h.
-export const dynamicParams = true;
+// force-dynamic because this page awaits searchParams for pagination/sort.
+export const dynamic = "force-dynamic";
 export const revalidate = 3600;
 
 export function generateStaticParams() {

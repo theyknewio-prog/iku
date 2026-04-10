@@ -16,9 +16,10 @@ type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-// ISR: pre-render zero pages at build, cache on-demand for 1h.
-export const generateStaticParams = async (): Promise<{ tag: string }[]> => [];
-export const dynamicParams = true;
+// force-dynamic because this page awaits searchParams (sp.page, sp.sort)
+// for pagination and sort filtering. Next.js 16 makes searchParams a Promise
+// and awaiting it opts into dynamic rendering, incompatible with ISR.
+export const dynamic = "force-dynamic";
 export const revalidate = 3600;
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
