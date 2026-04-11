@@ -4367,16 +4367,22 @@ body {
   left: 0 !important;
   right: 0 !important;
   height: var(--v2-bottomnav-h);
-  background: rgba(35,30,48,0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  /* Solid (not semi-transparent) bg so iOS Safari can't flash a transparent
+     stripe during momentum scroll repaints. Previously rgba(…,0.95) + a
+     backdrop-filter was promoting the nav to a compositing layer AND making
+     the "detach" flicker obvious when iOS re-composited mid-scroll. */
+  background: #1c1826;
   border-top: 1px solid rgba(255,255,255,0.08);
   display: flex;
   align-items: stretch;
   padding-bottom: env(safe-area-inset-bottom, 0px);
   z-index: 9999;
-  transform: none !important;
-  will-change: auto;
+  /* translate3d promotes the nav to its own compositing layer eagerly so
+     iOS Safari doesn't re-create it mid-scroll (known workaround for fixed
+     elements "detaching" during URL-bar show/hide transitions). */
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  will-change: transform;
 }
 
 @media (min-width: 1024px) { .v2-bottom-nav { display: none; } }
