@@ -22,7 +22,13 @@ import { useEffect, useRef, useState } from "react";
 import { AD_ZONES } from "@/lib/ad-config";
 import { insertExoClickZone } from "@/lib/ad-utils";
 
-const ZONE_ID       = AD_ZONES.exoclick.watchUnderplayer728;
+// Use the 300x50 mobile banner zone, NOT watchUnderplayer728 (728x90).
+// Previous version loaded a 728-wide creative into a ~160-wide container →
+// ExoClick rendered the full 728x90 creative and the nested iframe clipped
+// to the narrow parent so users saw only a ~160px top-left slice of the
+// creative (Sab screenshot 2026-04-11: "your Porn squad of..." zoomed corner).
+// 300x50 is the format ExoClick actually sells for this slot size.
+const ZONE_ID       = AD_ZONES.exoclick.mobileBanner300x50 ?? AD_ZONES.exoclick.watchUnderplayer728;
 const STORAGE_KEY   = "iku_sticky_footer_dismissed";
 
 export function StickyFooterAd() {

@@ -9723,6 +9723,13 @@ body {
 }
 
 /* ── 49c. Native Ad Card (in grids) ─────────────────────────── */
+/* Native ad card — hide on mobile because ExoClick nativeGrid creatives
+   don't fill 2-column mobile grid cells (~150x180) reliably, leaving an
+   empty dark rectangle. Rendered only on desktop where the cell is wide
+   enough for real native creative delivery. */
+@media (max-width: 767px) {
+  .native-ad-card { display: none !important; }
+}
 .native-ad-card {
   position: relative;
   background: rgba(26, 22, 37, 0.5);

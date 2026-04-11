@@ -384,8 +384,9 @@ export default async function HomePage() {
             </div>
           </section>
 
-          {/* ── Ad zone — 300x250 in-content ──────────────────── */}
-          <AdZoneClient zoneId={AD_ZONES.exoclick.sidebar300} size="300x250" lazy />
+          {/* ── 300x250 in-content — Adsterra + HentaiPros right below already
+              cover this slot. Removed 2026-04-11 because the ExoClick
+              sidebar300 zone was rendering empty on mobile. */}
 
           {/* ── Adsterra 300x250 banner (second-fill from different network) ── */}
           <div style={{ margin: "16px auto", textAlign: "center" }}>
