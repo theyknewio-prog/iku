@@ -6,8 +6,7 @@ import { Pagination } from "@/components/Pagination";
 import { getVideos } from "@/lib/content";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
-import { HentaiProsBanner } from "@/components/HentaiProsBanner";
-import { NativeAdCard } from "@/components/NativeAdCard";
+/* Ad imports removed 2026-04-11 (AD BLACKOUT). */
 
 export const metadata: Metadata = {
   title: "New Hentai Videos — Latest Uploads | iku.gg",
@@ -46,11 +45,7 @@ export default async function NewPage({ searchParams }: Props) {
     <div className="shell-content">
       <main>
         <div className="page-container">
-          {/* ── Ad zone — leaderboard top (728x90 desktop, 300x250 mobile).
-              Was an ExoClick zone but ExoClick rarely fills this slot → users
-              saw an empty dark rectangle (Sab report 2026-04-11). HentaiPros
-              rotates real creatives and always fills. */}
-          <HentaiProsBanner format="728x90" />
+          {/* Ad zone removed 2026-04-11 (AD BLACKOUT) */}
 
           {/* ── Page hero ─────────────────────────────────────── */}
           <div className="tag-hero">
@@ -92,14 +87,12 @@ export default async function NewPage({ searchParams }: Props) {
           ) : (
             <div className="video-grid">
               {videos.map((video: Video, i) => (
-                <React.Fragment key={video.id}>
-                  {i > 0 && i % 8 === 0 && <NativeAdCard />}
-                  <ThumbnailCard
-                    video={video}
-                    priority={i < 4}
-                    lazy={i >= 4}
-                  />
-                </React.Fragment>
+                <ThumbnailCard
+                  key={video.id}
+                  video={video}
+                  priority={i < 4}
+                  lazy={i >= 4}
+                />
               ))}
             </div>
           )}

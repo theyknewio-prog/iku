@@ -14,11 +14,6 @@ import { JoinDiscordCTA } from "@/components/JoinDiscordCTA";
 import { SignupCTA } from "@/components/SignupCTA";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { MagneticButton } from "@/components/MagneticButton";
-import { AdZoneClient } from "@/components/AdZoneClient";
-import { AdsterraBanner } from "@/components/AdsterraBanner";
-import { HentaiProsBanner } from "@/components/HentaiProsBanner";
-import { NativeAdCard } from "@/components/NativeAdCard";
-import { AD_ZONES } from "@/lib/ad-config";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai Videos | Stream Animated Hentai Online",
@@ -246,27 +241,15 @@ export default async function HomePage() {
             </div>
           </section>
 
-          {/* ── Ad zone — Leaderboard (Adsterra + HentaiPros below). The
-              ExoClick `watchUnderplayer728` zone that used to live here was
-              removed 2026-04-11 because ExoClick rarely fills it on mobile
-              → empty dark rectangle (Sab complaint). Adsterra + HentaiPros
-              below already cover this slot with multi-network fill. */}
-          <div style={{ margin: "12px auto", textAlign: "center" }}>
-            <AdsterraBanner format="banner728x90" />
-          </div>
-
-          {/* ── HentaiPros 728x90 — AdultForce hentai niche rotation ($25-35 PPS) ── */}
-          <HentaiProsBanner format="728x90" />
+          {/* Ad slots removed 2026-04-11 (AD BLACKOUT). Reintroduced one
+              at a time after each renders cleanly in Playwright. */}
 
           {/* ================================================================
               TRENDING NOW -- Horizontal poster scroll
           ================================================================ */}
           <Carousel title="🔥 Trending Now" badge="HOT" seeAllHref="/trending">
             {trending.data.map((video, i) => (
-              <React.Fragment key={video.id}>
-                {i === 8 && <NativeAdCard className="poster-card-size" />}
-                <PosterCard video={video} rank={i < 8 ? i + 1 : undefined} priority={i < 5} />
-              </React.Fragment>
+              <PosterCard key={video.id} video={video} rank={i < 8 ? i + 1 : undefined} priority={i < 5} />
             ))}
           </Carousel>
 
@@ -384,17 +367,7 @@ export default async function HomePage() {
             </div>
           </section>
 
-          {/* ── 300x250 in-content — Adsterra + HentaiPros right below already
-              cover this slot. Removed 2026-04-11 because the ExoClick
-              sidebar300 zone was rendering empty on mobile. */}
-
-          {/* ── Adsterra 300x250 banner (second-fill from different network) ── */}
-          <div style={{ margin: "16px auto", textAlign: "center" }}>
-            <AdsterraBanner format="banner300x250" />
-          </div>
-
-          {/* ── HentaiPros 300x250 — highest-CPA hentai offer rotation ── */}
-          <HentaiProsBanner format="300x250" />
+          {/* Ad slots removed 2026-04-11 (AD BLACKOUT) */}
 
           {/* ================================================================
               POPULAR CHARACTERS -- Circular avatars with gradient rings

@@ -6,10 +6,6 @@ import { SessionProviderClient } from "@/components/SessionProviderClient";
 import { UserDataSync } from "@/components/UserDataSync";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { getNonce } from "@/lib/csp-nonce";
-import { AdScript } from "@/components/AdScript";
-import { PopunderAd } from "@/components/PopunderAd";
-import { CamWidget } from "@/components/CamWidget";
-import { AdsterraSocialBar } from "@/components/AdsterraSocialBar";
 import { PushNotifications } from "@/components/PushNotifications";
 
 // Fonts: Nunito (primary body) + Righteous (display/headings).
@@ -108,14 +104,12 @@ export default async function RootLayout({
         <SessionProviderClient>
           <AnalyticsProvider />
           <UserDataSync />
-          <AdScript />
-          <PopunderAd />
-          <AdsterraSocialBar />
-          <CamWidget />
-          {/* StickyFooterAd removed 2026-04-11: ExoClick 300x50 zone was
-              serving a wrong-sized creative that got clipped above the
-              mobile nav. Redundant with AdsterraSocialBar + CamWidget
-              already occupying sticky corners. */}
+          {/* 2026-04-11 night — FULL AD BLACKOUT. Every ad surface removed
+              (AdScript, PopunderAd, AdsterraSocialBar, StickyFooterAd,
+              CamWidget, all page-level banners) after Sab reported too
+              many broken, cropped, or confusing ad placements. Reintroduce
+              ONE at a time after verifying each renders cleanly in
+              Playwright. */}
           <PushNotifications />
           <AppShell>{children}</AppShell>
         </SessionProviderClient>

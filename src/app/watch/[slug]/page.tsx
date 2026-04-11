@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
-import { WatchPlayerWithPreroll } from "@/components/WatchPlayerWithPreroll";
+import { WatchPlayer } from "@/components/WatchPlayer";
 import { WatchActions } from "@/components/WatchActions";
 import { getGelbooruPost } from "@/lib/gelbooru";
 import { getRule34Post } from "@/lib/rule34";
@@ -19,10 +19,7 @@ import {
 } from "@/lib/content-generator";
 import { containsBannedContent, getRelatedVideos, getDanbooruVideo } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
-import { AdZoneClient } from "@/components/AdZoneClient";
-import { AdsterraBanner } from "@/components/AdsterraBanner";
-import { HentaiProsBanner } from "@/components/HentaiProsBanner";
-import { AD_ZONES } from "@/lib/ad-config";
+/* Ad imports removed 2026-04-11 (AD BLACKOUT). */
 import { RemoveAdsCTA } from "@/components/RemoveAdsCTA";
 import { buildSeoTitle, buildTitle as buildDisplayTitle } from "@/lib/video-display";
 
@@ -391,16 +388,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 ))}
               </nav>
 
-              {/* Ad zone — above player. Uses nativeGrid zone (was duplicating
-                  watchUnderplayer728 which violates ExoClick TOS → blanks).
-                  Mobile swaps to the 320x50 zone when one is configured. */}
-              <AdZoneClient
-                zoneId={AD_ZONES.exoclick.nativeGrid}
-                size="728x90"
-                className="ad-zone--above-player"
-                mobileZoneId={AD_ZONES.exoclick.mobileBanner300x50 ?? undefined}
-                mobileSize="300x50"
-              />
+              {/* Ad zone above player removed 2026-04-11 (AD BLACKOUT) */}
 
               {/* Video player — Gelbooru URLs are proxied through /api/proxy,
                   Rule34Video + WP are proxied through /api/video-stream to
@@ -409,9 +397,14 @@ export default async function WatchPage({ params }: WatchPageProps) {
                   upstream MP4 with an IP-bound token that returns 403 in the
                   browser (CLAUDE.md silent bug). We MUST use streamProxyUrl
                   for those sources. Short-circuiting via `||` would always
-                  return the raw URL and break 78% of the catalog. */}
+                  return the raw URL and break 78% of the catalog.
+
+                  Swapped from WatchPlayerWithPreroll (which wrapped WatchPlayer
+                  in a 15s ExoClick preroll) to bare WatchPlayer 2026-04-11
+                  night as part of the ad blackout — the preroll was an ad
+                  surface we weren't verifying. */}
               <div className="player-video-wrap">
-                <WatchPlayerWithPreroll
+                <WatchPlayer
                   src={(video.source === "rule34video" || video.source === "wp" || video.source === "hentaicity") ? (streamProxyUrl || "") : (video.url || "")}
                   poster={video.thumbnail || undefined}
                   resolveUrl={resolvePageUrl || undefined}
@@ -419,21 +412,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 />
               </div>
 
-              {/* Ad zone — under player, above title (728x90 desktop / 320x50 mobile) */}
-              <AdZoneClient
-                zoneId={AD_ZONES.exoclick.watchUnderplayer728}
-                size="728x90"
-                mobileZoneId={AD_ZONES.exoclick.mobileBanner300x50 ?? undefined}
-                mobileSize="300x50"
-              />
-
-              {/* Adsterra 728x90 banner (parallel fill from highperformanceformat.com) */}
-              <div style={{ margin: "8px auto 12px auto", textAlign: "center" }}>
-                <AdsterraBanner format="banner728x90" />
-              </div>
-
-              {/* HentaiPros 728x90 — rotating hentai niche iframe ($25-35 PPS payout) */}
-              <HentaiProsBanner format="728x90" />
+              {/* Ad zones under/around player removed 2026-04-11 (AD BLACKOUT) */}
 
               {/* Remove Ads CTA — only for non-Pro, non-logged-in users */}
               <RemoveAdsCTA />
@@ -708,13 +687,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
             {/* ── Sidebar (desktop) ─────────────────────────── */}
             <aside className="player-sidebar">
-              {/* Sidebar tower — 300x600 disabled until a real ExoClick zone
-                  is created (was pointing to the 300x250 zone → 350px gap). */}
-              {AD_ZONES.exoclick.sidebar300x600 && (
-                <AdZoneClient zoneId={AD_ZONES.exoclick.sidebar300x600} size="300x600" className="ad-zone--desktop-only ad-zone--300x600" lazy />
-              )}
-              {/* Sidebar ad — 300x250, desktop only */}
-              <AdZoneClient zoneId={AD_ZONES.exoclick.sidebar300} size="300x250" className="ad-zone--desktop-only" lazy />
+              {/* Sidebar ads removed 2026-04-11 (AD BLACKOUT) */}
               <div className="player-sidebar__title">Up next</div>
               <Suspense
                 fallback={Array.from({ length: 10 }).map((_, i) => (

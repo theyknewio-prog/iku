@@ -5,9 +5,7 @@ import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { Pagination } from "@/components/Pagination";
 import { getVideos } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
-import { HentaiProsBanner } from "@/components/HentaiProsBanner";
-import { AdZoneClient } from "@/components/AdZoneClient";
-import { AD_ZONES } from "@/lib/ad-config";
+/* Ad imports removed 2026-04-11 (AD BLACKOUT). */
 import { SERIES, getSeriesBySlug } from "@/data/series";
 import { getCharacterBySlug } from "@/data/characters";
 import type { Metadata } from "next";
@@ -107,8 +105,7 @@ export default async function SeriesPage({ params, searchParams }: Props) {
       <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
       <main>
         <div className="page-container">
-          {/* Top leaderboard — HentaiPros (always fills vs empty ExoClick). */}
-          <HentaiProsBanner format="728x90" />
+          {/* Top leaderboard removed 2026-04-11 (AD BLACKOUT) */}
 
           {/* ── Series hero ─────────────────────────────────────── */}
           <div className="tag-hero">
@@ -205,12 +202,7 @@ export default async function SeriesPage({ params, searchParams }: Props) {
             <BlacklistFilter videos={videos} />
           )}
 
-          {/* In-grid 300x250 ad before pagination */}
-          {videos.length > 0 && (
-            <div style={{ display: "flex", justifyContent: "center", margin: "32px 0" }}>
-              <AdZoneClient zoneId={AD_ZONES.exoclick.sidebar300} size="300x250" lazy />
-            </div>
-          )}
+          {/* In-grid ad removed 2026-04-11 (AD BLACKOUT) */}
 
           {/* ── Pagination ───────────────────────────────────── */}
           {videos.length > 0 && (
