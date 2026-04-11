@@ -17,6 +17,7 @@ import { MagneticButton } from "@/components/MagneticButton";
 import { AdZoneClient } from "@/components/AdZoneClient";
 import { AdsterraBanner } from "@/components/AdsterraBanner";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
+import { CrakRevenueBanner } from "@/components/CrakRevenueBanner";
 import { NativeAdCard } from "@/components/NativeAdCard";
 import { AD_ZONES } from "@/lib/ad-config";
 
@@ -250,6 +251,9 @@ export default async function HomePage() {
           {/* ── HentaiPros 728x90 — AdultForce hentai niche rotation ($25-35 PPS) ── */}
           <HentaiProsBanner format="728x90" />
 
+          {/* ── CrakRevenue random offer rotation (Harem Villa / AI / BootyCallz) ── */}
+          <CrakRevenueBanner />
+
           {/* ================================================================
               TRENDING NOW -- Horizontal poster scroll
           ================================================================ */}
@@ -386,6 +390,9 @@ export default async function HomePage() {
 
           {/* ── HentaiPros 300x250 — highest-CPA hentai offer rotation ── */}
           <HentaiProsBanner format="300x250" />
+
+          {/* ── CrakRevenue Harem Villa specifically (45% revshare lifetime) ── */}
+          <CrakRevenueBanner offerId="harem-villa" />
 
           {/* ================================================================
               POPULAR CHARACTERS -- Circular avatars with gradient rings
