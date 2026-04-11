@@ -92,19 +92,26 @@ function formatViews(score: number): string {
 }
 
 export default async function HomePage() {
-  const trending = await getVideos({ limit: 20, order: "score", source: "all", requireThumbnail: true });
   // Random offset (pages 1–5) so "New Releases" shows different content on each load.
   const newReleasesPage = Math.floor(Math.random() * 5) + 1;
-  const newest = await getVideos({ limit: 10, page: newReleasesPage, order: "date", source: "all", requireThumbnail: true });
-  const topRated = await getVideos({ limit: 8, order: "favcount", source: "all", requireThumbnail: true });
-  const [genres, characters, vod] = await Promise.all([
+
+  // Parallelize every top-level data fetch. Previously these were sequential
+  // `await`s which made TTFB ~1.1s (cold path) because Node waited on each
+  // query before even starting the next. All of these are independent → one
+  // Promise.all drops the wall clock from sum(latencies) to max(latency).
+  // getThumbnailsForTags is the only one that has a data dependency on the
+  // result of getCuratedGenreCounts, so it stays in a second step but is
+  // cheap anyway (memoized 1h TTL, per-tag lookup).
+  const [trending, newest, topRated, genres, characters, vod] = await Promise.all([
+    getVideos({ limit: 20, order: "score", source: "all", requireThumbnail: true }),
+    getVideos({ limit: 10, page: newReleasesPage, order: "date", source: "all", requireThumbnail: true }),
+    getVideos({ limit: 8, order: "favcount", source: "all", requireThumbnail: true }),
     getCuratedGenreCounts(),
     getPopularCharacters(12),
     getVideoOfTheDay(),
   ]);
 
-  // Fetch a cover thumbnail for every genre so the stories-circle row has
-  // real images. All memoized (1h TTL), so this adds zero cost on warm cache.
+  // Cover thumbnail per genre (memoized 1h, near-zero cost on warm cache).
   const genreThumbs = await getThumbnailsForTags(genres.map((g) => g.name));
 
   const hero = trending.data[0];

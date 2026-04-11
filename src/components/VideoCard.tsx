@@ -616,6 +616,8 @@ export function VideoCard({
             <img
               src={video.thumbnail}
               alt=""
+              loading="lazy"
+              decoding="async"
               style={{
                 position: "absolute",
                 inset: 0,
