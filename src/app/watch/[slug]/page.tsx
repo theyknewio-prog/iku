@@ -22,7 +22,6 @@ import { getNonce } from "@/lib/csp-nonce";
 import { AdZoneClient } from "@/components/AdZoneClient";
 import { AdsterraBanner } from "@/components/AdsterraBanner";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
-import { CrakRevenueBanner } from "@/components/CrakRevenueBanner";
 import { AD_ZONES } from "@/lib/ad-config";
 import { RemoveAdsCTA } from "@/components/RemoveAdsCTA";
 import { buildSeoTitle, buildTitle as buildDisplayTitle } from "@/lib/video-display";
@@ -435,9 +434,6 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
               {/* HentaiPros 728x90 — rotating hentai niche iframe ($25-35 PPS payout) */}
               <HentaiProsBanner format="728x90" />
-
-              {/* CrakRevenue rotating offer (Harem Villa / AI / BootyCallz) */}
-              <CrakRevenueBanner />
 
               {/* Remove Ads CTA — only for non-Pro, non-logged-in users */}
               <RemoveAdsCTA />

@@ -11,7 +11,6 @@ import { PopunderAd } from "@/components/PopunderAd";
 import { CamWidget } from "@/components/CamWidget";
 import { AdsterraSocialBar } from "@/components/AdsterraSocialBar";
 import { StickyFooterAd } from "@/components/StickyFooterAd";
-import { MobileNicheBanner } from "@/components/MobileNicheBanner";
 import { PushNotifications } from "@/components/PushNotifications";
 
 // Fonts: Nunito (primary body) + Righteous (display/headings).
@@ -115,7 +114,6 @@ export default async function RootLayout({
           <AdsterraSocialBar />
           <CamWidget />
           <StickyFooterAd />
-          <MobileNicheBanner />
           <PushNotifications />
           <AppShell>{children}</AppShell>
         </SessionProviderClient>

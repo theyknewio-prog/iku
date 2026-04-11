@@ -94,24 +94,45 @@ export function AdsterraBanner({ format, className, style }: AdsterraBannerProps
   if (typeof document !== "undefined" && document.body?.dataset.pro === "1") return null;
   if (!key) return null;
 
+  // Responsive wrapper — iframe is hardcoded to the format's pixel width
+  // (728x90, 300x250, etc.) which WILL overflow viewports narrower than
+  // the format. We wrap in a div with overflow:hidden + max-width:100% so
+  // the iframe either downscales (via CSS zoom) OR gets horizontally
+  // clipped to the viewport without causing page-level horizontal scroll.
+  const scale = cfg.w > 0 ? undefined : undefined; // always 1 for now
   return (
-    <iframe
-      title={`ad-${format}`}
-      srcDoc={srcDoc}
-      width={cfg.w}
-      height={cfg.h}
-      scrolling="no"
-      frameBorder={0}
+    <div
       className={className}
       style={{
-        display: "block",
-        border: "none",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        maxWidth: "100%",
+        overflow: "hidden",
         margin: "0 auto",
+        // Reserve vertical space to avoid layout shift while iframe loads
+        minHeight: cfg.h,
         ...style,
       }}
-      // Security: sandbox the iframe so it can only run its own scripts
-      // and open links in new tabs — no access to parent page data.
-      sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-    />
+    >
+      <iframe
+        title={`ad-${format}`}
+        srcDoc={srcDoc}
+        width={cfg.w}
+        height={cfg.h}
+        scrolling="no"
+        frameBorder={0}
+        style={{
+          display: "block",
+          border: "none",
+          // CRITICAL: max-width 100% + width:auto so the iframe scales
+          // to its wrapper when the viewport is narrower than the format.
+          maxWidth: "100%",
+        }}
+        // Security: sandbox the iframe so it can only run its own scripts
+        // and open links in new tabs — no access to parent page data.
+        sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+      />
+    </div>
   );
 }

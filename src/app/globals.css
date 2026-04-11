@@ -277,6 +277,11 @@ html {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   scroll-behavior: smooth;
+  /* iOS Safari sometimes ignores body-only overflow-x:hidden because the
+     viewport is driven by the root element. Clip at <html> too so a rogue
+     728x90 iframe or native ad can't drag the entire page sideways. */
+  overflow-x: clip;
+  max-width: 100vw;
 }
 
 body {

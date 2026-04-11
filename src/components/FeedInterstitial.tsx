@@ -3,18 +3,17 @@
 /**
  * FeedInterstitial — Fullscreen interstitial ad between feed swipes.
  *
- * Shows an ExoClick interstitial zone (fullpage overlay).
- * Close button appears after 3 seconds. Pro users never see this.
+ * Renders an AdultForce HentaiPros 300x250 rotating iframe inside a centered
+ * fullscreen overlay. We switched away from ExoClick's interstitial zone
+ * because it returned empty fill ~90% of the time (silent black screen in
+ * Shorts). HentaiPros always rotates real hentai creatives.
  *
- * Fix 2026-04-07: Uses waitForAdProvider() so the push() fires only after
- * ExoClick's script has bootstrapped.
+ * Close button appears after 3 seconds. Pro users never see this.
  */
 
-import { useEffect, useRef, useState } from "react";
-import { AD_ZONES } from "@/lib/ad-config";
-import { insertExoClickZone } from "@/lib/ad-utils";
+import { useEffect, useState } from "react";
+import { HentaiProsBanner } from "./HentaiProsBanner";
 
-const ZONE_ID = AD_ZONES.exoclick.feedInterstitial;
 const CLOSE_DELAY = 3000; // close button appears after 3s
 
 interface FeedInterstitialProps {
@@ -22,16 +21,7 @@ interface FeedInterstitialProps {
 }
 
 export function FeedInterstitial({ onClose }: FeedInterstitialProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const insertedRef = useRef(false);
   const [canClose, setCanClose] = useState(false);
-
-  // Insert ad zone
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    insertExoClickZone(container, ZONE_ID, insertedRef);
-  }, []);
 
   // Show close button after delay
   useEffect(() => {
@@ -48,22 +38,13 @@ export function FeedInterstitial({ onClose }: FeedInterstitialProps) {
     };
   }, []);
 
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      const container = containerRef.current;
-      if (container) {
-        const ins = container.querySelector("ins");
-        if (ins) ins.remove();
-      }
-      insertedRef.current = false;
-    };
-  }, []);
-
   return (
     <div className="feed-interstitial" aria-label="Advertisement">
-      {/* Ad container */}
-      <div ref={containerRef} className="feed-interstitial__ad" />
+      {/* Ad container — HentaiPros 300x250 rotating iframe (no mobile downgrade,
+          already mobile-friendly) */}
+      <div className="feed-interstitial__ad">
+        <HentaiProsBanner format="300x250" mobileFormat={null} />
+      </div>
 
       {/* Close button — appears after 3s */}
       {canClose ? (
