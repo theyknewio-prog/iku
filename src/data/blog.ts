@@ -1,15 +1,7 @@
-export interface BlogArticle {
-  slug: string;
-  title: string;
-  excerpt: string;
-  content: string;
-  tags: string[];
-  publishedAt: string;
-  readingTime: number;
-  glossaryLinks: string[];
-  seoTitle: string;
-  seoDescription: string;
-}
+// Type lives in blog-types.ts so the auto-generated file can share it
+// without creating an import cycle. Re-export for backwards compatibility.
+export type { BlogArticle } from "./blog-types";
+import type { BlogArticle } from "./blog-types";
 
 export const BLOG_ARTICLES: BlogArticle[] = [
   {
@@ -899,6 +891,12 @@ BLOG_ARTICLES.push(...NEW_BLOG_ARTICLES);
 // Merge SEO push articles (2026-04-05 — 20 listicles cloning best-hentai-studios)
 import { SEO_PUSH_ARTICLES } from "./blog-seo-push";
 BLOG_ARTICLES.push(...SEO_PUSH_ARTICLES);
+
+// Merge auto-generated hentaicity + hentaigasm tag articles (2026-04-11)
+// 20 articles, each links 18 new long-form watch pages for internal SEO
+// boost on the 7279 just-scraped hentaicity + hentaigasm episodes.
+import { BLOG_ARTICLES_HENTAICITY } from "./blog-auto-hentaicity";
+BLOG_ARTICLES.push(...BLOG_ARTICLES_HENTAICITY);
 
 export function getArticleBySlug(slug: string): BlogArticle | undefined {
   return BLOG_ARTICLES.find((a) => a.slug === slug);
