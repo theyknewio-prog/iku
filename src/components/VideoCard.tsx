@@ -238,6 +238,7 @@ export function VideoCard({
   preloadNext = false,
   globalMuted = true,
   onMuteChange,
+  onBroken,
 }: {
   video: FeedVideo;
   index: number;
@@ -245,6 +246,11 @@ export function VideoCard({
   preloadNext?: boolean;
   globalMuted?: boolean;
   onMuteChange?: (muted: boolean) => void;
+  /** Fired when the <video> errors OR fails to become playable within 4s.
+   *  SwipeFeed uses this to advance the user past dead cards (stale resolved
+   *  URL, IP-banned CDN token, broken upstream) instead of showing an
+   *  infinite black-screen spinner. */
+  onBroken?: (index: number) => void;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressTrackRef = useRef<HTMLDivElement>(null);
@@ -336,6 +342,27 @@ export function VideoCard({
       setBuffered(0);
     }
   }, [isActive]);
+
+  /* Broken video watchdog — if the active video hasn't reached HAVE_CURRENT_
+   * DATA within 4 seconds (e.g. stale signed URL, broken CDN token, 403 on
+   * a proxied IP-bound upstream), treat the card as dead and auto-advance.
+   * Without this, the user sees an infinite black-screen spinner on broken
+   * cards and has to manually swipe past them — discovered via Playwright
+   * audit 2026-04-11 where card #2 had readyState=0 after 3.7s. */
+  useEffect(() => {
+    if (!isActive || !onBroken) return;
+    const el = videoRef.current;
+    if (!el) return;
+    const timer = setTimeout(() => {
+      const current = videoRef.current;
+      if (!current) return;
+      // readyState < HAVE_CURRENT_DATA (2) OR no duration → dead card
+      if (current.readyState < 2 || !current.duration) {
+        onBroken(index);
+      }
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, [isActive, index, onBroken]);
 
   /* Build the display title/thumbnail used for favorites + history entries.
    * Matches the watch-page derivation so a Shorts save lands in /favorites with
@@ -658,6 +685,12 @@ export function VideoCard({
           onLoadedData={() => setLoaded(true)}
           onTimeUpdate={handleTimeUpdate}
           onProgress={handleProgress}
+          onError={() => {
+            // Video element errored: broken source, CORS failure, decode error,
+            // 403 on IP-bound upstream, etc. Mark this card as broken so
+            // SwipeFeed advances past it.
+            if (isActive && onBroken) onBroken(index);
+          }}
         />
       </div>
 

@@ -112,6 +112,25 @@ export function SwipeFeed() {
     } catch { /* private browsing */ }
   }, []);
 
+  /* Broken-card handler — called by VideoCard when its <video> errors or
+   * fails to reach a playable state within 4s. We remove the dead card from
+   * the feed array so the next card immediately snaps into view. Without
+   * this, users hit dead black-screen cards (stale IP-bound tokens, broken
+   * CDN routes, etc.) and have to manually swipe past them.
+   *
+   * If the broken card is the currently-active one, we splice it out; the
+   * IntersectionObserver + CSS scroll-snap will resync on the next
+   * scrollable item. */
+  const handleBrokenCard = useCallback((brokenIndex: number) => {
+    setVideos((prev) => {
+      // Splice the broken card out. React re-renders with indices shifted
+      // down by one; activeIndex stays the same numerical value so the next
+      // card takes the dead slot and starts playing automatically.
+      if (brokenIndex < 0 || brokenIndex >= prev.length) return prev;
+      return [...prev.slice(0, brokenIndex), ...prev.slice(brokenIndex + 1)];
+    });
+  }, []);
+
   // Trigger interstitial every 3 swipes (max 10 per session, not for Pro).
   // Previously was every 10 swipes max 3/session → users never saw any ad
   // because typical Shorts sessions are < 10 swipes. Sab's explicit request
@@ -210,9 +229,10 @@ export function SwipeFeed() {
             video={video}
             index={index}
             isActive={index === activeIndex}
-            preloadNext={index > activeIndex && index <= activeIndex + 4}
+            preloadNext={index > activeIndex && index <= activeIndex + 6}
             globalMuted={globalMuted}
             onMuteChange={setGlobalMuted}
+            onBroken={handleBrokenCard}
           />
         ))}
       </div>
