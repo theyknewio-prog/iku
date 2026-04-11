@@ -14,6 +14,7 @@ import { JoinDiscordCTA } from "@/components/JoinDiscordCTA";
 import { SignupCTA } from "@/components/SignupCTA";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { MagneticButton } from "@/components/MagneticButton";
+import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai Videos | Stream Animated Hentai Online",
@@ -241,8 +242,11 @@ export default async function HomePage() {
             </div>
           </section>
 
-          {/* Ad slots removed 2026-04-11 (AD BLACKOUT). Reintroduced one
-              at a time after each renders cleanly in Playwright. */}
+          {/* Ad #1 — HentaiPros 300x250 (AdultForce a.adtng.com, rotates
+              real hentai creatives, always fills). Re-introduced 2026-04-11
+              after blackout + Playwright verification of inline iframe
+              rendering at 300x250 in feed interstitial. */}
+          <HentaiProsBanner format="300x250" mobileFormat={null} />
 
           {/* ================================================================
               TRENDING NOW -- Horizontal poster scroll
