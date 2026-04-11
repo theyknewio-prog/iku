@@ -21,6 +21,7 @@ import { containsBannedContent, getRelatedVideos, getDanbooruVideo } from "@/lib
 import { getNonce } from "@/lib/csp-nonce";
 import { AdZoneClient } from "@/components/AdZoneClient";
 import { AdsterraBanner } from "@/components/AdsterraBanner";
+import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 import { AD_ZONES } from "@/lib/ad-config";
 import { RemoveAdsCTA } from "@/components/RemoveAdsCTA";
 import { buildSeoTitle, buildTitle as buildDisplayTitle } from "@/lib/video-display";
@@ -430,6 +431,9 @@ export default async function WatchPage({ params }: WatchPageProps) {
               <div style={{ margin: "8px auto 12px auto", textAlign: "center" }}>
                 <AdsterraBanner format="banner728x90" />
               </div>
+
+              {/* HentaiPros 728x90 — rotating hentai niche iframe ($25-35 PPS payout) */}
+              <HentaiProsBanner format="728x90" />
 
               {/* Remove Ads CTA — only for non-Pro, non-logged-in users */}
               <RemoveAdsCTA />

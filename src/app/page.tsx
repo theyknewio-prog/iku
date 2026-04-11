@@ -16,6 +16,7 @@ import { ScrollReveal } from "@/components/ScrollReveal";
 import { MagneticButton } from "@/components/MagneticButton";
 import { AdZoneClient } from "@/components/AdZoneClient";
 import { AdsterraBanner } from "@/components/AdsterraBanner";
+import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 import { NativeAdCard } from "@/components/NativeAdCard";
 import { AD_ZONES } from "@/lib/ad-config";
 
@@ -246,6 +247,9 @@ export default async function HomePage() {
             <AdsterraBanner format="banner728x90" />
           </div>
 
+          {/* ── HentaiPros 728x90 — AdultForce hentai niche rotation ($25-35 PPS) ── */}
+          <HentaiProsBanner format="728x90" />
+
           {/* ================================================================
               TRENDING NOW -- Horizontal poster scroll
           ================================================================ */}
@@ -379,6 +383,9 @@ export default async function HomePage() {
           <div style={{ margin: "16px auto", textAlign: "center" }}>
             <AdsterraBanner format="banner300x250" />
           </div>
+
+          {/* ── HentaiPros 300x250 — highest-CPA hentai offer rotation ── */}
+          <HentaiProsBanner format="300x250" />
 
           {/* ================================================================
               POPULAR CHARACTERS -- Circular avatars with gradient rings
