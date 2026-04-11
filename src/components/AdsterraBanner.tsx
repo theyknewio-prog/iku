@@ -23,7 +23,6 @@
  * Pro users and /feed route never render this.
  */
 
-import { useMemo } from "react";
 import { usePathname } from "next/navigation";
 import { ADSTERRA_SCRIPTS } from "@/lib/ad-config";
 
@@ -42,6 +41,13 @@ interface AdsterraBannerProps {
   className?: string;
   /** Optional inline style override for the outer wrapper */
   style?: React.CSSProperties;
+  /**
+   * Mobile fallback format. The 728x90 desktop unit gets squished to ~392x90
+   * on mobile, which crops the ad creative and shows white space. Default
+   * behavior: when `format` is `banner728x90`, swap to `banner300x250` on
+   * screens <768px. Pass `null` to disable the downgrade.
+   */
+  mobileFormat?: BannerFormat | null;
 }
 
 /**
@@ -58,17 +64,8 @@ function extractKey(url: string): string {
   return m ? m[1] : "";
 }
 
-export function AdsterraBanner({ format, className, style }: AdsterraBannerProps) {
-  const pathname = usePathname();
-  const isFeed = pathname === "/feed" || pathname.startsWith("/feed/");
-
-  const cfg = FORMATS[format];
-  const key = extractKey(cfg.url);
-
-  // Build the srcdoc HTML. The script runs inside the iframe's own document
-  // with its own window, so atOptions doesn't collide with anything.
-  const srcDoc = useMemo(() => {
-    return `<!doctype html>
+function buildSrcDoc(key: string, w: number, h: number, url: string) {
+  return `<!doctype html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -79,60 +76,113 @@ export function AdsterraBanner({ format, className, style }: AdsterraBannerProps
   atOptions = {
     'key' : '${key}',
     'format' : 'iframe',
-    'height' : ${cfg.h},
-    'width' : ${cfg.w},
+    'height' : ${h},
+    'width' : ${w},
     'params' : {}
   };
 </script>
-<script src="${cfg.url}"></script>
+<script src="${url}"></script>
 </body>
 </html>`;
-  }, [key, cfg.h, cfg.w, cfg.url]);
+}
+
+function renderAdsterraIframe(
+  format: BannerFormat,
+  cfg: { w: number; h: number; url: string },
+  key: string,
+) {
+  const srcDoc = buildSrcDoc(key, cfg.w, cfg.h, cfg.url);
+  return (
+    <iframe
+      title={`ad-${format}`}
+      srcDoc={srcDoc}
+      width={cfg.w}
+      height={cfg.h}
+      scrolling="no"
+      frameBorder={0}
+      style={{
+        display: "block",
+        border: "none",
+        maxWidth: "100%",
+      }}
+      sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+    />
+  );
+}
+
+export function AdsterraBanner({
+  format,
+  className,
+  style,
+  mobileFormat,
+}: AdsterraBannerProps) {
+  const pathname = usePathname();
+  const isFeed = pathname === "/feed" || pathname.startsWith("/feed/");
+
+  // Default: 728x90 downgrades to 300x250 on mobile (728 squished to ~392
+  // looks broken). Other formats render as-is. Pass `mobileFormat={null}`
+  // to disable the downgrade entirely.
+  const resolvedMobileFormat: BannerFormat | null =
+    mobileFormat === undefined
+      ? format === "banner728x90"
+        ? "banner300x250"
+        : format
+      : mobileFormat;
+
+  const desktopCfg = FORMATS[format];
+  const desktopKey = extractKey(desktopCfg.url);
+
+  const useSplit = resolvedMobileFormat !== null && resolvedMobileFormat !== format;
+  const mobileCfg = useSplit ? FORMATS[resolvedMobileFormat!] : desktopCfg;
+  const mobileKey = useSplit ? extractKey(mobileCfg.url) : desktopKey;
 
   // Don't render on /feed or for Pro users
   if (isFeed) return null;
   if (typeof document !== "undefined" && document.body?.dataset.pro === "1") return null;
-  if (!key) return null;
+  if (!desktopKey) return null;
 
-  // Responsive wrapper — iframe is hardcoded to the format's pixel width
-  // (728x90, 300x250, etc.) which WILL overflow viewports narrower than
-  // the format. We wrap in a div with overflow:hidden + max-width:100% so
-  // the iframe either downscales (via CSS zoom) OR gets horizontally
-  // clipped to the viewport without causing page-level horizontal scroll.
-  const scale = cfg.w > 0 ? undefined : undefined; // always 1 for now
+  const wrapperBase: React.CSSProperties = {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    maxWidth: "100%",
+    overflow: "hidden",
+    margin: "0 auto",
+    ...style,
+  };
+
+  if (!useSplit) {
+    return (
+      <div
+        className={className}
+        style={{ ...wrapperBase, minHeight: desktopCfg.h }}
+      >
+        {renderAdsterraIframe(format, desktopCfg, desktopKey)}
+      </div>
+    );
+  }
+
+  // Dual-render: CSS media query shows the right size per viewport.
+  // Keeps parity with HentaiProsBanner's pattern so both ad networks
+  // use the same responsive strategy.
   return (
-    <div
-      className={className}
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        maxWidth: "100%",
-        overflow: "hidden",
-        margin: "0 auto",
-        // Reserve vertical space to avoid layout shift while iframe loads
-        minHeight: cfg.h,
-        ...style,
-      }}
-    >
-      <iframe
-        title={`ad-${format}`}
-        srcDoc={srcDoc}
-        width={cfg.w}
-        height={cfg.h}
-        scrolling="no"
-        frameBorder={0}
-        style={{
-          display: "block",
-          border: "none",
-          // CRITICAL: max-width 100% + width:auto so the iframe scales
-          // to its wrapper when the viewport is narrower than the format.
-          maxWidth: "100%",
-        }}
-        // Security: sandbox the iframe so it can only run its own scripts
-        // and open links in new tabs — no access to parent page data.
-        sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-      />
-    </div>
+    <>
+      <style>{`
+        @media (max-width: 767px) { .at-wrap--desktop { display: none !important; } }
+        @media (min-width: 768px) { .at-wrap--mobile  { display: none !important; } }
+      `}</style>
+      <div
+        className={["at-wrap", "at-wrap--desktop", className].filter(Boolean).join(" ")}
+        style={{ ...wrapperBase, minHeight: desktopCfg.h }}
+      >
+        {renderAdsterraIframe(format, desktopCfg, desktopKey)}
+      </div>
+      <div
+        className={["at-wrap", "at-wrap--mobile", className].filter(Boolean).join(" ")}
+        style={{ ...wrapperBase, minHeight: mobileCfg.h }}
+      >
+        {renderAdsterraIframe(resolvedMobileFormat!, mobileCfg, mobileKey)}
+      </div>
+    </>
   );
 }
