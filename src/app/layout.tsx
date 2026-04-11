@@ -10,7 +10,6 @@ import { AdScript } from "@/components/AdScript";
 import { PopunderAd } from "@/components/PopunderAd";
 import { CamWidget } from "@/components/CamWidget";
 import { AdsterraSocialBar } from "@/components/AdsterraSocialBar";
-import { StickyFooterAd } from "@/components/StickyFooterAd";
 import { PushNotifications } from "@/components/PushNotifications";
 
 // Fonts: Nunito (primary body) + Righteous (display/headings).
@@ -113,7 +112,10 @@ export default async function RootLayout({
           <PopunderAd />
           <AdsterraSocialBar />
           <CamWidget />
-          <StickyFooterAd />
+          {/* StickyFooterAd removed 2026-04-11: ExoClick 300x50 zone was
+              serving a wrong-sized creative that got clipped above the
+              mobile nav. Redundant with AdsterraSocialBar + CamWidget
+              already occupying sticky corners. */}
           <PushNotifications />
           <AppShell>{children}</AppShell>
         </SessionProviderClient>
