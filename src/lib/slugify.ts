@@ -36,6 +36,7 @@ export function extractIdFromSlug(slug: string): number {
   else if (cleaned.startsWith("wh-")) cleaned = cleaned.slice(3);
   else if (cleaned.startsWith("hw-")) cleaned = cleaned.slice(3);
   else if (cleaned.startsWith("hg-")) cleaned = cleaned.slice(3);
+  else if (cleaned.startsWith("hc-")) cleaned = cleaned.slice(3);
 
   const match = cleaned.match(/^(\d+)/);
   if (!match) throw new Error(`Invalid slug: ${slug}`);
@@ -57,6 +58,10 @@ export function isRule34VideoSlug(slug: string): boolean {
 const WP_PREFIXES = ["hmm-", "htv-", "aid-", "wh-", "hw-", "hg-"];
 export function isWPHentaiSlug(slug: string): boolean {
   return WP_PREFIXES.some((p) => slug.startsWith(p));
+}
+
+export function isHentaicitySlug(slug: string): boolean {
+  return slug.startsWith("hc-");
 }
 
 /**

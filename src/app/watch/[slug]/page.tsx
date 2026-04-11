@@ -9,7 +9,8 @@ import { getGelbooruPost } from "@/lib/gelbooru";
 import { getRule34Post } from "@/lib/rule34";
 import { getRule34VideoPost, getRule34VideoPageUrl } from "@/lib/rule34video";
 import { getWPHentaiPost, getWPHentaiPageUrl } from "@/lib/wp-hentai";
-import { extractIdFromSlug, isGelbooruSlug, isRule34Slug, isRule34VideoSlug, isWPHentaiSlug } from "@/lib/slugify";
+import { getHentaicityPost } from "@/lib/hentaicity";
+import { extractIdFromSlug, isGelbooruSlug, isRule34Slug, isRule34VideoSlug, isWPHentaiSlug, isHentaicitySlug } from "@/lib/slugify";
 import type { Video } from "@/types/video";
 import {
   generateVideoDescription,
@@ -88,7 +89,11 @@ export async function generateMetadata({
   let video: Video;
   try {
     const id = extractIdFromSlug(slug);
-    if (isWPHentaiSlug(slug)) {
+    if (isHentaicitySlug(slug)) {
+      const hv = await getHentaicityPost(id);
+      if (!hv) return { title: "Hentai Video | iku.gg", robots: { index: false } };
+      video = hv;
+    } else if (isWPHentaiSlug(slug)) {
       const wv = await getWPHentaiPost(id);
       if (!wv) return { title: "Hentai Video | iku.gg", robots: { index: false } };
       video = wv;
@@ -195,7 +200,16 @@ export default async function WatchPage({ params }: WatchPageProps) {
   let streamProxyUrl: string | null = null;
   try {
     const id = extractIdFromSlug(slug);
-    if (isWPHentaiSlug(slug)) {
+    if (isHentaicitySlug(slug)) {
+      const hv = await getHentaicityPost(id);
+      if (!hv) notFound();
+      video = hv;
+      // hentaicity serves MP4 directly — we proxy through /api/video-stream
+      // to dodge potential CORS or Referer checks and keep user IPs hidden.
+      if (hv.url) {
+        streamProxyUrl = `/api/video-stream?url=${encodeURIComponent(hv.url)}`;
+      }
+    } else if (isWPHentaiSlug(slug)) {
       const wv = await getWPHentaiPost(id);
       if (!wv) notFound();
       video = wv;
@@ -396,7 +410,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
                   return the raw URL and break 78% of the catalog. */}
               <div className="player-video-wrap">
                 <WatchPlayerWithPreroll
-                  src={(video.source === "rule34video" || video.source === "wp") ? (streamProxyUrl || "") : (video.url || "")}
+                  src={(video.source === "rule34video" || video.source === "wp" || video.source === "hentaicity") ? (streamProxyUrl || "") : (video.url || "")}
                   poster={video.thumbnail || undefined}
                   resolveUrl={resolvePageUrl || undefined}
                   relatedVideos={relatedForPlayer}
@@ -539,7 +553,9 @@ export default async function WatchPage({ params }: WatchPageProps) {
                           ? `https://gelbooru.com/index.php?page=post&s=view&id=${video.id}`
                           : video.source === "rule34"
                             ? `https://rule34.xxx/index.php?page=post&s=view&id=${video.id}`
-                            : `https://danbooru.donmai.us/posts/${video.id}`
+                            : video.source === "hentaicity"
+                              ? (video.pageUrl || `https://www.hentaicity.com`)
+                              : `https://danbooru.donmai.us/posts/${video.id}`
                     }
                     target="_blank"
                     rel="noopener noreferrer"
