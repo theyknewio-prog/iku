@@ -42,5 +42,28 @@ export const AD_ZONES = {
   },
 } as const;
 
+/**
+ * Real Adsterra script URLs per zone (grabbed from publisher dashboard Get Code
+ * on 2026-04-11 via Playwright MCP). The numeric IDs above are Adsterra's internal
+ * refs — the publisher script URL uses a hashed token per zone that only lives
+ * in the Get Code modal. Without these, the Adsterra script tag loads a 404.
+ *
+ * Social Bar + Popunder = single one-liner scripts, inject direct.
+ * Banner + Native = need atOptions wrapper (see AdsterraBanner.tsx). Because
+ * all Adsterra banners share a global `window.atOptions`, running more than
+ * one banner on the same page requires each to live inside its own `<iframe
+ * srcDoc=...>` — otherwise the last one wins (confirmed by publisher docs +
+ * adsterra.com/blog/displaying-different-banners-on-mobile-and-desktop).
+ */
+export const ADSTERRA_SCRIPTS = {
+  popunder: 'https://pl29086637.profitablecpmratenetwork.com/3a/c5/c5/3ac5c557ed669544ce272e344486c7d0.js',
+  native:   'https://pl29086638.profitablecpmratenetwork.com/9887f6df21db62687c837f0362b4b16c/invoke.js',
+  socialBar:'https://pl29086639.profitablecpmratenetwork.com/c8/e2/6d/c8e26d62c412ef890a2ce3e83d94da53.js',
+  banner300x250: 'https://www.highperformanceformat.com/b149e9de3cee857db29388ee9ca47054/invoke.js',
+  banner160x600: 'https://www.highperformanceformat.com/ef2e2fad3e1fdae3f74774dac32c0ca5/invoke.js',
+  banner320x50:  'https://www.highperformanceformat.com/f11ddd24aa56b6d650655b4563d67461/invoke.js',
+  banner728x90:  'https://www.highperformanceformat.com/5a7f6bdcb73dec1719a9657cd49a2bd0/invoke.js',
+} as const;
+
 /** The global ExoClick ad provider script URL */
 export const EXOCLICK_SCRIPT_URL = 'https://a.magsrv.com/ad-provider.js';

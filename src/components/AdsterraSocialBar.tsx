@@ -3,36 +3,47 @@
 /**
  * AdsterraSocialBar — Adsterra Social Bar (zone 28986140).
  *
- * Adsterra's Social Bar is their highest CPM mobile format. It renders as
- * a sticky icon cluster at the bottom of the screen (like social share buttons)
- * that expands when tapped. It's 100% mobile-first and non-intrusive compared
- * to banners.
+ * Social Bar is Adsterra's highest-CPM mobile format. It renders as a
+ * sticky icon cluster at the bottom of the screen, expands on tap. Works
+ * in parallel with ExoClick — they don't conflict because Social Bar is
+ * a self-contained script that doesn't use atOptions globals (unlike the
+ * Banner/Native formats which DO require the iframe srcDoc wrapper).
  *
- * This is an Adsterra-exclusive format — ExoClick doesn't have an equivalent.
+ * This was stubbed out on 2026-04-08 because the previous implementation
+ * hardcoded a wrong URL (`www.topcreativeformat.com/<zone_id>/invoke.js`)
+ * that 404'd silently. Adsterra script URLs actually use a hashed token
+ * path per zone — you only get it from the publisher dashboard "Get Code"
+ * modal.
  *
- * Implementation:
- * Adsterra Social Bar works differently from ExoClick zones. It loads via a
- * self-contained script tag with atOptions config. We inject it once via
- * a <script> element appended to document.body.
+ * The real URL was grabbed via Playwright MCP on 2026-04-11 and is now
+ * centralized in src/lib/ad-config.ts → ADSTERRA_SCRIPTS.socialBar. That's
+ * the single source of truth; update this component only via that constant.
  *
- * Pro users see nothing. Script loads lazily after hydration.
+ * Pro users and /feed route never see this.
  */
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { ADSTERRA_SCRIPTS } from "@/lib/ad-config";
 
-const ZONE_ID = "28986140";
-const SCRIPT_URL = `//www.topcreativeformat.com/${ZONE_ID}/invoke.js`;
+const SCRIPT_TAG_ID = "adsterra-social-bar";
 
 export function AdsterraSocialBar() {
-  // DISABLED 2026-04-08 — Adsterra Social Bar was causing aggressive redirects
-  // that hijacked browser navigation. The atOptions 'key' was set to a zone ID
-  // (28986140) instead of the actual Adsterra publisher key, causing the script
-  // to act as a SmartLink redirect.
-  //
-  // Revenue impact: Adsterra showed 0 impressions, 0 revenue across all 7 zones.
-  // Re-enable only after getting the correct publisher key from Adsterra dashboard
-  // AND confirming it doesn't redirect.
-  //
-  // ExoClick handles all ad placements for now.
+  const pathname = usePathname();
+  const isFeed = pathname === "/feed" || pathname.startsWith("/feed/");
+
+  useEffect(() => {
+    if (isFeed) return;
+    if (document.body.dataset.pro === "1") return;
+    if (document.getElementById(SCRIPT_TAG_ID)) return;
+
+    const s = document.createElement("script");
+    s.id = SCRIPT_TAG_ID;
+    s.src = ADSTERRA_SCRIPTS.socialBar;
+    s.async = true;
+    s.setAttribute("data-cfasync", "false");
+    document.body.appendChild(s);
+  }, [isFeed]);
+
   return null;
 }
