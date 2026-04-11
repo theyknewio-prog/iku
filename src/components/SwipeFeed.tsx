@@ -112,13 +112,16 @@ export function SwipeFeed() {
     } catch { /* private browsing */ }
   }, []);
 
-  // Trigger interstitial every 10 swipes (max 3 per session, not for Pro)
+  // Trigger interstitial every 3 swipes (max 10 per session, not for Pro).
+  // Previously was every 10 swipes max 3/session → users never saw any ad
+  // because typical Shorts sessions are < 10 swipes. Sab's explicit request
+  // 2026-04-11: "il en faut tous les 3 shorts".
   useEffect(() => {
     if (
       activeIndex > 0 &&
-      activeIndex % 10 === 0 &&
+      activeIndex % 3 === 0 &&
       activeIndex !== lastInterstitialIndexRef.current &&
-      interstitialCountRef.current < 3 &&
+      interstitialCountRef.current < 10 &&
       !isPro.current
     ) {
       lastInterstitialIndexRef.current = activeIndex;

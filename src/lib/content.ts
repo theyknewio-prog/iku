@@ -378,6 +378,89 @@ export const getCuratedGenreCounts = memoize(
 );
 
 // ---------------------------------------------------------------------------
+// Popular tags / characters / copyrights — PG-backed, used by /tags, /character,
+// /series index pages. Previously these called the live Danbooru API via
+// src/lib/danbooru.ts which was slow AND fragile (if Danbooru is down, /tags
+// renders blank or errors). Now they run a single GROUP BY on unnest(tags)
+// against our 346K-row local DB, with memoize on top.
+// ---------------------------------------------------------------------------
+
+export interface TagCount {
+  name: string;
+  count: number;
+}
+
+async function _getPopularTagsFromPg(limit: number): Promise<TagCount[]> {
+  try {
+    const { rows } = await pool.query(
+      `SELECT tag, COUNT(*)::int AS count
+       FROM (
+         SELECT unnest(tags) AS tag FROM videos
+         WHERE NOT (tags && $1::text[])
+           AND NOT (COALESCE(characters, ARRAY[]::text[]) && $1::text[])
+           AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $1::text[])
+       ) t
+       WHERE tag <> ''
+       GROUP BY tag
+       ORDER BY count DESC
+       LIMIT $2`,
+      [BANNED_TAGS_ARRAY, limit]
+    );
+    return rows.map((r) => ({ name: r.tag as string, count: r.count as number }));
+  } catch (err) {
+    console.error("getPopularTagsFromPg error:", err);
+    return [];
+  }
+}
+
+// Memoize with a cache key that includes the limit so different callers
+// don't collide. TTL is 1h because tag popularity drifts slowly.
+const _popularTagsCache = memoize(
+  "popular-tags-pg",
+  async (limit: number) => _getPopularTagsFromPg(limit),
+  60 * 60 * 1000
+);
+
+export async function getPopularTags(limit: number = 60): Promise<TagCount[]> {
+  return _popularTagsCache(limit);
+}
+
+async function _getPopularCharactersFromPg(limit: number): Promise<TagCount[]> {
+  try {
+    const { rows } = await pool.query(
+      `SELECT character, COUNT(*)::int AS count
+       FROM (
+         SELECT unnest(characters) AS character FROM videos
+         WHERE NOT (tags && $1::text[])
+           AND NOT (COALESCE(characters, ARRAY[]::text[]) && $1::text[])
+           AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $1::text[])
+           AND characters IS NOT NULL
+           AND array_length(characters, 1) > 0
+       ) t
+       WHERE character <> ''
+       GROUP BY character
+       ORDER BY count DESC
+       LIMIT $2`,
+      [BANNED_TAGS_ARRAY, limit]
+    );
+    return rows.map((r) => ({ name: r.character as string, count: r.count as number }));
+  } catch (err) {
+    console.error("getPopularCharactersFromPg error:", err);
+    return [];
+  }
+}
+
+const _popularCharactersCache = memoize(
+  "popular-characters-pg",
+  async (limit: number) => _getPopularCharactersFromPg(limit),
+  60 * 60 * 1000
+);
+
+export async function getPopularCharactersPg(limit: number = 40): Promise<TagCount[]> {
+  return _popularCharactersCache(limit);
+}
+
+// ---------------------------------------------------------------------------
 // Video of the Day — deterministic pick per UTC day from the top 500 by score
 // ---------------------------------------------------------------------------
 

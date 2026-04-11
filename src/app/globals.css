@@ -6390,6 +6390,31 @@ body {
   margin-top: 2px;
 }
 
+.v2-nav-drawer__telegram {
+  margin: 8px 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #0088CC, #29B6F6);
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 0 8px 20px rgba(0, 136, 204, 0.3);
+}
+.v2-nav-drawer__telegram div { flex: 1; }
+.v2-nav-drawer__telegram strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 800;
+}
+.v2-nav-drawer__telegram small {
+  display: block;
+  font-size: 11px;
+  opacity: 0.85;
+  margin-top: 2px;
+}
+
 /* ── Mobile hamburger menu dropdown (legacy, kept for compat) ── */
 .v2-mobile-menu {
   position: fixed;

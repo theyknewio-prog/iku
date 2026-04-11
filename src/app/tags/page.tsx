@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getPopularTags, getPopularCharacters } from "@/lib/danbooru";
+import { getPopularTags, getPopularCharactersPg } from "@/lib/content";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -23,7 +23,7 @@ export const dynamic = "force-dynamic";
 export default async function TagsPage() {
   const [popularTags, popularCharacters] = await Promise.all([
     getPopularTags(60),
-    getPopularCharacters(40),
+    getPopularCharactersPg(40),
   ]);
 
   return (
