@@ -78,6 +78,18 @@ export async function upsertVideos(
     );
   }
 
+  // characters / copyrights / artists use a COALESCE-IF-NON-EMPTY pattern so
+  // a subsequent scraper run on a row that was previously enriched (either
+  // by Danbooru's native metadata OR by scripts/enrich-characters-from-
+  // danbooru.ts) doesn't blow away the enrichment. Most scrapers (gelbooru,
+  // rule34, rule34video, wp, hentaicity, hentaigasm) send `characters: []`
+  // because those sites don't expose character metadata — those empty
+  // arrays would otherwise overwrite real enrichment data via the ordinary
+  // `characters = EXCLUDED.characters` update.
+  //
+  // Regression discovered 2026-04-12: enrichment job ran while scrapers
+  // were also running → scrapers committed empty arrays last → 33K rule34
+  // video rows lost their enrichment in the span of a single run.
   const query = `
     INSERT INTO videos (source, source_id, slug, url, page_url, site, title, thumbnail, preview, score, favorites, tags, characters, copyrights, artists, width, height, file_size, duration, created_at)
     VALUES ${placeholders.join(",")}
@@ -86,8 +98,22 @@ export async function upsertVideos(
       page_url = EXCLUDED.page_url, site = EXCLUDED.site, title = EXCLUDED.title,
       thumbnail = EXCLUDED.thumbnail, preview = EXCLUDED.preview,
       score = EXCLUDED.score, favorites = EXCLUDED.favorites,
-      tags = EXCLUDED.tags, characters = EXCLUDED.characters,
-      copyrights = EXCLUDED.copyrights, artists = EXCLUDED.artists,
+      tags = EXCLUDED.tags,
+      characters = CASE
+        WHEN COALESCE(array_length(EXCLUDED.characters, 1), 0) > 0
+          THEN EXCLUDED.characters
+        ELSE videos.characters
+      END,
+      copyrights = CASE
+        WHEN COALESCE(array_length(EXCLUDED.copyrights, 1), 0) > 0
+          THEN EXCLUDED.copyrights
+        ELSE videos.copyrights
+      END,
+      artists = CASE
+        WHEN COALESCE(array_length(EXCLUDED.artists, 1), 0) > 0
+          THEN EXCLUDED.artists
+        ELSE videos.artists
+      END,
       width = EXCLUDED.width, height = EXCLUDED.height,
       file_size = EXCLUDED.file_size, duration = EXCLUDED.duration
   `;
