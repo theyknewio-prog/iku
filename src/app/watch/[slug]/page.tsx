@@ -20,6 +20,7 @@ import {
 import { containsBannedContent, getRelatedVideos, getDanbooruVideo } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
 import { AdZoneClient } from "@/components/AdZoneClient";
+import { AdsterraBanner } from "@/components/AdsterraBanner";
 import { AD_ZONES } from "@/lib/ad-config";
 import { RemoveAdsCTA } from "@/components/RemoveAdsCTA";
 import { buildSeoTitle, buildTitle as buildDisplayTitle } from "@/lib/video-display";
@@ -424,6 +425,11 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 mobileZoneId={AD_ZONES.exoclick.mobileBanner300x50 ?? undefined}
                 mobileSize="300x50"
               />
+
+              {/* Adsterra 728x90 banner (parallel fill from highperformanceformat.com) */}
+              <div style={{ margin: "8px auto 12px auto", textAlign: "center" }}>
+                <AdsterraBanner format="banner728x90" />
+              </div>
 
               {/* Remove Ads CTA — only for non-Pro, non-logged-in users */}
               <RemoveAdsCTA />
