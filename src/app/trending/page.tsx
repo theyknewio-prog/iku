@@ -5,9 +5,8 @@ import { SignupCTA } from "@/components/SignupCTA";
 import { getVideos } from "@/lib/content";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
-import { AdZoneClient } from "@/components/AdZoneClient";
+import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 import { NativeAdCard } from "@/components/NativeAdCard";
-import { AD_ZONES } from "@/lib/ad-config";
 
 export const metadata: Metadata = {
   title: "Trending Hentai Videos 2026 | iku.gg",
@@ -49,8 +48,11 @@ export default async function TrendingPage() {
     <div className="shell-content">
       <main>
         <div className="page-container">
-          {/* ── Ad zone — Leaderboard top ─────────────────── */}
-          <AdZoneClient zoneId={AD_ZONES.exoclick.watchUnderplayer728} size="728x90" />
+          {/* ── Ad zone — leaderboard top (728x90 desktop, 300x250 mobile).
+              Swapped from ExoClick (empty fill on mobile) to HentaiPros
+              per the 2026-04-11 audit — Sab saw empty dark boxes where the
+              ExoClick zone was. HentaiPros always rotates real creatives. */}
+          <HentaiProsBanner format="728x90" />
 
           {/* ── Page hero ─────────────────────────────────────── */}
           <div className="tag-hero">

@@ -5,6 +5,7 @@ import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { Pagination } from "@/components/Pagination";
 import { getVideos } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
+import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 import { AdZoneClient } from "@/components/AdZoneClient";
 import { AD_ZONES } from "@/lib/ad-config";
 import { SERIES, getSeriesBySlug } from "@/data/series";
@@ -106,8 +107,8 @@ export default async function SeriesPage({ params, searchParams }: Props) {
       <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
       <main>
         <div className="page-container">
-          {/* Top leaderboard */}
-          <AdZoneClient zoneId={AD_ZONES.exoclick.watchUnderplayer728} size="728x90" />
+          {/* Top leaderboard — HentaiPros (always fills vs empty ExoClick). */}
+          <HentaiProsBanner format="728x90" />
 
           {/* ── Series hero ─────────────────────────────────────── */}
           <div className="tag-hero">

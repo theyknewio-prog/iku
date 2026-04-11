@@ -246,10 +246,11 @@ export default async function HomePage() {
             </div>
           </section>
 
-          {/* ── Ad zone — Leaderboard (728x90, responsive to 320x50 on mobile) ── */}
-          <AdZoneClient zoneId={AD_ZONES.exoclick.watchUnderplayer728} size="728x90" />
-
-          {/* ── Adsterra 728x90 banner (runs in parallel with ExoClick for dual-network fill) ── */}
+          {/* ── Ad zone — Leaderboard (Adsterra + HentaiPros below). The
+              ExoClick `watchUnderplayer728` zone that used to live here was
+              removed 2026-04-11 because ExoClick rarely fills it on mobile
+              → empty dark rectangle (Sab complaint). Adsterra + HentaiPros
+              below already cover this slot with multi-network fill. */}
           <div style={{ margin: "12px auto", textAlign: "center" }}>
             <AdsterraBanner format="banner728x90" />
           </div>

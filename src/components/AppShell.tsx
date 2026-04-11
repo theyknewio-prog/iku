@@ -331,6 +331,54 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     setMenuOpen(false);
   }, [pathname]);
 
+  /* iOS URL-bar pin — keep .v2-bottom-nav glued to the visual viewport.
+     On iOS WebKit (Safari AND Chrome/Firefox/Edge on iOS all share WebKit),
+     `position: fixed; bottom: 0` tracks the LAYOUT viewport, not the visual
+     viewport. When the URL bar shows/hides during scroll, the visual
+     viewport bottom moves but the fixed element stays glued to the layout
+     viewport — which looks like the nav "detaches" from the screen edge.
+     Fix: use window.visualViewport + transform:translateY to re-pin the
+     nav to the true visible bottom on every scroll / resize tick. Same
+     pattern used by Twitter, Instagram, Pinterest mobile web. */
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const vv = window.visualViewport;
+    if (!vv) return;
+
+    let rafId: number | null = null;
+
+    function update() {
+      if (rafId !== null) return;
+      rafId = window.requestAnimationFrame(() => {
+        rafId = null;
+        const nav = document.querySelector<HTMLElement>(".v2-bottom-nav");
+        if (!nav) return;
+        const visualViewport = window.visualViewport;
+        if (!visualViewport) return;
+        // Offset from the layout-viewport bottom to the visual-viewport bottom.
+        // When the URL bar is hidden → layout height > visual height → we
+        // pull the nav UP by the delta so its bottom edge matches the screen.
+        const layoutH = window.innerHeight;
+        const visualBottom = visualViewport.offsetTop + visualViewport.height;
+        const deltaFromBottom = Math.max(0, layoutH - visualBottom);
+        nav.style.transform = `translate3d(0, -${deltaFromBottom}px, 0)`;
+      });
+    }
+
+    update();
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("orientationchange", update);
+    return () => {
+      if (rafId !== null) window.cancelAnimationFrame(rafId);
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("orientationchange", update);
+    };
+  }, []);
+
   if (pathname === "/feed") {
     return <>{children}</>;
   }

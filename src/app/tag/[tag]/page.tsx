@@ -6,6 +6,7 @@ import { Pagination } from "@/components/Pagination";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { getVideos } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
+import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 import { AdZoneClient } from "@/components/AdZoneClient";
 import { AD_ZONES } from "@/lib/ad-config";
 import type { Video } from "@/types/video";
@@ -133,8 +134,8 @@ export default async function TagPage({ params, searchParams }: Props) {
       <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
       <main>
         <div className="page-container">
-          {/* Top leaderboard */}
-          <AdZoneClient zoneId={AD_ZONES.exoclick.watchUnderplayer728} size="728x90" />
+          {/* Top leaderboard — HentaiPros (always fills vs empty ExoClick). */}
+          <HentaiProsBanner format="728x90" />
 
           {/* ── Tag hero ─────────────────────────────────────── */}
           <div className="tag-hero">

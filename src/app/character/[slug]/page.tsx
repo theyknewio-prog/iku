@@ -6,6 +6,7 @@ import { Pagination } from "@/components/Pagination";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { getVideos } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
+import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 import { AdZoneClient } from "@/components/AdZoneClient";
 import { AD_ZONES } from "@/lib/ad-config";
 import { CHARACTERS, getCharacterBySlug, type Character } from "@/data/characters";
@@ -154,8 +155,8 @@ export default async function CharacterPage({ params, searchParams }: Props) {
       )}
       <main>
         <div className="page-container">
-          {/* Top leaderboard */}
-          <AdZoneClient zoneId={AD_ZONES.exoclick.watchUnderplayer728} size="728x90" />
+          {/* Top leaderboard — HentaiPros (always fills vs empty ExoClick). */}
+          <HentaiProsBanner format="728x90" />
 
           {/* ── Character hero ──────────────────────────────────── */}
           <div className="tag-hero">

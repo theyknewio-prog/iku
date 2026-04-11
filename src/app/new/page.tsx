@@ -6,9 +6,8 @@ import { Pagination } from "@/components/Pagination";
 import { getVideos } from "@/lib/content";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
-import { AdZoneClient } from "@/components/AdZoneClient";
+import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 import { NativeAdCard } from "@/components/NativeAdCard";
-import { AD_ZONES } from "@/lib/ad-config";
 
 export const metadata: Metadata = {
   title: "New Hentai Videos — Latest Uploads | iku.gg",
@@ -47,8 +46,11 @@ export default async function NewPage({ searchParams }: Props) {
     <div className="shell-content">
       <main>
         <div className="page-container">
-          {/* ── Ad zone — Leaderboard top ─────────────────── */}
-          <AdZoneClient zoneId={AD_ZONES.exoclick.watchUnderplayer728} size="728x90" />
+          {/* ── Ad zone — leaderboard top (728x90 desktop, 300x250 mobile).
+              Was an ExoClick zone but ExoClick rarely fills this slot → users
+              saw an empty dark rectangle (Sab report 2026-04-11). HentaiPros
+              rotates real creatives and always fills. */}
+          <HentaiProsBanner format="728x90" />
 
           {/* ── Page hero ─────────────────────────────────────── */}
           <div className="tag-hero">
