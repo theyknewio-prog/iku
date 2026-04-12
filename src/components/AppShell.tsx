@@ -545,16 +545,21 @@ export function AppShell({ children, footer }: { children: React.ReactNode; foot
           <SearchAutocomplete />
         </div>
 
-        {/* Stats chip */}
-        <div className="v2-stats-chip">
-          <span className="v2-stats-chip__sparkle">✨</span>
-          <span>353,247 videos</span>
-        </div>
-
         <div className="v2-topbar__actions">
           <StreakBadge />
           <Link href="/favorites" className="v2-topbar-btn" title="Favorites" aria-label="Favorites">
             <span aria-hidden="true" style={{ fontSize: 18 }}>❤️</span>
+          </Link>
+          {/* Prominent Go Pro CTA — inspired by SpankBang's "Sign up for FREE"
+              yellow gradient (2026-04-12 competitor audit). Most profitable
+              per-pixel real estate on the site. Only shown to non-Pro users. */}
+          <Link
+            href="/pricing"
+            className="v2-topbar-pro-cta"
+            aria-label="Upgrade to Pro"
+          >
+            <span aria-hidden="true">✨</span>
+            <span>Go Pro</span>
           </Link>
           <UserMenu />
         </div>
@@ -563,6 +568,45 @@ export function AppShell({ children, footer }: { children: React.ReactNode; foot
 
       {/* MAIN CONTENT */}
       <div className="v2-main">
+        {/* SECONDARY NAV ROW — horizontal scrollable pills for vertical
+            hubs + SEO categories. Placed INSIDE .v2-main so it doesn't
+            compete for flex space with the sidebar. Sticky to the top of
+            the main scroll container, below the fixed .v2-topbar. */}
+        <nav className="v2-subnav" aria-label="Primary categories">
+          <div className="v2-subnav__scroll">
+            <Link href="/" className={`v2-subnav__pill${pathname === "/" ? " v2-subnav__pill--active" : ""}`}>
+              <span aria-hidden="true">🏠</span> Home
+            </Link>
+            <Link href="/hentai" className={`v2-subnav__pill${isActive("/hentai") ? " v2-subnav__pill--active" : ""}`}>
+              <span aria-hidden="true">🌸</span> Hentai 2D
+            </Link>
+            <Link href="/3d" className={`v2-subnav__pill${isActive("/3d") ? " v2-subnav__pill--active" : ""}`}>
+              <span aria-hidden="true">🎮</span> 3D
+            </Link>
+            <Link href="/feed" className={`v2-subnav__pill v2-subnav__pill--shorts${isActive("/feed") ? " v2-subnav__pill--active" : ""}`}>
+              <span aria-hidden="true">⚡</span> Shorts
+            </Link>
+            <Link href="/trending" className={`v2-subnav__pill${isActive("/trending") ? " v2-subnav__pill--active" : ""}`}>
+              <span aria-hidden="true">🔥</span> Trending
+            </Link>
+            <Link href="/new" className={`v2-subnav__pill${isActive("/new") ? " v2-subnav__pill--active" : ""}`}>
+              <span aria-hidden="true">🆕</span> New
+            </Link>
+            <Link href="/character" className={`v2-subnav__pill${isActive("/character") ? " v2-subnav__pill--active" : ""}`}>
+              <span aria-hidden="true">👤</span> Characters
+            </Link>
+            <Link href="/series" className={`v2-subnav__pill${isActive("/series") ? " v2-subnav__pill--active" : ""}`}>
+              <span aria-hidden="true">🎬</span> Series
+            </Link>
+            <Link href="/tags" className={`v2-subnav__pill${isActive("/tags") ? " v2-subnav__pill--active" : ""}`}>
+              <span aria-hidden="true">🏷️</span> Tags
+            </Link>
+            <Link href="/blog" className={`v2-subnav__pill${isActive("/blog") ? " v2-subnav__pill--active" : ""}`}>
+              <span aria-hidden="true">📰</span> Blog
+            </Link>
+          </div>
+        </nav>
+
         {children}
         {footer}
       </div>

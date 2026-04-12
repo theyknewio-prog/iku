@@ -71,6 +71,14 @@ export function ThumbnailCard({
   const displayScore = formatNumber(video.score);
   const displayFavs  = formatNumber(video.favorites);
 
+  // Quality badge — inferred from video width (2026-04-12 competitor audit
+  // pattern: SpankBang/XVideos display HD/4K badges prominently on thumb).
+  // 4K (≥2160px) > HD (≥720px) > none.
+  const quality =
+    video.width >= 2160 ? "4K" :
+    video.width >= 1080 ? "HD" :
+    video.width >= 720 ? "SD+" : "";
+
   /* Title — uses buildTitle for consistent display across all cards
      (scraped title → character → copyright → meaningful tag → fallback) */
   const title = buildTitle(video);
@@ -193,6 +201,13 @@ export function ThumbnailCard({
         {/* Duration badge — bottom right */}
         {duration && (
           <span className="video-card__duration">{duration}</span>
+        )}
+
+        {/* Quality badge — bottom left, SpankBang-style */}
+        {quality && (
+          <span className={`video-card__quality video-card__quality--${quality.toLowerCase().replace('+','p')}`}>
+            {quality}
+          </span>
         )}
 
         {/* Score pill — top left (shifted right if watched badge present) */}

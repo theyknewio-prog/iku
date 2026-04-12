@@ -10582,3 +10582,162 @@ body {
   opacity: 0.85;
   margin-top: 2px;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   TOPBAR GO PRO CTA — SpankBang-inspired yellow gradient.
+   Highest-profile monetization surface on the site.
+   ══════════════════════════════════════════════════════════════ */
+
+.v2-topbar-pro-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ffd700 0%, #ff9800 100%);
+  color: #1a1420;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  box-shadow: 0 2px 10px rgba(255, 152, 0, 0.35),
+              inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+  white-space: nowrap;
+}
+
+.v2-topbar-pro-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(255, 152, 0, 0.5),
+              inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+@media (max-width: 767px) {
+  .v2-topbar-pro-cta span:last-child {
+    display: none;
+  }
+  .v2-topbar-pro-cta {
+    padding: 8px 10px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SECONDARY NAV — horizontal pill row under the topbar on every
+   non-feed page. Inspired by SpankBang/XVideos second nav row.
+   ══════════════════════════════════════════════════════════════ */
+
+.v2-subnav {
+  position: sticky;
+  top: var(--v2-topbar-h, 56px);
+  z-index: 40;
+  background: rgba(15, 12, 22, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 8px 0;
+}
+
+.v2-subnav__scroll {
+  display: flex;
+  gap: 6px;
+  padding: 0 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-snap-type: x proximity;
+}
+
+.v2-subnav__scroll::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .v2-subnav__scroll {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+    gap: 8px;
+  }
+}
+
+.v2-subnav__pill {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  border: 1px solid transparent;
+  scroll-snap-align: start;
+  transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
+  white-space: nowrap;
+}
+
+.v2-subnav__pill:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.v2-subnav__pill--active {
+  background: linear-gradient(135deg, rgba(232, 70, 124, 0.22), rgba(123, 47, 247, 0.22));
+  color: #fff;
+  border-color: rgba(232, 70, 124, 0.45);
+}
+
+.v2-subnav__pill--shorts {
+  background: linear-gradient(135deg, rgba(247, 151, 30, 0.18), rgba(232, 70, 124, 0.18));
+  color: #fff;
+}
+
+.v2-subnav__pill--shorts.v2-subnav__pill--active {
+  background: linear-gradient(135deg, #f7971e 0%, #e8467c 100%);
+}
+
+/* Shift main content up a bit since subnav adds ~50px of fixed height */
+@media (max-width: 1023px) {
+  .v2-main {
+    padding-top: 0;
+  }
+}
+
+/* Quality badge on ThumbnailCard (HD / 4K / SD+) — bottom left of thumb */
+.video-card__quality {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 7px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.78);
+  color: #fff;
+  line-height: 1;
+  backdrop-filter: blur(4px);
+}
+
+.video-card__quality--4k {
+  background: linear-gradient(135deg, #ffd700, #ff9800);
+  color: #1a1420;
+}
+
+.video-card__quality--hd {
+  background: rgba(0, 0, 0, 0.85);
+  color: #4ade80;
+}
+
+.video-card__quality--sdp {
+  background: rgba(0, 0, 0, 0.78);
+  color: rgba(255, 255, 255, 0.8);
+}
