@@ -137,13 +137,13 @@ export default async function HomePage() {
             <div className="hp-hero-left">
               <div className="hp-hero-eyebrow">
                 <span className="hp-hero-eyebrow__dot" />
-                #1 Anime Hentai Platform
+                Hentai · 3D · Cartoon Porn · Shorts
               </div>
 
               <h1 className="hp-hero-title">
-                The largest<br />
-                <span className="hp-hero-gradient-text">free hentai</span><br />
-                collection online
+                Free <span className="hp-hero-gradient-text">Hentai</span><br />
+                &amp; <span className="hp-hero-gradient-text">3D Cartoon Porn</span><br />
+                All In One Tube
               </h1>
               {/* Ahegao character — fills the empty zone top-right of hero text */}
               <div className="hp-hero-face" aria-hidden="true">
@@ -158,20 +158,25 @@ export default async function HomePage() {
               </div>
 
               <p className="hp-hero-sub">
-                <strong>353,000+</strong> animated clips from your favourite series,
-                characters and artists — updated daily. No account needed.
+                <strong>360,000+</strong> videos — 2D hentai episodes, 3D SFM animations,
+                Genshin &amp; Overwatch compilations, HMV, plus a TikTok-style Shorts feed.
+                No signup.
               </p>
 
               <div className="hp-hero-ctas">
                 <MagneticButton>
-                  <Link href="/explore" className="hp-btn-primary">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21" /></svg>
-                    Browse Now
+                  <Link href="/hentai" className="hp-btn-primary">
+                    <span>🌸</span> Watch Hentai
+                  </Link>
+                </MagneticButton>
+                <MagneticButton>
+                  <Link href="/3d" className="hp-btn-secondary">
+                    <span>🎮</span> Browse 3D
                   </Link>
                 </MagneticButton>
                 <MagneticButton>
                   <Link href="/feed" className="hp-btn-secondary">
-                    <span>⚡</span> Try Shorts
+                    <span>⚡</span> Shorts Feed
                   </Link>
                 </MagneticButton>
               </div>
@@ -240,6 +245,33 @@ export default async function HomePage() {
                 )}
               </div>
             </div>
+          </section>
+
+          {/* ════════════════════════════════════════════════════════
+              VERTICAL HUBS — three CTA tiles linking to the 2D hentai,
+              3D/SFM, and Shorts verticals. Shown directly below the hero
+              so first-time visitors grasp the catalogue layout in one
+              glance.
+              ════════════════════════════════════════════════════════ */}
+          <section className="hp-verticals" aria-label="Browse by format">
+            <Link href="/hentai" className="hp-vertical-tile hp-vertical-tile--hentai">
+              <span className="hp-vertical-tile__emoji" aria-hidden="true">🌸</span>
+              <span className="hp-vertical-tile__title">Hentai</span>
+              <span className="hp-vertical-tile__sub">Full 2D anime episodes</span>
+              <span className="hp-vertical-tile__count">7k+ OAV</span>
+            </Link>
+            <Link href="/3d" className="hp-vertical-tile hp-vertical-tile--3d">
+              <span className="hp-vertical-tile__emoji" aria-hidden="true">🎮</span>
+              <span className="hp-vertical-tile__title">3D Hentai</span>
+              <span className="hp-vertical-tile__sub">SFM, games, cartoon porn</span>
+              <span className="hp-vertical-tile__count">300k+ clips</span>
+            </Link>
+            <Link href="/feed" className="hp-vertical-tile hp-vertical-tile--shorts">
+              <span className="hp-vertical-tile__emoji" aria-hidden="true">⚡</span>
+              <span className="hp-vertical-tile__title">Shorts</span>
+              <span className="hp-vertical-tile__sub">Swipe infinite feed</span>
+              <span className="hp-vertical-tile__count">Mixed</span>
+            </Link>
           </section>
 
           {/* Ad #1 — HentaiPros 300x250 (AdultForce a.adtng.com, rotates

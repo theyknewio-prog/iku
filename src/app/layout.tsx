@@ -28,23 +28,29 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "iku.gg — Free Hentai Videos | Stream Animated Hentai Online",
-  description: "Stream 353,000+ free hentai videos on iku.gg. The best animated hentai clips featuring your favorite anime characters. Browse by tag, character, or trending.",
-  keywords: ["hentai", "hentai videos", "animated hentai", "anime porn", "free hentai", "hentai streaming", "hentai clips"],
+  title: "iku.gg — Free Hentai, 3D Hentai & Cartoon Porn | 360,000+ Videos",
+  description: "Stream 360,000+ free hentai, 3D hentai & cartoon porn animations. Genshin, Overwatch, Blue Archive, SFM & classic 2D anime. Shorts feed included. No signup.",
+  keywords: [
+    "hentai", "3d hentai", "cartoon porn", "3d porn", "3d porn animation",
+    "animation porn", "porn animation", "sfm porn", "hmv",
+    "hentai compilation", "3d futa hentai",
+    "genshin impact porn", "overwatch porn", "blue archive porn",
+    "animated hentai", "free hentai", "hentai streaming", "hentai clips",
+  ],
   other: { rating: "adult" },
   metadataBase: new URL("https://iku.gg"),
   robots: { index: true, follow: true },
   openGraph: {
-    title: "iku.gg — Free Hentai Videos",
-    description: "Stream 353,000+ free hentai videos. Browse animated hentai by tag, character, and score.",
+    title: "iku.gg — Free Hentai, 3D Cartoon Porn & Animation Tube",
+    description: "360,000+ free videos: 3D hentai, SFM, cartoon porn, classic 2D anime & Shorts feed. Genshin, Overwatch, Blue Archive and more.",
     siteName: "iku",
     type: "website",
-    images: [{ url: "/og-default.png", width: 1200, height: 630, alt: "iku.gg — Free Animated Hentai" }],
+    images: [{ url: "/og-default.png", width: 1200, height: 630, alt: "iku.gg — Free Hentai, 3D & Cartoon Porn" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "iku.gg — Free Hentai Videos",
-    description: "Stream 353,000+ free hentai videos. Browse animated hentai by tag, character, and score.",
+    title: "iku.gg — Free Hentai, 3D & Cartoon Porn",
+    description: "360,000+ free videos: 3D hentai, SFM, cartoon porn, 2D anime, Shorts feed. Genshin, Overwatch & more.",
     images: ["/og-default.png"],
   },
 };
