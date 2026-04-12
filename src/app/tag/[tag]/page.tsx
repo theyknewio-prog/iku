@@ -153,6 +153,47 @@ export default async function TagPage({ params, searchParams }: Props) {
                 </strong>
               </span>
             </div>
+
+            {/* SEO intro — generated per-tag so every /tag/[tag] landing has
+                 100+ unique words of indexable context. Pattern from the
+                 2026-04-12 competitor audit (PornHub/xVideos category
+                 landings always open with a paragraph). */}
+            <p
+              style={{
+                color: "var(--color-text-secondary)",
+                fontSize: "13px",
+                lineHeight: "1.7",
+                marginTop: "14px",
+                maxWidth: "760px",
+              }}
+            >
+              Watch <strong>{titleCased.toLowerCase()} hentai</strong> videos
+              on iku.gg — the largest free collection of{" "}
+              {titleCased.toLowerCase()} animated porn, 3D hentai, SFM clips
+              and fan animations. Every {titleCased.toLowerCase()} video is
+              streamable instantly with no signup required. Browse by score,
+              newest, or most favorited, and find related{" "}
+              <Link href="/tags" style={{ color: "var(--color-accent)" }}>
+                tags
+              </Link>
+              ,{" "}
+              <Link href="/character" style={{ color: "var(--color-accent)" }}>
+                characters
+              </Link>
+              , and{" "}
+              <Link href="/series" style={{ color: "var(--color-accent)" }}>
+                series/games
+              </Link>{" "}
+              below. Prefer long-form 2D episodes? Check our{" "}
+              <Link href="/hentai" style={{ color: "var(--color-accent)" }}>
+                hentai catalogue
+              </Link>
+              , or swipe the{" "}
+              <Link href="/feed" style={{ color: "var(--color-accent)" }}>
+                Shorts feed
+              </Link>{" "}
+              for quick clips.
+            </p>
           </div>
 
           {/* ── Sort filter bar ───────────────────────────────── */}
