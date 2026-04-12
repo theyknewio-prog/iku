@@ -2,6 +2,44 @@ import { NextRequest, NextResponse } from "next/server";
 import { getFeedKeyset, decodeCursor, encodeCursor } from "@/lib/content";
 import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
 
+/**
+ * Diversify a Shorts feed batch so no two consecutive cards share the
+ * same primary character or copyright. Walks the list once; when a
+ * collision is detected, pulls the next non-matching item forward.
+ * O(n²) worst case but n ≤ 60 and the input is usually already
+ * ~diverse, so in practice it's ~O(n).
+ */
+function diversifyFeed<T extends { character: string; copyright: string }>(
+  list: T[]
+): T[] {
+  if (list.length < 3) return list;
+  const out = [...list];
+  for (let i = 0; i < out.length - 1; i++) {
+    const a = out[i];
+    const b = out[i + 1];
+    const collides =
+      (a.character && a.character === b.character) ||
+      (a.copyright && a.copyright === b.copyright);
+    if (!collides) continue;
+    // Find the next item further ahead that doesn't collide with a
+    let swap = -1;
+    for (let j = i + 2; j < out.length; j++) {
+      const c = out[j];
+      const ok =
+        (!a.character || a.character !== c.character) &&
+        (!a.copyright || a.copyright !== c.copyright);
+      if (ok) {
+        swap = j;
+        break;
+      }
+    }
+    if (swap > 0) {
+      [out[i + 1], out[swap]] = [out[swap], out[i + 1]];
+    }
+  }
+  return out;
+}
+
 const limiter = createRateLimiter({ name: "feed", max: 30, windowMs: 60_000 });
 
 // On the very first request (no cursor) we want session variety — pick a
@@ -104,8 +142,16 @@ export async function GET(request: NextRequest) {
         };
       });
 
+    // Diversify: prevent runs of the same character, copyright, or source
+    // in consecutive feed slots. Without this the Shorts feed regularly
+    // showed 10 Chun-Li or 10 Overwatch clips in a row because the DB sort
+    // surfaces high-scoring franchises as clusters. Simple interleave:
+    // walk the list, if position i+1 shares (character || copyright) with
+    // position i, pull the next non-matching item forward.
+    const diversified = diversifyFeed(videos);
+
     return NextResponse.json({
-      videos,
+      videos: diversified,
       order,
       cursor: nextCursor ? encodeCursor(nextCursor) : null,
       hasMore: nextCursor !== null,
