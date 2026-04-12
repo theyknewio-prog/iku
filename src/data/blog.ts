@@ -898,6 +898,13 @@ BLOG_ARTICLES.push(...SEO_PUSH_ARTICLES);
 import { BLOG_ARTICLES_HENTAICITY } from "./blog-auto-hentaicity";
 BLOG_ARTICLES.push(...BLOG_ARTICLES_HENTAICITY);
 
+// Merge 10 head-keyword SEO articles (2026-04-12 — "3d hentai", "cartoon
+// porn", "3d porn", "animation porn", "genshin impact porn", "overwatch
+// porn", "hmv", "hentai compilation", "3d futa hentai", "porn animations").
+// Targets ~1M+ monthly US searches combined per Semrush bulk analysis.
+import { BLOG_ARTICLES_AUTOGEN_2026_04_12 } from "./blog-autogen-2026-04-12";
+BLOG_ARTICLES.push(...BLOG_ARTICLES_AUTOGEN_2026_04_12);
+
 export function getArticleBySlug(slug: string): BlogArticle | undefined {
   return BLOG_ARTICLES.find((a) => a.slug === slug);
 }
