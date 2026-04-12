@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Righteous, Nunito } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "@/components/AppShell";
+import { MegaFooter } from "@/components/MegaFooter";
 import { SessionProviderClient } from "@/components/SessionProviderClient";
 import { UserDataSync } from "@/components/UserDataSync";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
@@ -111,7 +112,7 @@ export default async function RootLayout({
               ONE at a time after verifying each renders cleanly in
               Playwright. */}
           <PushNotifications />
-          <AppShell>{children}</AppShell>
+          <AppShell footer={<MegaFooter />}>{children}</AppShell>
         </SessionProviderClient>
       </body>
     </html>

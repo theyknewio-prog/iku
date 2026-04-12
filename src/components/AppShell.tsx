@@ -244,10 +244,12 @@ function UserMenu() {
  */
 const DISCOVER_ITEMS = [
   { href: "/",         label: "Home",         Icon: IconHome,     emoji: "🏠" },
+  { href: "/hentai",   label: "Hentai 2D",    Icon: IconBrowse,   emoji: "🌸" },
+  { href: "/3d",       label: "3D",           Icon: IconBrowse,   emoji: "🎮", badge: "300K+" },
+  { href: "/feed",     label: "Shorts",       Icon: IconFeed,     emoji: "⚡", badge: "New", badgeGradient: true },
   { href: "/trending", label: "Trending",     Icon: IconTrending, emoji: "🔥", badge: "Hot" },
   { href: "/new",      label: "New Releases", Icon: IconNew,      emoji: "🆕" },
-  { href: "/feed",     label: "Shorts",       Icon: IconFeed,     emoji: "⚡", badge: "New", badgeGradient: true },
-  { href: "/explore",  label: "Explore",      Icon: IconBrowse,   emoji: "🔎" },
+  { href: "/explore",  label: "Explore All",  Icon: IconBrowse,   emoji: "🔎" },
 ] as const;
 
 /* Library */
@@ -303,7 +305,7 @@ const BOTTOM_ITEMS = [
 
 /* ── AppShell ─────────────────────────────────────────────────── */
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({ children, footer }: { children: React.ReactNode; footer?: React.ReactNode }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -562,6 +564,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* MAIN CONTENT */}
       <div className="v2-main">
         {children}
+        {footer}
       </div>
 
     </div>

@@ -163,9 +163,26 @@ export interface GetVideosOptions {
   order?: "score" | "date" | "favcount";
   tags?: string;
   source?: "all" | "danbooru" | "gelbooru";
+  /**
+   * High-level catalogue vertical split.
+   * - `hentai` = animated 2D hentai (hentaicity + hentaigasm + wp + danbooru).
+   *   Cible le keyword "hentai" au sens classique (OAV, épisodes 2D anime).
+   * - `3d` = 3D rule34 / SFM / game porn (rule34video + rule34 + gelbooru).
+   *   Cible les keywords "3d hentai", "3d porn", "cartoon porn", per-game,
+   *   per-character (Genshin, Overwatch, Chun-Li, etc.).
+   * - `all` = tout le catalogue mélangé (défaut).
+   */
+  vertical?: "all" | "hentai" | "3d";
   /** Exclude videos without a thumbnail (WP sources). Use on homepage/carousels. */
   requireThumbnail?: boolean;
 }
+
+/** Source groups backing the `vertical` filter. Add new scraper outputs here
+ *  when they're onboarded. */
+export const VERTICAL_SOURCES = {
+  hentai: ["hentaicity", "hentaigasm", "wp", "danbooru"] as const,
+  "3d": ["rule34video", "rule34", "gelbooru"] as const,
+} as const;
 
 /** Map a database row to a Video object */
 function rowToVideo(row: Record<string, unknown>): Video {
@@ -205,6 +222,7 @@ async function _getVideos(
     order = "score",
     tags = "",
     source = "all",
+    vertical = "all",
     requireThumbnail = false,
   } = options;
 
@@ -225,7 +243,7 @@ async function _getVideos(
     conditions.push(`thumbnail IS NOT NULL AND thumbnail <> ''`);
   }
 
-  // Source filter
+  // Source filter (single source)
   if (source === "danbooru") {
     conditions.push(`source = $${paramIndex}`);
     params.push("danbooru");
@@ -233,6 +251,15 @@ async function _getVideos(
   } else if (source === "gelbooru") {
     conditions.push(`source = $${paramIndex}`);
     params.push("gelbooru");
+    paramIndex++;
+  }
+
+  // Vertical filter (group of sources — used by /hentai and /3d routes).
+  // Only applies when `source` isn't already restricting.
+  if (source === "all" && vertical !== "all") {
+    const group = VERTICAL_SOURCES[vertical];
+    conditions.push(`source = ANY($${paramIndex}::text[])`);
+    params.push(group as readonly string[] as string[]);
     paramIndex++;
   }
 
