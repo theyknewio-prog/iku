@@ -17,10 +17,17 @@ import { MagneticButton } from "@/components/MagneticButton";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 
 export const metadata: Metadata = {
-  title: "iku.gg — Free Hentai Videos | Stream Animated Hentai Online",
-  description: "Stream 353,000+ free hentai videos on iku.gg. Watch trending animated hentai clips. Browse by character, tag, and score.",
+  title: "iku.gg — Free Hentai, 3D Hentai & Cartoon Porn | 360,000+ Videos",
+  description: "Stream 360,000+ free hentai, 3D hentai & cartoon porn animations. Genshin, Overwatch, Blue Archive, SFM & classic 2D anime. Swipe Shorts feed included. No signup.",
   other: { rating: "adult" },
   alternates: { canonical: "https://iku.gg" },
+  openGraph: {
+    title: "iku.gg — Free Hentai, 3D Cartoon Porn & Animation Tube",
+    description: "360,000+ free videos: 3D hentai, SFM, cartoon porn, 2D anime, Shorts feed. Genshin, Overwatch, Blue Archive & more.",
+    siteName: "iku.gg",
+    type: "website",
+    url: "https://iku.gg",
+  },
 };
 
 export const revalidate = 3600;
