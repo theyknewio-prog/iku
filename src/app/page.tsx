@@ -413,6 +413,43 @@ export default async function HomePage() {
           {/* Ad slots removed 2026-04-11 (AD BLACKOUT) */}
 
           {/* ================================================================
+              POPULAR GAMES — 3D niche anchor. Ten gradient tiles linking
+              to /series/[franchise] (virtual fallback covers the
+              franchises not in SERIES static data).
+          ================================================================ */}
+          <section aria-label="Popular Games &amp; Franchises" className="hp-games">
+            <div className="hp-section-header">
+              <h2 className="hp-section-title">🎮 Popular Games</h2>
+              <Link href="/series" className="hp-section-link">See all &#8594;</Link>
+            </div>
+
+            <div className="hp-games-grid">
+              {[
+                { slug: "genshin_impact",     label: "Genshin Impact",  count: "3.4k", grad: "linear-gradient(135deg, #11998e 0%, #4776e6 100%)" },
+                { slug: "blue_archive",       label: "Blue Archive",    count: "2.2k", grad: "linear-gradient(135deg, #4776e6 0%, #8e54e9 100%)" },
+                { slug: "overwatch",          label: "Overwatch",       count: "2.2k", grad: "linear-gradient(135deg, #ff6b35 0%, #e8467c 100%)" },
+                { slug: "zenless_zone_zero",  label: "Zenless Zone Zero", count: "1.3k", grad: "linear-gradient(135deg, #c94b4b 0%, #4b134f 100%)" },
+                { slug: "final_fantasy",      label: "Final Fantasy",   count: "1.2k", grad: "linear-gradient(135deg, #f7971e 0%, #ffd200 100%)" },
+                { slug: "honkai:_star_rail",  label: "Honkai Star Rail", count: "848", grad: "linear-gradient(135deg, #7b2ff7 0%, #4776e6 100%)" },
+                { slug: "fortnite",           label: "Fortnite",        count: "772", grad: "linear-gradient(135deg, #e8467c 0%, #7b2ff7 100%)" },
+                { slug: "resident_evil",      label: "Resident Evil",   count: "706", grad: "linear-gradient(135deg, #0f2027 0%, #2c5364 100%)" },
+                { slug: "nier:automata",      label: "Nier Automata",   count: "613", grad: "linear-gradient(135deg, #c94b4b 0%, #2c5364 100%)" },
+                { slug: "dead_or_alive",      label: "Dead or Alive",   count: "705", grad: "linear-gradient(135deg, #ff6b35 0%, #c94b4b 100%)" },
+              ].map((g) => (
+                <Link
+                  key={g.slug}
+                  href={`/series/${encodeURIComponent(g.slug)}`}
+                  className="hp-game-tile"
+                  style={{ background: g.grad }}
+                >
+                  <span className="hp-game-tile__label">{g.label}</span>
+                  <span className="hp-game-tile__count">{g.count} videos</span>
+                </Link>
+              ))}
+            </div>
+          </section>
+
+          {/* ================================================================
               POPULAR CHARACTERS -- Circular avatars with gradient rings
           ================================================================ */}
           <section aria-label="Popular Characters">
