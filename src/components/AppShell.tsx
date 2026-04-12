@@ -381,7 +381,9 @@ export function AppShell({ children, footer }: { children: React.ReactNode; foot
     };
   }, []);
 
-  if (pathname === "/feed") {
+  if (pathname === "/feed" || pathname.startsWith("/preview")) {
+    // /feed = immersive Shorts. /preview/* = redesign sandbox variants
+    // that ship their own header + nav (2026-04-12 Sab redesign pass).
     return <>{children}</>;
   }
 

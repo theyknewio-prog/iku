@@ -282,42 +282,17 @@ export function ThumbnailCard({
         </div>
       </div>
 
-      {/* ── Card body ────────────────────────────────────── */}
+      {/* ── Card body — Sab spec 2026-04-12: keep only title + ★★★★★ + views.
+             Artist name + first-tag chip removed to match hanime/SpankBang's
+             minimalist meta convention (2026-04-12 redesign pass). */}
       <div className="video-card__body">
-        {/* Artist name — accent color, prominent */}
-        {showArtist && displayArtist && (
-          <span className="video-card__artist-label">
-            {displayArtist.replace(/_/g, " ")}
-          </span>
-        )}
-
-        {/* Title */}
         <h3 className="video-card__title">{title}</h3>
 
-        {/* Meta row — views + score */}
         <div className="video-card__meta">
-          <span className="video-card__meta-item">
-            <svg
-              width="10"
-              height="10"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              style={{ display: "inline", verticalAlign: "middle" }}
-            >
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-            </svg>
-            {" "}{displayFavs}
+          <span className="video-card__stars" aria-label={`Rating ${(video.score >= 500 ? 5 : video.score >= 200 ? 4.5 : video.score >= 50 ? 4 : 3.5).toFixed(1)} out of 5`}>
+            {"★★★★★"}
           </span>
-          {video.tags[0] && (
-            <>
-              <span className="video-card__dot" />
-              <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "80px" }}>
-                {video.tags[0].replace(/_/g, " ")}
-              </span>
-            </>
-          )}
+          <span className="video-card__views">{displayScore} views</span>
         </div>
       </div>
     </Link>
