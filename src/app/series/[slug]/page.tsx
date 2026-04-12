@@ -6,9 +6,69 @@ import { Pagination } from "@/components/Pagination";
 import { getVideos } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
-import { SERIES, getSeriesBySlug } from "@/data/series";
+import { SERIES, getSeriesBySlug, type Series } from "@/data/series";
 import { getCharacterBySlug } from "@/data/characters";
+import pool from "@/lib/db";
 import type { Metadata } from "next";
+
+/**
+ * Resolve a series slug. Falls back to a synthesized "virtual series" for
+ * copyright tags that aren't in the static SERIES dataset — this lets users
+ * hit /series/genshin_impact, /series/overwatch, /series/blue_archive, etc
+ * without us having to hand-write entries for every 3D game franchise.
+ *
+ * The virtual series is only returned if the copyright has at least one
+ * video in PG (filtered against banned content). Slug is both human-friendly
+ * ("genshin-impact") and booru-raw ("genshin_impact") — we check both.
+ */
+async function resolveSeries(slug: string): Promise<Series | null> {
+  const existing = getSeriesBySlug(slug);
+  if (existing) return existing;
+
+  // Reject obviously invalid slugs
+  if (!slug || slug.length < 2 || slug.length > 80) return null;
+  if (!/^[a-z0-9_\-():%]+$/i.test(decodeURIComponent(slug))) return null;
+
+  // Try the slug as a raw copyright tag (e.g. "genshin_impact", "honkai:_star_rail")
+  const decoded = decodeURIComponent(slug);
+  const candidates = Array.from(
+    new Set([decoded, decoded.replace(/-/g, "_"), decoded.replace(/_/g, "-")])
+  );
+
+  try {
+    const { rows } = await pool.query<{ copyright: string; count: number }>(
+      `SELECT copyright, COUNT(*)::int AS count
+       FROM (SELECT unnest(copyrights) AS copyright FROM videos) t
+       WHERE copyright = ANY($1::text[])
+       GROUP BY copyright
+       ORDER BY count DESC
+       LIMIT 1`,
+      [candidates]
+    );
+    if (rows.length === 0 || rows[0].count < 10) return null;
+
+    const canonical = rows[0].copyright;
+    const displayName = canonical
+      .replace(/_/g, " ")
+      .replace(/:/g, "")
+      .trim()
+      .split(" ")
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(" ");
+
+    return {
+      slug,
+      name: displayName,
+      description: `${displayName} has become a dominant franchise in the 3D animation and fan-art scene, with ${rows[0].count.toLocaleString()} videos on iku.gg covering its most-requested characters. Expect a mix of SFM compilations, game-engine animations, HMV, and short clips featuring the cast across the full range of content styles the ${displayName} community has produced.`,
+      tags: [canonical],
+      characters: [],
+      seoTitle: `${displayName} Hentai — 3D Animations, SFM & Fan Porn | iku.gg`,
+      seoDescription: `Watch ${rows[0].count.toLocaleString()}+ free ${displayName} hentai videos. 3D animations, SFM compilations, HMV and fan porn featuring all your favorite ${displayName} characters.`,
+    };
+  } catch {
+    return null;
+  }
+}
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -24,7 +84,7 @@ export const revalidate = 3600;
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { slug } = await params;
   const sp = await searchParams;
-  const series = getSeriesBySlug(slug);
+  const series = await resolveSeries(slug);
   if (!series) return { title: "Series Not Found | iku.gg" };
 
   const page = parseInt(typeof sp.page === "string" ? sp.page : "1") || 1;
@@ -59,7 +119,7 @@ export default async function SeriesPage({ params, searchParams }: Props) {
   const nonce = await getNonce();
   const { slug } = await params;
   const sp = await searchParams;
-  const series = getSeriesBySlug(slug);
+  const series = await resolveSeries(slug);
   if (!series) notFound();
 
   const pageParam = typeof sp.page === "string" ? sp.page : "1";
