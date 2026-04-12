@@ -33,7 +33,13 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
   return {
     rules: {
       userAgent: "*",
-      allow: ["/", "/watch/", "/tag/", "/character/", "/series/", "/trending", "/new", "/tags", "/blog/", "/glossary/"],
+      allow: [
+        "/",
+        "/hentai", "/3d",           // vertical hubs (added 2026-04-12)
+        "/watch/", "/tag/", "/character/", "/series/",
+        "/trending", "/new", "/tags", "/explore",
+        "/blog/", "/glossary/",
+      ],
       disallow: ["/api/", "/_next/", "/feed", "/v/", "/favorites", "/history", "/settings"],
     },
     sitemap: sitemaps,
