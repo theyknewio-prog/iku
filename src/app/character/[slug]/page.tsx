@@ -6,7 +6,7 @@ import { Pagination } from "@/components/Pagination";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { getVideos } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
-/* Ad imports removed 2026-04-11 (AD BLACKOUT). */
+import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 import { CHARACTERS, getCharacterBySlug, type Character } from "@/data/characters";
 import { getCharacterSEO } from "@/data/characters-seo";
 import { getSeriesBySlug } from "@/data/series";
@@ -153,7 +153,7 @@ export default async function CharacterPage({ params, searchParams }: Props) {
       )}
       <main>
         <div className="page-container">
-          {/* Top leaderboard removed 2026-04-11 (AD BLACKOUT) */}
+          <HentaiProsBanner format="300x250" mobileFormat={null} />
 
           {/* ── Character hero ──────────────────────────────────── */}
           <div className="tag-hero">

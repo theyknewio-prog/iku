@@ -7,7 +7,7 @@ import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { SignupCTA } from "@/components/SignupCTA";
 import { CHARACTERS } from "@/data/characters";
 import { SERIES } from "@/data/series";
-/* Ad imports removed 2026-04-11 (AD BLACKOUT). */
+import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 
 export const revalidate = 3600;
 export const dynamic = "force-dynamic";
@@ -184,7 +184,7 @@ export default async function ExplorePage(props: {
       <main className="shell-content">
         <div className="page-container">
 
-          {/* Ad zone removed 2026-04-11 (AD BLACKOUT) */}
+          <HentaiProsBanner format="300x250" mobileFormat={null} />
 
           {/* ── Page header ───────────────────────────────── */}
           <div className="explore-header">

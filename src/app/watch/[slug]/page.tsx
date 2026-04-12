@@ -19,7 +19,7 @@ import {
 } from "@/lib/content-generator";
 import { containsBannedContent, getRelatedVideos, getDanbooruVideo } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
-/* Ad imports removed 2026-04-11 (AD BLACKOUT). */
+import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 import { RemoveAdsCTA } from "@/components/RemoveAdsCTA";
 import { buildSeoTitle, buildTitle as buildDisplayTitle } from "@/lib/video-display";
 
@@ -412,7 +412,11 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 />
               </div>
 
-              {/* Ad zones under/around player removed 2026-04-11 (AD BLACKOUT) */}
+              {/* Single HentaiPros 300x250 under player (verified working via
+                  Playwright). All other ad zones removed 2026-04-11. */}
+              <div style={{ margin: "12px auto", textAlign: "center" }}>
+                <HentaiProsBanner format="300x250" mobileFormat={null} />
+              </div>
 
               {/* Remove Ads CTA — only for non-Pro, non-logged-in users */}
               <RemoveAdsCTA />

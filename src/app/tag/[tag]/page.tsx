@@ -6,7 +6,7 @@ import { Pagination } from "@/components/Pagination";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { getVideos } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
-/* Ad imports removed 2026-04-11 (AD BLACKOUT). */
+import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 
@@ -132,7 +132,7 @@ export default async function TagPage({ params, searchParams }: Props) {
       <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
       <main>
         <div className="page-container">
-          {/* Top leaderboard removed 2026-04-11 (AD BLACKOUT) */}
+          <HentaiProsBanner format="300x250" mobileFormat={null} />
 
           {/* ── Tag hero ─────────────────────────────────────── */}
           <div className="tag-hero">

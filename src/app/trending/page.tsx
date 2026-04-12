@@ -5,7 +5,7 @@ import { SignupCTA } from "@/components/SignupCTA";
 import { getVideos } from "@/lib/content";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
-/* Ad imports removed 2026-04-11 (AD BLACKOUT). */
+import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 
 export const metadata: Metadata = {
   title: "Trending Hentai Videos 2026 | iku.gg",
@@ -47,7 +47,7 @@ export default async function TrendingPage() {
     <div className="shell-content">
       <main>
         <div className="page-container">
-          {/* Ad zone removed 2026-04-11 (AD BLACKOUT) */}
+          <HentaiProsBanner format="300x250" mobileFormat={null} />
 
           {/* ── Page hero ─────────────────────────────────────── */}
           <div className="tag-hero">
