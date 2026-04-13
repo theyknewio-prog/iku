@@ -24,7 +24,7 @@ export function RemoveAdsCTA() {
       <Link href="/pricing" className="remove-ads-cta__link">
         <span className="remove-ads-cta__emoji" aria-hidden>&#x1F624;</span>
         <span className="remove-ads-cta__text">
-          Tired of ads? <strong>Go Pro</strong> — ad-free experience
+          Tired of ads? <strong>Go Premium</strong> — ad-free experience
         </span>
         <span className="remove-ads-cta__arrow" aria-hidden>&rsaquo;</span>
       </Link>

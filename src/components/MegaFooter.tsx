@@ -226,7 +226,7 @@ export async function MegaFooter() {
           <ul className="mega-footer__links">
             <li><Link href="/login">Sign In</Link></li>
             <li><Link href="/signup">Sign Up</Link></li>
-            <li><Link href="/pricing">Go Pro</Link></li>
+            <li><Link href="/pricing">Go Premium</Link></li>
             <li><Link href="/favorites">My Favorites</Link></li>
             <li><Link href="/history">Watch History</Link></li>
             <li><Link href="/settings">Settings</Link></li>
