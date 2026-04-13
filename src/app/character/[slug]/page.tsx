@@ -253,10 +253,17 @@ export default async function CharacterPage({ params, searchParams }: Props) {
               </Link>
             </div>
           ) : (
+            <>
+            <Link href="/pricing" className="hp-premium-strip" aria-label="Get iku Premium">
+              <span className="hp-premium-strip__icon">🚫</span>
+              <span className="hp-premium-strip__text"><strong>Skip every ad</strong> · 4K when available · Early access · Unlimited favorites</span>
+              <span className="hp-premium-strip__cta">Premium 4.99€/mo →</span>
+            </Link>
+            <HentaiProsBanner format="728x90" mobileFormat="300x250" />
             <BlacklistFilter videos={videos} />
+            <HentaiProsBanner format="300x100" mobileFormat={null} />
+            </>
           )}
-
-          {/* In-grid ad removed 2026-04-11 (AD BLACKOUT) */}
 
           {/* ── Pagination ───────────────────────────────────── */}
           {videos.length > 0 && (

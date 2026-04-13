@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 import { Suspense } from "react";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { Pagination } from "@/components/Pagination";
@@ -108,6 +109,13 @@ export default async function HentaiPage({ searchParams }: Props) {
               <p>No hentai videos found.</p>
             </div>
           ) : (
+            <>
+            <Link href="/pricing" className="hp-premium-strip" aria-label="Get iku Premium">
+              <span className="hp-premium-strip__icon">🚫</span>
+              <span className="hp-premium-strip__text"><strong>Skip every ad</strong> · 4K when available · Early access · Unlimited favorites</span>
+              <span className="hp-premium-strip__cta">Premium 4.99€/mo →</span>
+            </Link>
+            <HentaiProsBanner format="728x90" mobileFormat="300x250" />
             <div className="video-grid">
               {videos.map((video: Video, i) => (
                 <ThumbnailCard
@@ -118,6 +126,8 @@ export default async function HentaiPage({ searchParams }: Props) {
                 />
               ))}
             </div>
+            <HentaiProsBanner format="300x100" mobileFormat={null} />
+            </>
           )}
 
           {/* ── Pagination ───────────────────────────────────── */}
