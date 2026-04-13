@@ -219,7 +219,7 @@ function UserMenu() {
           <Link href="/profile" className="v2-user-dropdown__item" onClick={() => setOpen(false)}>👤 Profile</Link>
           <Link href="/favorites" className="v2-user-dropdown__item" onClick={() => setOpen(false)}>❤️ Favorites</Link>
           <Link href="/history" className="v2-user-dropdown__item" onClick={() => setOpen(false)}>🕐 History</Link>
-          <Link href="/pricing" className="v2-user-dropdown__item" onClick={() => setOpen(false)}>✨ Go Pro</Link>
+          <Link href="/pricing" className="v2-user-dropdown__item" onClick={() => setOpen(false)}>✨ Go Premium</Link>
           <Link href="/settings" className="v2-user-dropdown__item" onClick={() => setOpen(false)}>⚙️ Settings</Link>
           <button
             type="button"
@@ -256,7 +256,7 @@ const DISCOVER_ITEMS = [
 const LIBRARY_ITEMS = [
   { href: "/favorites", label: "Favorites", Icon: IconHeart,    emoji: "❤️" },
   { href: "/history",   label: "History",   Icon: IconHistory,  emoji: "🕐" },
-  { href: "/pricing",   label: "Go Pro",    Icon: IconStar,     emoji: "✨" },
+  { href: "/pricing",   label: "Go Premium", Icon: IconStar,    emoji: "✨" },
   { href: "/settings",  label: "Settings",  Icon: IconSettings, emoji: "⚙️" },
 ] as const;
 
@@ -558,10 +558,9 @@ export function AppShell({ children, footer }: { children: React.ReactNode; foot
           <Link
             href="/pricing"
             className="v2-topbar-pro-cta"
-            aria-label="Upgrade to Pro"
+            aria-label="Upgrade to Premium"
           >
-            <span aria-hidden="true">✨</span>
-            <span>Go Pro</span>
+            <span>Go Premium</span>
           </Link>
           <UserMenu />
         </div>

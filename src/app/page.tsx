@@ -152,18 +152,6 @@ export default async function HomePage() {
                 &amp; <span className="hp-hero-gradient-text">3D Cartoon Porn</span><br />
                 All In One Tube
               </h1>
-              {/* Ahegao character — fills the empty zone top-right of hero text */}
-              <div className="hp-hero-face" aria-hidden="true">
-                <img
-                  src="/ahegao-hero.webp"
-                  alt=""
-                  width={160}
-                  height={168}
-                  loading="eager"
-                  style={{ width: "100%", height: "auto", objectFit: "contain" }}
-                />
-              </div>
-
               <p className="hp-hero-sub">
                 <strong>360,000+</strong> videos — 2D hentai episodes, 3D SFM animations,
                 Genshin &amp; Overwatch compilations, HMV, plus a TikTok-style Shorts feed.
@@ -253,6 +241,19 @@ export default async function HomePage() {
               </div>
             </div>
           </section>
+
+          {/* ════════════════════════════════════════════════════════
+              UNLOCK BANNER — V6 pattern (OnlyFans-style subscription
+              hook). Most profitable per-pixel card on the homepage.
+              ════════════════════════════════════════════════════════ */}
+          <Link href="/pricing" className="hp-unlock-banner" aria-label="Unlock all creator libraries with iku Premium">
+            <span className="hp-unlock-banner__icon" aria-hidden="true">✨</span>
+            <span className="hp-unlock-banner__text">
+              <span className="hp-unlock-banner__title">Unlock all creator libraries</span>
+              <span className="hp-unlock-banner__sub">One subscription. 1,243 creators. Unlimited full-length episodes.</span>
+            </span>
+            <span className="hp-unlock-banner__cta">4.99€/mo</span>
+          </Link>
 
           {/* ════════════════════════════════════════════════════════
               VERTICAL HUBS — three CTA tiles linking to the 2D hentai,

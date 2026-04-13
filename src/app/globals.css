@@ -10423,6 +10423,81 @@ body {
    Shown below hero on homepage.
    ══════════════════════════════════════════════════════════════ */
 
+/* ─── UNLOCK BANNER (Premium hook under hero) ─── */
+.hp-unlock-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 1100px;
+  margin: 20px auto 28px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ff3d7a 0%, #8b38ff 55%, #00c3ff 100%);
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 0 12px 32px rgba(139, 56, 255, 0.28);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+  position: relative;
+  overflow: hidden;
+}
+.hp-unlock-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 15% 50%, rgba(255,255,255,0.18), transparent 50%);
+  pointer-events: none;
+}
+.hp-unlock-banner:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 44px rgba(139, 56, 255, 0.4);
+}
+.hp-unlock-banner__icon {
+  font-size: 28px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));
+}
+.hp-unlock-banner__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.hp-unlock-banner__title {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.hp-unlock-banner__sub {
+  font-size: 13px;
+  opacity: 0.88;
+  line-height: 1.4;
+}
+.hp-unlock-banner__cta {
+  background: #fff;
+  color: #8b38ff;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+@media (max-width: 640px) {
+  .hp-unlock-banner {
+    flex-wrap: wrap;
+    padding: 14px 16px;
+    gap: 12px;
+  }
+  .hp-unlock-banner__title { font-size: 15px; }
+  .hp-unlock-banner__sub { font-size: 12px; }
+  .hp-unlock-banner__cta {
+    width: 100%;
+    text-align: center;
+    order: 3;
+  }
+}
+
 .hp-verticals {
   display: grid;
   grid-template-columns: 1fr;
