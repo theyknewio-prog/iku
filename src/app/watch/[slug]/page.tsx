@@ -22,8 +22,6 @@ import {
 import { containsBannedContent, getRelatedVideos, getDanbooruVideo } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
-import { AdZoneClient } from "@/components/AdZoneClient";
-import { AD_ZONES } from "@/lib/ad-config";
 import { RemoveAdsCTA } from "@/components/RemoveAdsCTA";
 import { buildSeoTitle, buildTitle as buildDisplayTitle } from "@/lib/video-display";
 
@@ -706,16 +704,11 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
             {/* ── Sidebar (desktop) ─────────────────────────── */}
             <aside className="player-sidebar">
-              {/* Wave 1 ad reintro 2026-04-13: ExoClick 300x250 only.
-                  Sidebar is already display:none on mobile so no blank
-                  box risk on small viewports. */}
-              <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-                <AdZoneClient
-                  zoneId={AD_ZONES.exoclick.sidebar300}
-                  size="300x250"
-                  lazy
-                />
-              </div>
+              {/* Wave 1b 2026-04-13: swapped generic ExoClick for
+                  HentaiProsBanner 160x600 — hentai-niche rotation
+                  (HentaiPros / Candy.ai / hentai games) matches the
+                  audience intent. Sidebar is display:none <768px. */}
+              <HentaiProsBanner format="160x600" mobileFormat={null} />
               <div className="player-sidebar__title">Up next</div>
               <Suspense
                 fallback={Array.from({ length: 10 }).map((_, i) => (

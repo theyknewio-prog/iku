@@ -8,7 +8,6 @@ import { UserDataSync } from "@/components/UserDataSync";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { getNonce } from "@/lib/csp-nonce";
 import { PushNotifications } from "@/components/PushNotifications";
-import { AdScript } from "@/components/AdScript";
 
 // Fonts: Nunito (primary body) + Righteous (display/headings).
 // Previously we also loaded Inter, Poppins, and Quicksand — they were
@@ -119,10 +118,6 @@ export default async function RootLayout({
               ONE at a time after verifying each renders cleanly in
               Playwright. */}
           <PushNotifications />
-          {/* Wave 1 ad reintro 2026-04-13: ExoClick provider script
-              re-enabled to power a single 300x250 watch sidebar slot.
-              Adding networks one at a time — ping if a blank box shows. */}
-          <AdScript />
           <AppShell footer={<MegaFooter />}>{children}</AppShell>
         </SessionProviderClient>
       </body>
