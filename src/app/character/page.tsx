@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { ListingAdBlock } from "@/components/ListingAdBlock";
 import { CHARACTERS } from "@/data/characters";
 import { SERIES } from "@/data/series";
 import { getThumbnailsForTags } from "@/lib/content";
@@ -68,6 +69,7 @@ export default async function CharactersPage() {
       <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
       <main>
         <div className="page-container">
+          <ListingAdBlock variant="top" />
           {/* ── Page hero ─────────────────────────────────────── */}
           <div className="tag-hero">
             <p className="tag-hero__label">Character Directory</p>

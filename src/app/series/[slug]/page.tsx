@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { Pagination } from "@/components/Pagination";
 import { getVideos, countVideos } from "@/lib/content";
+import { getEntitySeo } from "@/lib/entity-seo";
 import { getNonce } from "@/lib/csp-nonce";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 import { ListingAdBlock } from "@/components/ListingAdBlock";
@@ -129,7 +130,7 @@ export default async function SeriesPage({ params, searchParams }: Props) {
   const order =
     sortParam === "date" || sortParam === "favcount" || sortParam === "score" ? sortParam : "score";
 
-  const [{ data: videos, hasMore }, totalCount] = await Promise.all([
+  const [{ data: videos, hasMore }, totalCount, entitySeo] = await Promise.all([
     getVideos({
       tags: series.tags[0],
       page: currentPage,
@@ -138,6 +139,7 @@ export default async function SeriesPage({ params, searchParams }: Props) {
       requireThumbnail: true,
     }),
     countVideos({ tags: series.tags[0], requireThumbnail: true }),
+    getEntitySeo("series", series.tags[0]),
   ]);
   const totalPages = Math.max(1, Math.ceil(totalCount / 20));
 
@@ -201,16 +203,38 @@ export default async function SeriesPage({ params, searchParams }: Props) {
             </div>
           </div>
 
-          {/* ── Description ──────────────────────────────────── */}
+          {/* ── Description (entity_seo PG-backed if available) ─ */}
           <section className="page-section">
-            <p style={{
-              color: "var(--color-text-secondary)",
-              fontSize: "var(--text-sm)",
-              lineHeight: 1.7,
-              maxWidth: "720px",
-            }}>
-              {series.description}
-            </p>
+            {entitySeo ? (
+              <div style={{ maxWidth: "720px" }}>
+                {entitySeo.intro.split("\n\n").map((para, i) => (
+                  <p key={i} style={{
+                    color: "var(--color-text-secondary)",
+                    fontSize: "var(--text-sm)",
+                    lineHeight: 1.7,
+                    marginBottom: "12px",
+                  }}>{para}</p>
+                ))}
+                {entitySeo.faq.length > 0 && (
+                  <div className="watch-faq" style={{ marginTop: "24px" }}>
+                    <h2 className="watch-faq__heading">Frequently asked questions</h2>
+                    {entitySeo.faq.map((item, i) => (
+                      <details key={i} className="watch-faq__item">
+                        <summary className="watch-faq__q">{item.q}</summary>
+                        <div className="watch-faq__a">{item.a}</div>
+                      </details>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p style={{
+                color: "var(--color-text-secondary)",
+                fontSize: "var(--text-sm)",
+                lineHeight: 1.7,
+                maxWidth: "720px",
+              }}>{series.description}</p>
+            )}
           </section>
 
           {/* ── Characters from this series ───────────────────── */}
