@@ -560,7 +560,8 @@ export function AppShell({ children, footer }: { children: React.ReactNode; foot
             className="v2-topbar-pro-cta"
             aria-label="Upgrade to Premium"
           >
-            <span>Go Premium</span>
+            <span className="v2-topbar-pro-cta__short" aria-hidden>PRO</span>
+            <span className="v2-topbar-pro-cta__full">Go Premium</span>
           </Link>
           <UserMenu />
         </div>

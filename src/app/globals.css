@@ -10831,12 +10831,17 @@ body {
               inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
+/* Show "PRO" on mobile, "Go Premium" on desktop. The short label keeps
+   the button readable when space is tight (Sab feedback 2026-04-13:
+   empty yellow pill on mobile was indistinguishable from a stray dot). */
+.v2-topbar-pro-cta__short { display: none; }
+.v2-topbar-pro-cta__full  { display: inline; }
 @media (max-width: 767px) {
-  .v2-topbar-pro-cta span:last-child {
-    display: none;
-  }
+  .v2-topbar-pro-cta__short { display: inline; }
+  .v2-topbar-pro-cta__full  { display: none; }
   .v2-topbar-pro-cta {
-    padding: 8px 10px;
+    padding: 8px 12px;
+    letter-spacing: 0.06em;
   }
 }
 
