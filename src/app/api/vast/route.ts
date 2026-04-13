@@ -172,8 +172,12 @@ export async function GET(req: NextRequest) {
       { headers: { "Cache-Control": "no-store" } }
     );
   }
+  // Rewrite mediaUrl through our /api/vast-stream proxy so the browser
+  // pulls the bytes from `iku.gg` (already in CSP) rather than a long
+  // tail of adult-ad CDNs that would each need a CSP whitelist entry.
+  const proxied = `/api/vast-stream?url=${encodeURIComponent(ad.mediaUrl)}`;
   return NextResponse.json(
-    { ok: true, ...ad },
+    { ok: true, ...ad, mediaUrl: proxied },
     { headers: { "Cache-Control": "no-store" } }
   );
 }
