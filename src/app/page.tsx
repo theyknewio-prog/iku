@@ -15,6 +15,8 @@ import { SignupCTA } from "@/components/SignupCTA";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { MagneticButton } from "@/components/MagneticButton";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
+import { AdZoneClient } from "@/components/AdZoneClient";
+import { AD_ZONES } from "@/lib/ad-config";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai, 3D Hentai & Cartoon Porn | 360,000+ Videos",
@@ -537,6 +539,17 @@ export default async function HomePage() {
               })}
             </div>
           </section>
+
+          {/* Wave 4 ad reintro 2026-04-13: ExoClick native 300x250 between
+              Trending and New Releases carousels. Single slot to verify
+              before expanding to listing pages. */}
+          <div style={{ display: "flex", justifyContent: "center", margin: "32px 0" }}>
+            <AdZoneClient
+              zoneId={AD_ZONES.exoclick.nativeGrid}
+              size="native"
+              lazy
+            />
+          </div>
 
           {/* ================================================================
               NEW RELEASES -- Horizontal poster scroll
