@@ -10775,10 +10775,14 @@ body {
   background: linear-gradient(135deg, #f7971e 0%, #e8467c 100%);
 }
 
-/* Shift main content up a bit since subnav adds ~50px of fixed height */
+/* Mobile: keep the topbar's reserved space (fixed 64px) so the in-flow
+   subnav sits visibly underneath it instead of being covered. Without this
+   .v2-main started at y=0 and the sticky subnav was clipped behind the
+   fixed topbar at scroll=0, then "appeared" at scroll>0 covering the
+   text the user had just scrolled past. Reported 2026-04-13. */
 @media (max-width: 1023px) {
   .v2-main {
-    padding-top: 0;
+    padding-top: var(--v2-topbar-h);
   }
 }
 
