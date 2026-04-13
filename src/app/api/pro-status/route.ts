@@ -9,7 +9,7 @@
 
 import { NextResponse, type NextRequest } from "next/server";
 import { auth } from "@/auth";
-import { isUserPro } from "@/lib/pro-gate";
+import { isUserPro } from "@/lib/pro-gate-server";
 import pool from "@/lib/db";
 
 export const dynamic = "force-dynamic";
