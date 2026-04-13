@@ -32,11 +32,14 @@ type Props = {
 };
 
 export default async function EpisodesPage({ searchParams }: Props) {
-  const { page = "1", sort = "score" } = await searchParams;
+  // Default sort = date because rule34video garbage-collects old thumbnails
+  // (404s on screencap CDN). Sorting by score surfaces popular-but-old
+  // videos with dead images. Date keeps fresh, working thumbs at top.
+  const { page = "1", sort = "date" } = await searchParams;
   const currentPage = Math.max(1, parseInt(String(page)));
   const sortOrder = (["score", "date", "favcount"].includes(String(sort))
     ? sort
-    : "score") as "score" | "date" | "favcount";
+    : "date") as "score" | "date" | "favcount";
 
   const [{ data: videos, hasMore }, totalCount] = await Promise.all([
     getVideos({
@@ -106,8 +109,8 @@ export default async function EpisodesPage({ searchParams }: Props) {
           {/* ── Sort filter bar ───────────────────────────────── */}
           <div className="filter-bar" style={{ marginTop: 24 }}>
             {([
-              { value: "score", label: "Top Rated" },
               { value: "date", label: "Newest" },
+              { value: "score", label: "Top Rated" },
               { value: "favcount", label: "Most Saved" },
             ] as const).map((opt) => (
               <Link

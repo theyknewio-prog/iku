@@ -56,6 +56,10 @@ export function ThumbnailCard({
   const [watched, setWatched] = useState(false);
   const [previewActive, setPreviewActive] = useState(false);
   const [progress, setProgress] = useState(0);
+  // Some thumbnails (notably old rule34video screencaps) 404 because the
+  // upstream CDN garbage-collected them. Track per-card so we can swap to
+  // a gradient fallback instead of showing a broken-image icon.
+  const [imgError, setImgError] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -145,8 +149,9 @@ export function ThumbnailCard({
     >
       {/* ── Thumbnail media area ─────────────────────────── */}
       <div className="video-card__media">
-        {/* Static thumbnail */}
-        {video.thumbnail ? (
+        {/* Static thumbnail — falls back to a gradient when the upstream
+            image 404s (rule34video old-asset GC). */}
+        {video.thumbnail && !imgError ? (
           <Image
             src={video.thumbnail}
             alt={title}
@@ -156,15 +161,23 @@ export function ThumbnailCard({
             loading={lazy && !priority ? "lazy" : "eager"}
             priority={priority}
             unoptimized
+            onError={() => setImgError(true)}
           />
         ) : (
           <div
             style={{
               position: "absolute",
               inset: 0,
-              background: "linear-gradient(135deg, #141414 0%, #0f0f0f 100%)",
+              background: `linear-gradient(135deg, hsl(${(video.id * 47) % 360}, 60%, 25%) 0%, hsl(${(video.id * 47 + 80) % 360}, 70%, 15%) 100%)`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "rgba(255,255,255,0.4)",
+              fontSize: 32,
             }}
-          />
+          >
+            🌸
+          </div>
         )}
 
         {/* Hover video preview */}
