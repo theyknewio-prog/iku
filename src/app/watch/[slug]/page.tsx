@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { WatchPlayer } from "@/components/WatchPlayer";
+import { ProGatedPlayer } from "@/components/ProGatedPlayer";
+import { isProLocked } from "@/lib/pro-gate";
 import { WatchActions } from "@/components/WatchActions";
 import { getGelbooruPost } from "@/lib/gelbooru";
 import { getRule34Post } from "@/lib/rule34";
@@ -404,12 +406,23 @@ export default async function WatchPage({ params }: WatchPageProps) {
                   night as part of the ad blackout — the preroll was an ad
                   surface we weren't verifying. */}
               <div className="player-video-wrap">
-                <WatchPlayer
-                  src={(video.source === "rule34video" || video.source === "wp" || video.source === "hentaicity") ? (streamProxyUrl || "") : (video.url || "")}
-                  poster={video.thumbnail || undefined}
-                  resolveUrl={resolvePageUrl || undefined}
-                  relatedVideos={relatedForPlayer}
-                />
+                {isProLocked(video) ? (
+                  <ProGatedPlayer
+                    src={(video.source === "rule34video" || video.source === "wp" || video.source === "hentaicity") ? (streamProxyUrl || "") : (video.url || "")}
+                    poster={video.thumbnail || undefined}
+                    resolveUrl={resolvePageUrl || undefined}
+                    relatedVideos={relatedForPlayer}
+                    lockedThumbnail={video.thumbnail || null}
+                    lockedTitle={buildDisplayTitle(video)}
+                  />
+                ) : (
+                  <WatchPlayer
+                    src={(video.source === "rule34video" || video.source === "wp" || video.source === "hentaicity") ? (streamProxyUrl || "") : (video.url || "")}
+                    poster={video.thumbnail || undefined}
+                    resolveUrl={resolvePageUrl || undefined}
+                    relatedVideos={relatedForPlayer}
+                  />
+                )}
               </div>
 
               {/* Single HentaiPros 300x250 under player (verified working via
