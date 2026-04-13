@@ -252,8 +252,8 @@ export default async function HomePage() {
           <Link href="/pricing" className="hp-unlock-banner" aria-label="Unlock all creator libraries with iku Premium">
             <span className="hp-unlock-banner__icon" aria-hidden="true">✨</span>
             <span className="hp-unlock-banner__text">
-              <span className="hp-unlock-banner__title">Unlock all creator libraries</span>
-              <span className="hp-unlock-banner__sub">One subscription. 1,243 creators. Unlimited full-length episodes.</span>
+              <span className="hp-unlock-banner__title">Unlock every full-length episode</span>
+              <span className="hp-unlock-banner__sub">38,000+ episodes. Skip every ad. 4K when available. Cancel anytime.</span>
             </span>
             <span className="hp-unlock-banner__cta">4.99€/mo</span>
           </Link>

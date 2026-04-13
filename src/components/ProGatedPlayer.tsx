@@ -3,14 +3,12 @@
 /**
  * ProGatedPlayer — client-side wrapper that flips between the real
  * WatchPlayer and the ProLockOverlay based on the current user's
- * Pro entitlement. Lives client-side so the parent watch page can
- * stay ISR-cached (24h).
+ * Pro entitlement OR per-video unlock (gamification points).
  *
- * While the status resolves, render a dark placeholder to avoid a
- * flash of the unlocked player.
+ * Lives client-side so the parent watch page can stay ISR-cached (24h).
  */
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { WatchPlayerWithPreroll } from "@/components/WatchPlayerWithPreroll";
 import { ProLockOverlay } from "@/components/ProLockOverlay";
 
@@ -21,32 +19,49 @@ type Props = {
   relatedVideos?: Array<{ slug: string; thumbnail: string; title: string }>;
   lockedThumbnail: string | null;
   lockedTitle: string;
+  /** PG primary key — needed for the per-video unlock POST. */
+  videoPk: number;
+  /** Pre-computed unlock cost in points (server-side via unlockCost()). */
+  unlockCost: number;
 };
 
-type Status = "loading" | "unlocked" | "locked-signed-out" | "locked-signed-in";
+type State = {
+  status: "loading" | "unlocked" | "locked-signed-out" | "locked-signed-in";
+  score: number;
+};
 
 export function ProGatedPlayer(props: Props) {
-  const [status, setStatus] = useState<Status>("loading");
+  const [state, setState] = useState<State>({ status: "loading", score: 0 });
 
-  useEffect(() => {
-    let cancelled = false;
-    fetch("/api/pro-status", { credentials: "include" })
-      .then((r) => (r.ok ? r.json() : { signedIn: false, pro: false }))
-      .then((d: { signedIn: boolean; pro: boolean }) => {
-        if (cancelled) return;
-        if (d.pro) setStatus("unlocked");
-        else if (d.signedIn) setStatus("locked-signed-in");
-        else setStatus("locked-signed-out");
-      })
-      .catch(() => {
-        if (!cancelled) setStatus("locked-signed-out");
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const refresh = useCallback(() => {
+    fetch(`/api/pro-status?videoPk=${props.videoPk}`, { credentials: "include" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then(
+        (d: {
+          signedIn: boolean;
+          pro: boolean;
+          score: number;
+          unlockedThisVideo: boolean;
+        } | null) => {
+          if (!d) {
+            setState({ status: "locked-signed-out", score: 0 });
+            return;
+          }
+          if (d.pro || d.unlockedThisVideo) {
+            setState({ status: "unlocked", score: d.score });
+          } else if (d.signedIn) {
+            setState({ status: "locked-signed-in", score: d.score });
+          } else {
+            setState({ status: "locked-signed-out", score: 0 });
+          }
+        }
+      )
+      .catch(() => setState({ status: "locked-signed-out", score: 0 }));
+  }, [props.videoPk]);
 
-  if (status === "loading") {
+  useEffect(() => { refresh(); }, [refresh]);
+
+  if (state.status === "loading") {
     return (
       <div
         style={{
@@ -61,7 +76,7 @@ export function ProGatedPlayer(props: Props) {
     );
   }
 
-  if (status === "unlocked") {
+  if (state.status === "unlocked") {
     return (
       <WatchPlayerWithPreroll
         src={props.src}
@@ -76,7 +91,11 @@ export function ProGatedPlayer(props: Props) {
     <ProLockOverlay
       thumbnail={props.lockedThumbnail}
       title={props.lockedTitle}
-      signedIn={status === "locked-signed-in"}
+      signedIn={state.status === "locked-signed-in"}
+      videoPk={props.videoPk}
+      unlockCost={props.unlockCost}
+      userScore={state.score}
+      onUnlocked={refresh}
     />
   );
 }

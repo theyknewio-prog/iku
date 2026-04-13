@@ -6,6 +6,7 @@ import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { WatchPlayerWithPreroll } from "@/components/WatchPlayerWithPreroll";
 import { ProGatedPlayer } from "@/components/ProGatedPlayer";
 import { isProLocked } from "@/lib/pro-gate";
+import { unlockCost } from "@/lib/unlock-cost";
 import { WatchActions } from "@/components/WatchActions";
 import { getGelbooruPost } from "@/lib/gelbooru";
 import { getRule34Post } from "@/lib/rule34";
@@ -427,6 +428,8 @@ export default async function WatchPage({ params }: WatchPageProps) {
                     relatedVideos={relatedForPlayer}
                     lockedThumbnail={video.thumbnail || null}
                     lockedTitle={buildDisplayTitle(video)}
+                    videoPk={video.pk ?? 0}
+                    unlockCost={unlockCost(video)}
                   />
                 ) : (
                   <WatchPlayerWithPreroll

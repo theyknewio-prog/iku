@@ -246,6 +246,7 @@ const DISCOVER_ITEMS = [
   { href: "/",         label: "Home",         Icon: IconHome,     emoji: "🏠" },
   { href: "/hentai",   label: "Hentai 2D",    Icon: IconBrowse,   emoji: "🌸" },
   { href: "/3d",       label: "3D",           Icon: IconBrowse,   emoji: "🎮", badge: "300K+" },
+  { href: "/episodes", label: "Episodes",     Icon: IconBrowse,   emoji: "🎬", badge: "Premium", badgeGradient: true },
   { href: "/feed",     label: "Shorts",       Icon: IconFeed,     emoji: "⚡", badge: "New", badgeGradient: true },
   { href: "/trending", label: "Trending",     Icon: IconTrending, emoji: "🔥", badge: "Hot" },
   { href: "/new",      label: "New Releases", Icon: IconNew,      emoji: "🆕" },
@@ -581,6 +582,9 @@ export function AppShell({ children, footer }: { children: React.ReactNode; foot
             </Link>
             <Link href="/hentai" className={`v2-subnav__pill${isActive("/hentai") ? " v2-subnav__pill--active" : ""}`}>
               <span aria-hidden="true">🌸</span> Hentai 2D
+            </Link>
+            <Link href="/episodes" className={`v2-subnav__pill${isActive("/episodes") ? " v2-subnav__pill--active" : ""}`} title="Full-length episodes (Premium)">
+              🎬 Episodes
             </Link>
             <Link href="/3d" className={`v2-subnav__pill${isActive("/3d") ? " v2-subnav__pill--active" : ""}`}>
               <span aria-hidden="true">🎮</span> 3D

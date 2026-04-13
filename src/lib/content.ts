@@ -175,6 +175,12 @@ export interface GetVideosOptions {
   vertical?: "all" | "hentai" | "3d";
   /** Exclude videos without a thumbnail (WP sources). Use on homepage/carousels. */
   requireThumbnail?: boolean;
+  /**
+   * Long-format only: source IN (hentaicity, hentaigasm) OR duration >= 600s.
+   * Used by /episodes landing — same predicate the Pro gate uses on /watch
+   * so the listing matches what's actually behind the paywall.
+   */
+  longFormat?: boolean;
 }
 
 /** Source groups backing the `vertical` filter. Add new scraper outputs here
@@ -188,6 +194,7 @@ export const VERTICAL_SOURCES = {
 function rowToVideo(row: Record<string, unknown>): Video {
   return {
     id: row.source_id as number,
+    pk: typeof row.pk === "number" ? row.pk : undefined,
     slug: row.slug as string,
     url: row.url as string,
     thumbnail: row.thumbnail as string,
@@ -224,6 +231,7 @@ async function _getVideos(
     source = "all",
     vertical = "all",
     requireThumbnail = false,
+    longFormat = false,
   } = options;
 
   const clampedLimit = Math.min(limit, 200);
@@ -283,6 +291,14 @@ async function _getVideos(
     }
   }
 
+  // Long-format: matches the same predicate as isProLocked() in src/lib/pro-gate.ts
+  // so /episodes lists exactly what's behind the Pro paywall on /watch.
+  if (longFormat) {
+    conditions.push(
+      `(source IN ('hentaicity','hentaigasm') OR (duration IS NOT NULL AND duration >= 600))`
+    );
+  }
+
   const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
 
   const orderClause =
@@ -291,7 +307,7 @@ async function _getVideos(
     : "ORDER BY created_at DESC";
 
   const query = `
-    SELECT source, source_id, slug, url, page_url, site, title,
+    SELECT pk, source, source_id, slug, url, page_url, site, title,
            thumbnail, preview, score, favorites,
            tags, characters, copyrights, artists,
            width, height, file_size, duration, created_at
@@ -352,6 +368,7 @@ async function _countVideos(options: GetVideosOptions = {}): Promise<number> {
     source = "all",
     vertical = "all",
     requireThumbnail = false,
+    longFormat = false,
   } = options;
 
   const conditions: string[] = [];
@@ -364,6 +381,12 @@ async function _countVideos(options: GetVideosOptions = {}): Promise<number> {
 
   if (requireThumbnail) {
     conditions.push(`thumbnail IS NOT NULL AND thumbnail <> ''`);
+  }
+
+  if (longFormat) {
+    conditions.push(
+      `(source IN ('hentaicity','hentaigasm') OR (duration IS NOT NULL AND duration >= 600))`
+    );
   }
 
   if (source === "danbooru" || source === "gelbooru") {
@@ -570,7 +593,7 @@ function hashDayToIndex(date: string, modulo: number): number {
 async function _getVideoOfTheDay(): Promise<Video | null> {
   try {
     const { rows } = await pool.query(
-      `SELECT source, source_id, slug, url, page_url, site, title,
+      `SELECT pk, source, source_id, slug, url, page_url, site, title,
               thumbnail, preview, score, favorites,
               tags, characters, copyrights, artists,
               width, height, file_size, duration, created_at
@@ -619,7 +642,7 @@ async function _getDanbooruVideo(
 ): Promise<Video | null> {
   try {
     const { rows } = await pool.query(
-      `SELECT source, source_id, slug, url, page_url, site, title,
+      `SELECT pk, source, source_id, slug, url, page_url, site, title,
               thumbnail, preview, score, favorites,
               tags, characters, copyrights, artists,
               width, height, file_size, duration, created_at
@@ -888,7 +911,7 @@ export async function getFeedKeyset(options: {
 
   params.push(clampedLimit + 1);
   const query = `
-    SELECT source, source_id, slug, url, page_url, site, title,
+    SELECT pk, source, source_id, slug, url, page_url, site, title,
            thumbnail, preview, score, favorites,
            tags, characters, copyrights, artists,
            width, height, file_size, duration, created_at,

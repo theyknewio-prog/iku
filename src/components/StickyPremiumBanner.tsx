@@ -86,7 +86,7 @@ export function StickyPremiumBanner() {
               Get iku Premium — 4.99€/mo
             </span>
             <span className="sticky-premium-banner__sub">
-              Skip every ad · 4K · early access · cancel anytime
+              Unlock 38K+ episodes · skip every ad · 4K · cancel anytime
             </span>
           </span>
           <span className="sticky-premium-banner__cta">Upgrade →</span>

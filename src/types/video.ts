@@ -29,6 +29,10 @@ export interface DanbooruPost {
 // Cleaned-up type used in components
 export interface Video {
   id: number;
+  /** Internal PG primary key. Distinct from `id` (which is the source's
+   *  id, e.g. the Rule34 post id). Required by the per-video unlock API
+   *  which references videos.pk via FK. */
+  pk?: number;
   slug: string;
   url: string;
   thumbnail: string;
@@ -44,7 +48,7 @@ export interface Video {
   fileSize: number;
   duration: number | null;
   createdAt: Date;
-  source: "danbooru" | "gelbooru" | "rule34" | "rule34video" | "wp" | "hentaicity";
+  source: "danbooru" | "gelbooru" | "rule34" | "rule34video" | "wp" | "hentaicity" | "hentaigasm";
   /** Scraped title (rule34video, WP sources). Empty for booru sources. */
   title?: string;
   /** Original page URL for sources that need proxy resolution (rule34video, WP). */
