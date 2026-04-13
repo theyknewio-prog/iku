@@ -7,6 +7,7 @@ import type { Video } from "@/types/video";
 import { isWatched } from "@/lib/history";
 import { prefetchVideoUrl, cancelPrefetch } from "@/lib/prefetch-video";
 import { buildTitle, pickGenreTag } from "@/lib/video-display";
+import { isProLocked } from "@/lib/pro-gate";
 
 /* ── Gradient palette for fallback backgrounds (mockup thumb-grad-*) ─── */
 const GRADIENTS = [
@@ -138,6 +139,34 @@ export function PosterCard({ video, rank, badge, priority = false }: PosterCardP
 
         {/* Duration badge (bottom-right) */}
         {duration && <span className="poster-card__duration">{duration}</span>}
+
+        {/* Premium lock badge — top right when video is Pro-gated */}
+        {isProLocked(video) && (
+          <span
+            aria-label="Premium — full episode"
+            title="Full episode — Premium or unlock with points"
+            style={{
+              position: "absolute",
+              top: 8,
+              right: 8,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 3,
+              padding: "3px 8px",
+              borderRadius: 4,
+              background: "linear-gradient(135deg, #ff7a00 0%, #ff3b00 100%)",
+              color: "#fff",
+              fontSize: 10,
+              fontWeight: 800,
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+              boxShadow: "0 2px 6px rgba(255,122,0,0.4)",
+              zIndex: 4,
+            }}
+          >
+            🔒 Premium
+          </span>
+        )}
 
         {/* Watched checkmark */}
         {watched && (

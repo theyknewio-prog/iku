@@ -8,6 +8,7 @@ import { isFavorite, toggleFavorite } from "@/lib/favorites";
 import { isWatched } from "@/lib/history";
 import { prefetchVideoUrl, cancelPrefetch } from "@/lib/prefetch-video";
 import { buildTitle } from "@/lib/video-display";
+import { isProLocked } from "@/lib/pro-gate";
 
 /* ── Helpers ─────────────────────────────────────────────── */
 
@@ -78,6 +79,10 @@ export function ThumbnailCard({
     video.width >= 2160 ? "4K" :
     video.width >= 1080 ? "HD" :
     video.width >= 720 ? "SD+" : "";
+
+  // Pro-gated content gets a "Premium" lock badge so free users know
+  // upfront which videos are paywalled (no surprise on click).
+  const proLocked = isProLocked(video);
 
   /* Title — uses buildTitle for consistent display across all cards
      (scraped title → character → copyright → meaningful tag → fallback) */
@@ -239,8 +244,36 @@ export function ThumbnailCard({
         )}
 
         {/* NEW badge */}
-        {fresh && rank === undefined && (
+        {fresh && rank === undefined && !proLocked && (
           <span className="video-card__new">New</span>
+        )}
+
+        {/* Premium lock badge — top right on Pro-gated videos */}
+        {proLocked && (
+          <span
+            aria-label="Premium — full episode"
+            title="Full episode — Premium or unlock with points"
+            style={{
+              position: "absolute",
+              top: 6,
+              right: 6,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
+              padding: "3px 8px",
+              borderRadius: 4,
+              background: "linear-gradient(135deg, #ff7a00 0%, #ff3b00 100%)",
+              color: "#fff",
+              fontSize: 10,
+              fontWeight: 800,
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+              boxShadow: "0 2px 6px rgba(255,122,0,0.4)",
+              zIndex: 4,
+            }}
+          >
+            🔒 Premium
+          </span>
         )}
 
         {/* Wishlist heart — uses favorites.ts */}
