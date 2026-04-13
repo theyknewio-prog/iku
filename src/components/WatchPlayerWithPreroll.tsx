@@ -20,7 +20,7 @@
 
 import { useState, useCallback } from "react";
 import { WatchPlayer } from "./WatchPlayer";
-import { PrerollAd }   from "./PrerollAd";
+import { VastPrerollAd } from "./VastPrerollAd";
 import { PostrollAd }  from "./PostrollAd";
 
 interface RelatedVideo {
@@ -60,9 +60,10 @@ export function WatchPlayerWithPreroll({ src, poster, resolveUrl, relatedVideos 
 
   return (
     <div style={{ position: "relative", minHeight: "min(56.25vw, 540px)" }}>
-      {/* Pre-roll — blocks the player until complete */}
+      {/* Pre-roll — real VAST video ad from ExoClick (zone 5893268).
+          Fails open on no-fill / timeout so the user is never blocked. */}
       {!prerollDone && (
-        <PrerollAd onComplete={handlePrerollComplete} />
+        <VastPrerollAd onComplete={handlePrerollComplete} />
       )}
 
       {/* Post-roll — shown as an overlay after the video ends */}
