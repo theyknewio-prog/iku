@@ -242,30 +242,39 @@ function UserMenu() {
  * which was functionally identical to /trending (both sort by score DESC).
  * Removed to avoid user confusion — use /trending instead.
  */
+// WATCH = formats. The "what kind of video do I want" answer.
 const DISCOVER_ITEMS = [
-  { href: "/",         label: "Home",         Icon: IconHome,     emoji: "🏠" },
-  { href: "/hentai",   label: "Hentai 2D",    Icon: IconBrowse,   emoji: "🌸" },
-  { href: "/3d",       label: "3D",           Icon: IconBrowse,   emoji: "🎮", badge: "300K+" },
-  { href: "/episodes", label: "Episodes",     Icon: IconBrowse,   emoji: "🎬", badge: "Premium", badgeGradient: true },
-  { href: "/feed",     label: "Shorts",       Icon: IconFeed,     emoji: "⚡", badge: "New", badgeGradient: true },
-  { href: "/trending", label: "Trending",     Icon: IconTrending, emoji: "🔥", badge: "Hot" },
-  { href: "/new",      label: "New Releases", Icon: IconNew,      emoji: "🆕" },
-  { href: "/explore",  label: "Explore All",  Icon: IconBrowse,   emoji: "🔎" },
+  { href: "/",         label: "Home",      Icon: IconHome,   emoji: "🏠" },
+  { href: "/hentai",   label: "Hentai 2D", Icon: IconBrowse, emoji: "🌸" },
+  { href: "/3d",       label: "3D",        Icon: IconBrowse, emoji: "🎮" },
+  { href: "/episodes", label: "Episodes",  Icon: IconBrowse, emoji: "🎬", badge: "Premium", badgeGradient: true },
+  { href: "/feed",     label: "Shorts",    Icon: IconFeed,   emoji: "⚡" },
 ] as const;
 
-/* Library */
-const LIBRARY_ITEMS = [
-  { href: "/favorites", label: "Favorites", Icon: IconHeart,    emoji: "❤️" },
-  { href: "/history",   label: "History",   Icon: IconHistory,  emoji: "🕐" },
-  { href: "/pricing",   label: "Go Premium", Icon: IconStar,    emoji: "✨" },
-  { href: "/settings",  label: "Settings",  Icon: IconSettings, emoji: "⚙️" },
+// FRESH = sort views. The "what's hot or new" answer.
+const FRESH_ITEMS = [
+  { href: "/trending", label: "Trending",     Icon: IconTrending, emoji: "🔥" },
+  { href: "/new",      label: "New uploads",  Icon: IconNew,      emoji: "🆕" },
+  { href: "/explore",  label: "All catalogue", Icon: IconBrowse,  emoji: "🔎" },
 ] as const;
 
-/* Browse */
+// BROWSE = taxonomy. "Filter by who or what".
 const BROWSE_ITEMS = [
   { href: "/character", label: "Characters", Icon: IconCharacter, emoji: "👤" },
   { href: "/series",    label: "Series",     Icon: IconSeries,    emoji: "📺" },
   { href: "/tags",      label: "Tags",       Icon: IconTag,       emoji: "🏷️" },
+] as const;
+
+// LIBRARY = user-state things.
+const LIBRARY_ITEMS = [
+  { href: "/favorites", label: "Favorites", Icon: IconHeart,   emoji: "❤️" },
+  { href: "/history",   label: "History",   Icon: IconHistory, emoji: "🕐" },
+] as const;
+
+// ACCOUNT = settings + premium upsell.
+const ACCOUNT_ITEMS = [
+  { href: "/pricing",  label: "Go Premium", Icon: IconStar,     emoji: "✨", badge: "4.99€", badgeGradient: true },
+  { href: "/settings", label: "Settings",   Icon: IconSettings, emoji: "⚙️" },
 ] as const;
 
 /* Affiliate partners — external links, open in new tab */
@@ -300,7 +309,7 @@ const BOTTOM_ITEMS = [
   { href: "/",         label: "Home",     Icon: IconHome,     featured: false },
   { href: "/search",   label: "Search",   Icon: IconSearch,   featured: false },
   { href: "/feed",     label: "Shorts",   Icon: IconFeed,     featured: true },
-  { href: "/trending", label: "Trending", Icon: IconTrending, featured: false },
+  { href: "/episodes", label: "Episodes", Icon: IconBrowse,   featured: false },
 ] as const;
 
 
@@ -433,10 +442,22 @@ export function AppShell({ children, footer }: { children: React.ReactNode; foot
           </span>
         </Link>
 
-        {/* Nav: Discover */}
+        {/* Nav: Watch (formats) */}
         <div className="v2-sidebar-section">
-          <div className="v2-sidebar-section__label">Discover</div>
+          <div className="v2-sidebar-section__label">Watch</div>
           {(DISCOVER_ITEMS as unknown as NavItem[]).map(renderNavItem)}
+        </div>
+
+        {/* Nav: Fresh (sort views) */}
+        <div className="v2-sidebar-section">
+          <div className="v2-sidebar-section__label">Fresh</div>
+          {(FRESH_ITEMS as unknown as NavItem[]).map(renderNavItem)}
+        </div>
+
+        {/* Nav: Browse (taxonomy) */}
+        <div className="v2-sidebar-section">
+          <div className="v2-sidebar-section__label">Browse</div>
+          {(BROWSE_ITEMS as unknown as NavItem[]).map(renderNavItem)}
         </div>
 
         {/* Nav: My Library */}
@@ -445,10 +466,10 @@ export function AppShell({ children, footer }: { children: React.ReactNode; foot
           {(LIBRARY_ITEMS as unknown as NavItem[]).map(renderNavItem)}
         </div>
 
-        {/* Nav: Browse */}
+        {/* Nav: Account */}
         <div className="v2-sidebar-section">
-          <div className="v2-sidebar-section__label">Browse</div>
-          {(BROWSE_ITEMS as unknown as NavItem[]).map(renderNavItem)}
+          <div className="v2-sidebar-section__label">Account</div>
+          {(ACCOUNT_ITEMS as unknown as NavItem[]).map(renderNavItem)}
         </div>
 
         {/* Affiliate Partners */}
@@ -575,7 +596,9 @@ export function AppShell({ children, footer }: { children: React.ReactNode; foot
             hubs + SEO categories. Placed INSIDE .v2-main so it doesn't
             compete for flex space with the sidebar. Sticky to the top of
             the main scroll container, below the fixed .v2-topbar. */}
-        <nav className="v2-subnav" aria-label="Primary categories">
+        {/* Subnav — only the 5 formats + Trending shortcut. Sort/Browse
+            sections live in the sidebar/drawer to keep this row scannable. */}
+        <nav className="v2-subnav" aria-label="Primary formats">
           <div className="v2-subnav__scroll">
             <Link href="/" className={`v2-subnav__pill${pathname === "/" ? " v2-subnav__pill--active" : ""}`}>
               <span aria-hidden="true">🏠</span> Home
@@ -583,32 +606,21 @@ export function AppShell({ children, footer }: { children: React.ReactNode; foot
             <Link href="/hentai" className={`v2-subnav__pill${isActive("/hentai") ? " v2-subnav__pill--active" : ""}`}>
               <span aria-hidden="true">🌸</span> Hentai 2D
             </Link>
-            <Link href="/episodes" className={`v2-subnav__pill${isActive("/episodes") ? " v2-subnav__pill--active" : ""}`} title="Full-length episodes (Premium)">
-              🎬 Episodes
-            </Link>
             <Link href="/3d" className={`v2-subnav__pill${isActive("/3d") ? " v2-subnav__pill--active" : ""}`}>
               <span aria-hidden="true">🎮</span> 3D
+            </Link>
+            <Link
+              href="/episodes"
+              className={`v2-subnav__pill v2-subnav__pill--episodes${isActive("/episodes") ? " v2-subnav__pill--active" : ""}`}
+              title="Full-length episodes (Premium unlocks all)"
+            >
+              <span aria-hidden="true">🎬</span> Episodes
             </Link>
             <Link href="/feed" className={`v2-subnav__pill v2-subnav__pill--shorts${isActive("/feed") ? " v2-subnav__pill--active" : ""}`}>
               <span aria-hidden="true">⚡</span> Shorts
             </Link>
             <Link href="/trending" className={`v2-subnav__pill${isActive("/trending") ? " v2-subnav__pill--active" : ""}`}>
               <span aria-hidden="true">🔥</span> Trending
-            </Link>
-            <Link href="/new" className={`v2-subnav__pill${isActive("/new") ? " v2-subnav__pill--active" : ""}`}>
-              <span aria-hidden="true">🆕</span> New
-            </Link>
-            <Link href="/character" className={`v2-subnav__pill${isActive("/character") ? " v2-subnav__pill--active" : ""}`}>
-              <span aria-hidden="true">👤</span> Characters
-            </Link>
-            <Link href="/series" className={`v2-subnav__pill${isActive("/series") ? " v2-subnav__pill--active" : ""}`}>
-              <span aria-hidden="true">🎬</span> Series
-            </Link>
-            <Link href="/tags" className={`v2-subnav__pill${isActive("/tags") ? " v2-subnav__pill--active" : ""}`}>
-              <span aria-hidden="true">🏷️</span> Tags
-            </Link>
-            <Link href="/blog" className={`v2-subnav__pill${isActive("/blog") ? " v2-subnav__pill--active" : ""}`}>
-              <span aria-hidden="true">📰</span> Blog
             </Link>
           </div>
         </nav>
@@ -683,55 +695,33 @@ export function AppShell({ children, footer }: { children: React.ReactNode; foot
           </div>
 
           <div className="v2-nav-drawer__body">
-            <div className="v2-nav-drawer__section">
-              <div className="v2-nav-drawer__section-label">Discover</div>
-              {(DISCOVER_ITEMS as unknown as NavItem[]).map((item) => (
-                <Link
-                  key={item.href + item.label}
-                  href={item.href}
-                  className={`v2-nav-drawer__item${isActive(item.href) ? " v2-nav-drawer__item--active" : ""}`}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <span className="v2-nav-drawer__emoji" aria-hidden>{item.emoji}</span>
-                  <span className="v2-nav-drawer__label">{item.label}</span>
-                  {item.badge && (
-                    <span className={`v2-nav-drawer__badge${item.badgeGradient ? " v2-nav-drawer__badge--gradient" : ""}`}>
-                      {item.badge}
-                    </span>
-                  )}
-                </Link>
-              ))}
-            </div>
-
-            <div className="v2-nav-drawer__section">
-              <div className="v2-nav-drawer__section-label">My Library</div>
-              {LIBRARY_ITEMS.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`v2-nav-drawer__item${isActive(item.href) ? " v2-nav-drawer__item--active" : ""}`}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <span className="v2-nav-drawer__emoji" aria-hidden>{item.emoji}</span>
-                  <span className="v2-nav-drawer__label">{item.label}</span>
-                </Link>
-              ))}
-            </div>
-
-            <div className="v2-nav-drawer__section">
-              <div className="v2-nav-drawer__section-label">Browse</div>
-              {BROWSE_ITEMS.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`v2-nav-drawer__item${isActive(item.href) ? " v2-nav-drawer__item--active" : ""}`}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <span className="v2-nav-drawer__emoji" aria-hidden>{item.emoji}</span>
-                  <span className="v2-nav-drawer__label">{item.label}</span>
-                </Link>
-              ))}
-            </div>
+            {([
+              { label: "Watch",      items: DISCOVER_ITEMS as unknown as NavItem[] },
+              { label: "Fresh",      items: FRESH_ITEMS    as unknown as NavItem[] },
+              { label: "Browse",     items: BROWSE_ITEMS   as unknown as NavItem[] },
+              { label: "My Library", items: LIBRARY_ITEMS  as unknown as NavItem[] },
+              { label: "Account",    items: ACCOUNT_ITEMS  as unknown as NavItem[] },
+            ]).map((group) => (
+              <div key={group.label} className="v2-nav-drawer__section">
+                <div className="v2-nav-drawer__section-label">{group.label}</div>
+                {group.items.map((item) => (
+                  <Link
+                    key={item.href + item.label}
+                    href={item.href}
+                    className={`v2-nav-drawer__item${isActive(item.href) ? " v2-nav-drawer__item--active" : ""}`}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <span className="v2-nav-drawer__emoji" aria-hidden>{item.emoji}</span>
+                    <span className="v2-nav-drawer__label">{item.label}</span>
+                    {item.badge && (
+                      <span className={`v2-nav-drawer__badge${item.badgeGradient ? " v2-nav-drawer__badge--gradient" : ""}`}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </Link>
+                ))}
+              </div>
+            ))}
 
             <div className="v2-nav-drawer__section">
               <div className="v2-nav-drawer__section-label">Partners</div>
