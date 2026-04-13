@@ -22,6 +22,8 @@ import {
 import { containsBannedContent, getRelatedVideos, getDanbooruVideo } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
+import { AdZoneClient } from "@/components/AdZoneClient";
+import { AD_ZONES } from "@/lib/ad-config";
 import { RemoveAdsCTA } from "@/components/RemoveAdsCTA";
 import { buildSeoTitle, buildTitle as buildDisplayTitle } from "@/lib/video-display";
 
@@ -390,7 +392,18 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 ))}
               </nav>
 
-              {/* Ad zone above player removed 2026-04-11 (AD BLACKOUT) */}
+              {/* Wave 3 ad reintro 2026-04-13: above-player banner.
+                  Desktop = ExoClick 728x90 leaderboard (zone 5893256).
+                  Mobile  = ExoClick 300x50 mobile sticky (zone 5895978).
+                  AdZoneClient handles the swap via window.innerWidth. */}
+              <div style={{ display: "flex", justifyContent: "center", margin: "12px 0" }}>
+                <AdZoneClient
+                  zoneId={AD_ZONES.exoclick.watchUnderplayer728}
+                  size="728x90"
+                  mobileZoneId={AD_ZONES.exoclick.mobileBanner300x50 ?? undefined}
+                  mobileSize="300x50"
+                />
+              </div>
 
               {/* Video player — Gelbooru URLs are proxied through /api/proxy,
                   Rule34Video + WP are proxied through /api/video-stream to
