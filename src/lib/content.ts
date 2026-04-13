@@ -291,12 +291,14 @@ async function _getVideos(
     }
   }
 
-  // Long-format: matches the same predicate as isProLocked() in src/lib/pro-gate.ts
-  // so /episodes lists exactly what's behind the Pro paywall on /watch.
+  // Long-format: hentaicity + hentaigasm only on the listing.
+  // Rule34video long clips (duration >= 20min) ARE still Pro-locked on
+  // /watch (per isProLocked) but excluded from /episodes because their
+  // CDN is behind DDoS-Guard which blocks browser hotlinks → 90% of
+  // cards rendered as gradient fallback. Hentaicity + hentaigasm CDNs
+  // serve clean thumbs, so /episodes stays visually solid.
   if (longFormat) {
-    conditions.push(
-      `(source IN ('hentaicity','hentaigasm') OR (duration IS NOT NULL AND duration >= 600))`
-    );
+    conditions.push(`source IN ('hentaicity','hentaigasm')`);
   }
 
   const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
@@ -384,9 +386,7 @@ async function _countVideos(options: GetVideosOptions = {}): Promise<number> {
   }
 
   if (longFormat) {
-    conditions.push(
-      `(source IN ('hentaicity','hentaigasm') OR (duration IS NOT NULL AND duration >= 600))`
-    );
+    conditions.push(`source IN ('hentaicity','hentaigasm')`);
   }
 
   if (source === "danbooru" || source === "gelbooru") {
