@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { VideoCard } from "./VideoCard";
-import { FeedInterstitial } from "./FeedInterstitial";
+import { FeedConversionCTA } from "./FeedConversionCTA";
+import { useSession } from "next-auth/react";
 
 export interface FeedVideo {
   id: number;
@@ -21,6 +22,8 @@ export interface FeedVideo {
 }
 
 export function SwipeFeed() {
+  const { data: session } = useSession();
+  const isLoggedIn = !!session?.user?.id;
   const [videos, setVideos] = useState<FeedVideo[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -131,16 +134,15 @@ export function SwipeFeed() {
     });
   }, []);
 
-  // Trigger interstitial every 3 swipes (max 10 per session, not for Pro).
-  // Previously was every 10 swipes max 3/session → users never saw any ad
-  // because typical Shorts sessions are < 10 swipes. Sab's explicit request
-  // 2026-04-11: "il en faut tous les 3 shorts".
+  // Conversion CTA every 8 swipes — alternates signup (anon only) ↔
+  // premium (everyone non-Pro). Replaces the old ad interstitial that
+  // showed every 3 swipes (Sab feedback 2026-04-13: shorts ads were
+  // killing UX, push conversions instead).
   useEffect(() => {
     if (
       activeIndex > 0 &&
-      activeIndex % 3 === 0 &&
+      activeIndex % 8 === 0 &&
       activeIndex !== lastInterstitialIndexRef.current &&
-      interstitialCountRef.current < 10 &&
       !isPro.current
     ) {
       lastInterstitialIndexRef.current = activeIndex;
@@ -192,9 +194,20 @@ export function SwipeFeed() {
 
   return (
     <div style={{ position: "relative" }}>
-      {/* Feed interstitial ad — shown every 10 swipes, max 3 per session */}
+      {/* Conversion CTA — alternates signup ↔ premium based on count
+          and login state. Anon users see signup first; logged-in non-Pro
+          users always see premium. */}
       {showInterstitial && (
-        <FeedInterstitial onClose={() => setShowInterstitial(false)} />
+        <FeedConversionCTA
+          variant={
+            // Logged-in users only see premium pushes (signup is moot for them).
+            // Anon users alternate signup → premium → signup → ...
+            isLoggedIn || interstitialCountRef.current % 2 === 0
+              ? "premium"
+              : "signup"
+          }
+          onClose={() => setShowInterstitial(false)}
+        />
       )}
 
       {/* Fixed close button — top-left. Hidden when the interstitial ad

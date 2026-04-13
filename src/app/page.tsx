@@ -282,11 +282,9 @@ export default async function HomePage() {
             </Link>
           </section>
 
-          {/* Ad #1 — HentaiPros 300x250 (AdultForce a.adtng.com, rotates
-              real hentai creatives, always fills). Re-introduced 2026-04-11
-              after blackout + Playwright verification of inline iframe
-              rendering at 300x250 in feed interstitial. */}
-          <HentaiProsBanner format="300x250" mobileFormat={null} />
+          {/* Ad #1 — HentaiPros 728x90 desktop / 300x250 mobile.
+              Top of fold above Trending Now, niche-matched. */}
+          <HentaiProsBanner format="728x90" mobileFormat="300x250" />
 
           {/* ================================================================
               TRENDING NOW -- Horizontal poster scroll
@@ -296,6 +294,15 @@ export default async function HomePage() {
               <PosterCard key={video.id} video={video} rank={i < 8 ? i + 1 : undefined} priority={i < 5} />
             ))}
           </Carousel>
+
+          {/* Premium CTA #1 — slim inline strip after Trending. */}
+          <Link href="/pricing" className="hp-premium-strip" aria-label="Get iku Premium">
+            <span className="hp-premium-strip__icon">🚫</span>
+            <span className="hp-premium-strip__text">
+              <strong>Skip every ad</strong> · 4K when available · Early access · Unlimited favorites
+            </span>
+            <span className="hp-premium-strip__cta">Premium 4.99€/mo →</span>
+          </Link>
 
           {/* ================================================================
               VIDEO OF THE DAY — deterministic daily pick
@@ -411,7 +418,8 @@ export default async function HomePage() {
             </div>
           </section>
 
-          {/* Ad slots removed 2026-04-11 (AD BLACKOUT) */}
+          {/* Ad #2 — HentaiPros 300x250 between Top Rated and Popular Games. */}
+          <HentaiProsBanner format="300x250" mobileFormat={null} />
 
           {/* ================================================================
               POPULAR GAMES — 3D niche anchor. Ten gradient tiles linking
@@ -487,6 +495,15 @@ export default async function HomePage() {
             </div>
           </section>
 
+          {/* Premium CTA #2 — different angle from #1 (yearly nudge). */}
+          <Link href="/pricing" className="hp-premium-strip hp-premium-strip--yearly" aria-label="Save with yearly Premium">
+            <span className="hp-premium-strip__icon">💎</span>
+            <span className="hp-premium-strip__text">
+              <strong>Yearly Premium — save 33%</strong> · 39.99€/year (3.33€/mo) · Cancel anytime
+            </span>
+            <span className="hp-premium-strip__cta">See plans →</span>
+          </Link>
+
           {/* ================================================================
               BROWSE BY GENRE -- Instagram-stories style circle row
               Horizontal scrollable, real cover thumbnails per tag.
@@ -546,6 +563,9 @@ export default async function HomePage() {
               <PosterCard key={video.id} video={video} badge="NEW" />
             ))}
           </Carousel>
+
+          {/* Ad #3 — HentaiPros 300x100 slim banner before Signup/Pro section. */}
+          <HentaiProsBanner format="300x100" mobileFormat={null} />
 
           {/* Signup CTA — anon visitors only, before the Pro pitch */}
           <SignupCTA placement="homepage" />

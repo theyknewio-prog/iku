@@ -10423,6 +10423,62 @@ body {
    Shown below hero on homepage.
    ══════════════════════════════════════════════════════════════ */
 
+/* ─── PREMIUM STRIP (slim inline upgrade nudge between sections) ─── */
+.hp-premium-strip {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 1100px;
+  margin: 24px auto;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, rgba(255,61,122,0.12) 0%, rgba(139,56,255,0.12) 100%);
+  border: 1px solid rgba(139,56,255,0.25);
+  color: #fff;
+  text-decoration: none;
+  transition: background 180ms ease, border-color 180ms ease;
+}
+.hp-premium-strip:hover {
+  background: linear-gradient(90deg, rgba(255,61,122,0.2) 0%, rgba(139,56,255,0.2) 100%);
+  border-color: rgba(139,56,255,0.5);
+}
+.hp-premium-strip--yearly {
+  background: linear-gradient(90deg, rgba(0,195,255,0.12) 0%, rgba(139,56,255,0.12) 100%);
+  border-color: rgba(0,195,255,0.25);
+}
+.hp-premium-strip--yearly:hover {
+  background: linear-gradient(90deg, rgba(0,195,255,0.2) 0%, rgba(139,56,255,0.2) 100%);
+}
+.hp-premium-strip__icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.hp-premium-strip__text {
+  flex: 1;
+  font-size: 13px;
+  line-height: 1.45;
+  color: rgba(255,255,255,0.9);
+}
+.hp-premium-strip__text strong {
+  color: #fff;
+  font-weight: 700;
+}
+.hp-premium-strip__cta {
+  font-size: 12px;
+  font-weight: 800;
+  color: #ff7aa8;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+@media (max-width: 640px) {
+  .hp-premium-strip {
+    flex-wrap: wrap;
+    padding: 12px 14px;
+  }
+  .hp-premium-strip__text { font-size: 12px; }
+  .hp-premium-strip__cta { font-size: 12px; width: 100%; text-align: right; }
+}
+
 /* ─── UNLOCK BANNER (Premium hook under hero) ─── */
 .hp-unlock-banner {
   display: flex;
