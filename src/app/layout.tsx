@@ -8,6 +8,7 @@ import { UserDataSync } from "@/components/UserDataSync";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { getNonce } from "@/lib/csp-nonce";
 import { PushNotifications } from "@/components/PushNotifications";
+import { AdScript } from "@/components/AdScript";
 
 // Fonts: Nunito (primary body) + Righteous (display/headings).
 // Previously we also loaded Inter, Poppins, and Quicksand — they were
@@ -118,6 +119,9 @@ export default async function RootLayout({
               ONE at a time after verifying each renders cleanly in
               Playwright. */}
           <PushNotifications />
+          {/* ExoClick provider — needed for PrerollAd (wave 2 2026-04-13).
+              Loads lazyOnload, skips for Pro users. */}
+          <AdScript />
           <AppShell footer={<MegaFooter />}>{children}</AppShell>
         </SessionProviderClient>
       </body>

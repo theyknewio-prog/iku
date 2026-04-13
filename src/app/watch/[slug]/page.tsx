@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
-import { WatchPlayer } from "@/components/WatchPlayer";
+import { WatchPlayerWithPreroll } from "@/components/WatchPlayerWithPreroll";
 import { ProGatedPlayer } from "@/components/ProGatedPlayer";
 import { isProLocked } from "@/lib/pro-gate";
 import { WatchActions } from "@/components/WatchActions";
@@ -416,7 +416,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
                     lockedTitle={buildDisplayTitle(video)}
                   />
                 ) : (
-                  <WatchPlayer
+                  <WatchPlayerWithPreroll
                     src={(video.source === "rule34video" || video.source === "wp" || video.source === "hentaicity") ? (streamProxyUrl || "") : (video.url || "")}
                     poster={video.thumbnail || undefined}
                     resolveUrl={resolvePageUrl || undefined}
