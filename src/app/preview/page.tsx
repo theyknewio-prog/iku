@@ -10,6 +10,7 @@ export default function PreviewIndex() {
     { slug: "v6", name: "Creator Premium (OnlyFans)", sub: "Feed of subs, tip buttons, teal/blue, sub gate", bg: "linear-gradient(135deg, #00aff0 0%, #0084d1 100%)" },
     { slug: "v7", name: "Anime Streaming (Crunchyroll)", sub: "Series-first, continue watching, orange accent", bg: "linear-gradient(135deg, #0b0f1a 0%, #ff7a00 100%)" },
     { slug: "v8", name: "Algorithmic Feed (YouTube 2026)", sub: "Chip row, massive grid, creator avatars, shorts shelf", bg: "linear-gradient(135deg, #0f0f0f 0%, #ff0033 100%)" },
+    { slug: "v9", name: "Awwwards Menu (Linear/Raycast)", sub: "⌘K palette + collapsible sidebar + sticky chips + autocomplete", bg: "linear-gradient(135deg, #0a0a0f 0%, #8b38ff 55%, #ff3d7a 100%)" },
   ];
 
   return (

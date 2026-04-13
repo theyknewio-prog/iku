@@ -67,6 +67,7 @@ export default async function ThreeDPage({ searchParams }: Props) {
     <div className="shell-content">
       <main>
         <div className="page-container">
+          <HentaiProsBanner format="300x250" mobileFormat={null} />
           {/* ── Page hero ─────────────────────────────────────── */}
           <div className="tag-hero">
             <p className="tag-hero__label">3D & Cartoon Porn</p>

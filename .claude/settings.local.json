@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm -f .git/MERGE_HEAD .git/index.lock .git/MERGE_MSG)",
+      "Bash(git reset:*)"
+    ]
+  }
+}

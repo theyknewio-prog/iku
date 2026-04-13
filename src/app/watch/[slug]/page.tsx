@@ -457,6 +457,13 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 })()}
               </h1>
 
+              {/* Premium nudge under H1 — slim gradient strip pushing /pricing. */}
+              <Link href="/pricing" className="hp-premium-strip" aria-label="Get iku Premium">
+                <span className="hp-premium-strip__icon">🚫</span>
+                <span className="hp-premium-strip__text"><strong>Skip every preroll + ad</strong> · 4K when available · Early access · Unlimited favorites</span>
+                <span className="hp-premium-strip__cta">Premium 4.99€/mo →</span>
+              </Link>
+
               {/* Characters + copyrights */}
               {(video.characters.length > 0 || video.copyrights.length > 0) && (
                 <div className="player-characters-row">
