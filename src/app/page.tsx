@@ -108,14 +108,20 @@ export default async function HomePage() {
   // getThumbnailsForTags is the only one that has a data dependency on the
   // result of getCuratedGenreCounts, so it stays in a second step but is
   // cheap anyway (memoized 1h TTL, per-tag lookup).
-  const [trending, newest, topRated, genres, characters, vod] = await Promise.all([
+  const [trending, newest, topRated, genres, characters, vod, hentaiCover, threeDCover] = await Promise.all([
     getVideos({ limit: 20, order: "score", source: "all", requireThumbnail: true }),
     getVideos({ limit: 10, page: newReleasesPage, order: "date", source: "all", requireThumbnail: true }),
     getVideos({ limit: 8, order: "favcount", source: "all", requireThumbnail: true }),
     getCuratedGenreCounts(),
     getPopularCharacters(12),
     getVideoOfTheDay(),
+    // Cover thumbs for the 3 vertical hub tiles.
+    getVideos({ limit: 1, order: "score", vertical: "hentai", requireThumbnail: true }),
+    getVideos({ limit: 1, order: "score", vertical: "3d", requireThumbnail: true }),
   ]);
+  const hentaiTileBg  = hentaiCover.data[0]?.thumbnail || "";
+  const threeDTileBg  = threeDCover.data[0]?.thumbnail || "";
+  const shortsTileBg  = trending.data[0]?.thumbnail || "";
 
   // Cover thumbnail per genre (memoized 1h, near-zero cost on warm cache).
   const genreThumbs = await getThumbnailsForTags(genres.map((g) => g.name));
@@ -265,19 +271,31 @@ export default async function HomePage() {
               glance.
               ════════════════════════════════════════════════════════ */}
           <section className="hp-verticals" aria-label="Browse by format">
-            <Link href="/hentai" className="hp-vertical-tile hp-vertical-tile--hentai">
+            <Link
+              href="/hentai"
+              className="hp-vertical-tile hp-vertical-tile--hentai"
+              style={hentaiTileBg ? { backgroundImage: `url("${hentaiTileBg}")` } : undefined}
+            >
               <span className="hp-vertical-tile__emoji" aria-hidden="true">🌸</span>
               <span className="hp-vertical-tile__title">Hentai</span>
               <span className="hp-vertical-tile__sub">Full 2D anime episodes</span>
               <span className="hp-vertical-tile__count">7k+ OAV</span>
             </Link>
-            <Link href="/3d" className="hp-vertical-tile hp-vertical-tile--3d">
+            <Link
+              href="/3d"
+              className="hp-vertical-tile hp-vertical-tile--3d"
+              style={threeDTileBg ? { backgroundImage: `url("${threeDTileBg}")` } : undefined}
+            >
               <span className="hp-vertical-tile__emoji" aria-hidden="true">🎮</span>
               <span className="hp-vertical-tile__title">3D Hentai</span>
               <span className="hp-vertical-tile__sub">SFM, games, cartoon porn</span>
               <span className="hp-vertical-tile__count">300k+ clips</span>
             </Link>
-            <Link href="/feed" className="hp-vertical-tile hp-vertical-tile--shorts">
+            <Link
+              href="/feed"
+              className="hp-vertical-tile hp-vertical-tile--shorts"
+              style={shortsTileBg ? { backgroundImage: `url("${shortsTileBg}")` } : undefined}
+            >
               <span className="hp-vertical-tile__emoji" aria-hidden="true">⚡</span>
               <span className="hp-vertical-tile__title">Shorts</span>
               <span className="hp-vertical-tile__sub">Swipe infinite feed</span>

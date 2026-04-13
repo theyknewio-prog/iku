@@ -10669,10 +10669,25 @@ body {
   color: #fff;
   overflow: hidden;
   isolation: isolate;
+  background-color: #14101e; /* fallback if image fails */
+  background-size: cover;
+  background-position: center;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08),
               0 6px 24px rgba(0, 0, 0, 0.35);
   transition: transform 180ms ease, box-shadow 180ms ease;
 }
+
+/* Coloured gradient overlay sits on top of the bg image but below the
+   text, so each vertical keeps its violet/green/orange identity while
+   the image still bleeds through ~25%. */
+.hp-vertical-tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.hp-vertical-tile > * { position: relative; z-index: 1; }
 
 .hp-vertical-tile:hover {
   transform: translateY(-2px);
@@ -10680,14 +10695,14 @@ body {
               0 12px 32px rgba(0, 0, 0, 0.55);
 }
 
-.hp-vertical-tile--hentai {
-  background: linear-gradient(135deg, #e8467c 0%, #7b2ff7 100%);
+.hp-vertical-tile--hentai::before {
+  background: linear-gradient(135deg, rgba(232, 70, 124, 0.78) 0%, rgba(123, 47, 247, 0.85) 100%);
 }
-.hp-vertical-tile--3d {
-  background: linear-gradient(135deg, #11998e 0%, #4776e6 100%);
+.hp-vertical-tile--3d::before {
+  background: linear-gradient(135deg, rgba(17, 153, 142, 0.82) 0%, rgba(71, 118, 230, 0.85) 100%);
 }
-.hp-vertical-tile--shorts {
-  background: linear-gradient(135deg, #f7971e 0%, #e8467c 100%);
+.hp-vertical-tile--shorts::before {
+  background: linear-gradient(135deg, rgba(247, 151, 30, 0.82) 0%, rgba(232, 70, 124, 0.85) 100%);
 }
 
 .hp-vertical-tile__emoji {
