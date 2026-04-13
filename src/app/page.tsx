@@ -15,6 +15,9 @@ import { SignupCTA } from "@/components/SignupCTA";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { MagneticButton } from "@/components/MagneticButton";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
+import { AdZoneClient } from "@/components/AdZoneClient";
+import { AdsterraBanner } from "@/components/AdsterraBanner";
+import { AD_ZONES } from "@/lib/ad-config";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai, 3D Hentai & Cartoon Porn | 360,000+ Videos",
@@ -286,6 +289,11 @@ export default async function HomePage() {
               Top of fold above Trending Now, niche-matched. */}
           <HentaiProsBanner format="728x90" mobileFormat="300x250" />
 
+          {/* Ad #1bis — Adsterra 300x250 (parallel network for double fill). */}
+          <div style={{ display: "flex", justifyContent: "center", margin: "12px 0" }}>
+            <AdsterraBanner format="banner300x250" />
+          </div>
+
           {/* ================================================================
               TRENDING NOW -- Horizontal poster scroll
           ================================================================ */}
@@ -294,6 +302,17 @@ export default async function HomePage() {
               <PosterCard key={video.id} video={video} rank={i < 8 ? i + 1 : undefined} priority={i < 5} />
             ))}
           </Carousel>
+
+          {/* Ad #2 — ExoClick 728x90 desktop / 300x50 mobile sticky banner. */}
+          <div style={{ display: "flex", justifyContent: "center", margin: "20px 0" }}>
+            <AdZoneClient
+              zoneId={AD_ZONES.exoclick.watchUnderplayer728}
+              size="728x90"
+              mobileZoneId={AD_ZONES.exoclick.mobileBanner300x50 ?? undefined}
+              mobileSize="300x50"
+              lazy
+            />
+          </div>
 
           {/* Premium CTA #1 — slim inline strip after Trending. */}
           <Link href="/pricing" className="hp-premium-strip" aria-label="Get iku Premium">
@@ -421,6 +440,16 @@ export default async function HomePage() {
           {/* Ad #2 — HentaiPros 300x250 between Top Rated and Popular Games. */}
           <HentaiProsBanner format="300x250" mobileFormat={null} />
 
+          {/* Ad #2bis — Adsterra 728x90/300x250 mobile (parallel network). */}
+          <div style={{ display: "flex", justifyContent: "center", margin: "12px 0" }}>
+            <AdsterraBanner format="banner728x90" mobileFormat="banner300x250" />
+          </div>
+
+          {/* Ad #2ter — ExoClick 300x250. */}
+          <div style={{ display: "flex", justifyContent: "center", margin: "12px 0" }}>
+            <AdZoneClient zoneId={AD_ZONES.exoclick.sidebar300} size="300x250" lazy />
+          </div>
+
           {/* ================================================================
               POPULAR GAMES — 3D niche anchor. Ten gradient tiles linking
               to /series/[franchise] (virtual fallback covers the
@@ -495,6 +524,12 @@ export default async function HomePage() {
             </div>
           </section>
 
+          {/* Ad cluster #3 — between Popular Characters and Premium yearly CTA. */}
+          <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap", margin: "16px 0" }}>
+            <HentaiProsBanner format="300x250" mobileFormat={null} />
+            <AdsterraBanner format="banner300x250" />
+          </div>
+
           {/* Premium CTA #2 — different angle from #1 (yearly nudge). */}
           <Link href="/pricing" className="hp-premium-strip hp-premium-strip--yearly" aria-label="Save with yearly Premium">
             <span className="hp-premium-strip__icon">💎</span>
@@ -564,8 +599,12 @@ export default async function HomePage() {
             ))}
           </Carousel>
 
-          {/* Ad #3 — HentaiPros 300x100 slim banner before Signup/Pro section. */}
+          {/* Ad cluster #4 — pre-signup wall: 3 ads stacked. */}
           <HentaiProsBanner format="300x100" mobileFormat={null} />
+          <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap", margin: "16px 0" }}>
+            <AdZoneClient zoneId={AD_ZONES.exoclick.watchUnderplayer728} size="728x90" mobileZoneId={AD_ZONES.exoclick.mobileBanner300x50 ?? undefined} mobileSize="300x50" lazy />
+            <AdsterraBanner format="banner300x250" />
+          </div>
 
           {/* Signup CTA — anon visitors only, before the Pro pitch */}
           <SignupCTA placement="homepage" />

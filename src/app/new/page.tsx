@@ -7,6 +7,7 @@ import { getVideos, countVideos } from "@/lib/content";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
+import { ListingAdBlock } from "@/components/ListingAdBlock";
 
 export const metadata: Metadata = {
   title: "New Hentai Videos — Latest Uploads | iku.gg",
@@ -49,7 +50,7 @@ export default async function NewPage({ searchParams }: Props) {
     <div className="shell-content">
       <main>
         <div className="page-container">
-          <HentaiProsBanner format="300x250" mobileFormat={null} />
+          <ListingAdBlock variant="top" />
 
           {/* ── Page hero ─────────────────────────────────────── */}
           <div className="tag-hero">
@@ -95,7 +96,7 @@ export default async function NewPage({ searchParams }: Props) {
               <span className="hp-premium-strip__text"><strong>Skip every ad</strong> · 4K when available · Early access · Unlimited favorites</span>
               <span className="hp-premium-strip__cta">Premium 4.99€/mo →</span>
             </Link>
-            <HentaiProsBanner format="728x90" mobileFormat="300x250" />
+            <ListingAdBlock variant="mid" />
             <div className="video-grid">
               {videos.map((video: Video, i) => (
                 <ThumbnailCard
@@ -106,7 +107,7 @@ export default async function NewPage({ searchParams }: Props) {
                 />
               ))}
             </div>
-            <HentaiProsBanner format="300x100" mobileFormat={null} />
+            <ListingAdBlock variant="bottom" />
             </>
           )}
 

@@ -7,6 +7,7 @@ import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { getVideos, countVideos } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
+import { ListingAdBlock } from "@/components/ListingAdBlock";
 import { CHARACTERS, getCharacterBySlug, type Character } from "@/data/characters";
 import { getCharacterSEO } from "@/data/characters-seo";
 import { getSeriesBySlug } from "@/data/series";
@@ -157,7 +158,7 @@ export default async function CharacterPage({ params, searchParams }: Props) {
       )}
       <main>
         <div className="page-container">
-          <HentaiProsBanner format="300x250" mobileFormat={null} />
+          <ListingAdBlock variant="top" />
 
           {/* ── Character hero ──────────────────────────────────── */}
           <div className="tag-hero">
@@ -259,9 +260,9 @@ export default async function CharacterPage({ params, searchParams }: Props) {
               <span className="hp-premium-strip__text"><strong>Skip every ad</strong> · 4K when available · Early access · Unlimited favorites</span>
               <span className="hp-premium-strip__cta">Premium 4.99€/mo →</span>
             </Link>
-            <HentaiProsBanner format="728x90" mobileFormat="300x250" />
+            <ListingAdBlock variant="mid" />
             <BlacklistFilter videos={videos} />
-            <HentaiProsBanner format="300x100" mobileFormat={null} />
+            <ListingAdBlock variant="bottom" />
             </>
           )}
 

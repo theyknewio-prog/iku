@@ -6,6 +6,7 @@ import { Pagination } from "@/components/Pagination";
 import { getVideos, countVideos } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
+import { ListingAdBlock } from "@/components/ListingAdBlock";
 import { SERIES, getSeriesBySlug, type Series } from "@/data/series";
 import { getCharacterBySlug } from "@/data/characters";
 import pool from "@/lib/db";
@@ -169,7 +170,7 @@ export default async function SeriesPage({ params, searchParams }: Props) {
       <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
       <main>
         <div className="page-container">
-          <HentaiProsBanner format="300x250" mobileFormat={null} />
+          <ListingAdBlock variant="top" />
 
           {/* ── Series hero ─────────────────────────────────────── */}
           <div className="tag-hero">
@@ -269,9 +270,9 @@ export default async function SeriesPage({ params, searchParams }: Props) {
               <span className="hp-premium-strip__text"><strong>Skip every ad</strong> · 4K when available · Early access · Unlimited favorites</span>
               <span className="hp-premium-strip__cta">Premium 4.99€/mo →</span>
             </Link>
-            <HentaiProsBanner format="728x90" mobileFormat="300x250" />
+            <ListingAdBlock variant="mid" />
             <BlacklistFilter videos={videos} />
-            <HentaiProsBanner format="300x100" mobileFormat={null} />
+            <ListingAdBlock variant="bottom" />
             </>
           )}
 

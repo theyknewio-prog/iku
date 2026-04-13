@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { VideoCard } from "./VideoCard";
 import { FeedConversionCTA } from "./FeedConversionCTA";
+import { VastPrerollAd } from "./VastPrerollAd";
 import { useSession } from "next-auth/react";
 
 export interface FeedVideo {
@@ -135,9 +136,7 @@ export function SwipeFeed() {
   }, []);
 
   // Conversion CTA every 8 swipes — alternates signup (anon only) ↔
-  // premium (everyone non-Pro). Replaces the old ad interstitial that
-  // showed every 3 swipes (Sab feedback 2026-04-13: shorts ads were
-  // killing UX, push conversions instead).
+  // premium (everyone non-Pro).
   useEffect(() => {
     if (
       activeIndex > 0 &&
@@ -151,6 +150,23 @@ export function SwipeFeed() {
       try {
         sessionStorage.setItem("iku-interstitial-count", String(interstitialCountRef.current));
       } catch { /* quota */ }
+    }
+  }, [activeIndex]);
+
+  // VAST video preroll every 5 swipes — overlaps with CTA cycle (5/8 = ~13s).
+  // Both can fire on the same swipe at activeIndex 40, 80 etc — the CTA renders
+  // on top because it's mounted later.
+  const [showShortsAd, setShowShortsAd] = useState(false);
+  const lastAdIndexRef = useRef(-10);
+  useEffect(() => {
+    if (
+      activeIndex > 0 &&
+      activeIndex % 5 === 0 &&
+      activeIndex !== lastAdIndexRef.current &&
+      !isPro.current
+    ) {
+      lastAdIndexRef.current = activeIndex;
+      setShowShortsAd(true);
     }
   }, [activeIndex]);
 
@@ -197,6 +213,12 @@ export function SwipeFeed() {
       {/* Conversion CTA — alternates signup ↔ premium based on count
           and login state. Anon users see signup first; logged-in non-Pro
           users always see premium. */}
+      {showShortsAd && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 9998, background: "#000" }}>
+          <VastPrerollAd onComplete={() => setShowShortsAd(false)} />
+        </div>
+      )}
+
       {showInterstitial && (
         <FeedConversionCTA
           variant={
