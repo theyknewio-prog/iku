@@ -339,6 +339,76 @@ export async function getVideos(
   }
 }
 
+/**
+ * Count total matching videos for a given filter combo. Uses the same
+ * WHERE-clause builder as _getVideos so pagination totals always agree
+ * with the visible results. Memoized 1h — counts move slowly enough
+ * that stale-by-an-hour is fine, and pagination numbers on /hentai,
+ * /3d, /trending etc. get hammered by crawlers.
+ */
+async function _countVideos(options: GetVideosOptions = {}): Promise<number> {
+  const {
+    tags = "",
+    source = "all",
+    vertical = "all",
+    requireThumbnail = false,
+  } = options;
+
+  const conditions: string[] = [];
+  const params: unknown[] = [];
+  let paramIndex = 1;
+
+  const banned = buildBannedSqlCondition("", params, paramIndex);
+  conditions.push(banned.condition);
+  paramIndex = banned.nextIdx;
+
+  if (requireThumbnail) {
+    conditions.push(`thumbnail IS NOT NULL AND thumbnail <> ''`);
+  }
+
+  if (source === "danbooru" || source === "gelbooru") {
+    conditions.push(`source = $${paramIndex}`);
+    params.push(source);
+    paramIndex++;
+  }
+
+  if (source === "all" && vertical !== "all") {
+    const group = VERTICAL_SOURCES[vertical];
+    conditions.push(`source = ANY($${paramIndex}::text[])`);
+    params.push(group as readonly string[] as string[]);
+    paramIndex++;
+  }
+
+  if (tags) {
+    const searchTerms = tags.toLowerCase().split(/\s+/).filter(Boolean);
+    for (const term of searchTerms) {
+      conditions.push(
+        `(tags && ARRAY[$${paramIndex}]::text[] OR COALESCE(characters,ARRAY[]::text[]) && ARRAY[$${paramIndex}]::text[] OR COALESCE(copyrights,ARRAY[]::text[]) && ARRAY[$${paramIndex}]::text[])`
+      );
+      params.push(term);
+      paramIndex++;
+    }
+  }
+
+  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+  const { rows } = await pool.query<{ count: string }>(
+    `SELECT COUNT(*)::bigint AS count FROM videos ${whereClause}`,
+    params
+  );
+  return Number(rows[0]?.count ?? 0);
+}
+
+const _countVideosMemo = memoize("videos-count", _countVideos, 60 * 60 * 1000);
+
+export async function countVideos(opts: GetVideosOptions = {}): Promise<number> {
+  try {
+    return await _countVideosMemo(opts);
+  } catch (err) {
+    console.error("countVideos fallback:", err);
+    return 0;
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Curated genre tags for the homepage "Browse by Genre" section.
 // These are deliberately chosen to be "sexy" / genre-ish, not generic

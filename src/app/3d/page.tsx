@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { Pagination } from "@/components/Pagination";
-import { getVideos } from "@/lib/content";
+import { getVideos, countVideos } from "@/lib/content";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 
@@ -50,13 +50,17 @@ export default async function ThreeDPage({ searchParams }: Props) {
     ? sort
     : "score") as "score" | "date" | "favcount";
 
-  const { data: videos, hasMore } = await getVideos({
-    limit: 40,
-    order: sortOrder,
-    page: currentPage,
-    vertical: "3d",
-    requireThumbnail: true,
-  });
+  const [{ data: videos, hasMore }, totalCount] = await Promise.all([
+    getVideos({
+      limit: 40,
+      order: sortOrder,
+      page: currentPage,
+      vertical: "3d",
+      requireThumbnail: true,
+    }),
+    countVideos({ vertical: "3d", requireThumbnail: true }),
+  ]);
+  const totalPages = Math.max(1, Math.ceil(totalCount / 40));
 
   return (
     <div className="shell-content">
@@ -150,7 +154,7 @@ export default async function ThreeDPage({ searchParams }: Props) {
           {videos.length > 0 && (
             <div style={{ marginTop: "40px", marginBottom: "48px" }}>
               <Suspense>
-                <Pagination currentPage={currentPage} hasNextPage={hasMore} />
+                <Pagination currentPage={currentPage} hasNextPage={hasMore} totalPages={totalPages} />
               </Suspense>
             </div>
           )}

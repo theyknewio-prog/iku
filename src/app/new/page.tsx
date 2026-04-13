@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { Pagination } from "@/components/Pagination";
-import { getVideos } from "@/lib/content";
+import { getVideos, countVideos } from "@/lib/content";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
@@ -34,12 +34,16 @@ export default async function NewPage({ searchParams }: Props) {
   const { page = "1" } = await searchParams;
   const currentPage = Math.max(1, parseInt(String(page)));
 
-  const { data: videos, hasMore } = await getVideos({
-    limit: 40,
-    order: "date",
-    page: currentPage,
-    requireThumbnail: true,
-  });
+  const [{ data: videos, hasMore }, totalCount] = await Promise.all([
+    getVideos({
+      limit: 40,
+      order: "date",
+      page: currentPage,
+      requireThumbnail: true,
+    }),
+    countVideos({ requireThumbnail: true }),
+  ]);
+  const totalPages = Math.max(1, Math.ceil(totalCount / 40));
 
   return (
     <div className="shell-content">
@@ -101,7 +105,7 @@ export default async function NewPage({ searchParams }: Props) {
           {videos.length > 0 && (
             <div style={{ marginTop: "40px", marginBottom: "48px" }}>
               <Suspense>
-                <Pagination currentPage={currentPage} hasNextPage={hasMore} />
+                <Pagination currentPage={currentPage} hasNextPage={hasMore} totalPages={totalPages} />
               </Suspense>
             </div>
           )}

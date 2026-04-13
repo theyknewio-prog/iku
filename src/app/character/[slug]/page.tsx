@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { Pagination } from "@/components/Pagination";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
-import { getVideos } from "@/lib/content";
+import { getVideos, countVideos } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 import { CHARACTERS, getCharacterBySlug, type Character } from "@/data/characters";
@@ -102,13 +102,17 @@ export default async function CharacterPage({ params, searchParams }: Props) {
   const order =
     sortParam === "date" || sortParam === "favcount" || sortParam === "score" ? sortParam : "score";
 
-  const { data: videos, hasMore } = await getVideos({
-    tags: character.tags[0],
-    page: currentPage,
-    limit: 20,
-    order,
-    requireThumbnail: true,
-  });
+  const [{ data: videos, hasMore }, totalCount] = await Promise.all([
+    getVideos({
+      tags: character.tags[0],
+      page: currentPage,
+      limit: 20,
+      order,
+      requireThumbnail: true,
+    }),
+    countVideos({ tags: character.tags[0], requireThumbnail: true }),
+  ]);
+  const totalPages = Math.max(1, Math.ceil(totalCount / 20));
 
   const relatedChars = character.relatedCharacters
     .map((s) => getCharacterBySlug(s))
@@ -258,7 +262,7 @@ export default async function CharacterPage({ params, searchParams }: Props) {
           {videos.length > 0 && (
             <div style={{ marginTop: "40px", marginBottom: "48px" }}>
               <Suspense>
-                <Pagination currentPage={currentPage} hasNextPage={hasMore} />
+                <Pagination currentPage={currentPage} hasNextPage={hasMore} totalPages={totalPages} />
               </Suspense>
             </div>
           )}

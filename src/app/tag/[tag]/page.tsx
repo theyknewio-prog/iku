@@ -4,7 +4,7 @@ import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { Pagination } from "@/components/Pagination";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
-import { getVideos } from "@/lib/content";
+import { getVideos, countVideos } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 import type { Video } from "@/types/video";
@@ -97,13 +97,17 @@ export default async function TagPage({ params, searchParams }: Props) {
   const order =
     sortParam === "date" || sortParam === "favcount" || sortParam === "score" ? sortParam : "score";
 
-  const { data: videos, hasMore } = await getVideos({
-    tags: tag,
-    page: currentPage,
-    limit: 20,
-    order,
-    requireThumbnail: true,
-  });
+  const [{ data: videos, hasMore }, totalCount] = await Promise.all([
+    getVideos({
+      tags: tag,
+      page: currentPage,
+      limit: 20,
+      order,
+      requireThumbnail: true,
+    }),
+    countVideos({ tags: tag, requireThumbnail: true }),
+  ]);
+  const totalPages = Math.max(1, Math.ceil(totalCount / 20));
 
   const relatedTags = RELATED_TAGS.filter((t) => t !== tag);
 
@@ -239,7 +243,7 @@ export default async function TagPage({ params, searchParams }: Props) {
           {videos.length > 0 && (
             <div style={{ marginTop: "40px", marginBottom: "48px" }}>
               <Suspense>
-                <Pagination currentPage={currentPage} hasNextPage={hasMore} />
+                <Pagination currentPage={currentPage} hasNextPage={hasMore} totalPages={totalPages} />
               </Suspense>
             </div>
           )}

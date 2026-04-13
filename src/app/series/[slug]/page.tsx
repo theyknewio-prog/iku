@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { Pagination } from "@/components/Pagination";
-import { getVideos } from "@/lib/content";
+import { getVideos, countVideos } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 import { SERIES, getSeriesBySlug, type Series } from "@/data/series";
@@ -128,13 +128,17 @@ export default async function SeriesPage({ params, searchParams }: Props) {
   const order =
     sortParam === "date" || sortParam === "favcount" || sortParam === "score" ? sortParam : "score";
 
-  const { data: videos, hasMore } = await getVideos({
-    tags: series.tags[0],
-    page: currentPage,
-    limit: 20,
-    order,
-    requireThumbnail: true,
-  });
+  const [{ data: videos, hasMore }, totalCount] = await Promise.all([
+    getVideos({
+      tags: series.tags[0],
+      page: currentPage,
+      limit: 20,
+      order,
+      requireThumbnail: true,
+    }),
+    countVideos({ tags: series.tags[0], requireThumbnail: true }),
+  ]);
+  const totalPages = Math.max(1, Math.ceil(totalCount / 20));
 
   const seriesCharacters = series.characters
     .map((s) => getCharacterBySlug(s))
@@ -268,7 +272,7 @@ export default async function SeriesPage({ params, searchParams }: Props) {
           {videos.length > 0 && (
             <div style={{ marginTop: "40px", marginBottom: "48px" }}>
               <Suspense>
-                <Pagination currentPage={currentPage} hasNextPage={hasMore} />
+                <Pagination currentPage={currentPage} hasNextPage={hasMore} totalPages={totalPages} />
               </Suspense>
             </div>
           )}
