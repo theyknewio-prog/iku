@@ -9,7 +9,6 @@ import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { getNonce } from "@/lib/csp-nonce";
 import { PushNotifications } from "@/components/PushNotifications";
 import { AdScript } from "@/components/AdScript";
-import { StickyFooterAd } from "@/components/StickyFooterAd";
 import { StickyPremiumBanner } from "@/components/StickyPremiumBanner";
 
 // Fonts: Nunito (primary body) + Righteous (display/headings).
@@ -124,7 +123,6 @@ export default async function RootLayout({
           {/* ExoClick provider — needed for PrerollAd (wave 2 2026-04-13).
               Loads lazyOnload, skips for Pro users. */}
           <AdScript />
-          <StickyFooterAd />
           <StickyPremiumBanner />
           <AppShell footer={<MegaFooter />}>{children}</AppShell>
         </SessionProviderClient>
