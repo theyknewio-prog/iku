@@ -11,7 +11,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { stripe, PLANS, getPlan } from "@/lib/stripe";
 import pool from "@/lib/db";
-import { getVerifyStatus } from "@/lib/email-verify-guard";
 import { createRateLimiter } from "@/lib/rate-limit";
 
 // Keyed by userId — not ip — since checkout requires auth anyway.
@@ -27,19 +26,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "not authenticated" }, { status: 401 });
   }
 
-  // Email verification gate — block checkout until user confirms their address.
-  // Discord-synthetic emails (@discord.iku.gg) are exempt (can't verify).
-  const vStatus = await getVerifyStatus(session.user.id);
-  if (!vStatus.passed) {
-    return NextResponse.json(
-      {
-        error: "email_not_verified",
-        message: "Please verify your email address before upgrading to Pro.",
-      },
-      { status: 403 }
-    );
-  }
-
+  // Email verification no longer blocks checkout — Stripe validates the card
+  // owner's email via its own receipt flow, and blocking here was eating 100%
+  // of conversions (5/6 users never clicked the verify link).
   const userId = session.user.id;
   if (limiter.consume(userId)) {
     return NextResponse.json({ error: "too many checkout attempts" }, { status: 429 });
