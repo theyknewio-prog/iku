@@ -48,13 +48,13 @@ export const metadata: Metadata = {
     description: "360,000+ free videos: 3D hentai, SFM, cartoon porn, classic 2D anime & Shorts feed. Genshin, Overwatch, Blue Archive and more.",
     siteName: "iku",
     type: "website",
-    images: [{ url: "/og-default.png", width: 1200, height: 630, alt: "iku.gg — Free Hentai, 3D & Cartoon Porn" }],
+    images: [{ url: "https://iku.gg/og-default.png", width: 1200, height: 630, alt: "iku.gg — Free Hentai, 3D & Cartoon Porn" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "iku.gg — Free Hentai, 3D & Cartoon Porn",
     description: "360,000+ free videos: 3D hentai, SFM, cartoon porn, 2D anime, Shorts feed. Genshin, Overwatch & more.",
-    images: ["/og-default.png"],
+    images: ["https://iku.gg/og-default.png"],
   },
 };
 

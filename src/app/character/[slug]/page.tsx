@@ -80,6 +80,13 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
       description: character.seoDescription,
       siteName: "iku.gg",
       type: "website",
+      images: [{ url: "https://iku.gg/og-default.png", width: 1200, height: 630, alt: `${character.name} Hentai on iku.gg` }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${character.name} Hentai Videos | iku.gg`,
+      description: character.seoDescription,
+      images: ["https://iku.gg/og-default.png"],
     },
   };
 }
