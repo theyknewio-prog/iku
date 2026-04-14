@@ -21,6 +21,7 @@ export const metadata: Metadata = {
       "Watch free 2D hentai anime videos. Full episodes, OAV & uncensored animations updated daily.",
     siteName: "iku.gg",
     type: "website",
+    images: [{ url: "https://iku.gg/og-default.png", width: 1200, height: 630, alt: "iku.gg" }],
   },
   robots: { index: true, follow: true },
 };

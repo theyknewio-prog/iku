@@ -21,6 +21,7 @@ export const metadata: Metadata = {
       "Free 3D hentai, SFM animations, cartoon porn & game character compilations updated daily.",
     siteName: "iku.gg",
     type: "website",
+    images: [{ url: "https://iku.gg/og-default.png", width: 1200, height: 630, alt: "iku.gg" }],
   },
   robots: { index: true, follow: true },
 };

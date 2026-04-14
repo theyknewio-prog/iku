@@ -30,6 +30,13 @@ export const metadata: Metadata = {
     siteName: "iku.gg",
     type: "website",
     url: "https://iku.gg",
+    images: [{ url: "https://iku.gg/og-default.png", width: 1200, height: 630, alt: "iku.gg — Free Hentai, 3D & Cartoon Porn" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "iku.gg — Free Hentai, 3D & Cartoon Porn",
+    description: "360,000+ free videos: 3D hentai, SFM, cartoon porn, 2D anime, Shorts feed. Genshin, Overwatch & more.",
+    images: ["https://iku.gg/og-default.png"],
   },
 };
 

@@ -18,6 +18,7 @@ export const metadata: Metadata = {
       "Explore all hentai series on iku.gg. Stream free animated hentai by anime series.",
     siteName: "iku.gg",
     type: "website",
+    images: [{ url: "https://iku.gg/og-default.png", width: 1200, height: 630, alt: "iku.gg" }],
   },
 };
 

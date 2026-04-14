@@ -21,6 +21,7 @@ export const metadata: Metadata = {
       "Stream the newest hentai videos freshly uploaded to iku.gg. Updated daily.",
     siteName: "iku.gg",
     type: "website",
+    images: [{ url: "https://iku.gg/og-default.png", width: 1200, height: 630, alt: "iku.gg" }],
   },
 };
 

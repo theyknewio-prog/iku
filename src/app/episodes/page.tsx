@@ -24,6 +24,7 @@ export const metadata: Metadata = {
       "38,000+ full-length hentai episodes — 2D classics + long-form 3D. Stream the preview free, unlock everything with Premium 4.99€/mo.",
     siteName: "iku.gg",
     type: "website",
+    images: [{ url: "https://iku.gg/og-default.png", width: 1200, height: 630, alt: "iku.gg" }],
   },
 };
 

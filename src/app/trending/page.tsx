@@ -19,6 +19,7 @@ export const metadata: Metadata = {
       "Top rated hentai videos trending now. Stream free animated hentai ranked by community score.",
     siteName: "iku.gg",
     type: "website",
+    images: [{ url: "https://iku.gg/og-default.png", width: 1200, height: 630, alt: "iku.gg" }],
   },
 };
 
