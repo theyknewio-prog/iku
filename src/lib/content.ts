@@ -33,8 +33,10 @@ export const BANNED_TAGS_ARRAY = Array.from(BANNED_TAGS);
 // Danbooru/Gelbooru embed these words in titles even when they're not in
 // general tags. A positive match on any of these kills the row.
 /** Words that must appear as whole words (word-boundary match) to avoid
- *  false positives like "hololive" matching "loli". */
-const BANNED_WORD_RE = /(?:^|[\s_\-/])(?:loli|shota|lolicon|shotacon|toddlercon|child|minor|underage|toddler|infant|young[_ ]girl|young[_ ]boy|oppai[_ ]loli|legal[_ ]loli|cub|baby)(?:$|[\s_\-/])/i;
+ *  false positives like "hololive" matching "loli". Limited to unambiguous
+ *  terms for slug/title scanning. Ambiguous words like "child" / "baby" /
+ *  "cub" are still blocked when they appear as explicit tags (array check). */
+const BANNED_WORD_RE = /(?:^|[\s_\-/])(?:loli|shota|lolicon|shotacon|toddlercon|toddler|lolidom|shotadom|oppai[_ ]loli|legal[_ ]loli|young[_ ]girl|young[_ ]boy|kindergarten)(?:$|[\s_\-/])/i;
 
 /**
  * Check if a single video contains banned content.

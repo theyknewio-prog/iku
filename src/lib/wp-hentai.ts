@@ -47,7 +47,7 @@ function rowToVideo(row: Record<string, unknown>): Video {
 async function _getWPHentaiPost(id: number): Promise<Video | null> {
   const { rows } = await pool.query(
     `SELECT * FROM videos
-     WHERE source = 'wp' AND source_id = $1
+     WHERE source IN ('wp', 'hentaigasm') AND source_id = $1
        AND NOT (tags && $2::text[])
        AND NOT (COALESCE(characters, ARRAY[]::text[]) && $2::text[])
        AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $2::text[])

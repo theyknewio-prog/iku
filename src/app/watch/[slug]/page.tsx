@@ -130,7 +130,7 @@ export async function generateMetadata({
   const title = buildTitle(video);
   const description = buildDescription(video);
   const canonicalUrl = `https://iku.gg/watch/${video.slug}`;
-  const ogImage = video.thumbnail || video.preview;
+  const ogImage = video.thumbnail || video.preview || "https://iku.gg/og-default.png";
   const ogVideo = video.url;
 
   return {
@@ -152,16 +152,14 @@ export async function generateMetadata({
       url: canonicalUrl,
       siteName: "iku.gg",
       type: "video.other",
-      images: ogImage
-        ? [
-            {
-              url: ogImage,
-              width: video.width || 1280,
-              height: video.height || 720,
-              alt: title,
-            },
-          ]
-        : [],
+      images: [
+        {
+          url: ogImage,
+          width: video.width || 1200,
+          height: video.height || 630,
+          alt: title,
+        },
+      ],
       videos: ogVideo
         ? [
             {
@@ -177,7 +175,7 @@ export async function generateMetadata({
       card: "player",
       title,
       description,
-      images: ogImage ? [ogImage] : [],
+      images: [ogImage],
       players: ogVideo
         ? [
             {
