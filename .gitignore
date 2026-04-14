@@ -57,3 +57,7 @@ src/data/wp-hentai-videos.json
 /.agents/
 gsc-service-account.json
 .deploy.env
+exo.json
+tok.json
+*.json.tmp
+.playwright-mcp/
