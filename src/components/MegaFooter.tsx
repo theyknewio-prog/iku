@@ -249,8 +249,6 @@ export async function MegaFooter() {
           <h3 className="mega-footer__title">Friends</h3>
           <ul className="mega-footer__links">
             <li><a href="https://mypornadviser.com" target="_blank" rel="noopener">My Porn Adviser</a></li>
-            <li><a href="https://faiporn.net" target="_blank" rel="noopener">Faiporn</a></li>
-            <li><a href="https://integralporn.com" target="_blank" rel="noopener">Integral Porn</a></li>
           </ul>
         </section>
       </div>
