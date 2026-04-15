@@ -40,10 +40,11 @@ export async function generateMetadata(props: {
   };
 }
 
-type SortOption = "score" | "date" | "favcount";
+type SortOption = "score" | "date" | "favcount" | "duration";
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "score",    label: "Top Rated" },
   { value: "date",     label: "Newest" },
+  { value: "duration", label: "Longest" },
   { value: "favcount", label: "Most Saved" },
 ];
 

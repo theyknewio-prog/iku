@@ -73,6 +73,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 const SORT_OPTIONS = [
   { value: "score", label: "Top Rated" },
   { value: "date", label: "Newest" },
+  { value: "duration", label: "Longest" },
   { value: "favcount", label: "Most Saved" },
 ] as const;
 
@@ -104,7 +105,7 @@ export default async function TagPage({ params, searchParams }: Props) {
   const label = tag.replace(/_/g, " ");
   const titleCased = label.replace(/\b\w/g, (c) => c.toUpperCase());
   const order =
-    sortParam === "date" || sortParam === "favcount" || sortParam === "score" ? sortParam : "score";
+    sortParam === "date" || sortParam === "favcount" || sortParam === "score" || sortParam === "duration" ? sortParam : "score";
 
   const [{ data: videos, hasMore }, totalCount, entitySeo] = await Promise.all([
     getVideos({
