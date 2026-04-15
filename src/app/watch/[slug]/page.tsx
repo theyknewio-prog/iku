@@ -693,6 +693,11 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
               {/* Related — mobile grid (below player) */}
               <div style={{ marginTop: "32px" }}>
+                {/* CPM densification 2026-04-15: in-content 300x250
+                    above the related header. Visible on all viewports. */}
+                <div style={{ display: "flex", justifyContent: "center", margin: "0 0 20px" }}>
+                  <AdZoneClient zoneId={AD_ZONES.exoclick.sidebar300} size="300x250" lazy />
+                </div>
                 <div className="section-header">
                   <h2
                     className="section-title"
@@ -729,6 +734,12 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
             {/* ── Sidebar (desktop) ─────────────────────────── */}
             <aside className="player-sidebar">
+              {/* CPM densification 2026-04-15: ExoClick 300x250 above
+                  HentaiPros. Sidebar is display:none <768px so this is
+                  a desktop-only surface. */}
+              <div style={{ marginBottom: 16, display: "flex", justifyContent: "center" }}>
+                <AdZoneClient zoneId={AD_ZONES.exoclick.sidebar300} size="300x250" />
+              </div>
               {/* Wave 1b 2026-04-13: swapped generic ExoClick for
                   HentaiProsBanner 160x600 — hentai-niche rotation
                   (HentaiPros / Candy.ai / hentai games) matches the
