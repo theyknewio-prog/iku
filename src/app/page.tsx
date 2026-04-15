@@ -127,20 +127,22 @@ export default async function HomePage() {
     getVideos({ limit: 1, order: "score", vertical: "hentai", requireThumbnail: true }),
     getVideos({ limit: 1, order: "score", vertical: "3d", requireThumbnail: true }),
   ]);
-  // Pinned video — surfaced as the first card in "Trending Now".
-  const pinned = await getRule34Post(5042016).catch(() => null);
-  if (pinned) {
-    trending.data = [pinned, ...trending.data.filter((v) => v.slug !== pinned.slug)];
-  }
-
   const hentaiTileBg  = hentaiCover.data[0]?.thumbnail || "";
   const threeDTileBg  = threeDCover.data[0]?.thumbnail || "";
   const shortsTileBg  = trending.data[0]?.thumbnail || "";
+
+  // Pinned video — surfaced as the first card in "Trending Now" only
+  // (hero is picked before this so it keeps the organic top-scored video).
+  const pinned = await getRule34Post(5042016).catch(() => null);
 
   // Cover thumbnail per genre (memoized 1h, near-zero cost on warm cache).
   const genreThumbs = await getThumbnailsForTags(genres.map((g) => g.name));
 
   const hero = trending.data[0];
+
+  if (pinned) {
+    trending.data = [pinned, ...trending.data.filter((v) => v.slug !== pinned.slug)];
+  }
 
   return (
     <AgeGate>
