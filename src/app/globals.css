@@ -7455,12 +7455,31 @@ body {
 }
 @media (max-width: 960px) {
   .hp-hero { grid-template-columns: 1fr; min-height: auto; }
-  .hp-hero-right { display: none; }
-  .hp-hero-left { padding: 36px 24px; }
-  .hp-hero-mobile-stats { display: flex; }
+  .hp-hero-left { padding: 28px 20px 0; }
+  .hp-hero-mobile-stats { display: none; }
   .hp-video-grid { grid-template-columns: repeat(2, 1fr); }
   /* Keep "See all" link always visible on section headers */
   .hp-section-header { flex-wrap: wrap; gap: 8px; }
+
+  /* Mobile hero preview card — compact, below title.
+     Hide decorative orbs/floating badges; keep the play card only. */
+  .hp-hero-right { display: block; padding: 0 16px 24px; }
+  .hp-hero-illustration {
+    min-height: auto;
+    background: transparent;
+    padding: 0;
+  }
+  .hp-hero-orb,
+  .hp-hero-badge-float { display: none; }
+  .hp-hero-play-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 14px;
+    border-radius: 16px;
+  }
+  .hp-hero-play-card__thumb { margin-bottom: 10px; }
+  .hp-hero-play-card__title { font-size: 17px; margin-bottom: 6px; }
+  .hp-hero-play-card__meta { font-size: 13px; gap: 10px; }
 }
 @media (max-width: 600px) {
   .hp-hero-stats { gap: 16px; flex-wrap: wrap; }
