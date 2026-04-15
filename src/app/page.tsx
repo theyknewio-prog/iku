@@ -7,6 +7,7 @@ import { PosterCard } from "@/components/PosterCard";
 import { Carousel } from "@/components/Carousel";
 import { getPopularCharacters } from "@/lib/danbooru";
 import { getVideos, getCuratedGenreCounts, getVideoOfTheDay, getThumbnailsForTags } from "@/lib/content";
+import { getRule34Post } from "@/lib/rule34";
 import { buildTitle, pickGenreTag } from "@/lib/video-display";
 import { SERIES } from "@/data/series";
 import { OnlineCounter } from "@/components/OnlineCounter";
@@ -126,6 +127,12 @@ export default async function HomePage() {
     getVideos({ limit: 1, order: "score", vertical: "hentai", requireThumbnail: true }),
     getVideos({ limit: 1, order: "score", vertical: "3d", requireThumbnail: true }),
   ]);
+  // Pinned video — surfaced as the first card in "Trending Now".
+  const pinned = await getRule34Post(5042016).catch(() => null);
+  if (pinned) {
+    trending.data = [pinned, ...trending.data.filter((v) => v.slug !== pinned.slug)];
+  }
+
   const hentaiTileBg  = hentaiCover.data[0]?.thumbnail || "";
   const threeDTileBg  = threeDCover.data[0]?.thumbnail || "";
   const shortsTileBg  = trending.data[0]?.thumbnail || "";
