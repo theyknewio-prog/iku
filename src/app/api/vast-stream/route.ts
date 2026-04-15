@@ -31,6 +31,10 @@ const ALLOWED_HOST_SUFFIXES = [
   "exosrv.com",
   "xlivrdr.com",
   "saawsedge.com",
+  "bxcdn.net",
+  "bkcdn.net",
+  "exdynsrv.com",
+  "realsrv.com",
 ];
 
 function hostAllowed(url: URL): boolean {
