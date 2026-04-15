@@ -8,6 +8,7 @@ import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 import { ListingAdBlock } from "@/components/ListingAdBlock";
+import { SortTabs, parseSort } from "@/components/SortTabs";
 
 export const metadata: Metadata = {
   title: "New Hentai Videos — Latest Uploads | iku.gg",
@@ -33,13 +34,14 @@ type Props = {
 };
 
 export default async function NewPage({ searchParams }: Props) {
-  const { page = "1" } = await searchParams;
+  const { page = "1", sort } = await searchParams;
   const currentPage = Math.max(1, parseInt(String(page)));
+  const order = parseSort(sort, "date");
 
   const [{ data: videos, hasMore }, totalCount] = await Promise.all([
     getVideos({
       limit: 40,
-      order: "date",
+      order,
       page: currentPage,
       requireThumbnail: true,
     }),
@@ -66,6 +68,8 @@ export default async function NewPage({ searchParams }: Props) {
               </span>
             </div>
           </div>
+
+          <SortTabs basePath="/new" current={order} defaultSort="date" extraQuery={{ page: currentPage > 1 ? String(currentPage) : undefined }} />
 
           {/* ── Video grid ────────────────────────────────────── */}
           {videos.length === 0 ? (

@@ -162,7 +162,7 @@ export async function getThumbnailsForTags(tags: string[]): Promise<Record<strin
 export interface GetVideosOptions {
   limit?: number;
   page?: number;
-  order?: "score" | "date" | "favcount";
+  order?: "score" | "date" | "favcount" | "duration";
   tags?: string;
   source?: "all" | "danbooru" | "gelbooru";
   /**
@@ -308,6 +308,7 @@ async function _getVideos(
   const orderClause =
     order === "score" ? "ORDER BY score DESC, created_at DESC"
     : order === "favcount" ? "ORDER BY favorites DESC, score DESC"
+    : order === "duration" ? "ORDER BY duration DESC NULLS LAST, score DESC"
     : "ORDER BY created_at DESC";
 
   const query = `
@@ -695,7 +696,7 @@ export interface FeedCursor {
   /** Tiebreaker id at the last row returned. */
   id: number;
   /** Sort column — ensures the cursor stays tied to a stable sort order. */
-  order: "score" | "date" | "favcount";
+  order: "score" | "date" | "favcount" | "duration";
 }
 
 /** Encode a cursor as a URL-safe base64 string. */
@@ -711,7 +712,7 @@ export function decodeCursor(raw: string | null | undefined): FeedCursor | null 
     if (
       typeof parsed?.v === "number" &&
       typeof parsed?.id === "number" &&
-      (parsed?.order === "score" || parsed?.order === "date" || parsed?.order === "favcount")
+      (parsed?.order === "score" || parsed?.order === "date" || parsed?.order === "favcount" || parsed?.order === "duration")
     ) {
       return parsed;
     }
@@ -735,7 +736,7 @@ export function decodeCursor(raw: string | null | undefined): FeedCursor | null 
  * index without reading them — fast even on 351K total rows.
  */
 async function pickRandomStartCursor(opts: {
-  order: "score" | "date" | "favcount";
+  order: "score" | "date" | "favcount" | "duration";
   source: "all" | "danbooru" | "gelbooru";
   tags: string;
   requireThumbnail: boolean;
@@ -778,6 +779,7 @@ async function pickRandomStartCursor(opts: {
   const sortCol =
     order === "score" ? "score" :
     order === "favcount" ? "favorites" :
+    order === "duration" ? "duration" :
     "created_at";
   const sortExpr = order === "date"
     ? `EXTRACT(EPOCH FROM ${sortCol})::bigint`
@@ -819,7 +821,7 @@ async function pickRandomStartCursor(opts: {
  */
 export async function getFeedKeyset(options: {
   limit?: number;
-  order?: "score" | "date" | "favcount";
+  order?: "score" | "date" | "favcount" | "duration";
   cursor?: FeedCursor | null;
   tags?: string;
   source?: "all" | "danbooru" | "gelbooru";
@@ -895,6 +897,7 @@ export async function getFeedKeyset(options: {
   const sortCol =
     order === "score" ? "score" :
     order === "favcount" ? "favorites" :
+    order === "duration" ? "duration" :
     "created_at";
 
   const sortExpr = order === "date"

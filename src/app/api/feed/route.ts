@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
   //   1. cursor's order wins (must stay stable across keyset pages)
   //   2. explicit ?sort= param wins next (filter UI)
   //   3. otherwise pick a random session sort for variety
-  let order: "score" | "date" | "favcount";
+  let order: "score" | "date" | "favcount" | "duration";
   if (cursor?.order) {
     order = cursor.order;
   } else if (sortParam === "date" || sortParam === "favcount" || sortParam === "score") {

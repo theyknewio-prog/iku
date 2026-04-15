@@ -6,6 +6,7 @@ import { getVideos } from "@/lib/content";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
+import { SortTabs, parseSort } from "@/components/SortTabs";
 
 export const metadata: Metadata = {
   title: "Trending Hentai Videos 2026 | iku.gg",
@@ -37,10 +38,14 @@ const CATEGORY_TAGS = [
   { label: "Nurse", tag: "nurse" },
 ];
 
-export default async function TrendingPage() {
+export default async function TrendingPage(props: {
+  searchParams: Promise<{ sort?: string }>;
+}) {
+  const { sort } = await props.searchParams;
+  const order = parseSort(sort, "score");
   const { data: videos } = await getVideos({
     limit: 40,
-    order: "score",
+    order,
     requireThumbnail: true,
   });
 
@@ -66,6 +71,8 @@ export default async function TrendingPage() {
               Top {videos.length} hentai videos ranked by community score
             </p>
           </div>
+
+          <SortTabs basePath="/trending" current={order} defaultSort="score" />
 
           {/* ── Browse by category strip ─────────────────────── */}
           <div className="filter-bar" style={{ marginBottom: "32px" }}>
