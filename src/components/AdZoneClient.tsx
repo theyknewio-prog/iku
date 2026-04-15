@@ -3,22 +3,9 @@
 /**
  * AdZoneClient — ExoClick ad zone renderer.
  *
- * Renders a container with exact dimensions (zero CLS), then imperatively
- * inserts an <ins> tag that ExoClick's ad-provider.js mutates. Uses
- * IntersectionObserver for lazy loading below-fold ads.
- *
- * Pro users: renders nothing (checked via data-pro on <body>).
- *
- * Fix 2026-04-07: Uses waitForAdProvider() so the push() only fires after
- * ExoClick's script has bootstrapped, eliminating the race where the zone
- * push happened before ad-provider.js finished loading.
- *
- * Ad refresh (2026-04-08): When `refresh` prop is true (default for banner
- * sizes), a 30-second interval calls AdProvider.push({ serve: {} }) to
- * request a fresh fill. The interval only fires while the zone is in
- * viewport (IntersectionObserver). This matches industry-standard banner
- * refresh rates and maximises fill RPM without wasting impressions on
- * off-screen slots.
+ * Renders a fixed-size container, then injects ExoClick's <ins> tag once
+ * on mount (or when the lazy IntersectionObserver fires). Pro users get
+ * an empty container.
  */
 
 import { useEffect, useRef, useState, useCallback } from "react";
@@ -38,16 +25,7 @@ interface AdZoneProps {
   size: "728x90" | "300x250" | "300x600" | "320x50" | "300x50" | "native";
   lazy?: boolean;
   className?: string;
-  /**
-   * Whether to auto-refresh every 30s when in viewport.
-   * Defaults to true for banner sizes, false for native.
-   */
   refresh?: boolean;
-  /**
-   * Optional mobile override. When the viewport is ≤767px, these replace
-   * `zoneId` and `size`. ExoClick sells 300x50 (not 320x50) for mobile
-   * sticky banners — it fits any ≥300px viewport with no clipping.
-   */
   mobileZoneId?: string;
   mobileSize?: "300x50" | "300x250" | "native";
 }
@@ -58,7 +36,7 @@ const SIZE_MAP: Record<string, { width: number; height: number }> = {
   "300x600": { width: 300, height: 600 },
   "320x50":  { width: 320, height: 50 },
   "300x50":  { width: 300, height: 50 },
-  native:    { width: 0,   height: 250 }, // full-width, min-height
+  native:    { width: 0,   height: 250 },
 };
 
 function defaultRefresh(size: AdZoneProps["size"]): boolean {
@@ -78,38 +56,40 @@ export function AdZoneClient({
   const insertedRef   = useRef(false);
   const inViewportRef = useRef(false);
   const refreshTimer  = useRef<ReturnType<typeof setInterval> | null>(null);
-  const [isPro, setIsPro]       = useState(true); // default hidden until checked
-  const [visible, setVisible]   = useState(!lazy);
-  // Track whether we're mobile at mount time. Client-only so it's safe to
-  // read window here. We don't listen for resize on purpose — ExoClick zones
-  // don't handle mid-life re-targeting well.
   const [isMobile, setIsMobile] = useState(false);
+  const [isPro, setIsPro] = useState(false);
 
+  // One mount-time check: detect mobile + Pro status from <body data-pro>.
   useEffect(() => {
-    setIsMobile(typeof window !== "undefined" && window.innerWidth <= 767);
+    setIsMobile(window.innerWidth <= 767);
+    setIsPro(document.body.dataset.pro === "1");
   }, []);
 
   const zoneId = isMobile && mobileZoneId ? mobileZoneId : desktopZoneId;
   const size = isMobile && mobileSize ? mobileSize : desktopSize;
-
   const shouldRefresh = refresh !== undefined ? refresh : defaultRefresh(size);
 
-  useEffect(() => {
-    setIsPro(document.body.dataset.pro === "1");
-  }, []);
+  const insertAd = useCallback(() => {
+    const container = containerRef.current;
+    if (!container || isPro) return;
+    insertExoClickZone(container, zoneId, insertedRef);
+  }, [zoneId, isPro]);
 
-  // IntersectionObserver for lazy ads.
-  // Guard: skip entirely until isPro is resolved (avoids creating observer
-  // for Pro users who will never need it).
+  // Insert immediately if not lazy, otherwise wait for IntersectionObserver.
   useEffect(() => {
-    if (!lazy || visible || isPro) return;
+    if (isPro) return;
     const el = containerRef.current;
     if (!el) return;
+
+    if (!lazy) {
+      insertAd();
+      return;
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting) {
-          setVisible(true);
+          insertAd();
           observer.disconnect();
         }
       },
@@ -117,25 +97,11 @@ export function AdZoneClient({
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, [lazy, visible, isPro]);
+  }, [isPro, lazy, insertAd]);
 
-  const insertAd = useCallback(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    insertExoClickZone(container, zoneId, insertedRef);
-  }, [zoneId]);
-
-  // Insert ad when visible and not Pro
+  // 30s refresh while in viewport.
   useEffect(() => {
-    if (isPro || !visible) return;
-    insertAd();
-  }, [isPro, visible, insertAd]);
-
-  // Ad refresh — runs only when the zone is in the viewport.
-  // A separate IntersectionObserver tracks viewport state so the interval
-  // skips refreshes for off-screen banners (saves requests, avoids waste).
-  useEffect(() => {
-    if (isPro || !visible || !shouldRefresh) return;
+    if (isPro || !shouldRefresh) return;
     const el = containerRef.current;
     if (!el) return;
 
@@ -148,7 +114,7 @@ export function AdZoneClient({
     viewportObserver.observe(el);
 
     refreshTimer.current = setInterval(() => {
-      if (!inViewportRef.current) return;
+      if (!inViewportRef.current || !insertedRef.current) return;
       (window.AdProvider = window.AdProvider || []).push({ serve: {} });
     }, REFRESH_INTERVAL_MS);
 
@@ -156,20 +122,7 @@ export function AdZoneClient({
       viewportObserver.disconnect();
       if (refreshTimer.current) clearInterval(refreshTimer.current);
     };
-  }, [isPro, visible, shouldRefresh]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (refreshTimer.current) clearInterval(refreshTimer.current);
-      const container = containerRef.current;
-      if (container) {
-        const ins = container.querySelector("ins");
-        if (ins) ins.remove();
-      }
-      insertedRef.current = false;
-    };
-  }, []);
+  }, [isPro, shouldRefresh]);
 
   if (isPro) return null;
 

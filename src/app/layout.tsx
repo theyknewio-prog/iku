@@ -11,6 +11,7 @@ import { PushNotifications } from "@/components/PushNotifications";
 import { AdScript } from "@/components/AdScript";
 import { AdsterraPopunder } from "@/components/AdsterraPopunder";
 import { StickyPremiumBanner } from "@/components/StickyPremiumBanner";
+import { StickyFooterAd } from "@/components/StickyFooterAd";
 
 // Fonts: Nunito (primary body) + Righteous (display/headings).
 // Previously we also loaded Inter, Poppins, and Quicksand — they were
@@ -125,6 +126,7 @@ export default async function RootLayout({
               Loads lazyOnload, skips for Pro users. */}
           <AdScript />
           <AdsterraPopunder />
+          <StickyFooterAd />
           <StickyPremiumBanner />
           <AppShell footer={<MegaFooter />}>{children}</AppShell>
         </SessionProviderClient>
