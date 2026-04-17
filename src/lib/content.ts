@@ -396,7 +396,38 @@ export async function getVideos(
  * with the visible results. Memoized 1h — counts move slowly enough
  * that stale-by-an-hour is fine, and pagination numbers on /hentai,
  * /3d, /trending etc. get hammered by crawlers.
+ *
+ * Perf guard (2026-04-18): wraps the count in a per-query 3s statement
+ * timeout. /3d spans ~320K rows and the COUNT(*) scan was timing out
+ * at the default 10s PG session timeout, stalling every cold hit by
+ * a full 10 seconds before falling back to 0. On timeout we return
+ * a reltuples-based estimate so pagination UI still renders instantly.
  */
+
+// Rough per-vertical selectivity for the fallback estimate. Derived from
+// `SELECT source, COUNT(*) FROM videos GROUP BY source` on 2026-04-18.
+// Tracks the (vertical, requireThumbnail) combo used by /hentai and /3d.
+const VERTICAL_ESTIMATE: Record<string, number> = {
+  "hentai:true": 42000,
+  "hentai:false": 42000,
+  "3d:true": 300000,
+  "3d:false": 320000,
+  "longFormat:true": 7000,
+  "longFormat:false": 7000,
+  "all:true": 340000,
+  "all:false": 361000,
+};
+
+function estimateCount(opts: GetVideosOptions): number {
+  const { vertical = "all", longFormat, requireThumbnail } = opts;
+  const thumbKey = requireThumbnail ? "true" : "false";
+  if (longFormat) return VERTICAL_ESTIMATE[`longFormat:${thumbKey}`];
+  return (
+    VERTICAL_ESTIMATE[`${vertical}:${thumbKey}`] ??
+    VERTICAL_ESTIMATE[`all:${thumbKey}`]
+  );
+}
+
 async function _countVideos(options: GetVideosOptions = {}): Promise<number> {
   const {
     tags = "",
@@ -448,11 +479,41 @@ async function _countVideos(options: GetVideosOptions = {}): Promise<number> {
 
   const whereClause =
     conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
-  const { rows } = await pool.query<{ count: string }>(
-    `SELECT COUNT(*)::bigint AS count FROM videos ${whereClause}`,
-    params,
-  );
-  return Number(rows[0]?.count ?? 0);
+
+  // Per-query 3s timeout — we'd rather return an estimate than stall the
+  // page for 10s waiting for PG's global statement_timeout to fire.
+  // SET LOCAL only works inside a transaction, so we BEGIN/COMMIT around
+  // the count. The pooled client gets its state reset on COMMIT/ROLLBACK.
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    await client.query(`SET LOCAL statement_timeout = '3s'`);
+    const { rows } = await client.query<{ count: string }>(
+      `SELECT COUNT(*)::bigint AS count FROM videos ${whereClause}`,
+      params,
+    );
+    await client.query("COMMIT");
+    return Number(rows[0]?.count ?? 0);
+  } catch (err) {
+    try {
+      await client.query("ROLLBACK");
+    } catch {
+      /* already rolled back by PG on timeout */
+    }
+    const code = (err as { code?: string }).code;
+    // 57014 = query canceled (statement_timeout fired). Use estimate.
+    if (code === "57014") {
+      console.warn("countVideos timed out, using estimate:", {
+        vertical,
+        tags,
+        requireThumbnail,
+      });
+      return estimateCount(options);
+    }
+    throw err;
+  } finally {
+    client.release();
+  }
 }
 
 const _countVideosMemo = memoize("videos-count", _countVideos, 60 * 60 * 1000);
