@@ -140,17 +140,24 @@ export function VastPrerollAd({ onComplete }: Props) {
   const handleSkip = useCallback(() => {
     if (!ad || !skipArmed) return;
     fireOnce("skip", ad.tracking.skip);
-    // Once-per-session Premium nudge after the user clicks Skip — shown
-    // only if they're not Pro and haven't been nudged yet this session.
+    // Premium nudge after Skip click — per-path key so a user watching
+    // 8 videos per session sees the upsell 8× (Pornhub/Hanime pattern).
+    // Still rate-limited to once per unique watch URL to avoid spamming
+    // inside the same page view.
     try {
-      const seen = sessionStorage.getItem("iku-skip-nudge-seen");
+      const path =
+        typeof window !== "undefined" ? window.location.pathname : "_";
+      const key = `iku-skip-nudge-${path}`;
+      const seen = sessionStorage.getItem(key);
       const isPro = document.body?.dataset.pro === "1";
       if (!seen && !isPro) {
-        sessionStorage.setItem("iku-skip-nudge-seen", "1");
+        sessionStorage.setItem(key, "1");
         setShowSkipNudge(true);
         return; // hold on done — let user dismiss the nudge first
       }
-    } catch { /* sessionStorage may be blocked */ }
+    } catch {
+      /* sessionStorage may be blocked */
+    }
     setDone(true);
     onComplete();
   }, [ad, skipArmed, fireOnce, onComplete]);
@@ -311,18 +318,34 @@ export function VastPrerollAd({ onComplete }: Props) {
                 left: -30,
                 right: -30,
                 height: 160,
-                background: "linear-gradient(135deg, #ff3d7a, #8b38ff, #ffbe0b)",
+                background:
+                  "linear-gradient(135deg, #ff3d7a, #8b38ff, #ffbe0b)",
                 opacity: 0.4,
                 filter: "blur(50px)",
               }}
             />
             <div style={{ position: "relative" }}>
               <div style={{ fontSize: 36, marginBottom: 10 }}>⏭️</div>
-              <h3 style={{ fontSize: 20, fontWeight: 900, margin: "0 0 6px", letterSpacing: "-0.01em" }}>
-                Tired of waiting?
+              <h3
+                style={{
+                  fontSize: 20,
+                  fontWeight: 900,
+                  margin: "0 0 6px",
+                  letterSpacing: "-0.01em",
+                }}
+              >
+                Skip ads forever
               </h3>
-              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", margin: "0 0 18px", lineHeight: 1.45 }}>
-                Skip every preroll, every ad, forever. Premium starts at 4.99€/mo.
+              <p
+                style={{
+                  fontSize: 13,
+                  color: "rgba(255,255,255,0.75)",
+                  margin: "0 0 18px",
+                  lineHeight: 1.45,
+                }}
+              >
+                Less than a coffee a month. Zero ads, ever. Unlock every
+                long-form episode.
               </p>
               <Link
                 href="/pricing"
@@ -378,7 +401,9 @@ export function VastPrerollAd({ onComplete }: Props) {
           opacity: skipArmed ? 1 : 0.7,
         }}
       >
-        {skipArmed ? "Skip Ad ▶" : `Skip in ${Math.max(0, ad.skipOffset - (15 - remaining))}s`}
+        {skipArmed
+          ? "Skip Ad ▶"
+          : `Skip in ${Math.max(0, ad.skipOffset - (15 - remaining))}s`}
       </button>
     </div>
   );
