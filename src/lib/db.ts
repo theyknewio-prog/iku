@@ -12,22 +12,28 @@ const globalForPg = globalThis as unknown as { pgPool: Pool | undefined };
 function createPool(): Pool {
   const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    // Raised from 20 to 50 — previously we hit ~47k connection timeouts
-    // per container lifetime because a single watch page render fires
-    // 4+ PG queries (getVideos, getRelatedVideos x2, metadata, thumbnails)
-    // and 20 slots saturate instantly under real traffic.
-    // PostgreSQL 16 default max_connections is 100, so 50 leaves plenty
-    // of headroom for cron scripts + scrapers.
-    max: 50,
+    // 35 slots — lowered from 50 after 2026-04-17 PG meltdown.
+    // PG only has 4 vCPUs: pushing 50 parallel queries means they pile up on
+    // BufferMapping locks instead of parallelizing, which drags every query
+    // into 10s+ land. 35 saturates a bit slower and queues the rest in Node.
+    max: 35,
     idleTimeoutMillis: 30000,
-    // Raised from 5s to 10s — under burst load the queue can back up
-    // legitimately for a few seconds, and a 5s timeout was throwing
-    // before connections could be released.
     connectionTimeoutMillis: 10000,
+    // Hard server-side cap — any query running over 10s is killed by PG.
+    // Prevents a single runaway count/seq-scan from holding a pool slot
+    // for 50s+ and blocking everything else. Also applied via ALTER SYSTEM
+    // on the server, but setting it here means new deploys always carry it.
+    statement_timeout: 10000,
   });
 
   pool.on("error", (err) => {
     console.error("Unexpected PG pool error:", err);
+  });
+
+  // Belt-and-suspenders: also SET per session in case statement_timeout
+  // param isn't honored by the pg driver version.
+  pool.on("connect", (client) => {
+    client.query("SET statement_timeout = '10s'").catch(() => {});
   });
 
   return pool;
