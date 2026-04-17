@@ -297,17 +297,38 @@ async function _getVideos(
     paramIndex++;
   }
 
-  // Tag search — uses GIN indexes on tags/characters/copyrights.
-  // Previously this also had `title ILIKE '%term%'` as a fallback, but the
-  // leading-wildcard LIKE cannot use any index and forced a sequential scan
-  // of 350K+ rows on every /tag/* and /character/* request. Under Google
-  // crawl load, concurrent seq scans piled up on BufferMapping locks and
-  // PG CPU climbed to 300%+ while pages timed out at 60s+. The GIN indexes
-  // on the three array columns cover every tag page that has any results
-  // (the tag lists are auto-generated from those same columns), so dropping
-  // the ILIKE has no coverage loss in practice.
-  if (tags) {
-    const searchTerms = tags.toLowerCase().split(/\s+/).filter(Boolean);
+  // Long-format: hentaicity + hentaigasm only on the listing.
+  if (longFormat) {
+    conditions.push(`source IN ('hentaicity','hentaigasm')`);
+  }
+
+  // Tag/character/copyright search — rewritten 2026-04-18 as a CTE UNION
+  // because the previous `(tags && X OR characters && X OR copyrights && X)`
+  // form defeated the bitmap planner. With a matching tag (e.g. "naruto")
+  // PG would pick "Index Scan on idx_videos_score + filter", scanning
+  // 362K rows end-to-end — 12+s. The UNION pattern forces a BitmapOr across
+  // the three GIN indexes (30-100ms) → JOIN back → sort. Previously also
+  // had a title ILIKE fallback; that seq-scanned 350K rows on every hit
+  // and has been dropped because tag lists are auto-generated from these
+  // same arrays (no coverage loss).
+  const searchTerms = tags
+    ? tags.toLowerCase().split(/\s+/).filter(Boolean)
+    : [];
+  let matchesCteParamIdx = -1;
+  let cteClause = "";
+  if (searchTerms.length === 1) {
+    matchesCteParamIdx = paramIndex;
+    params.push(searchTerms[0]);
+    paramIndex++;
+    cteClause = `WITH matches AS MATERIALIZED (
+      SELECT pk FROM videos WHERE tags && ARRAY[$${matchesCteParamIdx}]::text[]
+      UNION
+      SELECT pk FROM videos WHERE characters && ARRAY[$${matchesCteParamIdx}]::text[]
+      UNION
+      SELECT pk FROM videos WHERE copyrights && ARRAY[$${matchesCteParamIdx}]::text[]
+    )`;
+  } else if (searchTerms.length > 1) {
+    // Rare multi-term case — fall back to inline OR (slower but correct).
     for (const term of searchTerms) {
       conditions.push(
         `(tags && ARRAY[$${paramIndex}]::text[] OR COALESCE(characters,ARRAY[]::text[]) && ARRAY[$${paramIndex}]::text[] OR COALESCE(copyrights,ARRAY[]::text[]) && ARRAY[$${paramIndex}]::text[])`,
@@ -315,16 +336,6 @@ async function _getVideos(
       params.push(term);
       paramIndex++;
     }
-  }
-
-  // Long-format: hentaicity + hentaigasm only on the listing.
-  // Rule34video long clips (duration >= 20min) ARE still Pro-locked on
-  // /watch (per isProLocked) but excluded from /episodes because their
-  // CDN is behind DDoS-Guard which blocks browser hotlinks → 90% of
-  // cards rendered as gradient fallback. Hentaicity + hentaigasm CDNs
-  // serve clean thumbs, so /episodes stays visually solid.
-  if (longFormat) {
-    conditions.push(`source IN ('hentaicity','hentaigasm')`);
   }
 
   const whereClause =
@@ -339,16 +350,32 @@ async function _getVideos(
           ? "ORDER BY duration DESC NULLS LAST, score DESC"
           : "ORDER BY created_at DESC";
 
-  const query = `
-    SELECT pk, source, source_id, slug, url, page_url, site, title,
-           thumbnail, preview, score, favorites,
-           tags, characters, copyrights, artists,
-           width, height, file_size, duration, created_at
-    FROM videos
-    ${whereClause}
-    ${orderClause}
-    LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
-  `;
+  const query =
+    matchesCteParamIdx !== -1
+      ? `${cteClause}
+         SELECT v.pk, v.source, v.source_id, v.slug, v.url, v.page_url, v.site, v.title,
+                v.thumbnail, v.preview, v.score, v.favorites,
+                v.tags, v.characters, v.copyrights, v.artists,
+                v.width, v.height, v.file_size, v.duration, v.created_at
+         FROM videos v JOIN matches m ON m.pk = v.pk
+         ${whereClause
+           .replace(/\btags\b/g, "v.tags")
+           .replace(/\bthumbnail\b/g, "v.thumbnail")
+           .replace(/\bsource\b/g, "v.source")}
+         ${orderClause
+           .replace(/\bscore\b/g, "v.score")
+           .replace(/\bcreated_at\b/g, "v.created_at")
+           .replace(/\bfavorites\b/g, "v.favorites")
+           .replace(/\bduration\b/g, "v.duration")}
+         LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`
+      : `SELECT pk, source, source_id, slug, url, page_url, site, title,
+                thumbnail, preview, score, favorites,
+                tags, characters, copyrights, artists,
+                width, height, file_size, duration, created_at
+         FROM videos
+         ${whereClause}
+         ${orderClause}
+         LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
   params.push(clampedLimit + 1, offset);
 
   // NOTE: this function deliberately does NOT catch PG errors. If the query
@@ -357,7 +384,29 @@ async function _getVideos(
   // public wrapper below catches at the boundary and returns empty to
   // callers — that way the empty response is only a per-request fallback,
   // not a 5-min cached poison pill.
-  const { rows } = await pool.query(query, params);
+  //
+  // Perf guard (2026-04-18): wrap in a 3s per-query timeout. Planner picks
+  // a bad "incremental sort over idx_videos_score" plan for certain tag
+  // filters (e.g. tags that match 0 rows), scanning 362K rows before
+  // giving up. Failing at 3s + empty fallback beats 10s of wasted TTFB.
+  const client = await pool.connect();
+  let rows: Record<string, unknown>[];
+  try {
+    await client.query("BEGIN");
+    await client.query(`SET LOCAL statement_timeout = '3s'`);
+    const res = await client.query(query, params);
+    await client.query("COMMIT");
+    rows = res.rows;
+  } catch (err) {
+    try {
+      await client.query("ROLLBACK");
+    } catch {
+      /* already rolled back by PG on timeout */
+    }
+    throw err;
+  } finally {
+    client.release();
+  }
   const mapped = rows.slice(0, clampedLimit).map(rowToVideo);
   // JS-side belt-and-suspenders: catches banned title/slug that SQL arrays miss
   const data = filterBannedContent(mapped);
