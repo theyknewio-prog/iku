@@ -61,6 +61,10 @@ COPY --from=builder /app/public ./public
 # Copy warmup script
 COPY scripts/warmup.sh ./warmup.sh
 RUN chmod +x warmup.sh
+# Copy warmup-cron.mjs — invoked every 4 min by host-side cron (see
+# scripts/setup-warmup-cron.sh) to keep the getVideos memoize cache
+# hot for top ~56 taxonomy pages. Uses only fetch (no pg).
+COPY scripts/warmup-cron.mjs ./scripts/warmup-cron.mjs
 
 EXPOSE 3000
 

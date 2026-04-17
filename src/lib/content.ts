@@ -15,15 +15,30 @@ import type { Video, PaginatedResult } from "@/types/video";
 // ---------------------------------------------------------------------------
 
 const BANNED_TAGS = new Set([
-  "loli", "lolicon", "lolidom", "loli_focus",
-  "shota", "shotacon", "shotadom", "shota_focus",
-  "child", "children", "minor", "underage",
-  "toddler", "toddlercon", "infant",
-  "young_girl", "young_boy",
+  "loli",
+  "lolicon",
+  "lolidom",
+  "loli_focus",
+  "shota",
+  "shotacon",
+  "shotadom",
+  "shota_focus",
+  "child",
+  "children",
+  "minor",
+  "underage",
+  "toddler",
+  "toddlercon",
+  "infant",
+  "young_girl",
+  "young_boy",
   "child_on_child",
-  "cub", "baby",
-  "oppai_loli", "legal_loli",
-  "elementary_school", "kindergarten",
+  "cub",
+  "baby",
+  "oppai_loli",
+  "legal_loli",
+  "elementary_school",
+  "kindergarten",
   "randoseru",
 ]);
 
@@ -36,7 +51,8 @@ export const BANNED_TAGS_ARRAY = Array.from(BANNED_TAGS);
  *  false positives like "hololive" matching "loli". Limited to unambiguous
  *  terms for slug/title scanning. Ambiguous words like "child" / "baby" /
  *  "cub" are still blocked when they appear as explicit tags (array check). */
-const BANNED_WORD_RE = /(?:^|[\s_\-/])(?:loli|shota|lolicon|shotacon|toddlercon|toddler|lolidom|shotadom|oppai[_ ]loli|legal[_ ]loli|young[_ ]girl|young[_ ]boy|kindergarten)(?:$|[\s_\-/])/i;
+const BANNED_WORD_RE =
+  /(?:^|[\s_\-/])(?:loli|shota|lolicon|shotacon|toddlercon|toddler|lolidom|shotadom|oppai[_ ]loli|legal[_ ]loli|young[_ ]girl|young[_ ]boy|kindergarten)(?:$|[\s_\-/])/i;
 
 /**
  * Check if a single video contains banned content.
@@ -78,13 +94,15 @@ export function containsBannedContent(video: {
  * Used as a JS-side belt-and-suspenders check after SQL queries and for
  * live-API results (Danbooru getRelatedPosts, etc.) that bypass the DB.
  */
-export function filterBannedContent<T extends {
-  tags?: string[];
-  characters?: string[];
-  copyrights?: string[];
-  slug?: string;
-  title?: string | null;
-}>(videos: T[]): T[] {
+export function filterBannedContent<
+  T extends {
+    tags?: string[];
+    characters?: string[];
+    copyrights?: string[];
+    slug?: string;
+    title?: string | null;
+  },
+>(videos: T[]): T[] {
   return videos.filter((v) => !containsBannedContent(v));
 }
 
@@ -97,7 +115,7 @@ export function filterBannedContent<T extends {
 export function buildBannedSqlCondition(
   alias: string,
   params: unknown[],
-  startIdx: number
+  startIdx: number,
 ): { condition: string; nextIdx: number } {
   params.push(BANNED_TAGS_ARRAY);
   const p = `$${startIdx}::text[]`;
@@ -126,7 +144,7 @@ async function _getThumbnailForTag(tag: string): Promise<string> {
          AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $2::text[])
        ORDER BY score DESC
        LIMIT 1`,
-      [tag.toLowerCase(), BANNED_TAGS_ARRAY]
+      [tag.toLowerCase(), BANNED_TAGS_ARRAY],
     );
 
     if (rows.length === 0 || !rows[0].thumbnail) return "";
@@ -142,15 +160,21 @@ async function _getThumbnailForTag(tag: string): Promise<string> {
   }
 }
 // Memoize — tag→thumbnail mapping is very stable, 1h TTL is safe
-export const getThumbnailForTag = memoize("thumb-for-tag", _getThumbnailForTag, 60 * 60 * 1000);
+export const getThumbnailForTag = memoize(
+  "thumb-for-tag",
+  _getThumbnailForTag,
+  60 * 60 * 1000,
+);
 
 /** Get thumbnails for multiple tags at once (batch) */
-export async function getThumbnailsForTags(tags: string[]): Promise<Record<string, string>> {
+export async function getThumbnailsForTags(
+  tags: string[],
+): Promise<Record<string, string>> {
   const result: Record<string, string> = {};
   await Promise.all(
     tags.map(async (tag) => {
       result[tag] = await getThumbnailForTag(tag);
-    })
+    }),
   );
   return result;
 }
@@ -223,7 +247,7 @@ function rowToVideo(row: Record<string, unknown>): Video {
  * Banned content is excluded at the SQL level (never leaves the database).
  */
 async function _getVideos(
-  options: GetVideosOptions = {}
+  options: GetVideosOptions = {},
 ): Promise<PaginatedResult<Video>> {
   const {
     limit = 20,
@@ -286,7 +310,7 @@ async function _getVideos(
     const searchTerms = tags.toLowerCase().split(/\s+/).filter(Boolean);
     for (const term of searchTerms) {
       conditions.push(
-        `(tags && ARRAY[$${paramIndex}]::text[] OR COALESCE(characters,ARRAY[]::text[]) && ARRAY[$${paramIndex}]::text[] OR COALESCE(copyrights,ARRAY[]::text[]) && ARRAY[$${paramIndex}]::text[])`
+        `(tags && ARRAY[$${paramIndex}]::text[] OR COALESCE(characters,ARRAY[]::text[]) && ARRAY[$${paramIndex}]::text[] OR COALESCE(copyrights,ARRAY[]::text[]) && ARRAY[$${paramIndex}]::text[])`,
       );
       params.push(term);
       paramIndex++;
@@ -303,13 +327,17 @@ async function _getVideos(
     conditions.push(`source IN ('hentaicity','hentaigasm')`);
   }
 
-  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+  const whereClause =
+    conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
 
   const orderClause =
-    order === "score" ? "ORDER BY score DESC, created_at DESC"
-    : order === "favcount" ? "ORDER BY favorites DESC, score DESC"
-    : order === "duration" ? "ORDER BY duration DESC NULLS LAST, score DESC"
-    : "ORDER BY created_at DESC";
+    order === "score"
+      ? "ORDER BY score DESC, created_at DESC"
+      : order === "favcount"
+        ? "ORDER BY favorites DESC, score DESC"
+        : order === "duration"
+          ? "ORDER BY duration DESC NULLS LAST, score DESC"
+          : "ORDER BY created_at DESC";
 
   const query = `
     SELECT pk, source, source_id, slug, url, page_url, site, title,
@@ -337,9 +365,11 @@ async function _getVideos(
   return { data, hasMore };
 }
 
-// Memoize — 5 min TTL. Short enough to still feel fresh, long enough
-// to absorb bursts from ISR regeneration + warmup pings.
-const _getVideosMemo = memoize("videos", _getVideos, 5 * 60 * 1000);
+// Memoize — 30 min TTL. Longer window prevents cold-hit spikes (13-18s
+// TTFB on /hentai, /3d, /tag/*, /character/*) seen in the 20-persona
+// sim on 2026-04-17. Stale-while-revalidate means users past the first
+// hit always see a warm response while the refresh runs in the background.
+const _getVideosMemo = memoize("videos", _getVideos, 30 * 60 * 1000);
 
 /**
  * Public getVideos — catches PG errors at the boundary so callers always
@@ -350,7 +380,7 @@ const _getVideosMemo = memoize("videos", _getVideos, 5 * 60 * 1000);
  * could wedge `/tag/<xxx>` into serving "0 videos" for 5 minutes.
  */
 export async function getVideos(
-  opts: GetVideosOptions = {}
+  opts: GetVideosOptions = {},
 ): Promise<PaginatedResult<Video>> {
   try {
     return await _getVideosMemo(opts);
@@ -409,24 +439,27 @@ async function _countVideos(options: GetVideosOptions = {}): Promise<number> {
     const searchTerms = tags.toLowerCase().split(/\s+/).filter(Boolean);
     for (const term of searchTerms) {
       conditions.push(
-        `(tags && ARRAY[$${paramIndex}]::text[] OR COALESCE(characters,ARRAY[]::text[]) && ARRAY[$${paramIndex}]::text[] OR COALESCE(copyrights,ARRAY[]::text[]) && ARRAY[$${paramIndex}]::text[])`
+        `(tags && ARRAY[$${paramIndex}]::text[] OR COALESCE(characters,ARRAY[]::text[]) && ARRAY[$${paramIndex}]::text[] OR COALESCE(copyrights,ARRAY[]::text[]) && ARRAY[$${paramIndex}]::text[])`,
       );
       params.push(term);
       paramIndex++;
     }
   }
 
-  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+  const whereClause =
+    conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
   const { rows } = await pool.query<{ count: string }>(
     `SELECT COUNT(*)::bigint AS count FROM videos ${whereClause}`,
-    params
+    params,
   );
   return Number(rows[0]?.count ?? 0);
 }
 
 const _countVideosMemo = memoize("videos-count", _countVideos, 60 * 60 * 1000);
 
-export async function countVideos(opts: GetVideosOptions = {}): Promise<number> {
+export async function countVideos(
+  opts: GetVideosOptions = {},
+): Promise<number> {
   try {
     return await _countVideosMemo(opts);
   } catch (err) {
@@ -442,26 +475,26 @@ export async function countVideos(opts: GetVideosOptions = {}): Promise<number> 
 // ---------------------------------------------------------------------------
 
 export const CURATED_GENRES: { name: string; emoji: string }[] = [
-  { name: "anal",         emoji: "🍑" },
-  { name: "uncensored",   emoji: "🔥" },
-  { name: "vanilla",      emoji: "💗" },
-  { name: "3d",           emoji: "🎮" },
-  { name: "monster",      emoji: "👹" },
-  { name: "fantasy",      emoji: "🧚" },
-  { name: "schoolgirl",   emoji: "🎒" },
-  { name: "maid",         emoji: "🎀" },
-  { name: "futa",         emoji: "✨" },
-  { name: "milf",         emoji: "💋" },
-  { name: "elf",          emoji: "🧝" },
-  { name: "catgirl",      emoji: "🐱" },
-  { name: "tentacles",    emoji: "🐙" },
-  { name: "cosplay",      emoji: "👗" },
-  { name: "bondage",      emoji: "⛓️" },
-  { name: "group",        emoji: "👥" },
-  { name: "ahegao",       emoji: "😵" },
-  { name: "creampie",     emoji: "🍦" },
-  { name: "oral",         emoji: "👄" },
-  { name: "threesome",    emoji: "3️⃣" },
+  { name: "anal", emoji: "🍑" },
+  { name: "uncensored", emoji: "🔥" },
+  { name: "vanilla", emoji: "💗" },
+  { name: "3d", emoji: "🎮" },
+  { name: "monster", emoji: "👹" },
+  { name: "fantasy", emoji: "🧚" },
+  { name: "schoolgirl", emoji: "🎒" },
+  { name: "maid", emoji: "🎀" },
+  { name: "futa", emoji: "✨" },
+  { name: "milf", emoji: "💋" },
+  { name: "elf", emoji: "🧝" },
+  { name: "catgirl", emoji: "🐱" },
+  { name: "tentacles", emoji: "🐙" },
+  { name: "cosplay", emoji: "👗" },
+  { name: "bondage", emoji: "⛓️" },
+  { name: "group", emoji: "👥" },
+  { name: "ahegao", emoji: "😵" },
+  { name: "creampie", emoji: "🍦" },
+  { name: "oral", emoji: "👄" },
+  { name: "threesome", emoji: "3️⃣" },
 ];
 
 /** Count how many videos match each curated genre tag. Returns [{name, emoji, count}]. */
@@ -480,7 +513,7 @@ async function _getCuratedGenreCounts(): Promise<
        ) t
        WHERE tag = ANY($2::text[])
        GROUP BY tag`,
-      [BANNED_TAGS_ARRAY, names]
+      [BANNED_TAGS_ARRAY, names],
     );
     const byName = new Map<string, number>(rows.map((r) => [r.tag, r.count]));
     return CURATED_GENRES.map((g) => ({
@@ -497,7 +530,7 @@ async function _getCuratedGenreCounts(): Promise<
 export const getCuratedGenreCounts = memoize(
   "curated-genres",
   _getCuratedGenreCounts,
-  60 * 60 * 1000 // 1h
+  60 * 60 * 1000, // 1h
 );
 
 // ---------------------------------------------------------------------------
@@ -527,9 +560,12 @@ async function _getPopularTagsFromPg(limit: number): Promise<TagCount[]> {
        GROUP BY tag
        ORDER BY count DESC
        LIMIT $2`,
-      [BANNED_TAGS_ARRAY, limit]
+      [BANNED_TAGS_ARRAY, limit],
     );
-    return rows.map((r) => ({ name: r.tag as string, count: r.count as number }));
+    return rows.map((r) => ({
+      name: r.tag as string,
+      count: r.count as number,
+    }));
   } catch (err) {
     console.error("getPopularTagsFromPg error:", err);
     return [];
@@ -541,7 +577,7 @@ async function _getPopularTagsFromPg(limit: number): Promise<TagCount[]> {
 const _popularTagsCache = memoize(
   "popular-tags-pg",
   async (limit: number) => _getPopularTagsFromPg(limit),
-  60 * 60 * 1000
+  60 * 60 * 1000,
 );
 
 export async function getPopularTags(limit: number = 60): Promise<TagCount[]> {
@@ -564,9 +600,12 @@ async function _getPopularCharactersFromPg(limit: number): Promise<TagCount[]> {
        GROUP BY character
        ORDER BY count DESC
        LIMIT $2`,
-      [BANNED_TAGS_ARRAY, limit]
+      [BANNED_TAGS_ARRAY, limit],
     );
-    return rows.map((r) => ({ name: r.character as string, count: r.count as number }));
+    return rows.map((r) => ({
+      name: r.character as string,
+      count: r.count as number,
+    }));
   } catch (err) {
     console.error("getPopularCharactersFromPg error:", err);
     return [];
@@ -576,10 +615,12 @@ async function _getPopularCharactersFromPg(limit: number): Promise<TagCount[]> {
 const _popularCharactersCache = memoize(
   "popular-characters-pg",
   async (limit: number) => _getPopularCharactersFromPg(limit),
-  60 * 60 * 1000
+  60 * 60 * 1000,
 );
 
-export async function getPopularCharactersPg(limit: number = 40): Promise<TagCount[]> {
+export async function getPopularCharactersPg(
+  limit: number = 40,
+): Promise<TagCount[]> {
   return _popularCharactersCache(limit);
 }
 
@@ -607,7 +648,7 @@ async function _getVideoOfTheDay(): Promise<Video | null> {
          AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $1::text[])
        ORDER BY score DESC
        LIMIT 500`,
-      [BANNED_TAGS_ARRAY]
+      [BANNED_TAGS_ARRAY],
     );
     if (rows.length === 0) return null;
     // JS-side filter catches banned title/slug substrings
@@ -623,7 +664,11 @@ async function _getVideoOfTheDay(): Promise<Video | null> {
 }
 
 // Memoize 1h — the "day" doesn't change that often
-export const getVideoOfTheDay = memoize("vod", _getVideoOfTheDay, 60 * 60 * 1000);
+export const getVideoOfTheDay = memoize(
+  "vod",
+  _getVideoOfTheDay,
+  60 * 60 * 1000,
+);
 
 // ---------------------------------------------------------------------------
 // Single-video lookup by id+source (used by watch page to avoid live API calls)
@@ -655,7 +700,7 @@ async function _getDanbooruVideo(
          AND NOT (COALESCE(characters, ARRAY[]::text[]) && $2::text[])
          AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $2::text[])
        LIMIT 1`,
-      [id, BANNED_TAGS_ARRAY]
+      [id, BANNED_TAGS_ARRAY],
     );
     if (rows.length > 0) {
       const video = rowToVideo(rows[0]);
@@ -677,11 +722,15 @@ async function _getDanbooruVideo(
   }
   return null;
 }
-const _getDanbooruVideoMemo = memoize("danbooru-video", _getDanbooruVideo, 5 * 60 * 1000);
+const _getDanbooruVideoMemo = memoize(
+  "danbooru-video",
+  _getDanbooruVideo,
+  5 * 60 * 1000,
+);
 
 export async function getDanbooruVideo(
   id: number,
-  opts: { liveFallback?: boolean } = {}
+  opts: { liveFallback?: boolean } = {},
 ): Promise<Video | null> {
   return _getDanbooruVideoMemo(id, opts.liveFallback ?? false);
 }
@@ -705,14 +754,19 @@ export function encodeCursor(c: FeedCursor): string {
 }
 
 /** Decode a cursor, returning null on any parse error. */
-export function decodeCursor(raw: string | null | undefined): FeedCursor | null {
+export function decodeCursor(
+  raw: string | null | undefined,
+): FeedCursor | null {
   if (!raw) return null;
   try {
     const parsed = JSON.parse(Buffer.from(raw, "base64url").toString("utf8"));
     if (
       typeof parsed?.v === "number" &&
       typeof parsed?.id === "number" &&
-      (parsed?.order === "score" || parsed?.order === "date" || parsed?.order === "favcount" || parsed?.order === "duration")
+      (parsed?.order === "score" ||
+        parsed?.order === "date" ||
+        parsed?.order === "favcount" ||
+        parsed?.order === "duration")
     ) {
       return parsed;
     }
@@ -769,7 +823,7 @@ async function pickRandomStartCursor(opts: {
     const terms = tags.toLowerCase().split(/\s+/).filter(Boolean);
     for (const term of terms) {
       conditions.push(
-        `($${p} = ANY(tags) OR $${p} = ANY(characters) OR $${p} = ANY(copyrights))`
+        `($${p} = ANY(tags) OR $${p} = ANY(characters) OR $${p} = ANY(copyrights))`,
       );
       params.push(term);
       p++;
@@ -777,15 +831,19 @@ async function pickRandomStartCursor(opts: {
   }
 
   const sortCol =
-    order === "score" ? "score" :
-    order === "favcount" ? "favorites" :
-    order === "duration" ? "duration" :
-    "created_at";
-  const sortExpr = order === "date"
-    ? `EXTRACT(EPOCH FROM ${sortCol})::bigint`
-    : sortCol;
+    order === "score"
+      ? "score"
+      : order === "favcount"
+        ? "favorites"
+        : order === "duration"
+          ? "duration"
+          : "created_at";
+  const sortExpr =
+    order === "date" ? `EXTRACT(EPOCH FROM ${sortCol})::bigint` : sortCol;
 
-  const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
+  const whereClause = conditions.length
+    ? `WHERE ${conditions.join(" AND ")}`
+    : "";
 
   params.push(offset);
   const query = `
@@ -854,7 +912,13 @@ export async function getFeedKeyset(options: {
   // synthetic start if requested and the user didn't provide a cursor.
   let cursor: FeedCursor | null = inputCursor;
   if (!cursor && randomStart) {
-    cursor = await pickRandomStartCursor({ order, source, tags, requireThumbnail, max: randomStartMax });
+    cursor = await pickRandomStartCursor({
+      order,
+      source,
+      tags,
+      requireThumbnail,
+      max: randomStartMax,
+    });
     // If the random probe failed (empty table, etc.), fall through with null
     // cursor — the regular query will just return the top rows.
   }
@@ -886,7 +950,7 @@ export async function getFeedKeyset(options: {
     const terms = tags.toLowerCase().split(/\s+/).filter(Boolean);
     for (const term of terms) {
       conditions.push(
-        `($${p} = ANY(tags) OR $${p} = ANY(characters) OR $${p} = ANY(copyrights))`
+        `($${p} = ANY(tags) OR $${p} = ANY(characters) OR $${p} = ANY(copyrights))`,
       );
       params.push(term);
       p++;
@@ -895,14 +959,16 @@ export async function getFeedKeyset(options: {
 
   // Sort column + composite cursor clause.
   const sortCol =
-    order === "score" ? "score" :
-    order === "favcount" ? "favorites" :
-    order === "duration" ? "duration" :
-    "created_at";
+    order === "score"
+      ? "score"
+      : order === "favcount"
+        ? "favorites"
+        : order === "duration"
+          ? "duration"
+          : "created_at";
 
-  const sortExpr = order === "date"
-    ? `EXTRACT(EPOCH FROM ${sortCol})::bigint`
-    : sortCol;
+  const sortExpr =
+    order === "date" ? `EXTRACT(EPOCH FROM ${sortCol})::bigint` : sortCol;
 
   if (cursor && cursor.order === order) {
     // Composite tuple comparison: rows strictly after the cursor in DESC order.
@@ -911,7 +977,9 @@ export async function getFeedKeyset(options: {
     p += 2;
   }
 
-  const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
+  const whereClause = conditions.length
+    ? `WHERE ${conditions.join(" AND ")}`
+    : "";
   const orderClause = `ORDER BY ${sortCol} DESC, source_id DESC`;
 
   params.push(clampedLimit + 1);
@@ -1028,7 +1096,7 @@ export async function getRelatedVideos(
     copyrights?: string[];
     tags?: string[];
   },
-  limit: number = 12
+  limit: number = 12,
 ): Promise<Video[]> {
   const all = await _getRelatedVideosMaxMemo(
     video.slug,
@@ -1051,7 +1119,9 @@ const USER_VIDEO_SELECT = `
 `;
 
 /** Fetch a logged-in user's favorites as full Video objects, newest first. */
-export async function getUserFavorites(userId: string | number): Promise<Video[]> {
+export async function getUserFavorites(
+  userId: string | number,
+): Promise<Video[]> {
   try {
     const { rows } = await pool.query(
       `${USER_VIDEO_SELECT}
@@ -1063,7 +1133,7 @@ export async function getUserFavorites(userId: string | number): Promise<Video[]
          AND NOT (COALESCE(v.copyrights, ARRAY[]::text[]) && $2::text[])
        ORDER BY f.created_at DESC
        LIMIT 500`,
-      [userId, BANNED_TAGS_ARRAY]
+      [userId, BANNED_TAGS_ARRAY],
     );
     return filterBannedContent(rows.map(rowToVideo));
   } catch (err) {
@@ -1073,7 +1143,9 @@ export async function getUserFavorites(userId: string | number): Promise<Video[]
 }
 
 /** Fetch a logged-in user's watch history as full Video objects, newest first. */
-export async function getUserHistory(userId: string | number): Promise<Video[]> {
+export async function getUserHistory(
+  userId: string | number,
+): Promise<Video[]> {
   try {
     const { rows } = await pool.query(
       `${USER_VIDEO_SELECT}, h.watched_at
@@ -1085,7 +1157,7 @@ export async function getUserHistory(userId: string | number): Promise<Video[]> 
          AND NOT (COALESCE(v.copyrights, ARRAY[]::text[]) && $2::text[])
        ORDER BY h.watched_at DESC
        LIMIT 500`,
-      [userId, BANNED_TAGS_ARRAY]
+      [userId, BANNED_TAGS_ARRAY],
     );
     return filterBannedContent(rows.map(rowToVideo));
   } catch (err) {
