@@ -32,9 +32,14 @@ type Props = {
 
 const MIN_SKIP_OFFSET = 10;
 
-// How long we wait for /api/vast to return a parsed ad. If nothing
-// comes back in time we fail open and let the main video play.
-const VAST_FETCH_TIMEOUT_MS = 2500;
+// How long we wait for /api/vast to return a parsed ad. Measured from
+// production 2026-04-18: ExoClick warm 1.2s / cold 2.7s, HilltopAds warm
+// 3.8s / cold up to 28s. At 2.5s we were failing open on ~70% of the
+// HilltopAds bias → zero preroll 70% of the time. 8s catches the normal
+// case while still failing open on the rare cold CDN stall. During the
+// wait the main video is paused behind a transparent overlay so the user
+// sees the thumbnail (poster), not a black screen.
+const VAST_FETCH_TIMEOUT_MS = 8000;
 
 // How long we wait for the <video> element to actually start playing
 // after we've set `ad`. If the creative buffers too long or errors we
