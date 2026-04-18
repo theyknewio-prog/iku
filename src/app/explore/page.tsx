@@ -24,26 +24,29 @@ export async function generateMetadata(props: {
   const next = `${base}?sort=${sort}&page=${page + 1}`;
 
   return {
-    title: page > 1
-      ? `Explore Hentai Videos — Page ${page} | iku.gg`
-      : "Explore All Hentai Videos — 353,000+ Free Animated Clips | iku.gg",
-    description: "Explore the largest collection of free hentai videos. 353,000+ animated hentai clips sorted by score, newest, and favorites. Browse by character, series, or tag.",
+    title:
+      page > 1
+        ? `Explore Hentai Videos — Page ${page} | iku.gg`
+        : "Explore All Hentai Videos — 353,000+ Free Animated Clips | iku.gg",
+    description:
+      "Explore the largest collection of free hentai videos. 353,000+ animated hentai clips sorted by score, newest, and favorites. Browse by character, series, or tag.",
     other: { rating: "adult" },
     alternates: {
       canonical,
       types: {
-        ...(prev ? { "prev": prev } : {}),
-        ...(next ? { "next": next } : {}),
+        ...(prev ? { prev: prev } : {}),
+        ...(next ? { next: next } : {}),
       },
     },
-    robots: page > 1 ? { index: false, follow: true } : { index: true, follow: true },
+    robots:
+      page > 1 ? { index: false, follow: true } : { index: true, follow: true },
   };
 }
 
 type SortOption = "score" | "date" | "favcount" | "duration";
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
-  { value: "score",    label: "Top Rated" },
-  { value: "date",     label: "Newest" },
+  { value: "score", label: "Top Rated" },
+  { value: "date", label: "Newest" },
   { value: "duration", label: "Longest" },
   { value: "favcount", label: "Most Saved" },
 ];
@@ -159,8 +162,8 @@ export default async function ExplorePage(props: {
 }) {
   const searchParams = await props.searchParams;
   const page = Math.max(1, parseInt(searchParams.page || "1"));
-  const sort = (SORT_OPTIONS.find((o) => o.value === searchParams.sort)?.value ||
-    "score") as SortOption;
+  const sort = (SORT_OPTIONS.find((o) => o.value === searchParams.sort)
+    ?.value || "score") as SortOption;
 
   const { data: videos, hasMore } = await getVideos({
     limit: PER_PAGE,
@@ -178,11 +181,11 @@ export default async function ExplorePage(props: {
   // the generic "Trending / New / Feed" hubs).
   const hubTags = [
     "tsunade_(naruto)", // Popular Characters → Tsunade (most iconic)
-    "naruto",           // Popular Series → Naruto top
-    "animated",         // Trending Now → animated top
-    "original",         // New Releases → generic
-    "large_breasts",    // Tags → aesthetic
-    "animated",         // Swipe Feed → reuse animated
+    "naruto", // Popular Series → Naruto top
+    "animated", // Trending Now → animated top
+    "original", // New Releases → generic
+    "large_breasts", // Tags → aesthetic
+    "animated", // Swipe Feed → reuse animated
   ];
   const [charThumbs, seriesThumbs, hubThumbs] = await Promise.all([
     getThumbnailsForTags(charTags),
@@ -191,21 +194,27 @@ export default async function ExplorePage(props: {
   ]);
 
   const windowStart = Math.max(1, page - 3);
-  const windowEnd   = windowStart + 6;
-  const pageNumbers = Array.from({ length: windowEnd - windowStart + 1 }, (_, i) => windowStart + i);
+  const windowEnd = windowStart + 6;
+  const pageNumbers = Array.from(
+    { length: windowEnd - windowStart + 1 },
+    (_, i) => windowStart + i,
+  );
 
   return (
     <AgeGate>
       <main className="shell-content">
         <div className="page-container">
-
-          <HentaiProsBanner format="300x250" mobileFormat={null} />
+          {/* 2026-04-18: enabled mobileFormat="300x250" — was null so mobile
+              /explore had zero ads above fold despite healthy SEO traffic.
+              HentaiPros 300x250 is already proven on /tag/* and home. */}
+          <HentaiProsBanner format="300x250" mobileFormat="300x250" />
 
           {/* ── Page header ───────────────────────────────── */}
           <div className="explore-header">
             <h1 className="explore-header__title">Explore</h1>
             <p className="explore-header__sub">
-              353,000+ free animated hentai videos — browse by character, series, or vibe
+              353,000+ free animated hentai videos — browse by character,
+              series, or vibe
             </p>
           </div>
 
@@ -241,7 +250,9 @@ export default async function ExplorePage(props: {
                     </span>
                     <strong className="ex-hub-card__label">{card.label}</strong>
                     <span className="ex-hub-card__sub">{card.sub}</span>
-                    <span className="ex-hub-card__arrow" aria-hidden="true">→</span>
+                    <span className="ex-hub-card__arrow" aria-hidden="true">
+                      →
+                    </span>
                   </Link>
                 );
               })}
@@ -251,7 +262,10 @@ export default async function ExplorePage(props: {
           {/* ════════════════════════════════════════════════
               SECTION 2 — Popular Characters scroll row
           ════════════════════════════════════════════════ */}
-          <section className="ex-feature-section" aria-label="Popular characters">
+          <section
+            className="ex-feature-section"
+            aria-label="Popular characters"
+          >
             <div className="ex-feature-section__head">
               <h2 className="ex-feature-section__title">Popular Characters</h2>
               <Link href="/character" className="ex-feature-section__more">
@@ -277,7 +291,10 @@ export default async function ExplorePage(props: {
                       style={
                         thumb
                           ? undefined
-                          : { background: CHAR_GRADIENTS[i % CHAR_GRADIENTS.length] }
+                          : {
+                              background:
+                                CHAR_GRADIENTS[i % CHAR_GRADIENTS.length],
+                            }
                       }
                     >
                       {thumb ? (
@@ -324,7 +341,9 @@ export default async function ExplorePage(props: {
                     className="ex-series-card ex-series-card--with-image"
                     role="listitem"
                     aria-label={s.name}
-                    style={{ background: SERIES_GRADIENTS[i % SERIES_GRADIENTS.length] }}
+                    style={{
+                      background: SERIES_GRADIENTS[i % SERIES_GRADIENTS.length],
+                    }}
                   >
                     {thumb && (
                       <Image
@@ -339,14 +358,18 @@ export default async function ExplorePage(props: {
                     )}
                     {/* Decorative faint title watermark (only when no image) */}
                     {!thumb && (
-                      <span className="ex-series-card__watermark" aria-hidden="true">
+                      <span
+                        className="ex-series-card__watermark"
+                        aria-hidden="true"
+                      >
                         {s.name.slice(0, 2).toUpperCase()}
                       </span>
                     )}
                     <div className="ex-series-card__content">
                       <strong className="ex-series-card__name">{s.name}</strong>
                       <span className="ex-series-card__chars">
-                        {s.characters.length} character{s.characters.length !== 1 ? "s" : ""}
+                        {s.characters.length} character
+                        {s.characters.length !== 1 ? "s" : ""}
                       </span>
                     </div>
                   </Link>
@@ -416,11 +439,20 @@ export default async function ExplorePage(props: {
 
               {windowStart > 1 && (
                 <>
-                  <Link href={`/explore?sort=${sort}&page=1`} className="pagination-v2__btn">1</Link>
+                  <Link
+                    href={`/explore?sort=${sort}&page=1`}
+                    className="pagination-v2__btn"
+                  >
+                    1
+                  </Link>
                   {windowStart > 2 && (
                     <span
                       className="pagination-v2__btn"
-                      style={{ color: "rgba(255,255,255,0.2)", pointerEvents: "none", cursor: "default" }}
+                      style={{
+                        color: "rgba(255,255,255,0.2)",
+                        pointerEvents: "none",
+                        cursor: "default",
+                      }}
                     >
                       …
                     </span>
@@ -442,7 +474,11 @@ export default async function ExplorePage(props: {
               {hasMore && windowEnd < page + 6 && (
                 <span
                   className="pagination-v2__btn"
-                  style={{ color: "rgba(255,255,255,0.2)", pointerEvents: "none", cursor: "default" }}
+                  style={{
+                    color: "rgba(255,255,255,0.2)",
+                    pointerEvents: "none",
+                    cursor: "default",
+                  }}
                 >
                   …
                 </span>
