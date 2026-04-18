@@ -57,9 +57,18 @@ const STRIPE_PRICES = {
 
 // ── Date helpers ─────────────────────────────────────────────────────────────
 
-function getReportDate(): { label: string; startEpoch: number; endEpoch: number; iso: string } {
+function getReportDate(): {
+  label: string;
+  startEpoch: number;
+  endEpoch: number;
+  iso: string;
+} {
   const now = new Date();
-  const target = USE_TODAY ? now : new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 1));
+  const target = USE_TODAY
+    ? now
+    : new Date(
+        Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 1),
+      );
 
   const year = target.getUTCFullYear();
   const month = String(target.getUTCMonth() + 1).padStart(2, "0");
@@ -76,11 +85,15 @@ function getReportDate(): { label: string; startEpoch: number; endEpoch: number;
 // ── Logging ──────────────────────────────────────────────────────────────────
 
 const log = (msg: string) => console.log(`  ${msg}`);
-const section = (title: string) => console.log(`\n── ${title} ${"─".repeat(Math.max(0, 60 - title.length))}`);
+const section = (title: string) =>
+  console.log(`\n── ${title} ${"─".repeat(Math.max(0, 60 - title.length))}`);
 
 // ── HTTP helpers ─────────────────────────────────────────────────────────────
 
-function httpsGet(url: string, headers: Record<string, string> = {}): Promise<string> {
+function httpsGet(
+  url: string,
+  headers: Record<string, string> = {},
+): Promise<string> {
   return new Promise((resolve, reject) => {
     const opts = new URL(url);
     const reqOpts = {
@@ -99,7 +112,11 @@ function httpsGet(url: string, headers: Record<string, string> = {}): Promise<st
   });
 }
 
-function httpsPost(url: string, body: string, headers: Record<string, string> = {}): Promise<string> {
+function httpsPost(
+  url: string,
+  body: string,
+  headers: Record<string, string> = {},
+): Promise<string> {
   return new Promise((resolve, reject) => {
     const opts = new URL(url);
     const buf = Buffer.from(body);
@@ -139,11 +156,15 @@ async function sendTelegram(text: string): Promise<void> {
     console.log(text);
     return;
   }
-  const payload = JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text, parse_mode: "HTML" });
+  const payload = JSON.stringify({
+    chat_id: TELEGRAM_CHAT_ID,
+    text,
+    parse_mode: "HTML",
+  });
   await httpsPost(
     `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
     payload,
-    { "Content-Type": "application/json" }
+    { "Content-Type": "application/json" },
   );
 }
 
@@ -158,7 +179,10 @@ interface StripeData {
   activeSubs: number;
 }
 
-async function fetchStripeData(startEpoch: number, endEpoch: number): Promise<StripeData | null> {
+async function fetchStripeData(
+  startEpoch: number,
+  endEpoch: number,
+): Promise<StripeData | null> {
   if (!STRIPE_SECRET_KEY) {
     log("STRIPE_SECRET_KEY not set — skipping Stripe");
     return null;
@@ -183,8 +207,7 @@ async function fetchStripeData(startEpoch: number, endEpoch: number): Promise<St
     const chargesJson = JSON.parse(chargesRaw);
 
     // 3. Active subscriptions (for MRR)
-    const activeMrrUrl =
-      `https://api.stripe.com/v1/subscriptions?status=active&limit=100`;
+    const activeMrrUrl = `https://api.stripe.com/v1/subscriptions?status=active&limit=100`;
     const activeMrrRaw = await httpsGet(activeMrrUrl, headers);
     const activeMrrJson = JSON.parse(activeMrrRaw);
 
@@ -239,7 +262,13 @@ async function fetchStripeData(startEpoch: number, endEpoch: number): Promise<St
       }
     }
 
-    return { newSubs, revenue, breakdown, mrr: Math.round(mrr * 100) / 100, activeSubs };
+    return {
+      newSubs,
+      revenue,
+      breakdown,
+      mrr: Math.round(mrr * 100) / 100,
+      activeSubs,
+    };
   } catch (err) {
     log(`Stripe error: ${(err as Error).message}`);
     return null;
@@ -247,10 +276,11 @@ async function fetchStripeData(startEpoch: number, endEpoch: number): Promise<St
 }
 
 // ── ExoClick ─────────────────────────────────────────────────────────────────
-// ExoClick Statistics API v2: https://developers.exoclick.com/
-// Endpoint: GET https://api.exoclick.com/v2/statistics/publisher/dates
-// Requires: Authorization: Bearer <API_KEY>
-// API key location: admin.exoclick.com → Account → API
+// ExoClick Statistics API v2 (publisher side).
+// Step 1: POST /v2/login  { api_token } → { token, expires_in }
+// Step 2: GET  /v2/statistics/p/date?date-from=...&date-to=...  (Bearer <token>)
+// Response row: { ddate, impressions, clicks, video_hits, value, revenue }
+// `revenue` is already in dollars (value/100). Use it directly.
 
 interface ExoClickData {
   revenue: number;
@@ -259,34 +289,50 @@ interface ExoClickData {
   ctr: number;
 }
 
-async function fetchExoClickData(dateIso: string): Promise<ExoClickData | null> {
+async function exoclickLogin(): Promise<string | null> {
+  if (!EXOCLICK_API_KEY) return null;
+  try {
+    const raw = await httpsPost(
+      "https://api.exoclick.com/v2/login",
+      JSON.stringify({ api_token: EXOCLICK_API_KEY }),
+    );
+    const json = JSON.parse(raw);
+    return json?.token ?? null;
+  } catch (err) {
+    log(`ExoClick login error: ${(err as Error).message}`);
+    return null;
+  }
+}
+
+async function fetchExoClickData(
+  dateIso: string,
+): Promise<ExoClickData | null> {
   if (!EXOCLICK_API_KEY) {
     log("EXOCLICK_API_KEY not set — skipping ExoClick");
     return null;
   }
 
   try {
-    // ExoClick Statistics API v2
-    // Docs: https://developers.exoclick.com/#tag/statistics/operation/getPublisherDateStats
+    const token = await exoclickLogin();
+    if (!token) return null;
+
     const url =
-      `https://api.exoclick.com/v2/statistics/publisher/dates?` +
-      `date-from=${dateIso}&date-to=${dateIso}&include=totals`;
+      `https://api.exoclick.com/v2/statistics/p/date?` +
+      `date-from=${dateIso}&date-to=${dateIso}`;
 
     const raw = await httpsGet(url, {
-      Authorization: `Bearer ${EXOCLICK_API_KEY}`,
+      Authorization: `Bearer ${token}`,
       Accept: "application/json",
     });
 
     const json = JSON.parse(raw);
-
-    // Response structure: { result: { totals: { revenue, impressions, clicks } } }
-    const totals = json?.result?.totals ?? json?.totals ?? {};
+    const row = (json?.result ?? [])[0] ?? {};
 
     return {
-      revenue: parseFloat(totals.revenue ?? "0"),
-      impressions: parseInt(totals.impressions ?? "0", 10),
-      clicks: parseInt(totals.clicks ?? "0", 10),
-      ctr: parseFloat(totals.ctr ?? "0"),
+      revenue: parseFloat(row.revenue ?? "0"),
+      impressions: parseInt(row.impressions ?? "0", 10),
+      clicks: parseInt(row.clicks ?? "0", 10),
+      ctr: parseFloat(row.ctr ?? "0"),
     };
   } catch (err) {
     log(`ExoClick error: ${(err as Error).message}`);
@@ -295,10 +341,11 @@ async function fetchExoClickData(dateIso: string): Promise<ExoClickData | null> 
 }
 
 // ── Adsterra ─────────────────────────────────────────────────────────────────
-// Adsterra Publisher API: https://publisher.adsterra.com/api/
-// Endpoint: GET https://api3.adsterra.com/v3/stats/publisher
-// Requires: Authorization: Bearer <API_KEY>
-// API key location: beta.publishers.adsterra.com → Profile → API
+// Adsterra Publisher API (beta.publishers.adsterra.com → Profile → API).
+// GET https://api3.adsterratools.com/publisher/stats.json
+//   ?start_date=YYYY-MM-DD&finish_date=YYYY-MM-DD&group_by=date
+// Header: X-API-Key: <API_KEY>
+// Row: { date, impression, clicks, ctr, cpm, revenue }
 
 interface AdsterraData {
   revenue: number;
@@ -306,32 +353,30 @@ interface AdsterraData {
   clicks: number;
 }
 
-async function fetchAdsterraData(dateIso: string): Promise<AdsterraData | null> {
+async function fetchAdsterraData(
+  dateIso: string,
+): Promise<AdsterraData | null> {
   if (!ADSTERRA_API_KEY) {
     log("ADSTERRA_API_KEY not set — skipping Adsterra");
     return null;
   }
 
   try {
-    // Adsterra Statistics API
-    // Docs: https://developers.adsterra.com/
     const url =
-      `https://api3.adsterra.com/v3/stats/publisher?` +
-      `from=${dateIso}&to=${dateIso}&group_by=day`;
+      `https://api3.adsterratools.com/publisher/stats.json?` +
+      `start_date=${dateIso}&finish_date=${dateIso}&group_by=date`;
 
     const raw = await httpsGet(url, {
-      Authorization: `Bearer ${ADSTERRA_API_KEY}`,
+      "X-API-Key": ADSTERRA_API_KEY,
       Accept: "application/json",
     });
 
     const json = JSON.parse(raw);
-
-    // Response: { status: "ok", data: [{ revenue, impressions, clicks }] }
-    const row = json?.data?.[0] ?? {};
+    const row = json?.items?.[0] ?? {};
 
     return {
       revenue: parseFloat(row.revenue ?? "0"),
-      impressions: parseInt(row.impressions ?? "0", 10),
+      impressions: parseInt(row.impression ?? "0", 10),
       clicks: parseInt(row.clicks ?? "0", 10),
     };
   } catch (err) {
@@ -352,7 +397,9 @@ interface CrakRevenueData {
   clicks: number;
 }
 
-async function fetchCrakRevenueData(dateIso: string): Promise<CrakRevenueData | null> {
+async function fetchCrakRevenueData(
+  dateIso: string,
+): Promise<CrakRevenueData | null> {
   if (!CRAKREVENUE_API_KEY) {
     log("CRAKREVENUE_API_KEY not set — skipping CrakRevenue");
     return null;
@@ -394,7 +441,9 @@ interface ChaturbateData {
   clicks: number;
 }
 
-async function fetchChaturbateData(dateIso: string): Promise<ChaturbateData | null> {
+async function fetchChaturbateData(
+  dateIso: string,
+): Promise<ChaturbateData | null> {
   if (!CHATURBATE_API_KEY) {
     log("CHATURBATE_API_KEY not set — skipping Chaturbate");
     return null;
@@ -433,7 +482,10 @@ interface PgStats {
   topCountries: Array<{ country: string; pct: number }> | null;
 }
 
-async function fetchPgStats(startEpoch: number, endEpoch: number): Promise<PgStats | null> {
+async function fetchPgStats(
+  startEpoch: number,
+  endEpoch: number,
+): Promise<PgStats | null> {
   if (!DATABASE_URL) {
     log("DATABASE_URL not set — skipping PostgreSQL stats");
     return null;
@@ -443,7 +495,9 @@ async function fetchPgStats(startEpoch: number, endEpoch: number): Promise<PgSta
 
   try {
     // Total video count (always available)
-    const countRes = await pool.query<{ count: string }>("SELECT COUNT(*) AS count FROM videos");
+    const countRes = await pool.query<{ count: string }>(
+      "SELECT COUNT(*) AS count FROM videos",
+    );
     const totalVideos = parseInt(countRes.rows[0]?.count ?? "0", 10);
 
     // Page views for the day — from user_history table if it exists and has timestamps
@@ -455,7 +509,7 @@ async function fetchPgStats(startEpoch: number, endEpoch: number): Promise<PgSta
       const viewsRes = await pool.query<{ count: string }>(
         `SELECT COUNT(*) AS count FROM user_history
          WHERE watched_at >= $1 AND watched_at <= $2`,
-        [startTs, endTs]
+        [startTs, endTs],
       );
       todayViews = parseInt(viewsRes.rows[0]?.count ?? "0", 10);
     } catch {
@@ -467,7 +521,9 @@ async function fetchPgStats(startEpoch: number, endEpoch: number): Promise<PgSta
     return { totalVideos, todayViews, topCountries: null };
   } catch (err) {
     log(`PostgreSQL error: ${(err as Error).message}`);
-    try { await pool.end(); } catch {}
+    try {
+      await pool.end();
+    } catch {}
     return null;
   }
 }
@@ -500,7 +556,11 @@ function saveSnapshot(date: string, totalRevenue: number): void {
     const fs = require("fs") as typeof import("fs");
     const path = require("path") as typeof import("path");
     const snapshotPath = path.join("/tmp", "iku-revenue-snapshot.json");
-    fs.writeFileSync(snapshotPath, JSON.stringify({ date, totalRevenue }), "utf-8");
+    fs.writeFileSync(
+      snapshotPath,
+      JSON.stringify({ date, totalRevenue }),
+      "utf-8",
+    );
   } catch {
     // non-critical
   }
@@ -538,7 +598,8 @@ interface AllData {
 }
 
 function buildMessage(data: AllData): string {
-  const { date, stripe, exoclick, adsterra, crakrevenue, chaturbate, pg } = data;
+  const { date, stripe, exoclick, adsterra, crakrevenue, chaturbate, pg } =
+    data;
 
   const lines: string[] = [];
 
@@ -555,7 +616,9 @@ function buildMessage(data: AllData): string {
 
   // Adsterra
   if (adsterra) {
-    lines.push(`💰 <b>Adsterra:</b> ${eur(adsterra.revenue)} (${numK(adsterra.impressions)} impr)`);
+    lines.push(
+      `💰 <b>Adsterra:</b> ${eur(adsterra.revenue)} (${numK(adsterra.impressions)} impr)`,
+    );
   } else {
     lines.push(`💰 <b>Adsterra:</b> N/A — set ADSTERRA_API_KEY`);
   }
@@ -563,26 +626,37 @@ function buildMessage(data: AllData): string {
   // Stripe
   if (stripe) {
     const parts: string[] = [];
-    if (stripe.breakdown.monthly > 0) parts.push(`${stripe.breakdown.monthly}×monthly`);
-    if (stripe.breakdown.yearly > 0) parts.push(`${stripe.breakdown.yearly}×yearly`);
-    if (stripe.breakdown.lifetime > 0) parts.push(`${stripe.breakdown.lifetime}×lifetime`);
+    if (stripe.breakdown.monthly > 0)
+      parts.push(`${stripe.breakdown.monthly}×monthly`);
+    if (stripe.breakdown.yearly > 0)
+      parts.push(`${stripe.breakdown.yearly}×yearly`);
+    if (stripe.breakdown.lifetime > 0)
+      parts.push(`${stripe.breakdown.lifetime}×lifetime`);
     const detail = parts.length > 0 ? ` (${parts.join(", ")})` : "";
-    lines.push(`💰 <b>Stripe Pro:</b> ${stripe.newSubs} new subs${detail}, ${eur(stripe.revenue)} new revenue`);
-    lines.push(`   MRR: ${eur(stripe.mrr)} | Active subs: ${stripe.activeSubs}`);
+    lines.push(
+      `💰 <b>Stripe Pro:</b> ${stripe.newSubs} new subs${detail}, ${eur(stripe.revenue)} new revenue`,
+    );
+    lines.push(
+      `   MRR: ${eur(stripe.mrr)} | Active subs: ${stripe.activeSubs}`,
+    );
   } else {
     lines.push(`💰 <b>Stripe Pro:</b> N/A — set STRIPE_SECRET_KEY`);
   }
 
   // CrakRevenue
   if (crakrevenue) {
-    lines.push(`💰 <b>CrakRevenue:</b> ${eur(crakrevenue.revenue)} (${crakrevenue.conversions} conversions)`);
+    lines.push(
+      `💰 <b>CrakRevenue:</b> ${eur(crakrevenue.revenue)} (${crakrevenue.conversions} conversions)`,
+    );
   } else {
     lines.push(`💰 <b>CrakRevenue:</b> N/A — set CRAKREVENUE_API_KEY`);
   }
 
   // Chaturbate
   if (chaturbate) {
-    lines.push(`💰 <b>Chaturbate:</b> ${eur(chaturbate.revenue)} (${chaturbate.signups} signups)`);
+    lines.push(
+      `💰 <b>Chaturbate:</b> ${eur(chaturbate.revenue)} (${chaturbate.signups} signups)`,
+    );
   } else {
     lines.push(`💰 <b>Chaturbate:</b> N/A — set CHATURBATE_API_KEY`);
   }
@@ -633,14 +707,15 @@ async function main() {
 
   section("Fetching data");
 
-  const [stripe, exoclick, adsterra, crakrevenue, chaturbate, pg] = await Promise.allSettled([
-    fetchStripeData(reportDate.startEpoch, reportDate.endEpoch),
-    fetchExoClickData(reportDate.iso),
-    fetchAdsterraData(reportDate.iso),
-    fetchCrakRevenueData(reportDate.iso),
-    fetchChaturbateData(reportDate.iso),
-    fetchPgStats(reportDate.startEpoch, reportDate.endEpoch),
-  ]);
+  const [stripe, exoclick, adsterra, crakrevenue, chaturbate, pg] =
+    await Promise.allSettled([
+      fetchStripeData(reportDate.startEpoch, reportDate.endEpoch),
+      fetchExoClickData(reportDate.iso),
+      fetchAdsterraData(reportDate.iso),
+      fetchCrakRevenueData(reportDate.iso),
+      fetchChaturbateData(reportDate.iso),
+      fetchPgStats(reportDate.startEpoch, reportDate.endEpoch),
+    ]);
 
   const data: AllData = {
     date: { label: reportDate.label, iso: reportDate.iso },
@@ -652,10 +727,14 @@ async function main() {
     pg: pg.status === "fulfilled" ? pg.value : null,
   };
 
-  log(`Stripe: ${data.stripe ? `${data.stripe.newSubs} new subs, ${eur(data.stripe.revenue)}` : "N/A"}`);
+  log(
+    `Stripe: ${data.stripe ? `${data.stripe.newSubs} new subs, ${eur(data.stripe.revenue)}` : "N/A"}`,
+  );
   log(`ExoClick: ${data.exoclick ? eur(data.exoclick.revenue) : "N/A"}`);
   log(`Adsterra: ${data.adsterra ? eur(data.adsterra.revenue) : "N/A"}`);
-  log(`CrakRevenue: ${data.crakrevenue ? eur(data.crakrevenue.revenue) : "N/A"}`);
+  log(
+    `CrakRevenue: ${data.crakrevenue ? eur(data.crakrevenue.revenue) : "N/A"}`,
+  );
   log(`Chaturbate: ${data.chaturbate ? eur(data.chaturbate.revenue) : "N/A"}`);
 
   section("Sending Telegram");
@@ -679,7 +758,7 @@ async function main() {
 main().catch(async (err) => {
   console.error("CRASH:", err);
   await sendTelegram(
-    `<b>💥 Revenue Report CRASH</b>\n${(err as Error).message}\n\nCheck /var/log/iku-revenue.log`
+    `<b>💥 Revenue Report CRASH</b>\n${(err as Error).message}\n\nCheck /var/log/iku-revenue.log`,
   ).catch(() => {});
   process.exit(1);
 });

@@ -31,12 +31,12 @@ interface AdZoneProps {
 }
 
 const SIZE_MAP: Record<string, { width: number; height: number }> = {
-  "728x90":  { width: 728, height: 90 },
+  "728x90": { width: 728, height: 90 },
   "300x250": { width: 300, height: 250 },
   "300x600": { width: 300, height: 600 },
-  "320x50":  { width: 320, height: 50 },
-  "300x50":  { width: 300, height: 50 },
-  native:    { width: 0,   height: 250 },
+  "320x50": { width: 320, height: 50 },
+  "300x50": { width: 300, height: 50 },
+  native: { width: 0, height: 250 },
 };
 
 function defaultRefresh(size: AdZoneProps["size"]): boolean {
@@ -52,10 +52,10 @@ export function AdZoneClient({
   mobileZoneId,
   mobileSize,
 }: AdZoneProps) {
-  const containerRef  = useRef<HTMLDivElement>(null);
-  const insertedRef   = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const insertedRef = useRef(false);
   const inViewportRef = useRef(false);
-  const refreshTimer  = useRef<ReturnType<typeof setInterval> | null>(null);
+  const refreshTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isPro, setIsPro] = useState(false);
 
@@ -72,8 +72,16 @@ export function AdZoneClient({
   const insertAd = useCallback(() => {
     const container = containerRef.current;
     if (!container || isPro) return;
-    insertExoClickZone(container, zoneId, insertedRef);
-  }, [zoneId, isPro]);
+    const fb =
+      size === "728x90" ||
+      size === "300x250" ||
+      size === "300x600" ||
+      size === "320x50" ||
+      size === "300x50"
+        ? size
+        : undefined;
+    insertExoClickZone(container, zoneId, insertedRef, fb);
+  }, [zoneId, isPro, size]);
 
   // Insert immediately if not lazy, otherwise wait for IntersectionObserver.
   useEffect(() => {
@@ -93,7 +101,7 @@ export function AdZoneClient({
           observer.disconnect();
         }
       },
-      { rootMargin: "200px" }
+      { rootMargin: "200px" },
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -109,7 +117,7 @@ export function AdZoneClient({
       (entries) => {
         inViewportRef.current = !!entries[0]?.isIntersecting;
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
     viewportObserver.observe(el);
 
@@ -135,7 +143,11 @@ export function AdZoneClient({
       className={`ad-zone ${sizeClass} ${className}`.trim()}
       data-ad-zone={zoneId}
       aria-hidden="true"
-      style={size === "native" ? { width: "100%", minHeight: dims.height } : undefined}
+      style={
+        size === "native"
+          ? { width: "100%", minHeight: dims.height }
+          : undefined
+      }
     />
   );
 }
