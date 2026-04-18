@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  useRef,
-  useState,
-  useEffect,
-  useCallback,
-  useTransition,
-} from "react";
+import { useRef, useState, useEffect, useCallback, useTransition } from "react";
 import Image from "next/image";
 import { useVideoShortcuts } from "@/hooks/useVideoShortcuts";
 import { useDoubleTap } from "@/hooks/useDoubleTap";
@@ -70,7 +64,15 @@ interface HeartBurst {
    (helpers, icons, ControlBtn, SPEEDS are imported from WatchPlayer.ui.tsx)
 ───────────────────────────────────────────────────────────── */
 
-export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnded, suppressEndOverlay, pausedByOverlay }: WatchPlayerProps) {
+export function WatchPlayer({
+  src,
+  poster,
+  resolveUrl,
+  relatedVideos,
+  onVideoEnded,
+  suppressEndOverlay,
+  pausedByOverlay,
+}: WatchPlayerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -93,9 +95,15 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
         if (!cancelled && data.videoUrl) setResolvedSrc(data.videoUrl);
         else if (!cancelled) setError(true);
       })
-      .catch(() => { if (!cancelled) setError(true); })
-      .finally(() => { if (!cancelled) setResolving(false); });
-    return () => { cancelled = true; };
+      .catch(() => {
+        if (!cancelled) setError(true);
+      })
+      .finally(() => {
+        if (!cancelled) setResolving(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [src, resolveUrl]);
 
   /* ── Playback state ────────────────────────────────────── */
@@ -174,18 +182,26 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
     if (!v) return;
 
     if (pausedByOverlay) {
-      try { v.pause(); } catch {}
-      try { v.currentTime = 0; } catch {}
+      try {
+        v.pause();
+      } catch {}
+      try {
+        v.currentTime = 0;
+      } catch {}
       setPlaying(false);
 
       // Defensive: re-pause on any event that could have started playback
       // while the overlay is still up.
       const forcePause = () => {
         if (!v.paused) {
-          try { v.pause(); } catch {}
+          try {
+            v.pause();
+          } catch {}
         }
         if (v.currentTime > 0.1) {
-          try { v.currentTime = 0; } catch {}
+          try {
+            v.currentTime = 0;
+          } catch {}
         }
       };
       v.addEventListener("canplay", forcePause);
@@ -199,46 +215,61 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
     }
 
     // Overlay gone — start playback from 0.
-    try { v.currentTime = 0; } catch {}
+    try {
+      v.currentTime = 0;
+    } catch {}
     const p = v.play();
-    if (p && typeof p.catch === "function") p.catch(() => { /* autoplay blocked, user will tap */ });
+    if (p && typeof p.catch === "function")
+      p.catch(() => {
+        /* autoplay blocked, user will tap */
+      });
     setPlaying(true);
   }, [pausedByOverlay]);
 
   /* ── Feature 1: Loop toggle (default OFF so onEnded fires for postroll) ─ */
   const [looping, setLooping] = useState(false);
-  const toggleLoop = useCallback(() => { setLooping((l) => !l); }, []);
+  const toggleLoop = useCallback(() => {
+    setLooping((l) => !l);
+  }, []);
 
   /* ── Feature 2: Tap-to-unmute hint ────────────────────── */
   const [showUnmuteHint, setShowUnmuteHint] = useState(true);
 
   useEffect(() => {
-    unmuteHintTimerRef.current = setTimeout(() => setShowUnmuteHint(false), 3000);
+    unmuteHintTimerRef.current = setTimeout(
+      () => setShowUnmuteHint(false),
+      3000,
+    );
     return () => {
       if (unmuteHintTimerRef.current) clearTimeout(unmuteHintTimerRef.current);
     };
   }, []);
 
-  const handleUnmuteClick = useCallback((e?: React.MouseEvent | React.KeyboardEvent) => {
-    if (e) e.stopPropagation();
-    const v = videoRef.current;
-    if (!v) return;
-    // IMPORTANT: never mutate `v.muted` directly — the <video> element has
-    // `muted={muted}` so React controls that attribute. Mutating the DOM
-    // races with the next render (which re-applies the stale prop and
-    // re-mutes the video before the user hears anything). Instead we drive
-    // state first and let React apply the attribute on re-render. Volume
-    // is imperative (no `volume` prop on <video>) so we can touch it.
-    const nextVolume = volume || 0.5;
-    v.volume = nextVolume;
-    setVolume(nextVolume);
-    setMuted(false);
-    setShowUnmuteHint(false);
-    if (unmuteHintTimerRef.current) clearTimeout(unmuteHintTimerRef.current);
-    // Re-trigger play to satisfy browser autoplay policy for unmuting.
-    // Rejection is fine — browser pauses if it can't play with audio.
-    v.play().catch(() => { /* autoplay policy rejected unmute */ });
-  }, [volume]);
+  const handleUnmuteClick = useCallback(
+    (e?: React.MouseEvent | React.KeyboardEvent) => {
+      if (e) e.stopPropagation();
+      const v = videoRef.current;
+      if (!v) return;
+      // IMPORTANT: never mutate `v.muted` directly — the <video> element has
+      // `muted={muted}` so React controls that attribute. Mutating the DOM
+      // races with the next render (which re-applies the stale prop and
+      // re-mutes the video before the user hears anything). Instead we drive
+      // state first and let React apply the attribute on re-render. Volume
+      // is imperative (no `volume` prop on <video>) so we can touch it.
+      const nextVolume = volume || 0.5;
+      v.volume = nextVolume;
+      setVolume(nextVolume);
+      setMuted(false);
+      setShowUnmuteHint(false);
+      if (unmuteHintTimerRef.current) clearTimeout(unmuteHintTimerRef.current);
+      // Re-trigger play to satisfy browser autoplay policy for unmuting.
+      // Rejection is fine — browser pauses if it can't play with audio.
+      v.play().catch(() => {
+        /* autoplay policy rejected unmute */
+      });
+    },
+    [volume],
+  );
 
   /* ── Feature 3: End-of-video overlay + countdown ───────── */
   const [ended, setEnded] = useState(false);
@@ -297,64 +328,85 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
   }, [looping, relatedVideos, onVideoEnded]);
 
   /* ── Feature 4: Mobile volume gesture (left-side vertical swipe) */
-  const touchStartRef = useRef<{ x: number; y: number; isLeftSide: boolean; isVolumeGesture: boolean }>({
-    x: 0, y: 0, isLeftSide: false, isVolumeGesture: false,
+  const touchStartRef = useRef<{
+    x: number;
+    y: number;
+    isLeftSide: boolean;
+    isVolumeGesture: boolean;
+  }>({
+    x: 0,
+    y: 0,
+    isLeftSide: false,
+    isVolumeGesture: false,
   });
-  const [volumeGestureLabel, setVolumeGestureLabel] = useState<string | null>(null);
-  const volumeLabelTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [volumeGestureLabel, setVolumeGestureLabel] = useState<string | null>(
+    null,
+  );
+  const volumeLabelTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
 
   const showVolumeLabel = useCallback((vol: number) => {
     setVolumeGestureLabel(`Vol ${Math.round(vol * 100)}%`);
     if (volumeLabelTimerRef.current) clearTimeout(volumeLabelTimerRef.current);
-    volumeLabelTimerRef.current = setTimeout(() => setVolumeGestureLabel(null), 1200);
+    volumeLabelTimerRef.current = setTimeout(
+      () => setVolumeGestureLabel(null),
+      1200,
+    );
   }, []);
 
-  const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
-    const container = containerRef.current;
-    if (!container) return;
-    const rect = container.getBoundingClientRect();
-    const touch = e.touches[0];
-    const isLeftSide = touch.clientX - rect.left < rect.width / 2;
-    touchStartRef.current = {
-      x: touch.clientX,
-      y: touch.clientY,
-      isLeftSide,
-      isVolumeGesture: false,
-    };
-    // Always show controls on touch
-    showControls();
-  }, []); // showControls declared below — hoisted via ref pattern; we call it by name after definition
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent<HTMLDivElement>) => {
+      const container = containerRef.current;
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+      const touch = e.touches[0];
+      const isLeftSide = touch.clientX - rect.left < rect.width / 2;
+      touchStartRef.current = {
+        x: touch.clientX,
+        y: touch.clientY,
+        isLeftSide,
+        isVolumeGesture: false,
+      };
+      // Always show controls on touch
+      showControls();
+    },
+    [],
+  ); // showControls declared below — hoisted via ref pattern; we call it by name after definition
 
-  const handleTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
-    const ref = touchStartRef.current;
-    if (!ref.isLeftSide) return;
-    const touch = e.touches[0];
-    const deltaY = ref.y - touch.clientY;
-    const deltaX = Math.abs(touch.clientX - ref.x);
-    // Only treat as volume gesture if vertical movement dominates
-    if (Math.abs(deltaY) < 8 && !ref.isVolumeGesture) return;
-    if (deltaX > Math.abs(deltaY) && !ref.isVolumeGesture) return;
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent<HTMLDivElement>) => {
+      const ref = touchStartRef.current;
+      if (!ref.isLeftSide) return;
+      const touch = e.touches[0];
+      const deltaY = ref.y - touch.clientY;
+      const deltaX = Math.abs(touch.clientX - ref.x);
+      // Only treat as volume gesture if vertical movement dominates
+      if (Math.abs(deltaY) < 8 && !ref.isVolumeGesture) return;
+      if (deltaX > Math.abs(deltaY) && !ref.isVolumeGesture) return;
 
-    ref.isVolumeGesture = true;
-    e.stopPropagation();
+      ref.isVolumeGesture = true;
+      e.stopPropagation();
 
-    const container = containerRef.current;
-    const v = videoRef.current;
-    if (!container || !v) return;
+      const container = containerRef.current;
+      const v = videoRef.current;
+      if (!container || !v) return;
 
-    const rect = container.getBoundingClientRect();
-    // Full player height = 0→1 volume range
-    const deltaNorm = deltaY / rect.height;
-    const newVol = Math.max(0, Math.min(1, v.volume + deltaNorm * 1.5));
-    v.volume = newVol;
-    setVolume(newVol);
-    if (newVol > 0) {
-      // State-only — v.muted is React-controlled via muted={muted}.
-      setMuted(false);
-    }
-    touchStartRef.current.y = touch.clientY;
-    showVolumeLabel(newVol);
-  }, [showVolumeLabel]);
+      const rect = container.getBoundingClientRect();
+      // Full player height = 0→1 volume range
+      const deltaNorm = deltaY / rect.height;
+      const newVol = Math.max(0, Math.min(1, v.volume + deltaNorm * 1.5));
+      v.volume = newVol;
+      setVolume(newVol);
+      if (newVol > 0) {
+        // State-only — v.muted is React-controlled via muted={muted}.
+        setMuted(false);
+      }
+      touchStartRef.current.y = touch.clientY;
+      showVolumeLabel(newVol);
+    },
+    [showVolumeLabel],
+  );
 
   /* ── Feature 5: Scroll wheel volume ───────────────────── */
   const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
@@ -380,7 +432,11 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
   const [seekOverlay, setSeekOverlay] = useState<SeekOverlay | null>(null);
   const [heartBursts, setHeartBursts] = useState<HeartBurst[]>([]);
   const [shareToast, setShareToast] = useState(false);
-  const lastClickRef = useRef<{ x: number; y: number; time: number }>({ x: 0, y: 0, time: 0 });
+  const lastClickRef = useRef<{ x: number; y: number; time: number }>({
+    x: 0,
+    y: 0,
+    time: 0,
+  });
   const shareToastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [seekTooltip, setSeekTooltip] = useState<{
     visible: boolean;
@@ -425,7 +481,8 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
       if (overlayTimerRef.current) clearTimeout(overlayTimerRef.current);
       if (countdownRef.current) clearInterval(countdownRef.current);
       if (unmuteHintTimerRef.current) clearTimeout(unmuteHintTimerRef.current);
-      if (volumeLabelTimerRef.current) clearTimeout(volumeLabelTimerRef.current);
+      if (volumeLabelTimerRef.current)
+        clearTimeout(volumeLabelTimerRef.current);
       if (shareToastTimerRef.current) clearTimeout(shareToastTimerRef.current);
     };
   }, []);
@@ -443,7 +500,32 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
 
   const handleDurationChange = useCallback(() => {
     const v = videoRef.current;
-    if (v) setDuration(v.duration);
+    if (!v) return;
+    // Chromium misreports `duration` as Infinity on streamed MP4s whose
+    // `moov` atom lives at the end of the file (non-faststart). Seeking to
+    // a huge time forces the browser to resolve the real duration via the
+    // tail range request; the timeupdate handler restores position to 0.
+    // Without this, the control bar shows "3:41 / 0:00" because
+    // formatTime(Infinity) returns "0:00".
+    if (!isFinite(v.duration) || v.duration === 0) {
+      const restore = () => {
+        v.removeEventListener("timeupdate", restore);
+        try {
+          v.currentTime = 0;
+        } catch {
+          /* ignore */
+        }
+        if (isFinite(v.duration)) setDuration(v.duration);
+      };
+      v.addEventListener("timeupdate", restore);
+      try {
+        v.currentTime = 1e101;
+      } catch {
+        v.removeEventListener("timeupdate", restore);
+      }
+      return;
+    }
+    setDuration(v.duration);
   }, []);
 
   const handlePlay = useCallback(() => {
@@ -492,7 +574,9 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
         setShowUnmuteHint(false);
         // Re-trigger play() so the browser allows audio output on the
         // current user gesture (autoplay policy requirement).
-        v.play().catch(() => { /* autoplay policy — benign */ });
+        v.play().catch(() => {
+          /* autoplay policy — benign */
+        });
       }
       // IMPORTANT: never touch v.muted here — it's a React-controlled prop
       // (<video muted={muted}>), so returning `next` from this updater lets
@@ -519,10 +603,12 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
       setMuted(val === 0);
       if (val > 0) {
         setShowUnmuteHint(false);
-        v.play().catch(() => { /* autoplay policy — benign */ });
+        v.play().catch(() => {
+          /* autoplay policy — benign */
+        });
       }
     },
-    []
+    [],
   );
 
   const handleSpeedSelect = useCallback((s: Speed) => {
@@ -537,9 +623,13 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
     const el = containerRef.current;
     if (!el) return;
     if (!document.fullscreenElement) {
-      el.requestFullscreen().catch(() => { /* permissions-policy / iframe deny */ });
+      el.requestFullscreen().catch(() => {
+        /* permissions-policy / iframe deny */
+      });
     } else {
-      document.exitFullscreen().catch(() => { /* no active fullscreen */ });
+      document.exitFullscreen().catch(() => {
+        /* no active fullscreen */
+      });
     }
   }, []);
 
@@ -645,7 +735,7 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
     (e: React.MouseEvent<HTMLDivElement>) => {
       lastClickRef.current = { x: e.clientX, y: e.clientY, time: Date.now() };
     },
-    []
+    [],
   );
 
   /* ── Progress bar ─────────────────────────────────────── */
@@ -670,71 +760,88 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
   }, []);
 
   /** Click to seek (instant) */
-  const seek = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (scrubbingRef.current) return; // ignore click at end of drag
-    seekTo(getRatio(e.clientX));
-  }, [seekTo, getRatio]);
+  const seek = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (scrubbingRef.current) return; // ignore click at end of drag
+      seekTo(getRatio(e.clientX));
+    },
+    [seekTo, getRatio],
+  );
 
   /** Mouse drag — start */
-  const handleScrubStart = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    scrubbingRef.current = true;
-    seekTo(getRatio(e.clientX));
+  const handleScrubStart = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      scrubbingRef.current = true;
+      seekTo(getRatio(e.clientX));
 
-    const onMove = (ev: MouseEvent) => {
-      const ratio = getRatio(ev.clientX);
-      seekTo(ratio);
-      const bar = progressRef.current;
-      if (bar) {
-        const rect = bar.getBoundingClientRect();
-        const v = videoRef.current;
-        if (v && isFinite(v.duration)) {
-          setSeekTooltip({ visible: true, time: ratio * v.duration, x: ev.clientX - rect.left });
+      const onMove = (ev: MouseEvent) => {
+        const ratio = getRatio(ev.clientX);
+        seekTo(ratio);
+        const bar = progressRef.current;
+        if (bar) {
+          const rect = bar.getBoundingClientRect();
+          const v = videoRef.current;
+          if (v && isFinite(v.duration)) {
+            setSeekTooltip({
+              visible: true,
+              time: ratio * v.duration,
+              x: ev.clientX - rect.left,
+            });
+          }
         }
-      }
-    };
-    const onUp = () => {
-      scrubbingRef.current = false;
-      setSeekTooltip((s) => ({ ...s, visible: false }));
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-    };
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-  }, [seekTo, getRatio]);
+      };
+      const onUp = () => {
+        scrubbingRef.current = false;
+        setSeekTooltip((s) => ({ ...s, visible: false }));
+        window.removeEventListener("mousemove", onMove);
+        window.removeEventListener("mouseup", onUp);
+      };
+      window.addEventListener("mousemove", onMove);
+      window.addEventListener("mouseup", onUp);
+    },
+    [seekTo, getRatio],
+  );
 
   /** Touch drag — start (mobile) */
-  const handleTouchScrubStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
-    e.stopPropagation(); // prevent feed swipe while scrubbing
-    scrubbingRef.current = true;
-    const touch = e.touches[0];
-    seekTo(getRatio(touch.clientX));
+  const handleTouchScrubStart = useCallback(
+    (e: React.TouchEvent<HTMLDivElement>) => {
+      e.stopPropagation(); // prevent feed swipe while scrubbing
+      scrubbingRef.current = true;
+      const touch = e.touches[0];
+      seekTo(getRatio(touch.clientX));
 
-    const bar = progressRef.current;
-    const barEl = bar!;
+      const bar = progressRef.current;
+      const barEl = bar!;
 
-    const onMove = (ev: TouchEvent) => {
-      ev.preventDefault(); // prevent scroll while scrubbing
-      const t = ev.touches[0];
-      const ratio = getRatio(t.clientX);
-      seekTo(ratio);
-      const rect = barEl.getBoundingClientRect();
-      const v = videoRef.current;
-      if (v && isFinite(v.duration)) {
-        setSeekTooltip({ visible: true, time: ratio * v.duration, x: t.clientX - rect.left });
-      }
-    };
-    const onEnd = () => {
-      scrubbingRef.current = false;
-      setSeekTooltip((s) => ({ ...s, visible: false }));
-      document.removeEventListener("touchmove", onMove);
-      document.removeEventListener("touchend", onEnd);
-      document.removeEventListener("touchcancel", onEnd);
-    };
-    document.addEventListener("touchmove", onMove, { passive: false });
-    document.addEventListener("touchend", onEnd);
-    document.addEventListener("touchcancel", onEnd);
-  }, [seekTo, getRatio]);
+      const onMove = (ev: TouchEvent) => {
+        ev.preventDefault(); // prevent scroll while scrubbing
+        const t = ev.touches[0];
+        const ratio = getRatio(t.clientX);
+        seekTo(ratio);
+        const rect = barEl.getBoundingClientRect();
+        const v = videoRef.current;
+        if (v && isFinite(v.duration)) {
+          setSeekTooltip({
+            visible: true,
+            time: ratio * v.duration,
+            x: t.clientX - rect.left,
+          });
+        }
+      };
+      const onEnd = () => {
+        scrubbingRef.current = false;
+        setSeekTooltip((s) => ({ ...s, visible: false }));
+        document.removeEventListener("touchmove", onMove);
+        document.removeEventListener("touchend", onEnd);
+        document.removeEventListener("touchcancel", onEnd);
+      };
+      document.addEventListener("touchmove", onMove, { passive: false });
+      document.addEventListener("touchend", onEnd);
+      document.addEventListener("touchcancel", onEnd);
+    },
+    [seekTo, getRatio],
+  );
 
   /** Hover tooltip (desktop) */
   const handleProgressMouseMove = useCallback(
@@ -744,14 +851,22 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
       const v = videoRef.current;
       if (!bar || !v || !isFinite(v.duration)) return;
       const rect = bar.getBoundingClientRect();
-      const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-      setSeekTooltip({ visible: true, time: ratio * v.duration, x: e.clientX - rect.left });
+      const ratio = Math.max(
+        0,
+        Math.min(1, (e.clientX - rect.left) / rect.width),
+      );
+      setSeekTooltip({
+        visible: true,
+        time: ratio * v.duration,
+        x: e.clientX - rect.left,
+      });
     },
-    []
+    [],
   );
 
   const handleProgressMouseLeave = useCallback(() => {
-    if (!scrubbingRef.current) setSeekTooltip((s) => ({ ...s, visible: false }));
+    if (!scrubbingRef.current)
+      setSeekTooltip((s) => ({ ...s, visible: false }));
   }, []);
 
   /* ── Derived ──────────────────────────────────────────── */
@@ -871,7 +986,9 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
         }
       `}</style>
 
-      {theaterMode && <div className="wp-theater-backdrop" aria-hidden="true" />}
+      {theaterMode && (
+        <div className="wp-theater-backdrop" aria-hidden="true" />
+      )}
 
       <div
         ref={containerRef}
@@ -879,7 +996,10 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onClickCapture={handleContainerClick}
-        onClick={() => { setSpeedOpen(false); setVolumeSliderOpen(false); }}
+        onClick={() => {
+          setSpeedOpen(false);
+          setVolumeSliderOpen(false);
+        }}
         onWheel={handleWheel}
         style={{
           position: theaterMode ? "fixed" : "relative",
@@ -940,7 +1060,9 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
             aria-label="Tap to unmute"
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleUnmuteClick(e); }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") handleUnmuteClick(e);
+            }}
             style={{
               position: "absolute",
               top: 16,
@@ -1004,7 +1126,9 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
               zIndex: 2,
             }}
           >
-            <div style={{ width: 44, height: 44, color: "rgba(255,255,255,0.75)" }}>
+            <div
+              style={{ width: 44, height: 44, color: "rgba(255,255,255,0.75)" }}
+            >
               <IconSpinner />
             </div>
           </div>
@@ -1026,7 +1150,13 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
             }}
           >
             <span style={{ fontSize: 32 }}>⚠</span>
-            <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 14, fontWeight: 500 }}>
+            <span
+              style={{
+                color: "rgba(255,255,255,0.7)",
+                fontSize: 14,
+                fontWeight: 500,
+              }}
+            >
               Video unavailable
             </span>
           </div>
@@ -1187,146 +1317,187 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
         {/* suppressEndOverlay is true while PostrollAd is displayed so the
             post-roll occupies the overlay space; once it completes the
             native "Up Next" panel is revealed normally. */}
-        {ended && !looping && !suppressEndOverlay && relatedVideos && relatedVideos.length > 0 && (
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "rgba(0,0,0,0.92)",
-              zIndex: 8,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 20,
-              padding: "24px 16px",
-              animation: "wp-fade-in 0.22s ease",
-            }}
-          >
-            {/* Header */}
-            <p
-              style={{
-                color: "rgba(255,255,255,0.7)",
-                fontSize: 14,
-                fontWeight: 600,
-                margin: 0,
-                letterSpacing: "0.04em",
-                textTransform: "uppercase",
-              }}
-            >
-              Up next in{" "}
-              <span style={{ color: "#e8467c", fontVariantNumeric: "tabular-nums" }}>
-                {countdown}s
-              </span>
-            </p>
-
-            {/* Related thumbnails grid */}
+        {ended &&
+          !looping &&
+          !suppressEndOverlay &&
+          relatedVideos &&
+          relatedVideos.length > 0 && (
             <div
               style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(2, 1fr)",
-                gap: 10,
-                width: "100%",
-                maxWidth: 480,
+                position: "absolute",
+                inset: 0,
+                background: "rgba(0,0,0,0.92)",
+                zIndex: 8,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 20,
+                padding: "24px 16px",
+                animation: "wp-fade-in 0.22s ease",
               }}
             >
-              {relatedVideos.slice(0, 4).map((rv) => (
-                <a
-                  key={rv.slug}
-                  href={`/watch/${rv.slug}`}
+              {/* Header */}
+              <p
+                style={{
+                  color: "rgba(255,255,255,0.7)",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  margin: 0,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                }}
+              >
+                Up next in{" "}
+                <span
                   style={{
-                    display: "block",
-                    textDecoration: "none",
-                    borderRadius: 8,
-                    overflow: "hidden",
-                    background: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    transition: "border-color 0.15s ease, transform 0.15s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLAnchorElement).style.borderColor = "#e8467c";
-                    (e.currentTarget as HTMLAnchorElement).style.transform = "scale(1.02)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(255,255,255,0.08)";
-                    (e.currentTarget as HTMLAnchorElement).style.transform = "scale(1)";
+                    color: "#e8467c",
+                    fontVariantNumeric: "tabular-nums",
                   }}
                 >
-                  <div style={{ position: "relative", aspectRatio: "16/9", width: "100%" }}>
-                    <Image
-                      src={rv.thumbnail}
-                      alt={rv.title}
-                      fill
-                      sizes="(max-width: 640px) 45vw, 220px"
-                      style={{ objectFit: "cover" }}
-                      unoptimized
-                    />
-                  </div>
-                  <p
+                  {countdown}s
+                </span>
+              </p>
+
+              {/* Related thumbnails grid */}
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(2, 1fr)",
+                  gap: 10,
+                  width: "100%",
+                  maxWidth: 480,
+                }}
+              >
+                {relatedVideos.slice(0, 4).map((rv) => (
+                  <a
+                    key={rv.slug}
+                    href={`/watch/${rv.slug}`}
                     style={{
-                      color: "rgba(255,255,255,0.82)",
-                      fontSize: 11,
-                      fontWeight: 500,
-                      margin: 0,
-                      padding: "6px 8px",
+                      display: "block",
+                      textDecoration: "none",
+                      borderRadius: 8,
                       overflow: "hidden",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      lineHeight: 1.4,
+                      background: "rgba(255,255,255,0.05)",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      transition:
+                        "border-color 0.15s ease, transform 0.15s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLAnchorElement).style.borderColor =
+                        "#e8467c";
+                      (e.currentTarget as HTMLAnchorElement).style.transform =
+                        "scale(1.02)";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLAnchorElement).style.borderColor =
+                        "rgba(255,255,255,0.08)";
+                      (e.currentTarget as HTMLAnchorElement).style.transform =
+                        "scale(1)";
                     }}
                   >
-                    {rv.title}
-                  </p>
-                </a>
-              ))}
-            </div>
+                    <div
+                      style={{
+                        position: "relative",
+                        aspectRatio: "16/9",
+                        width: "100%",
+                      }}
+                    >
+                      <Image
+                        src={rv.thumbnail}
+                        alt={rv.title}
+                        fill
+                        sizes="(max-width: 640px) 45vw, 220px"
+                        style={{ objectFit: "cover" }}
+                        unoptimized
+                      />
+                    </div>
+                    <p
+                      style={{
+                        color: "rgba(255,255,255,0.82)",
+                        fontSize: 11,
+                        fontWeight: 500,
+                        margin: 0,
+                        padding: "6px 8px",
+                        overflow: "hidden",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      {rv.title}
+                    </p>
+                  </a>
+                ))}
+              </div>
 
-            {/* Action buttons */}
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
-              <button
-                onClick={handleReplay}
+              {/* Action buttons */}
+              <div
                 style={{
                   display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "rgba(255,255,255,0.1)",
-                  border: "1px solid rgba(255,255,255,0.2)",
-                  borderRadius: 8,
-                  color: "#fff",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  padding: "10px 18px",
-                  cursor: "pointer",
-                  transition: "background 0.15s ease",
+                  gap: 10,
+                  flexWrap: "wrap",
+                  justifyContent: "center",
                 }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.18)"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.1)"; }}
               >
-                <div style={{ width: 16, height: 16 }}><IconReplay /></div>
-                Replay
-              </button>
-              <button
-                onClick={handleCancelAutoplay}
-                style={{
-                  background: "rgba(232,70,124,0.15)",
-                  border: "1px solid rgba(232,70,124,0.4)",
-                  borderRadius: 8,
-                  color: "#e8467c",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  padding: "10px 18px",
-                  cursor: "pointer",
-                  transition: "background 0.15s ease",
-                }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(232,70,124,0.28)"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(232,70,124,0.15)"; }}
-              >
-                Cancel
-              </button>
+                <button
+                  onClick={handleReplay}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    background: "rgba(255,255,255,0.1)",
+                    border: "1px solid rgba(255,255,255,0.2)",
+                    borderRadius: 8,
+                    color: "#fff",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    padding: "10px 18px",
+                    cursor: "pointer",
+                    transition: "background 0.15s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.background =
+                      "rgba(255,255,255,0.18)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.background =
+                      "rgba(255,255,255,0.1)";
+                  }}
+                >
+                  <div style={{ width: 16, height: 16 }}>
+                    <IconReplay />
+                  </div>
+                  Replay
+                </button>
+                <button
+                  onClick={handleCancelAutoplay}
+                  style={{
+                    background: "rgba(232,70,124,0.15)",
+                    border: "1px solid rgba(232,70,124,0.4)",
+                    borderRadius: 8,
+                    color: "#e8467c",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    padding: "10px 18px",
+                    cursor: "pointer",
+                    transition: "background 0.15s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.background =
+                      "rgba(232,70,124,0.28)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.background =
+                      "rgba(232,70,124,0.15)";
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
         {/* Always-visible progress bar — sits at the very bottom, never hides */}
         {!ended && (
@@ -1454,7 +1625,8 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
             padding: "40px 12px 18px",
             transition: "opacity 0.28s ease, transform 0.28s ease",
             opacity: controlsVisible && !ended ? 1 : 0,
-            transform: controlsVisible && !ended ? "translateY(0)" : "translateY(6px)",
+            transform:
+              controlsVisible && !ended ? "translateY(0)" : "translateY(6px)",
             pointerEvents: controlsVisible && !ended ? "auto" : "none",
             zIndex: 5,
           }}
@@ -1463,7 +1635,6 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
           }}
           onMouseLeave={scheduleHide}
         >
-
           {/* Bottom controls row */}
           <div
             style={{
@@ -1491,8 +1662,15 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
               onMouseEnter={() => setVolumeSliderOpen(true)}
               onMouseLeave={() => setVolumeSliderOpen(false)}
             >
-              <ControlBtn onClick={toggleMute} label={muted ? "Unmute" : "Mute"}>
-                {muted || volume === 0 ? <IconVolumeMuted /> : <IconVolumeFull />}
+              <ControlBtn
+                onClick={toggleMute}
+                label={muted ? "Unmute" : "Mute"}
+              >
+                {muted || volume === 0 ? (
+                  <IconVolumeMuted />
+                ) : (
+                  <IconVolumeFull />
+                )}
               </ControlBtn>
               {volumeSliderOpen && (
                 <div
@@ -1516,7 +1694,13 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
                   }}
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <span style={{ fontSize: 10, color: "rgba(255,255,255,0.5)", fontWeight: 600 }}>
+                  <span
+                    style={{
+                      fontSize: 10,
+                      color: "rgba(255,255,255,0.5)",
+                      fontWeight: 600,
+                    }}
+                  >
                     {Math.round((muted ? 0 : volume) * 100)}%
                   </span>
                   <input
@@ -1535,8 +1719,17 @@ export function WatchPlayer({ src, poster, resolveUrl, relatedVideos, onVideoEnd
                       height: 100,
                     }}
                   />
-                  <ControlBtn onClick={() => { toggleMute(); }} label={muted ? "Unmute" : "Mute"}>
-                    {muted || volume === 0 ? <IconVolumeMuted /> : <IconVolumeFull />}
+                  <ControlBtn
+                    onClick={() => {
+                      toggleMute();
+                    }}
+                    label={muted ? "Unmute" : "Mute"}
+                  >
+                    {muted || volume === 0 ? (
+                      <IconVolumeMuted />
+                    ) : (
+                      <IconVolumeFull />
+                    )}
                   </ControlBtn>
                 </div>
               )}
@@ -1687,7 +1880,7 @@ function PiPButton({ onClick }: { onClick: () => void }) {
     setSupported(
       typeof document !== "undefined" &&
         "pictureInPictureEnabled" in document &&
-        document.pictureInPictureEnabled
+        document.pictureInPictureEnabled,
     );
   }, []);
 
