@@ -32,28 +32,51 @@ const nunito = Nunito({
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai, 3D Hentai & Cartoon Porn | 360,000+ Videos",
-  description: "Stream 360,000+ free hentai, 3D hentai & cartoon porn animations. Genshin, Overwatch, Blue Archive, SFM & classic 2D anime. Shorts feed included. No signup.",
+  description:
+    "Stream 360,000+ free hentai, 3D hentai & cartoon porn animations. Genshin, Overwatch, Blue Archive, SFM & classic 2D anime. Shorts feed included. No signup.",
   keywords: [
-    "hentai", "3d hentai", "cartoon porn", "3d porn", "3d porn animation",
-    "animation porn", "porn animation", "sfm porn", "hmv",
-    "hentai compilation", "3d futa hentai",
-    "genshin impact porn", "overwatch porn", "blue archive porn",
-    "animated hentai", "free hentai", "hentai streaming", "hentai clips",
+    "hentai",
+    "3d hentai",
+    "cartoon porn",
+    "3d porn",
+    "3d porn animation",
+    "animation porn",
+    "porn animation",
+    "sfm porn",
+    "hmv",
+    "hentai compilation",
+    "3d futa hentai",
+    "genshin impact porn",
+    "overwatch porn",
+    "blue archive porn",
+    "animated hentai",
+    "free hentai",
+    "hentai streaming",
+    "hentai clips",
   ],
   other: { rating: "adult" },
   metadataBase: new URL("https://iku.gg"),
   robots: { index: true, follow: true },
   openGraph: {
     title: "iku.gg — Free Hentai, 3D Cartoon Porn & Animation Tube",
-    description: "360,000+ free videos: 3D hentai, SFM, cartoon porn, classic 2D anime & Shorts feed. Genshin, Overwatch, Blue Archive and more.",
+    description:
+      "360,000+ free videos: 3D hentai, SFM, cartoon porn, classic 2D anime & Shorts feed. Genshin, Overwatch, Blue Archive and more.",
     siteName: "iku",
     type: "website",
-    images: [{ url: "https://iku.gg/og-default.png", width: 1200, height: 630, alt: "iku.gg — Free Hentai, 3D & Cartoon Porn" }],
+    images: [
+      {
+        url: "https://iku.gg/og-default.png",
+        width: 1200,
+        height: 630,
+        alt: "iku.gg — Free Hentai, 3D & Cartoon Porn",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "iku.gg — Free Hentai, 3D & Cartoon Porn",
-    description: "360,000+ free videos: 3D hentai, SFM, cartoon porn, 2D anime, Shorts feed. Genshin, Overwatch & more.",
+    description:
+      "360,000+ free videos: 3D hentai, SFM, cartoon porn, 2D anime, Shorts feed. Genshin, Overwatch & more.",
     images: ["https://iku.gg/og-default.png"],
   },
 };
@@ -83,7 +106,11 @@ export default async function RootLayout({
   const isPro = false;
 
   return (
-    <html lang="en" className={`${righteous.variable} ${nunito.variable}`} data-theme="dark">
+    <html
+      lang="en"
+      className={`${righteous.variable} ${nunito.variable}`}
+      data-theme="dark"
+    >
       <head>
         <script
           type="application/ld+json"
@@ -94,7 +121,8 @@ export default async function RootLayout({
               "@type": "WebSite",
               name: "iku.gg",
               url: "https://iku.gg",
-              description: "Stream 353,000+ free hentai videos. The best animated hentai clips featuring your favorite anime characters.",
+              description:
+                "Stream 353,000+ free hentai videos. The best animated hentai clips featuring your favorite anime characters.",
               potentialAction: {
                 "@type": "SearchAction",
                 target: "https://iku.gg/tag/{search_term_string}",
@@ -103,12 +131,22 @@ export default async function RootLayout({
             }).replace(/</g, "\\u003c"),
           }}
         />
+        <meta
+          name="e9a8710706a48b652c819394214276c5acd7d438"
+          content="e9a8710706a48b652c819394214276c5acd7d438"
+        />
       </head>
       <body data-pro={isPro ? "1" : "0"}>
         <div className="sparkles-bg" aria-hidden="true">
-          <div className="sparkle" /><div className="sparkle" /><div className="sparkle" />
-          <div className="sparkle" /><div className="sparkle" /><div className="sparkle" />
-          <div className="sparkle" /><div className="sparkle" /><div className="sparkle" />
+          <div className="sparkle" />
+          <div className="sparkle" />
+          <div className="sparkle" />
+          <div className="sparkle" />
+          <div className="sparkle" />
+          <div className="sparkle" />
+          <div className="sparkle" />
+          <div className="sparkle" />
+          <div className="sparkle" />
           <div className="sparkle" />
         </div>
         <SessionProviderClient>
