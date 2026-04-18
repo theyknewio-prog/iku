@@ -477,7 +477,42 @@ function estimateCount(opts: GetVideosOptions): number {
   );
 }
 
+// Key format must match scripts/precompute-video-counts.sql.
+function buildCountCacheKey(opts: GetVideosOptions): string {
+  const vertical = opts.vertical ?? "all";
+  const source = opts.source ?? "all";
+  const rt = opts.requireThumbnail ? 1 : 0;
+  const lf = opts.longFormat ? 1 : 0;
+  const tags = (opts.tags ?? "").trim().toLowerCase();
+  return `v=${vertical}|s=${source}|rt=${rt}|lf=${lf}|t=${tags}`;
+}
+
+// Read the precomputed count from videos_count_cache. Returns null if missing
+// or stale (>1h). Scoped to listing-page combos — user search (tags set) is
+// never precomputed and always falls through to the live query.
+async function readPrecomputedCount(
+  opts: GetVideosOptions,
+): Promise<number | null> {
+  if (opts.tags && opts.tags.trim().length > 0) return null;
+  if (opts.source !== "all" && opts.source !== undefined) return null;
+  const key = buildCountCacheKey(opts);
+  try {
+    const { rows } = await pool.query<{ count: string }>(
+      `SELECT count::text FROM videos_count_cache
+        WHERE key = $1 AND computed_at > NOW() - INTERVAL '2 hours'`,
+      [key],
+    );
+    if (rows.length === 0) return null;
+    return Number(rows[0].count);
+  } catch {
+    return null;
+  }
+}
+
 async function _countVideos(options: GetVideosOptions = {}): Promise<number> {
+  const precomputed = await readPrecomputedCount(options);
+  if (precomputed !== null) return precomputed;
+
   const {
     tags = "",
     source = "all",
