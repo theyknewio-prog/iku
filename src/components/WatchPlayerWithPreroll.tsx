@@ -46,10 +46,14 @@ export function WatchPlayerWithPreroll({
   const [showPostroll, setShowPostroll] = useState(false);
   const [postrollDone, setPostrollDone] = useState(false);
 
-  // A/B preroll provider 50/50 per mount — stable so the countdown
-  // doesn't reset on parent re-renders.
+  // Preroll provider bias: 70% HilltopAds, 30% ExoClick. HilltopAds is
+  // adult-exclusive so creatives stay on-theme; ExoClick's broader
+  // programmatic exchange occasionally fills with generic gaming ads
+  // (World of Tanks etc) which feel broken on an adult tube. Keeping a
+  // 30% ExoClick tail preserves A/B data + acts as a fill-rate fallback.
+  // Stable per-mount so the countdown doesn't reset on parent re-renders.
   const provider = useMemo<"exoclick" | "hilltopads">(
-    () => (Math.random() < 0.5 ? "exoclick" : "hilltopads"),
+    () => (Math.random() < 0.7 ? "hilltopads" : "exoclick"),
     [],
   );
 
