@@ -10,6 +10,7 @@ Both hentaicity + hentaigasm scrapers **hardcode empty arrays** for characters/c
 - `scripts/scrape-hentaicity.ts`: same pattern
 
 DB confirms:
+
 ```
 Source          With Characters  Total   % Enriched
 danbooru        15,809           17,093  92.5%  ✓
@@ -27,15 +28,15 @@ hentaigasm      0                2,697   0.0%   ✗
 
 ### 2. Main scrapers STALE 8+ days
 
-| Source | Count | Last Updated | Status |
-|--------|-------|--------------|--------|
+| Source      | Count   | Last Updated   | Status       |
+| ----------- | ------- | -------------- | ------------ |
 | rule34video | 276,878 | **2026-04-03** | 8 days stale |
-| rule34 | 19,997 | **2026-04-04** | 7 days stale |
-| gelbooru | 19,640 | **2026-04-03** | 8 days stale |
-| danbooru | 17,093 | **2026-04-03** | 8 days stale |
-| wp | 13,049 | **2026-04-04** | 7 days stale |
-| hentaicity | 4,582 | 2026-04-11 | FRESH |
-| hentaigasm | 2,697 | 2026-04-11 | FRESH |
+| rule34      | 19,997  | **2026-04-04** | 7 days stale |
+| gelbooru    | 19,640  | **2026-04-03** | 8 days stale |
+| danbooru    | 17,093  | **2026-04-03** | 8 days stale |
+| wp          | 13,049  | **2026-04-04** | 7 days stale |
+| hentaicity  | 4,582   | 2026-04-11     | FRESH        |
+| hentaigasm  | 2,697   | 2026-04-11     | FRESH        |
 
 Only hentaicity + hentaigasm ran in the last 3 days. The 5 GitHub Actions cron scrapers (`.github/workflows/daily-scrape.yml`) have either not run or are silently failing. Need to check Actions tab + logs.
 
@@ -44,11 +45,13 @@ Only hentaicity + hentaigasm ran in the last 3 days. The 5 GitHub Actions cron s
 ### 3. Homepage TTFB 1.1s
 
 Sab said "tout est redevenu lent" — confirmed. TTFB measured from server itself:
+
 ```
 HTTP/2 200 → 1.128s
 ```
 
 Root cause: `src/app/page.tsx` lines 95-108 do sequential `await getVideos(...)` calls before any rendering. No `<Suspense>`, no streaming. Combined with:
+
 - App container CPU 102% single-core (Next.js is mono-thread)
 - PG container CPU 235% (2+ cores sustained)
 
@@ -59,9 +62,11 @@ Fix: split into priority tiers + wrap each section in `<Suspense>` with a fallba
 ### 4. WP scraper crashing with DNS error
 
 Log:
+
 ```
 [Error] EAI_AGAIN: temporary DNS resolution failure for 'iku-postgres'
 ```
+
 WP scraper can't reach the PG container. Transient but recurring. Docker network flake. Needs investigation — either rescrapes run before PG is ready, or network aliasing broke.
 
 ### 5. Corrupted timestamps in `resolved_urls`

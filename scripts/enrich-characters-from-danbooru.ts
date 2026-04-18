@@ -51,8 +51,8 @@ const LIMIT = (() => {
 // ── Load master lists of characters + copyrights from existing Danbooru rows ──
 
 interface MasterEntry {
-  raw: string;           // original form (e.g. "hatsune_miku")
-  normalized: string;    // space-delimited lowercase (e.g. "hatsune miku")
+  raw: string; // original form (e.g. "hatsune_miku")
+  normalized: string; // space-delimited lowercase (e.g. "hatsune miku")
 }
 
 function normalize(s: string): string {
@@ -69,25 +69,112 @@ function normalize(s: string): string {
 // has a few rows tagged with each, but matching them as copyrights/characters
 // on scraped hentai titles produces mostly false positives.
 const STOPLIST = new Set([
-  "another", "together", "inside", "outside", "between", "before", "after",
-  "sister", "mother", "father", "brother", "husband", "wife",
-  "girl", "boy", "woman", "man", "boys", "girls", "women", "men",
-  "hentai", "anime", "manga", "video", "episode", "scene", "series",
-  "original", "remix", "remake", "english", "japanese", "subbed", "raw",
-  "school", "teacher", "student", "office", "swimsuit", "uniform",
-  "animated", "animation", "motion", "comic", "story", "novel",
-  "bakery", "cafe", "restaurant", "gym", "beach", "pool",
-  "witch", "angel", "demon", "vampire", "zombie",
-  "dream", "memory", "secret", "wish", "promise", "miracle",
-  "black", "white", "red", "blue", "green", "pink", "yellow",
-  "dark", "light", "silver", "gold",
-  "one", "two", "three", "first", "second", "third", "last",
-  "house", "home", "city", "town", "village", "world", "earth",
-  "love", "lust", "heart", "soul", "mind",
-  "night", "morning", "evening", "summer", "winter", "spring", "autumn",
+  "another",
+  "together",
+  "inside",
+  "outside",
+  "between",
+  "before",
+  "after",
+  "sister",
+  "mother",
+  "father",
+  "brother",
+  "husband",
+  "wife",
+  "girl",
+  "boy",
+  "woman",
+  "man",
+  "boys",
+  "girls",
+  "women",
+  "men",
+  "hentai",
+  "anime",
+  "manga",
+  "video",
+  "episode",
+  "scene",
+  "series",
+  "original",
+  "remix",
+  "remake",
+  "english",
+  "japanese",
+  "subbed",
+  "raw",
+  "school",
+  "teacher",
+  "student",
+  "office",
+  "swimsuit",
+  "uniform",
+  "animated",
+  "animation",
+  "motion",
+  "comic",
+  "story",
+  "novel",
+  "bakery",
+  "cafe",
+  "restaurant",
+  "gym",
+  "beach",
+  "pool",
+  "witch",
+  "angel",
+  "demon",
+  "vampire",
+  "zombie",
+  "dream",
+  "memory",
+  "secret",
+  "wish",
+  "promise",
+  "miracle",
+  "black",
+  "white",
+  "red",
+  "blue",
+  "green",
+  "pink",
+  "yellow",
+  "dark",
+  "light",
+  "silver",
+  "gold",
+  "one",
+  "two",
+  "three",
+  "first",
+  "second",
+  "third",
+  "last",
+  "house",
+  "home",
+  "city",
+  "town",
+  "village",
+  "world",
+  "earth",
+  "love",
+  "lust",
+  "heart",
+  "soul",
+  "mind",
+  "night",
+  "morning",
+  "evening",
+  "summer",
+  "winter",
+  "spring",
+  "autumn",
 ]);
 
-async function loadMasterList(column: "characters" | "copyrights"): Promise<MasterEntry[]> {
+async function loadMasterList(
+  column: "characters" | "copyrights",
+): Promise<MasterEntry[]> {
   const { rows } = await pool.query<{ name: string; freq: number }>(
     `SELECT name, COUNT(*)::int AS freq
      FROM (
@@ -99,7 +186,7 @@ async function loadMasterList(column: "characters" | "copyrights"): Promise<Mast
      WHERE name <> ''
      GROUP BY name
      HAVING COUNT(*) >= 2
-     ORDER BY freq DESC`
+     ORDER BY freq DESC`,
   );
 
   const seen = new Set<string>();
@@ -230,7 +317,7 @@ async function main() {
              SET characters = $1::text[],
                  copyrights = $2::text[]
              WHERE source = $3 AND slug = $4`,
-            [chars, copys, src, row.slug]
+            [chars, copys, src, row.slug],
           );
           updated += 1;
           totalCharAssignments += chars.length;
@@ -268,8 +355,10 @@ async function main() {
           if (updated <= 5) {
             console.log(`\n[sample] ${src} ${row.slug}`);
             console.log(`  title: ${title.slice(0, 80)}`);
-            if (chars.length) console.log(`  chars: ${chars.slice(0, 5).join(", ")}`);
-            if (copys.length) console.log(`  copys: ${copys.slice(0, 5).join(", ")}`);
+            if (chars.length)
+              console.log(`  chars: ${chars.slice(0, 5).join(", ")}`);
+            if (copys.length)
+              console.log(`  copys: ${copys.slice(0, 5).join(", ")}`);
           }
         }
       }
@@ -277,19 +366,31 @@ async function main() {
 
     processed += batch.length;
     if (processed % (BATCH_SIZE * 4) === 0) {
-      console.log(`  processed ${processed.toLocaleString()} / ${rows.length.toLocaleString()} — ${updated.toLocaleString()} enriched`);
+      console.log(
+        `  processed ${processed.toLocaleString()} / ${rows.length.toLocaleString()} — ${updated.toLocaleString()} enriched`,
+      );
     }
   }
 
   console.log("\n── Done ──");
   console.log(`Total rows processed: ${processed.toLocaleString()}`);
-  console.log(`Rows with at least one match: ${updated.toLocaleString()} (${((updated / processed) * 100).toFixed(1)}%)`);
-  console.log(`Character assignments: ${totalCharAssignments.toLocaleString()}`);
-  console.log(`Copyright assignments: ${totalCopyAssignments.toLocaleString()}`);
+  console.log(
+    `Rows with at least one match: ${updated.toLocaleString()} (${((updated / processed) * 100).toFixed(1)}%)`,
+  );
+  console.log(
+    `Character assignments: ${totalCharAssignments.toLocaleString()}`,
+  );
+  console.log(
+    `Copyright assignments: ${totalCopyAssignments.toLocaleString()}`,
+  );
   console.log("\nPer source:");
   for (const [src, stats] of Object.entries(bySource)) {
-    const pct = stats.total ? ((stats.enriched / stats.total) * 100).toFixed(1) : "0.0";
-    console.log(`  ${src.padEnd(14)} ${stats.enriched.toLocaleString().padStart(8)} / ${stats.total.toLocaleString().padStart(8)}  (${pct}%)`);
+    const pct = stats.total
+      ? ((stats.enriched / stats.total) * 100).toFixed(1)
+      : "0.0";
+    console.log(
+      `  ${src.padEnd(14)} ${stats.enriched.toLocaleString().padStart(8)} / ${stats.total.toLocaleString().padStart(8)}  (${pct}%)`,
+    );
   }
 
   if (DRY_RUN) {

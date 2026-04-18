@@ -6,7 +6,28 @@ import { signOut } from "next-auth/react";
 import { JoinDiscordCTA } from "@/components/JoinDiscordCTA";
 import { track, EVENTS } from "@/lib/analytics";
 
-const AVATAR_OPTIONS = ["🌸", "🎮", "⚔️", "🧙", "🐉", "🏹", "😈", "👹", "🌙", "🤖", "🌿", "⚗️", "🐱", "🦊", "🧝", "🧛", "🧜", "👑", "💎", "🔥"];
+const AVATAR_OPTIONS = [
+  "🌸",
+  "🎮",
+  "⚔️",
+  "🧙",
+  "🐉",
+  "🏹",
+  "😈",
+  "👹",
+  "🌙",
+  "🤖",
+  "🌿",
+  "⚗️",
+  "🐱",
+  "🦊",
+  "🧝",
+  "🧛",
+  "🧜",
+  "👑",
+  "💎",
+  "🔥",
+];
 
 interface Props {
   initialUsername: string;
@@ -14,7 +35,11 @@ interface Props {
   hasPassword: boolean;
 }
 
-export function ProfileClient({ initialUsername, initialAvatar, hasPassword }: Props) {
+export function ProfileClient({
+  initialUsername,
+  initialAvatar,
+  hasPassword,
+}: Props) {
   const router = useRouter();
   const search = useSearchParams();
 
@@ -70,7 +95,10 @@ export function ProfileClient({ initialUsername, initialAvatar, hasPassword }: P
       const res = await fetch("/api/profile/password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ currentPassword: currentPass, newPassword: newPass }),
+        body: JSON.stringify({
+          currentPassword: currentPass,
+          newPassword: newPass,
+        }),
       });
       const json = await res.json();
       if (!res.ok) {
@@ -107,7 +135,9 @@ export function ProfileClient({ initialUsername, initialAvatar, hasPassword }: P
         </label>
 
         <div style={{ marginTop: 14 }}>
-          <div className="auth-label" style={{ marginBottom: 8 }}><span>Avatar</span></div>
+          <div className="auth-label" style={{ marginBottom: 8 }}>
+            <span>Avatar</span>
+          </div>
           <div className="profile-avatar-picker">
             {AVATAR_OPTIONS.map((emoji) => (
               <button
@@ -124,12 +154,26 @@ export function ProfileClient({ initialUsername, initialAvatar, hasPassword }: P
         </div>
 
         {profileMsg && (
-          <div style={{ marginTop: 12, fontSize: 13, color: profileMsg.includes("fail") || profileMsg.includes("wrong") ? "#fca5a5" : "#86efac" }}>
+          <div
+            style={{
+              marginTop: 12,
+              fontSize: 13,
+              color:
+                profileMsg.includes("fail") || profileMsg.includes("wrong")
+                  ? "#fca5a5"
+                  : "#86efac",
+            }}
+          >
             {profileMsg}
           </div>
         )}
 
-        <button type="submit" disabled={savingProfile} className="auth-submit" style={{ marginTop: 16 }}>
+        <button
+          type="submit"
+          disabled={savingProfile}
+          className="auth-submit"
+          style={{ marginTop: 16 }}
+        >
           {savingProfile ? "Saving…" : "Save changes"}
         </button>
       </form>
@@ -164,12 +208,23 @@ export function ProfileClient({ initialUsername, initialAvatar, hasPassword }: P
           </label>
 
           {passMsg && (
-            <div style={{ marginTop: 12, fontSize: 13, color: passMsg.includes("✓") ? "#86efac" : "#fca5a5" }}>
+            <div
+              style={{
+                marginTop: 12,
+                fontSize: 13,
+                color: passMsg.includes("✓") ? "#86efac" : "#fca5a5",
+              }}
+            >
               {passMsg}
             </div>
           )}
 
-          <button type="submit" disabled={savingPass} className="auth-submit" style={{ marginTop: 14 }}>
+          <button
+            type="submit"
+            disabled={savingPass}
+            className="auth-submit"
+            style={{ marginTop: 14 }}
+          >
             {savingPass ? "Updating…" : "Update password"}
           </button>
         </form>
@@ -177,8 +232,15 @@ export function ProfileClient({ initialUsername, initialAvatar, hasPassword }: P
 
       <div className="profile-section">
         <h2>Community</h2>
-        <p style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", margin: "0 0 14px" }}>
-          Jump into the iku.gg Discord — daily drops, genre forums, watch parties, and a community of fans.
+        <p
+          style={{
+            fontSize: 13,
+            color: "rgba(255,255,255,0.65)",
+            margin: "0 0 14px",
+          }}
+        >
+          Jump into the iku.gg Discord — daily drops, genre forums, watch
+          parties, and a community of fans.
         </p>
         <JoinDiscordCTA variant="compact" />
       </div>

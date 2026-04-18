@@ -15,7 +15,14 @@ export const SERIES: Series[] = [
     description:
       "Naruto is one of the most influential anime and manga franchises in history, created by Masashi Kishimoto. Spanning over 700 manga chapters and multiple anime series including Naruto, Naruto Shippuden, and Boruto, the franchise follows ninjas in a world of hidden villages and supernatural jutsu techniques. The series features an extensive cast of female characters who have become staples of hentai fan content. From the voluptuous Fifth Hokage Tsunade to the beloved Hinata Hyuga and the fierce Sakura Haruno, Naruto's kunoichi offer diverse body types, personalities, and iconic outfits. The franchise's longevity since 1999 has resulted in one of the largest libraries of adult fan animation in anime history. Naruto characters consistently rank among the most depicted in hentai across all major booru platforms, with new content still being created decades after the original manga's conclusion.",
     tags: ["naruto"],
-    characters: ["tsunade", "hinata-hyuga", "sakura-haruno", "ino-yamanaka", "temari", "kushina-uzumaki"],
+    characters: [
+      "tsunade",
+      "hinata-hyuga",
+      "sakura-haruno",
+      "ino-yamanaka",
+      "temari",
+      "kushina-uzumaki",
+    ],
     seoTitle: "Naruto Hentai — Best Videos & Fan Animation | iku.gg",
     seoDescription:
       "Watch the best Naruto hentai videos on iku.gg. Stream free animated Naruto porn featuring Tsunade, Hinata, Sakura, and more kunoichi.",
@@ -48,7 +55,13 @@ export const SERIES: Series[] = [
     description:
       "My Hero Academia, created by Kohei Horikoshi, is a modern superhero anime set in a world where 80% of the population has superpowers called Quirks. The series follows students at U.A. High School training to become professional heroes. MHA features a large roster of female characters with diverse designs, from the bubbly Ochako Uraraka to the elegant Momo Yaoyorozu and the rabbit-themed powerhouse Mirko. Many hero costumes are skin-tight or revealing by design, with in-universe justifications tied to each character's Quirk. Midnight's costume is canonically provocative, and Momo's leotard is necessary for her Creation Quirk. This combination of appealing character designs and legitimate costume justifications has made MHA one of the most popular modern anime franchises for hentai content. The series generates massive volumes of adult fan animation, with Mirko in particular experiencing explosive popularity upon her anime debut.",
     tags: ["boku_no_hero_academia"],
-    characters: ["ochako-uraraka", "momo-yaoyorozu", "mina-ashido", "mirko", "midnight"],
+    characters: [
+      "ochako-uraraka",
+      "momo-yaoyorozu",
+      "mina-ashido",
+      "mirko",
+      "midnight",
+    ],
     seoTitle: "My Hero Academia Hentai — Best Videos & Fan Animation | iku.gg",
     seoDescription:
       "Watch the best My Hero Academia hentai videos. Stream free animated MHA porn featuring Mirko, Ochako, Momo, and more heroes.",
@@ -71,7 +84,8 @@ export const SERIES: Series[] = [
       "Darling in the FranXX is an original mecha anime produced by Studio Trigger and A-1 Pictures that aired in 2018. Set in a dystopian future, the series follows parasites who pilot giant mechs called FranXX in male-female pairs, with the piloting mechanism involving suggestive positioning. The show's most lasting cultural impact is its protagonist Zero Two, who became one of the most iconic anime characters of the late 2010s. Her pink hair, red horns, and provocative personality captured the internet's imagination, spawning countless memes and fan works. The series itself leans heavily into romantic and sexual themes, with the mech piloting literally requiring intimate physical connection between partners. This overtly suggestive premise, combined with Zero Two's instantly recognizable design, has generated an enormous volume of hentai content. Zero Two alone rivals characters from much longer-running franchises in adult fan animation volume.",
     tags: ["darling_in_the_franxx"],
     characters: ["zero-two"],
-    seoTitle: "Darling in the FranXX Hentai — Best Videos & Fan Animation | iku.gg",
+    seoTitle:
+      "Darling in the FranXX Hentai — Best Videos & Fan Animation | iku.gg",
     seoDescription:
       "Watch the best Darling in the FranXX hentai videos. Stream free animated Zero Two porn and more.",
   },

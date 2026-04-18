@@ -31,14 +31,21 @@ export function EmailVerificationBanner({ email, blocking }: Props) {
   async function onResend() {
     setState({ kind: "sending" });
     try {
-      const res = await fetch("/api/auth/resend-verification", { method: "POST" });
+      const res = await fetch("/api/auth/resend-verification", {
+        method: "POST",
+      });
       if (res.status === 429) {
-        const body = (await res.json().catch(() => ({}))) as { retry_after?: number };
+        const body = (await res.json().catch(() => ({}))) as {
+          retry_after?: number;
+        };
         setState({ kind: "cooldown", retryAfter: body.retry_after ?? 300 });
         return;
       }
       if (!res.ok) {
-        setState({ kind: "error", msg: "Could not send. Try again in a minute." });
+        setState({
+          kind: "error",
+          msg: "Could not send. Try again in a minute.",
+        });
         return;
       }
       setState({ kind: "sent" });
@@ -49,19 +56,27 @@ export function EmailVerificationBanner({ email, blocking }: Props) {
 
   return (
     <div className="email-verify-banner" role="status" aria-live="polite">
-      <div className="email-verify-banner__icon" aria-hidden>✉️</div>
+      <div className="email-verify-banner__icon" aria-hidden>
+        ✉️
+      </div>
       <div className="email-verify-banner__body">
         <div className="email-verify-banner__title">
           Verify your email to unlock everything
         </div>
         <div className="email-verify-banner__sub">
           We sent a confirmation link to <strong>{email}</strong>.
-          {blocking ? ` You need to verify it before you can ${blocking}.` : " Check your inbox (and spam folder)."}
+          {blocking
+            ? ` You need to verify it before you can ${blocking}.`
+            : " Check your inbox (and spam folder)."}
         </div>
       </div>
       <div className="email-verify-banner__action">
         {state.kind === "idle" && (
-          <button type="button" className="email-verify-banner__btn" onClick={onResend}>
+          <button
+            type="button"
+            className="email-verify-banner__btn"
+            onClick={onResend}
+          >
             Resend email
           </button>
         )}

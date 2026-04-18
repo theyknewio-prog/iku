@@ -66,13 +66,15 @@ import {
 
 // ─── Helpers ──────────────────────────────────────────────────
 
-function makeSubscription(overrides: Partial<Stripe.Subscription> & {
-  priceId?: string;
-  metadata?: Record<string, string>;
-  customerId?: string;
-  currentPeriodEnd?: number;
-  status?: Stripe.Subscription.Status;
-}): Stripe.Subscription {
+function makeSubscription(
+  overrides: Partial<Stripe.Subscription> & {
+    priceId?: string;
+    metadata?: Record<string, string>;
+    customerId?: string;
+    currentPeriodEnd?: number;
+    status?: Stripe.Subscription.Status;
+  },
+): Stripe.Subscription {
   const {
     priceId = "price_test_monthly",
     metadata = { user_id: "42", plan: "monthly" },
@@ -105,7 +107,12 @@ function makeCheckoutSession(overrides: {
   customerId?: string;
   mode?: "payment" | "subscription";
 }): Stripe.Checkout.Session {
-  const { userId = "42", plan = "monthly", customerId = "cus_test_123", mode = "subscription" } = overrides;
+  const {
+    userId = "42",
+    plan = "monthly",
+    customerId = "cus_test_123",
+    mode = "subscription",
+  } = overrides;
   return {
     id: "cs_test_123",
     mode,
@@ -160,7 +167,9 @@ describe("planFromPriceId", () => {
 
 describe("resolveUserIdFromSub", () => {
   it("prefers metadata.user_id when present", async () => {
-    const sub = makeSubscription({ metadata: { user_id: "99", plan: "monthly" } });
+    const sub = makeSubscription({
+      metadata: { user_id: "99", plan: "monthly" },
+    });
     const result = await resolveUserIdFromSub(sub);
     expect(result).toBe("99");
     expect(mockQuery).not.toHaveBeenCalled();
@@ -173,7 +182,7 @@ describe("resolveUserIdFromSub", () => {
     expect(result).toBe("77");
     expect(mockQuery).toHaveBeenCalledWith(
       expect.stringContaining("SELECT id FROM users WHERE stripe_customer_id"),
-      ["cus_test_123"]
+      ["cus_test_123"],
     );
   });
 
@@ -192,13 +201,19 @@ describe("resolveUserIdFromSub", () => {
 describe("handleSubscriptionUpdate", () => {
   it("updates pro_status/pro_plan for an active user", async () => {
     mockQuery.mockResolvedValueOnce({ rows: [{ pro_status: "active" }] }); // SELECT current
-    mockQuery.mockResolvedValueOnce({ rowCount: 1 });                       // UPDATE
-    const sub = makeSubscription({ status: "active", priceId: "price_test_yearly", metadata: { user_id: "42", plan: "yearly" } });
+    mockQuery.mockResolvedValueOnce({ rowCount: 1 }); // UPDATE
+    const sub = makeSubscription({
+      status: "active",
+      priceId: "price_test_yearly",
+      metadata: { user_id: "42", plan: "yearly" },
+    });
 
     await handleSubscriptionUpdate(sub);
 
     // UPDATE was called with status=active, plan=yearly
-    const updateCall = mockQuery.mock.calls.find((c) => String(c[0]).includes("UPDATE users SET"));
+    const updateCall = mockQuery.mock.calls.find((c) =>
+      String(c[0]).includes("UPDATE users SET"),
+    );
     expect(updateCall).toBeDefined();
     expect(updateCall![1]).toEqual([
       "42",
@@ -212,12 +227,17 @@ describe("handleSubscriptionUpdate", () => {
   it("BLOCKER #5 — does NOT downgrade a lifetime user from a trailing sub event", async () => {
     // SELECT returns pro_status='lifetime'
     mockQuery.mockResolvedValueOnce({ rows: [{ pro_status: "lifetime" }] });
-    const sub = makeSubscription({ status: "active", metadata: { user_id: "42", plan: "monthly" } });
+    const sub = makeSubscription({
+      status: "active",
+      metadata: { user_id: "42", plan: "monthly" },
+    });
 
     await handleSubscriptionUpdate(sub);
 
     // The SELECT ran, but NO UPDATE should have been issued.
-    const updateCall = mockQuery.mock.calls.find((c) => String(c[0]).includes("UPDATE users SET"));
+    const updateCall = mockQuery.mock.calls.find((c) =>
+      String(c[0]).includes("UPDATE users SET"),
+    );
     expect(updateCall).toBeUndefined();
   });
 
@@ -228,7 +248,9 @@ describe("handleSubscriptionUpdate", () => {
 
     await handleSubscriptionUpdate(sub);
 
-    const updateCall = mockQuery.mock.calls.find((c) => String(c[0]).includes("UPDATE users SET"));
+    const updateCall = mockQuery.mock.calls.find((c) =>
+      String(c[0]).includes("UPDATE users SET"),
+    );
     expect(updateCall![1][1]).toBe("past_due");
   });
 
@@ -239,7 +261,9 @@ describe("handleSubscriptionUpdate", () => {
 
     await handleSubscriptionUpdate(sub);
 
-    const updateCall = mockQuery.mock.calls.find((c) => String(c[0]).includes("UPDATE users SET"));
+    const updateCall = mockQuery.mock.calls.find((c) =>
+      String(c[0]).includes("UPDATE users SET"),
+    );
     expect(updateCall![1][1]).toBe("canceled");
   });
 
@@ -256,7 +280,9 @@ describe("handleSubscriptionUpdate", () => {
 
     await handleSubscriptionUpdate(sub);
 
-    const updateCall = mockQuery.mock.calls.find((c) => String(c[0]).includes("UPDATE users SET"));
+    const updateCall = mockQuery.mock.calls.find((c) =>
+      String(c[0]).includes("UPDATE users SET"),
+    );
     expect(updateCall![1][2]).toBe("yearly");
   });
 
@@ -297,7 +323,9 @@ describe("handleSubscriptionDeleted", () => {
 
     await handleSubscriptionDeleted(sub);
 
-    expect(String(mockQuery.mock.calls[0][0])).toContain("pro_status != 'lifetime'");
+    expect(String(mockQuery.mock.calls[0][0])).toContain(
+      "pro_status != 'lifetime'",
+    );
   });
 });
 
@@ -310,10 +338,15 @@ describe("handleCheckoutCompleted", () => {
     // UPDATE stripe_customer_id
     mockQuery.mockResolvedValueOnce({ rowCount: 1 });
     // SELECT pro_subscription_id — user had a prior sub
-    mockQuery.mockResolvedValueOnce({ rows: [{ pro_subscription_id: "sub_prior_xyz" }] });
+    mockQuery.mockResolvedValueOnce({
+      rows: [{ pro_subscription_id: "sub_prior_xyz" }],
+    });
     // UPDATE users SET pro_status='lifetime'
     mockQuery.mockResolvedValueOnce({ rowCount: 1 });
-    mockCancelSubscription.mockResolvedValueOnce({ id: "sub_prior_xyz", status: "canceled" });
+    mockCancelSubscription.mockResolvedValueOnce({
+      id: "sub_prior_xyz",
+      status: "canceled",
+    });
 
     const session = makeCheckoutSession({ plan: "lifetime", mode: "payment" });
     await handleCheckoutCompleted(session);
@@ -323,7 +356,7 @@ describe("handleCheckoutCompleted", () => {
 
     // Final UPDATE set pro_status='lifetime' and NULLed pro_subscription_id.
     const finalUpdate = mockQuery.mock.calls.find((c) =>
-      String(c[0]).includes("pro_status = 'lifetime'")
+      String(c[0]).includes("pro_status = 'lifetime'"),
     );
     expect(finalUpdate).toBeDefined();
     expect(String(finalUpdate![0])).toContain("pro_subscription_id = NULL");
@@ -331,7 +364,9 @@ describe("handleCheckoutCompleted", () => {
 
   it("tolerates cancel failures (prior sub may already be inactive)", async () => {
     mockQuery.mockResolvedValueOnce({ rowCount: 1 }); // customer update
-    mockQuery.mockResolvedValueOnce({ rows: [{ pro_subscription_id: "sub_prior" }] });
+    mockQuery.mockResolvedValueOnce({
+      rows: [{ pro_subscription_id: "sub_prior" }],
+    });
     mockQuery.mockResolvedValueOnce({ rowCount: 1 }); // lifetime update
     mockCancelSubscription.mockRejectedValueOnce(new Error("already canceled"));
 
@@ -342,7 +377,7 @@ describe("handleCheckoutCompleted", () => {
 
     // Lifetime UPDATE still ran despite the cancel rejection.
     const finalUpdate = mockQuery.mock.calls.find((c) =>
-      String(c[0]).includes("pro_status = 'lifetime'")
+      String(c[0]).includes("pro_status = 'lifetime'"),
     );
     expect(finalUpdate).toBeDefined();
   });
@@ -350,7 +385,10 @@ describe("handleCheckoutCompleted", () => {
   it("does nothing for subscription mode (subscription.updated event handles it)", async () => {
     // Only the customer_id UPDATE should fire — no lifetime logic.
     mockQuery.mockResolvedValueOnce({ rowCount: 1 });
-    const session = makeCheckoutSession({ plan: "monthly", mode: "subscription" });
+    const session = makeCheckoutSession({
+      plan: "monthly",
+      mode: "subscription",
+    });
 
     await handleCheckoutCompleted(session);
 

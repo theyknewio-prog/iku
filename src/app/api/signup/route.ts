@@ -18,7 +18,11 @@ import pool from "@/lib/db";
 import { sendVerificationEmail } from "@/lib/email";
 import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
 
-const limiter = createRateLimiter({ name: "signup", max: 5, windowMs: 3600_000 });
+const limiter = createRateLimiter({
+  name: "signup",
+  max: 5,
+  windowMs: 3600_000,
+});
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const USERNAME_RE = /^[a-zA-Z0-9_-]{3,20}$/;
@@ -30,7 +34,7 @@ function is18Plus(dobStr: string): boolean {
   const eighteen = new Date(
     now.getFullYear() - 18,
     now.getMonth(),
-    now.getDate()
+    now.getDate(),
   );
   return dob <= eighteen;
 }
@@ -39,7 +43,7 @@ export async function POST(request: NextRequest) {
   if (limiter.consume(getClientIp(request))) {
     return NextResponse.json(
       { error: "Too many signup attempts. Try again later." },
-      { status: 429, headers: { "Retry-After": "3600" } }
+      { status: 429, headers: { "Retry-After": "3600" } },
     );
   }
 
@@ -65,25 +69,25 @@ export async function POST(request: NextRequest) {
   if (!username || !USERNAME_RE.test(username)) {
     return NextResponse.json(
       { error: "Username must be 3-20 chars (letters, numbers, _ or -)" },
-      { status: 400 }
+      { status: 400 },
     );
   }
   if (!password || password.length < 8) {
     return NextResponse.json(
       { error: "Password must be at least 8 characters" },
-      { status: 400 }
+      { status: 400 },
     );
   }
   if (!dob || !is18Plus(dob)) {
     return NextResponse.json(
       { error: "You must be 18 or older to sign up" },
-      { status: 400 }
+      { status: 400 },
     );
   }
   if (adult !== true) {
     return NextResponse.json(
       { error: "You must confirm you are 18+" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -92,13 +96,19 @@ export async function POST(request: NextRequest) {
     `SELECT
        EXISTS(SELECT 1 FROM users WHERE LOWER(email) = LOWER($1))    AS email_taken,
        EXISTS(SELECT 1 FROM users WHERE LOWER(username) = LOWER($2)) AS username_taken`,
-    [email, username]
+    [email, username],
   );
   if (clash.rows[0].email_taken) {
-    return NextResponse.json({ error: "Email already registered" }, { status: 409 });
+    return NextResponse.json(
+      { error: "Email already registered" },
+      { status: 409 },
+    );
   }
   if (clash.rows[0].username_taken) {
-    return NextResponse.json({ error: "Username already taken" }, { status: 409 });
+    return NextResponse.json(
+      { error: "Username already taken" },
+      { status: 409 },
+    );
   }
 
   // Hash + insert (rounds=12 — adult/payment site minimum)
@@ -109,7 +119,7 @@ export async function POST(request: NextRequest) {
       `INSERT INTO users (email, username, password_hash, dob, avatar_emoji)
        VALUES ($1, $2, $3, $4, '🌸')
        RETURNING id`,
-      [email, username, hash, dob]
+      [email, username, hash, dob],
     );
     newUserId = Number(rows[0].id);
   } catch (err) {
@@ -117,7 +127,7 @@ export async function POST(request: NextRequest) {
     if (msg.includes("duplicate") || msg.includes("unique")) {
       return NextResponse.json(
         { error: "Email or username already taken" },
-        { status: 409 }
+        { status: 409 },
       );
     }
     console.error("signup error:", err);

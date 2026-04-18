@@ -28,28 +28,34 @@ export async function POST(request: NextRequest) {
   if (!currentPassword || !newPassword || newPassword.length < 8) {
     return NextResponse.json(
       { error: "New password must be at least 8 characters" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   const { rows } = await pool.query(
     `SELECT password_hash FROM users WHERE id = $1`,
-    [session.user.id]
+    [session.user.id],
   );
   const user = rows[0];
   if (!user || !user.password_hash) {
-    return NextResponse.json({ error: "Cannot change password for OAuth account" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Cannot change password for OAuth account" },
+      { status: 400 },
+    );
   }
 
   const ok = await bcrypt.compare(currentPassword, user.password_hash);
   if (!ok) {
-    return NextResponse.json({ error: "Current password is incorrect" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Current password is incorrect" },
+      { status: 400 },
+    );
   }
 
   const newHash = await bcrypt.hash(newPassword, 12);
   await pool.query(
     `UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2`,
-    [newHash, session.user.id]
+    [newHash, session.user.id],
   );
 
   return NextResponse.json({ ok: true });

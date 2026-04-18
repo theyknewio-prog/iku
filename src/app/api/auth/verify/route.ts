@@ -18,18 +18,22 @@ export async function GET(request: NextRequest) {
   const origin = process.env.NEXT_PUBLIC_SITE_URL || "https://iku.gg";
 
   if (!token || token.length < 32) {
-    return NextResponse.redirect(new URL("/login?verify_error=invalid", origin));
+    return NextResponse.redirect(
+      new URL("/login?verify_error=invalid", origin),
+    );
   }
 
   const userId = await consumeVerificationToken(token);
   if (!userId) {
-    return NextResponse.redirect(new URL("/login?verify_error=expired", origin));
+    return NextResponse.redirect(
+      new URL("/login?verify_error=expired", origin),
+    );
   }
 
   // Fetch user details to send welcome email
   const { rows } = await pool.query(
     `SELECT email, username FROM users WHERE id = $1`,
-    [userId]
+    [userId],
   );
   const user = rows[0];
   if (user) {

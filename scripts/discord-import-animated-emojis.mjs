@@ -11,13 +11,23 @@
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 const GUILD_ID = process.env.DISCORD_GUILD_ID;
-if (!BOT_TOKEN || !GUILD_ID) { console.error("Missing env"); process.exit(1); }
+if (!BOT_TOKEN || !GUILD_ID) {
+  console.error("Missing env");
+  process.exit(1);
+}
 
 const API = "https://discord.com/api/v10";
-const headers = { Authorization: `Bot ${BOT_TOKEN}`, "Content-Type": "application/json" };
+const headers = {
+  Authorization: `Bot ${BOT_TOKEN}`,
+  "Content-Type": "application/json",
+};
 
 async function api(method, path, body) {
-  const res = await fetch(API + path, { method, headers, body: body ? JSON.stringify(body) : undefined });
+  const res = await fetch(API + path, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
   if (res.status === 429) {
     const r = await res.json();
     await new Promise((x) => setTimeout(x, (r.retry_after + 0.5) * 1000));
@@ -25,7 +35,12 @@ async function api(method, path, body) {
   }
   if (res.status === 204) return {};
   const text = await res.text();
-  let data; try { data = JSON.parse(text); } catch { data = text; }
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = text;
+  }
   if (!res.ok) {
     const e = new Error(`${method} ${path}: ${JSON.stringify(data)}`);
     e.status = res.status;
@@ -37,21 +52,78 @@ async function api(method, path, body) {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const INCLUDE_KEYWORDS = [
-  "anime", "ahegao", "waifu", "kawaii", "senpai", "uwu", "owo",
-  "chan", "tsundere", "yandere", "yuri", "baka", "nani",
-  "lewd", "horny", "blush", "smug", "pout", "moan", "wink",
-  "tongue", "lick", "kiss", "heart", "sparkle", "dance",
-  "catgirl", "nekomimi", "maid", "miko", "demon_girl", "angel",
-  "goddess", "princess", "hinata", "asuna", "rem", "nezuko",
-  "zelda", "marin", "mikasa", "hatsune", "miku", "ochako",
-  "zero_two", "neko", "bunny", "catboy", "hype", "sparkles",
-  "love", "cute", "peek", "spin",
+  "anime",
+  "ahegao",
+  "waifu",
+  "kawaii",
+  "senpai",
+  "uwu",
+  "owo",
+  "chan",
+  "tsundere",
+  "yandere",
+  "yuri",
+  "baka",
+  "nani",
+  "lewd",
+  "horny",
+  "blush",
+  "smug",
+  "pout",
+  "moan",
+  "wink",
+  "tongue",
+  "lick",
+  "kiss",
+  "heart",
+  "sparkle",
+  "dance",
+  "catgirl",
+  "nekomimi",
+  "maid",
+  "miko",
+  "demon_girl",
+  "angel",
+  "goddess",
+  "princess",
+  "hinata",
+  "asuna",
+  "rem",
+  "nezuko",
+  "zelda",
+  "marin",
+  "mikasa",
+  "hatsune",
+  "miku",
+  "ochako",
+  "zero_two",
+  "neko",
+  "bunny",
+  "catboy",
+  "hype",
+  "sparkles",
+  "love",
+  "cute",
+  "peek",
+  "spin",
 ];
 
 const EXCLUDE_KEYWORDS = [
-  "loli", "shota", "child", "kid", "minor", "underage", "infant",
-  "toddler", "baby", "young_girl", "cub",
-  "nazi", "hitler", "swastika", "slur",
+  "loli",
+  "shota",
+  "child",
+  "kid",
+  "minor",
+  "underage",
+  "infant",
+  "toddler",
+  "baby",
+  "young_girl",
+  "cub",
+  "nazi",
+  "hitler",
+  "swastika",
+  "slur",
 ];
 
 function sanitizeName(raw) {
@@ -91,7 +163,9 @@ function log(msg) {
 
 async function run() {
   log("🎬 Fetching emoji.gg catalog…");
-  const res = await fetch("https://emoji.gg/api/", { headers: { "User-Agent": "Mozilla/5.0" } });
+  const res = await fetch("https://emoji.gg/api/", {
+    headers: { "User-Agent": "Mozilla/5.0" },
+  });
   const all = await res.json();
   log(`  got ${all.length} emojis total`);
 
@@ -139,12 +213,17 @@ async function run() {
     if (uploaded >= slotsLeft) break;
 
     const name = sanitizeName(e.title || e.slug || `emoji_${e.id}`);
-    if (existingNames.has(name)) { skipped++; continue; }
+    if (existingNames.has(name)) {
+      skipped++;
+      continue;
+    }
 
     try {
       const buf = await downloadImage(e.image);
       if (buf.length > 256 * 1024) {
-        log(`  ⚠ ${name}: ${(buf.length / 1024).toFixed(0)}KB > 256KB, skipping`);
+        log(
+          `  ⚠ ${name}: ${(buf.length / 1024).toFixed(0)}KB > 256KB, skipping`,
+        );
         failed++;
         continue;
       }
@@ -152,7 +231,9 @@ async function run() {
       await api("POST", `/guilds/${GUILD_ID}/emojis`, { name, image: dataUri });
       existingNames.add(name);
       uploaded++;
-      log(`  ✓ :${name}: (${(buf.length / 1024).toFixed(0)}KB) — faves: ${e.faves || 0}`);
+      log(
+        `  ✓ :${name}: (${(buf.length / 1024).toFixed(0)}KB) — faves: ${e.faves || 0}`,
+      );
       await sleep(600);
     } catch (err) {
       failed++;
@@ -164,4 +245,7 @@ async function run() {
   log(`\n✨ Done: ${uploaded} uploaded, ${skipped} skipped, ${failed} failed`);
 }
 
-run().catch((err) => { console.error("❌", err); process.exit(1); });
+run().catch((err) => {
+  console.error("❌", err);
+  process.exit(1);
+});

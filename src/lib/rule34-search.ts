@@ -34,14 +34,15 @@ interface R34Post {
 }
 
 function buildSlug(id: number, tags: string): string {
-  const firstTag = (tags || "")
-    .trim()
-    .split(/\s+/)[0]
-    ?.toLowerCase()
-    .replace(/_/g, "-")
-    .replace(/[^a-z0-9-]/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "") ?? "";
+  const firstTag =
+    (tags || "")
+      .trim()
+      .split(/\s+/)[0]
+      ?.toLowerCase()
+      .replace(/_/g, "-")
+      .replace(/[^a-z0-9-]/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "") ?? "";
   return firstTag ? `r34-${id}-${firstTag}` : `r34-${id}`;
 }
 
@@ -50,7 +51,9 @@ function mapToVideo(post: R34Post): Video | null {
   if (!url) return null;
   if (!url.endsWith(".mp4") && !url.endsWith(".webm")) return null;
 
-  const tagList = post.tags ? post.tags.trim().split(/\s+/).filter(Boolean) : [];
+  const tagList = post.tags
+    ? post.tags.trim().split(/\s+/).filter(Boolean)
+    : [];
 
   return {
     id: post.id,
@@ -81,7 +84,7 @@ export interface Rule34SearchOptions {
 }
 
 export async function searchRule34(
-  options: Rule34SearchOptions = {}
+  options: Rule34SearchOptions = {},
 ): Promise<PaginatedResult<Video>> {
   const { tags = "", page = 1, limit = 20, order = "score" } = options;
 
@@ -91,7 +94,11 @@ export async function searchRule34(
   const pid = Math.max(0, page - 1);
 
   const orderTag =
-    order === "score" ? "sort:score:desc" : order === "date" ? "sort:id:desc" : "sort:score:desc";
+    order === "score"
+      ? "sort:score:desc"
+      : order === "date"
+        ? "sort:id:desc"
+        : "sort:score:desc";
 
   const baseQuery = tags
     ? `animated video ${tags} ${orderTag}`
@@ -113,9 +120,7 @@ export async function searchRule34(
     const posts: R34Post[] = JSON.parse(text);
     if (!Array.isArray(posts)) return { data: [], hasMore: false };
 
-    const videos = posts
-      .map(mapToVideo)
-      .filter((v): v is Video => v !== null);
+    const videos = posts.map(mapToVideo).filter((v): v is Video => v !== null);
 
     return {
       data: filterBannedContent(videos),

@@ -11,7 +11,12 @@ interface WatchActionsProps {
   thumbnail: string;
 }
 
-export function WatchActions({ videoId, slug, title, thumbnail }: WatchActionsProps) {
+export function WatchActions({
+  videoId,
+  slug,
+  title,
+  thumbnail,
+}: WatchActionsProps) {
   const [favorited, setFavorited] = useState(false);
 
   /* Record watch + hydrate favorite state on mount */
@@ -39,7 +44,9 @@ export function WatchActions({ videoId, slug, title, thumbnail }: WatchActionsPr
         border: favorited
           ? "1px solid rgba(255,32,128,0.5)"
           : "1px solid var(--color-border-default)",
-        background: favorited ? "rgba(255,32,128,0.12)" : "var(--color-bg-muted)",
+        background: favorited
+          ? "rgba(255,32,128,0.12)"
+          : "var(--color-bg-muted)",
         color: favorited ? "#ff2080" : "var(--color-text-secondary)",
         fontSize: "var(--text-sm)",
         fontWeight: 500,

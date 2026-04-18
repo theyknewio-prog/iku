@@ -35,19 +35,20 @@ Tu es un architecte logiciel senior qui connaît chaque recoin de l'architecture
 
 ## Les 5 sources de contenu
 
-| Source | Type | Lib | Fichier JSON | Taille | Rate limit |
-|--------|------|-----|-------------|--------|------------|
-| Danbooru | API REST live | `src/lib/danbooru.ts` | `videos.json` (12MB) | ~30K vidéos | 5 req/sec, max 2 tags (free) |
-| Gelbooru | API REST live | `src/lib/gelbooru.ts` | `gelbooru-videos.json` (9.9MB) | ~25K vidéos | 1 req/sec |
-| Rule34.xxx | API REST live | `src/lib/rule34-search.ts` | `rule34-videos.json` (11MB) | ~20K vidéos | 2 req/sec |
-| Rule34Video | JSON statique | `src/lib/rule34video.ts` | `rule34video-videos.json` (85MB) | ~278K vidéos | N/A (local) |
-| Sites WordPress | JSON statique | `src/lib/wp-hentai.ts` | `wp-hentai-videos.json` (4.2MB) | ~17.8K vidéos | N/A (local) |
+| Source          | Type          | Lib                        | Fichier JSON                     | Taille        | Rate limit                   |
+| --------------- | ------------- | -------------------------- | -------------------------------- | ------------- | ---------------------------- |
+| Danbooru        | API REST live | `src/lib/danbooru.ts`      | `videos.json` (12MB)             | ~30K vidéos   | 5 req/sec, max 2 tags (free) |
+| Gelbooru        | API REST live | `src/lib/gelbooru.ts`      | `gelbooru-videos.json` (9.9MB)   | ~25K vidéos   | 1 req/sec                    |
+| Rule34.xxx      | API REST live | `src/lib/rule34-search.ts` | `rule34-videos.json` (11MB)      | ~20K vidéos   | 2 req/sec                    |
+| Rule34Video     | JSON statique | `src/lib/rule34video.ts`   | `rule34video-videos.json` (85MB) | ~278K vidéos  | N/A (local)                  |
+| Sites WordPress | JSON statique | `src/lib/wp-hentai.ts`     | `wp-hentai-videos.json` (4.2MB)  | ~17.8K vidéos | N/A (local)                  |
 
 **Total en RAM** : ~122MB de JSONs chargés au démarrage du serveur Next.js.
 
 ### Couche unifiée : `src/lib/content.ts`
 
 `getVideos()` est le point d'entrée unique. Il :
+
 1. Fetch les 4 sources en parallèle via `Promise.allSettled` (graceful degradation)
 2. Interleave : Danbooru en primaire, Gelbooru/Rule34/Rule34Video mélangés tous les 3 items
 3. Sort par score/date/favcount
@@ -60,28 +61,29 @@ Les pages NE DOIVENT PAS appeler directement `danbooru.ts` ou `gelbooru.ts` sauf
 
 **Cron** : GitHub Actions, quotidien à 4h UTC (`.github/workflows/`)
 
-| Script | Source | Commande |
-|--------|--------|----------|
-| `scrape-danbooru.ts` | API Danbooru (toutes les pages, 200/page) | `npx tsx scripts/scrape-danbooru.ts` |
-| `scrape-gelbooru.ts` | API Gelbooru | `npx tsx scripts/scrape-gelbooru.ts` |
-| `scrape-rule34.ts` | API Rule34.xxx | `npx tsx scripts/scrape-rule34.ts` |
-| `scrape-rule34video.ts` | Sitemaps Rule34Video | `npx tsx scripts/scrape-rule34video.ts` |
-| `scrape-wp-sites.ts` | 6 sites WordPress (sitemaps) | `npx tsx scripts/scrape-wp-sites.ts` |
-| `enrich-wp-thumbnails.ts` | Scrape thumbnails depuis pages WP | `npx tsx scripts/enrich-wp-thumbnails.ts` |
-| `publish-scheduled.ts` | Publie articles/glossaire programmés | `npx tsx scripts/publish-scheduled.ts` |
+| Script                    | Source                                    | Commande                                  |
+| ------------------------- | ----------------------------------------- | ----------------------------------------- |
+| `scrape-danbooru.ts`      | API Danbooru (toutes les pages, 200/page) | `npx tsx scripts/scrape-danbooru.ts`      |
+| `scrape-gelbooru.ts`      | API Gelbooru                              | `npx tsx scripts/scrape-gelbooru.ts`      |
+| `scrape-rule34.ts`        | API Rule34.xxx                            | `npx tsx scripts/scrape-rule34.ts`        |
+| `scrape-rule34video.ts`   | Sitemaps Rule34Video                      | `npx tsx scripts/scrape-rule34video.ts`   |
+| `scrape-wp-sites.ts`      | 6 sites WordPress (sitemaps)              | `npx tsx scripts/scrape-wp-sites.ts`      |
+| `enrich-wp-thumbnails.ts` | Scrape thumbnails depuis pages WP         | `npx tsx scripts/enrich-wp-thumbnails.ts` |
+| `publish-scheduled.ts`    | Publie articles/glossaire programmés      | `npx tsx scripts/publish-scheduled.ts`    |
 
 Le cron commit les JSONs mis à jour et push → Coolify auto-deploy.
 
 ## API Routes
 
-| Route | Rôle | Protection |
-|-------|------|-----------|
-| `/api/proxy` | Proxy Gelbooru CDN (bypass hotlink) | Whitelist de hosts |
-| `/api/resolve-video` | Résout URLs vidéo via yt-dlp | Rate limit 10/min/IP, max 3 concurrent, cache 1h |
-| `/api/resolve` | Proxy vers service externe (PROXY_URL) | Aucun |
-| `/api/feed` | Feed data pour SwipeFeed | Aucun |
+| Route                | Rôle                                   | Protection                                       |
+| -------------------- | -------------------------------------- | ------------------------------------------------ |
+| `/api/proxy`         | Proxy Gelbooru CDN (bypass hotlink)    | Whitelist de hosts                               |
+| `/api/resolve-video` | Résout URLs vidéo via yt-dlp           | Rate limit 10/min/IP, max 3 concurrent, cache 1h |
+| `/api/resolve`       | Proxy vers service externe (PROXY_URL) | Aucun                                            |
+| `/api/feed`          | Feed data pour SwipeFeed               | Aucun                                            |
 
 ### Le problème yt-dlp
+
 278K vidéos Rule34Video + 17.8K vidéos WP n'ont PAS d'URL vidéo directe. Au clic play, le client appelle `/api/resolve-video?url=<pageUrl>` qui exécute `yt-dlp -j --no-download` pour extraire l'URL temporaire du stream. Cache in-memory 1h (les URLs expirent en ~2h).
 
 **Risques** : yt-dlp = Python = gourmand en RAM. 3 resolve simultanés peuvent pic à 6-7GB sur un serveur 8GB sans swap.
@@ -97,6 +99,7 @@ Le cron commit les JSONs mis à jour et push → Coolify auto-deploy.
 - **Monitoring** : Aucun pour l'instant
 
 ### Dockerfile
+
 ```dockerfile
 FROM node:22-slim
 RUN apt-get update -qq && \
@@ -119,27 +122,32 @@ Build = ~9 min, consomme 6GB de RAM (les JSONs sont importés at build time).
 ## Problèmes connus et solutions
 
 ### 1. RAM serrée (CRITIQUE)
+
 - 8GB total, ~3GB utilisé par Next.js + JSONs en mémoire
 - yt-dlp en parallèle (Python) → pics à 6-7GB
 - **Pas de swap** → OOM kill direct
 - **Fix** : ajouter 2-4GB swap sur le VPS + monitorer
 
 ### 2. Git repo trop lourd
+
 - `rule34video-videos.json` = 85MB dans git
 - GitHub warn au-delà de 100MB
 - **Fix** : Git LFS ou générer le JSON au build (télécharger depuis un storage externe)
 
 ### 3. Clés API hardcodées
+
 - Gelbooru API key + user ID dans `gelbooru.ts`
 - Rule34 API key + user ID dans `rule34-search.ts`
 - **Fix** : migrer vers des variables d'environnement
 
 ### 4. Thumbnails WP vides
+
 - 17.8K vidéos WordPress ont `thumbnail: ""` et `preview: ""`
 - Le script `enrich-wp-thumbnails.ts` existe mais n'est pas dans le cron
 - **Fix** : ajouter au cron GitHub Actions
 
 ### 5. Cache volatile
+
 - Le cache `/api/resolve-video` est in-memory → perdu au redéploiement
 - **Fix futur** : Redis ou SQLite cache
 

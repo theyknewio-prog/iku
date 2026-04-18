@@ -44,28 +44,27 @@ export function AgeGate({ children }: { children: React.ReactNode }) {
           <p className="age-gate__sub">
             This site contains explicit adult content.
             <br />
-            You must be at least{" "}
-            <strong>18 years old</strong> to enter.
+            You must be at least <strong>18 years old</strong> to enter.
           </p>
 
           <div className="age-gate__actions">
             <button onClick={handleVerify} className="age-gate__enter">
               I am 18 or older &mdash; Enter
             </button>
-            <a
-              href="https://google.com"
-              className="age-gate__leave"
-            >
+            <a href="https://google.com" className="age-gate__leave">
               I am under 18 &mdash; Leave
             </a>
           </div>
 
           <p className="age-gate__legal">
-            By entering you agree to our{" "}
-            <a href="/terms">Terms of Service</a> and confirm you are of
-            legal age in your jurisdiction. All content is user-submitted
-            from{" "}
-            <a href="https://danbooru.donmai.us" target="_blank" rel="noopener noreferrer">
+            By entering you agree to our <a href="/terms">Terms of Service</a>{" "}
+            and confirm you are of legal age in your jurisdiction. All content
+            is user-submitted from{" "}
+            <a
+              href="https://danbooru.donmai.us"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Danbooru
             </a>
             .

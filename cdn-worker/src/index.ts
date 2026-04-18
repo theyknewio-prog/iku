@@ -50,11 +50,16 @@ const CACHE_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
   "Access-Control-Allow-Headers": "Range",
-  "Access-Control-Expose-Headers": "Content-Length, Content-Range, Accept-Ranges",
+  "Access-Control-Expose-Headers":
+    "Content-Length, Content-Range, Accept-Ranges",
 };
 
 export default {
-  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+  async fetch(
+    request: Request,
+    env: Env,
+    ctx: ExecutionContext,
+  ): Promise<Response> {
     const url = new URL(request.url);
 
     // CORS preflight
@@ -87,7 +92,10 @@ export default {
       if (!b64) return new Response("Missing video ID", { status: 400 });
       try {
         // Decode base64url → source URL
-        const bytes = Uint8Array.from(atob(b64.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
+        const bytes = Uint8Array.from(
+          atob(b64.replace(/-/g, "+").replace(/_/g, "/")),
+          (c) => c.charCodeAt(0),
+        );
         const sourceUrl = new TextDecoder().decode(bytes);
         if (!sourceUrl.startsWith("http")) {
           return new Response("Invalid video ID", { status: 400 });
@@ -98,7 +106,9 @@ export default {
       }
     }
 
-    return new Response("Not found. Use /stream?url={video_url}", { status: 404 });
+    return new Response("Not found. Use /stream?url={video_url}", {
+      status: 404,
+    });
   },
 };
 
@@ -106,7 +116,7 @@ async function handleStream(
   request: Request,
   env: Env,
   ctx: ExecutionContext,
-  sourceUrl: string
+  sourceUrl: string,
 ): Promise<Response> {
   const r2Key = urlToKey(sourceUrl);
   const isRange = request.headers.has("Range");
@@ -161,14 +171,14 @@ async function handleStream(
   }
 
   // 2. Cache MISS — fetch from origin
-  const isDirectUrl = sourceUrl.startsWith("http") && (
-    sourceUrl.includes("rule34.xxx") ||
-    sourceUrl.includes("gelbooru.com") ||
-    sourceUrl.includes("donmai.us") ||
-    sourceUrl.includes("cdn.") ||
-    sourceUrl.endsWith(".mp4") ||
-    sourceUrl.endsWith(".webm")
-  );
+  const isDirectUrl =
+    sourceUrl.startsWith("http") &&
+    (sourceUrl.includes("rule34.xxx") ||
+      sourceUrl.includes("gelbooru.com") ||
+      sourceUrl.includes("donmai.us") ||
+      sourceUrl.includes("cdn.") ||
+      sourceUrl.endsWith(".mp4") ||
+      sourceUrl.endsWith(".webm"));
 
   let originUrl: string;
   if (isDirectUrl) {
@@ -184,7 +194,9 @@ async function handleStream(
       headers: {
         "User-Agent": "iku-cdn-worker/1.0",
         // Pass range to origin for direct URLs
-        ...(isRange && isDirectUrl ? { Range: request.headers.get("Range") || "" } : {}),
+        ...(isRange && isDirectUrl
+          ? { Range: request.headers.get("Range") || "" }
+          : {}),
       },
     });
 
@@ -209,7 +221,7 @@ async function handleStream(
             sourceUrl,
             cachedAt: new Date().toISOString(),
           },
-        }).catch((e) => console.error("R2 put error:", e))
+        }).catch((e) => console.error("R2 put error:", e)),
       );
     }
 

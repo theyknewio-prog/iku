@@ -29,7 +29,7 @@ export default async function sitemap(props: {
   try {
     const result = await pool.query(
       "SELECT slug, created_at FROM videos ORDER BY pk LIMIT $1 OFFSET $2",
-      [MAX_PER_SITEMAP, offset]
+      [MAX_PER_SITEMAP, offset],
     );
     rows = result.rows;
   } catch {
@@ -39,7 +39,9 @@ export default async function sitemap(props: {
 
   return rows.map((row) => ({
     url: `${SITE}/watch/${row.slug}`,
-    lastModified: row.created_at ? new Date(row.created_at).toISOString() : new Date().toISOString(),
+    lastModified: row.created_at
+      ? new Date(row.created_at).toISOString()
+      : new Date().toISOString(),
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));

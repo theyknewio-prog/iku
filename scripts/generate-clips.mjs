@@ -103,13 +103,21 @@ async function findBinary(name, fallbackPaths = []) {
  */
 async function probeDuration(ffprobePath, url) {
   try {
-    const { stdout } = await execFileAsync(ffprobePath, [
-      "-v", "error",
-      "-select_streams", "v:0",
-      "-show_entries", "format=duration",
-      "-of", "default=noprint_wrappers=1:nokey=1",
-      url,
-    ], { timeout: 30_000 });
+    const { stdout } = await execFileAsync(
+      ffprobePath,
+      [
+        "-v",
+        "error",
+        "-select_streams",
+        "v:0",
+        "-show_entries",
+        "format=duration",
+        "-of",
+        "default=noprint_wrappers=1:nokey=1",
+        url,
+      ],
+      { timeout: 30_000 },
+    );
     const secs = parseFloat(stdout.trim());
     return isNaN(secs) ? null : secs;
   } catch {
@@ -127,12 +135,11 @@ async function probeDuration(ffprobePath, url) {
  */
 async function resolveWithYtdlp(ytdlpPath, pageUrl) {
   try {
-    const { stdout } = await execFileAsync(ytdlpPath, [
-      "-g",
-      "--no-playlist",
-      "--no-warnings",
-      pageUrl,
-    ], { timeout: 45_000 });
+    const { stdout } = await execFileAsync(
+      ytdlpPath,
+      ["-g", "--no-playlist", "--no-warnings", pageUrl],
+      { timeout: 45_000 },
+    );
     // yt-dlp -g can return multiple lines (video + audio). Take the first line.
     const url = stdout.trim().split("\n")[0].trim();
     return url.startsWith("http") ? url : null;
@@ -156,21 +163,29 @@ async function extractMp4(ffmpegPath, inputUrl, outputPath, durationSecs) {
   const startTime = durationSecs ? Math.floor(durationSecs * 0.25) : 10;
 
   const args = [
-    "-ss", String(startTime),
-    "-i", inputUrl,
-    "-t", "12",
+    "-ss",
+    String(startTime),
+    "-i",
+    inputUrl,
+    "-t",
+    "12",
     // Scale: width max 1280, height max 720, keep aspect, divisible by 2
-    "-vf", [
+    "-vf",
+    [
       "scale='min(1280,iw)':'min(720,ih)':force_original_aspect_ratio=decrease",
       "pad=ceil(iw/2)*2:ceil(ih/2)*2",
       "drawtext=text='iku.gg':fontsize=28:fontcolor=white@0.5:x=w-tw-20:y=h-th-20",
     ].join(","),
-    "-c:v", "libx264",
-    "-preset", "fast",
-    "-crf", "23",
-    "-movflags", "+faststart",
-    "-an",          // no audio (clips for social, keep filesize low)
-    "-y",           // overwrite
+    "-c:v",
+    "libx264",
+    "-preset",
+    "fast",
+    "-crf",
+    "23",
+    "-movflags",
+    "+faststart",
+    "-an", // no audio (clips for social, keep filesize low)
+    "-y", // overwrite
     outputPath,
   ];
 
@@ -185,21 +200,38 @@ async function extractGif(ffmpegPath, mp4Path, outputPath) {
   const palettePath = outputPath.replace(".gif", "-palette.png");
 
   // Pass 1: generate palette
-  await execFileAsync(ffmpegPath, [
-    "-i", mp4Path,
-    "-t", "8",
-    "-vf", "fps=12,scale=480:-1:flags=lanczos,palettegen=stats_mode=diff",
-    "-y", palettePath,
-  ], { timeout: 60_000 });
+  await execFileAsync(
+    ffmpegPath,
+    [
+      "-i",
+      mp4Path,
+      "-t",
+      "8",
+      "-vf",
+      "fps=12,scale=480:-1:flags=lanczos,palettegen=stats_mode=diff",
+      "-y",
+      palettePath,
+    ],
+    { timeout: 60_000 },
+  );
 
   // Pass 2: render GIF using palette
-  await execFileAsync(ffmpegPath, [
-    "-i", mp4Path,
-    "-i", palettePath,
-    "-t", "8",
-    "-lavfi", "fps=12,scale=480:-1:flags=lanczos [x]; [x][1:v] paletteuse=dither=bayer:bayer_scale=5",
-    "-y", outputPath,
-  ], { timeout: 60_000 });
+  await execFileAsync(
+    ffmpegPath,
+    [
+      "-i",
+      mp4Path,
+      "-i",
+      palettePath,
+      "-t",
+      "8",
+      "-lavfi",
+      "fps=12,scale=480:-1:flags=lanczos [x]; [x][1:v] paletteuse=dither=bayer:bayer_scale=5",
+      "-y",
+      outputPath,
+    ],
+    { timeout: 60_000 },
+  );
 
   // Clean up palette temp file
   try {
@@ -273,11 +305,15 @@ function buildHashtags(characters, copyrights, tags) {
 
   // Add a couple of the most relevant content tags
   const contentTags = (tags || [])
-    .filter((t) => ["animated", "loop", "sex", "ahegao", "threesome"].includes(t))
+    .filter((t) =>
+      ["animated", "loop", "sex", "ahegao", "threesome"].includes(t),
+    )
     .slice(0, 2)
     .map((t) => "#" + t);
 
-  const all = [...new Set([...base, ...charTags, ...seriesTags, ...contentTags])];
+  const all = [
+    ...new Set([...base, ...charTags, ...seriesTags, ...contentTags]),
+  ];
   return all.join(" ");
 }
 
@@ -300,27 +336,34 @@ function safeFilename(str) {
 
 async function main() {
   console.log("[generate-clips] Starting clip generation for iku.gg");
-  if (DRY_RUN) console.log("[generate-clips] DRY RUN — no files will be written");
+  if (DRY_RUN)
+    console.log("[generate-clips] DRY RUN — no files will be written");
 
   // --- Detect tools ---
   const ytdlpPath = await findBinary("yt-dlp", ["/usr/local/bin/yt-dlp"]);
   if (!ytdlpPath) {
     console.error(
       "[generate-clips] ERROR: yt-dlp not found.\n" +
-      "  Install: pip install yt-dlp  OR  curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp && chmod +x /usr/local/bin/yt-dlp"
+        "  Install: pip install yt-dlp  OR  curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp && chmod +x /usr/local/bin/yt-dlp",
     );
     process.exit(1);
   }
   console.log(`[generate-clips] yt-dlp found at: ${ytdlpPath}`);
 
-  const ffmpegPath = await findBinary("ffmpeg", ["/usr/bin/ffmpeg", "/usr/local/bin/ffmpeg"]);
-  const ffprobePath = await findBinary("ffprobe", ["/usr/bin/ffprobe", "/usr/local/bin/ffprobe"]);
+  const ffmpegPath = await findBinary("ffmpeg", [
+    "/usr/bin/ffmpeg",
+    "/usr/local/bin/ffmpeg",
+  ]);
+  const ffprobePath = await findBinary("ffprobe", [
+    "/usr/bin/ffprobe",
+    "/usr/local/bin/ffprobe",
+  ]);
 
   if (!ffmpegPath) {
     console.error(
       "[generate-clips] ERROR: ffmpeg not found.\n" +
-      "  Install: apt-get install ffmpeg  (Debian/Ubuntu/Hetzner)\n" +
-      "  Or: brew install ffmpeg  (macOS)"
+        "  Install: apt-get install ffmpeg  (Debian/Ubuntu/Hetzner)\n" +
+        "  Or: brew install ffmpeg  (macOS)",
     );
     process.exit(1);
   }
@@ -334,7 +377,9 @@ async function main() {
 
   // --- Load already-processed slugs ---
   const clipped = loadClippedLog();
-  console.log(`[generate-clips] Already clipped: ${clipped.size} videos (will skip)`);
+  console.log(
+    `[generate-clips] Already clipped: ${clipped.size} videos (will skip)`,
+  );
 
   // --- Query top videos from PostgreSQL ---
   // Exclude sources that need complex proxying for the initial clip run.
@@ -354,7 +399,9 @@ async function main() {
 
   // Filter out already-clipped videos
   const candidates = videos.filter((v) => !clipped.has(v.slug));
-  console.log(`[generate-clips] Candidates after skip filter: ${candidates.length}`);
+  console.log(
+    `[generate-clips] Candidates after skip filter: ${candidates.length}`,
+  );
 
   if (candidates.length === 0) {
     console.log("[generate-clips] Nothing new to clip. Exiting.");
@@ -363,7 +410,9 @@ async function main() {
 
   // Cap per run
   const toProcess = candidates.slice(0, CLIPS_PER_RUN);
-  console.log(`[generate-clips] Will process ${toProcess.length} video(s) this run`);
+  console.log(
+    `[generate-clips] Will process ${toProcess.length} video(s) this run`,
+  );
 
   if (DRY_RUN) {
     console.log("[generate-clips] Dry-run candidates:");
@@ -381,16 +430,27 @@ async function main() {
 
   for (let i = 0; i < toProcess.length; i++) {
     const video = toProcess[i];
-    const { slug, url, page_url, source, title, characters, copyrights, tags, duration } = video;
+    const {
+      slug,
+      url,
+      page_url,
+      source,
+      title,
+      characters,
+      copyrights,
+      tags,
+      duration,
+    } = video;
 
-    console.log(`\n[${i + 1}/${toProcess.length}] Processing: ${slug} (source: ${source})`);
+    console.log(
+      `\n[${i + 1}/${toProcess.length}] Processing: ${slug} (source: ${source})`,
+    );
 
     // Determine the URL to feed yt-dlp.
     // - For rule34video + WP sources, use page_url (the watchable page).
     // - For booru sources, use url directly (it's already an MP4).
-    const resolveTarget = (source === "rule34video" || source === "wp")
-      ? (page_url || url)
-      : url;
+    const resolveTarget =
+      source === "rule34video" || source === "wp" ? page_url || url : url;
 
     if (!resolveTarget) {
       console.warn(`  [SKIP] No resolvable URL for ${slug}`);
@@ -432,7 +492,9 @@ async function main() {
     }
 
     // --- Build output filenames ---
-    const charPart = safeFilename(characters?.[0] || copyrights?.[0] || "hentai");
+    const charPart = safeFilename(
+      characters?.[0] || copyrights?.[0] || "hentai",
+    );
     const slugPart = safeFilename(slug);
     const baseName = `${charPart}-${slugPart}-clip`;
     const mp4Out = join(CLIPS_DIR, baseName + ".mp4");
@@ -444,7 +506,9 @@ async function main() {
       await extractMp4(ffmpegPath, mp4Url, mp4Out, durationSecs);
       console.log(`  MP4 done.`);
     } catch (err) {
-      console.error(`  [FAIL] MP4 extraction failed for ${slug}: ${err.message}`);
+      console.error(
+        `  [FAIL] MP4 extraction failed for ${slug}: ${err.message}`,
+      );
       // Don't mark as clipped — could be a transient error
       continue;
     }
@@ -455,7 +519,9 @@ async function main() {
       await extractGif(ffmpegPath, mp4Out, gifOut);
       console.log(`  GIF done.`);
     } catch (err) {
-      console.error(`  [WARN] GIF generation failed for ${slug}: ${err.message}`);
+      console.error(
+        `  [WARN] GIF generation failed for ${slug}: ${err.message}`,
+      );
       // GIF is best-effort; MP4 is the primary deliverable
     }
 
@@ -491,7 +557,9 @@ async function main() {
   }
 
   // --- Summary ---
-  console.log(`\n[generate-clips] Run complete. ${successCount}/${toProcess.length} clips generated.`);
+  console.log(
+    `\n[generate-clips] Run complete. ${successCount}/${toProcess.length} clips generated.`,
+  );
   console.log(`[generate-clips] Manifest: ${MANIFEST_PATH}`);
   console.log(`[generate-clips] Clips dir: ${CLIPS_DIR}`);
 

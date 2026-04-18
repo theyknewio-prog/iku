@@ -36,13 +36,27 @@ function readJSON(file: string): unknown[] {
 
 async function insertBatch(
   rows: Array<{
-    source: string; source_id: number; slug: string; url: string;
-    page_url: string | null; site: string | null; title: string | null;
-    thumbnail: string; preview: string; score: number; favorites: number;
-    tags: string[]; characters: string[]; copyrights: string[]; artists: string[];
-    width: number; height: number; file_size: number;
-    duration: number | null; created_at: string;
-  }>
+    source: string;
+    source_id: number;
+    slug: string;
+    url: string;
+    page_url: string | null;
+    site: string | null;
+    title: string | null;
+    thumbnail: string;
+    preview: string;
+    score: number;
+    favorites: number;
+    tags: string[];
+    characters: string[];
+    copyrights: string[];
+    artists: string[];
+    width: number;
+    height: number;
+    file_size: number;
+    duration: number | null;
+    created_at: string;
+  }>,
 ): Promise<number> {
   if (rows.length === 0) return 0;
 
@@ -53,14 +67,29 @@ async function insertBatch(
     const r = rows[i];
     const offset = i * 20;
     placeholders.push(
-      `($${offset+1},$${offset+2},$${offset+3},$${offset+4},$${offset+5},$${offset+6},$${offset+7},$${offset+8},$${offset+9},$${offset+10},$${offset+11},$${offset+12},$${offset+13},$${offset+14},$${offset+15},$${offset+16},$${offset+17},$${offset+18},$${offset+19},$${offset+20})`
+      `($${offset + 1},$${offset + 2},$${offset + 3},$${offset + 4},$${offset + 5},$${offset + 6},$${offset + 7},$${offset + 8},$${offset + 9},$${offset + 10},$${offset + 11},$${offset + 12},$${offset + 13},$${offset + 14},$${offset + 15},$${offset + 16},$${offset + 17},$${offset + 18},$${offset + 19},$${offset + 20})`,
     );
     values.push(
-      r.source, r.source_id, r.slug, r.url, r.page_url, r.site, r.title,
-      r.thumbnail, r.preview, r.score, r.favorites,
-      r.tags, r.characters, r.copyrights, r.artists,
-      r.width, r.height, r.file_size, r.duration,
-      r.created_at || new Date().toISOString()
+      r.source,
+      r.source_id,
+      r.slug,
+      r.url,
+      r.page_url,
+      r.site,
+      r.title,
+      r.thumbnail,
+      r.preview,
+      r.score,
+      r.favorites,
+      r.tags,
+      r.characters,
+      r.copyrights,
+      r.artists,
+      r.width,
+      r.height,
+      r.file_size,
+      r.duration,
+      r.created_at || new Date().toISOString(),
     );
   }
 
@@ -75,46 +104,94 @@ async function insertBatch(
 }
 
 interface DanbooruEntry {
-  id: number; slug: string; url: string; thumbnail: string;
-  score: number; favorites: number;
-  characters: string[]; copyrights: string[]; artists: string[]; tags: string[];
-  width: number; height: number; fileSize: number;
-  duration: number | null; createdAt: string;
+  id: number;
+  slug: string;
+  url: string;
+  thumbnail: string;
+  score: number;
+  favorites: number;
+  characters: string[];
+  copyrights: string[];
+  artists: string[];
+  tags: string[];
+  width: number;
+  height: number;
+  fileSize: number;
+  duration: number | null;
+  createdAt: string;
 }
 
 interface GelbooruEntry {
-  id: number; slug: string; url: string; thumbnail: string;
-  score: number; tags: string[];
-  width: number; height: number; fileSize: number; createdAt: string;
+  id: number;
+  slug: string;
+  url: string;
+  thumbnail: string;
+  score: number;
+  tags: string[];
+  width: number;
+  height: number;
+  fileSize: number;
+  createdAt: string;
 }
 
 interface Rule34Entry {
-  id: number; slug: string; url: string; thumbnail: string; preview: string;
-  score: number; tags: string[];
-  width: number; height: number; createdAt: string;
+  id: number;
+  slug: string;
+  url: string;
+  thumbnail: string;
+  preview: string;
+  score: number;
+  tags: string[];
+  width: number;
+  height: number;
+  createdAt: string;
 }
 
 interface R34VEntry {
-  id: number; slug: string; title: string; pageUrl: string;
-  thumbnail: string; duration: number; date: string;
+  id: number;
+  slug: string;
+  title: string;
+  pageUrl: string;
+  thumbnail: string;
+  duration: number;
+  date: string;
 }
 
 interface WPEntry {
-  id: number; slug: string; title: string; pageUrl: string;
-  site: string; date: string; thumbnail?: string;
+  id: number;
+  slug: string;
+  title: string;
+  pageUrl: string;
+  site: string;
+  date: string;
+  thumbnail?: string;
 }
 
 async function migrateSource(
   name: string,
   file: string,
   mapper: (entry: any) => {
-    source: string; source_id: number; slug: string; url: string;
-    page_url: string | null; site: string | null; title: string | null;
-    thumbnail: string; preview: string; score: number; favorites: number;
-    tags: string[]; characters: string[]; copyrights: string[]; artists: string[];
-    width: number; height: number; file_size: number;
-    duration: number | null; created_at: string;
-  }
+    source: string;
+    source_id: number;
+    slug: string;
+    url: string;
+    page_url: string | null;
+    site: string | null;
+    title: string | null;
+    thumbnail: string;
+    preview: string;
+    score: number;
+    favorites: number;
+    tags: string[];
+    characters: string[];
+    copyrights: string[];
+    artists: string[];
+    width: number;
+    height: number;
+    file_size: number;
+    duration: number | null;
+    created_at: string;
+  },
 ) {
   const data = readJSON(file);
   console.log(`  ${name}: ${data.length} entries`);
@@ -122,7 +199,9 @@ async function migrateSource(
   for (let i = 0; i < data.length; i += BATCH_SIZE) {
     const batch = data.slice(i, i + BATCH_SIZE).map(mapper);
     inserted += await insertBatch(batch);
-    process.stdout.write(`    ${Math.min(i + BATCH_SIZE, data.length)}/${data.length} processed (${inserted} inserted)\r`);
+    process.stdout.write(
+      `    ${Math.min(i + BATCH_SIZE, data.length)}/${data.length} processed (${inserted} inserted)\r`,
+    );
   }
   console.log(`\n    Inserted: ${inserted}`);
 }
@@ -137,63 +216,147 @@ async function main() {
   client.release();
 
   await migrateSource("Danbooru", "videos.json", (v: DanbooruEntry) => ({
-    source: "danbooru", source_id: v.id, slug: v.slug, url: v.url || "",
-    page_url: null, site: null, title: null,
+    source: "danbooru",
+    source_id: v.id,
+    slug: v.slug,
+    url: v.url || "",
+    page_url: null,
+    site: null,
+    title: null,
     thumbnail: v.thumbnail || "",
-    preview: v.thumbnail ? v.thumbnail.replace("/180x180/", "/720x720/").replace(/\.jpg$/, ".webp") : "",
-    score: v.score || 0, favorites: v.favorites || 0,
-    tags: v.tags || [], characters: v.characters || [],
-    copyrights: v.copyrights || [], artists: v.artists || [],
-    width: v.width || 0, height: v.height || 0,
-    file_size: v.fileSize || 0, duration: v.duration ?? null,
+    preview: v.thumbnail
+      ? v.thumbnail.replace("/180x180/", "/720x720/").replace(/\.jpg$/, ".webp")
+      : "",
+    score: v.score || 0,
+    favorites: v.favorites || 0,
+    tags: v.tags || [],
+    characters: v.characters || [],
+    copyrights: v.copyrights || [],
+    artists: v.artists || [],
+    width: v.width || 0,
+    height: v.height || 0,
+    file_size: v.fileSize || 0,
+    duration: v.duration ?? null,
     created_at: v.createdAt || "",
   }));
 
-  await migrateSource("Gelbooru", "gelbooru-videos.json", (v: GelbooruEntry) => ({
-    source: "gelbooru", source_id: v.id, slug: v.slug, url: v.url || "",
-    page_url: null, site: null, title: null,
-    thumbnail: v.thumbnail || "", preview: "",
-    score: v.score || 0, favorites: 0,
-    tags: v.tags || [], characters: [], copyrights: [], artists: [],
-    width: v.width || 0, height: v.height || 0,
-    file_size: v.fileSize || 0, duration: null,
-    created_at: v.createdAt || "",
-  }));
+  await migrateSource(
+    "Gelbooru",
+    "gelbooru-videos.json",
+    (v: GelbooruEntry) => ({
+      source: "gelbooru",
+      source_id: v.id,
+      slug: v.slug,
+      url: v.url || "",
+      page_url: null,
+      site: null,
+      title: null,
+      thumbnail: v.thumbnail || "",
+      preview: "",
+      score: v.score || 0,
+      favorites: 0,
+      tags: v.tags || [],
+      characters: [],
+      copyrights: [],
+      artists: [],
+      width: v.width || 0,
+      height: v.height || 0,
+      file_size: v.fileSize || 0,
+      duration: null,
+      created_at: v.createdAt || "",
+    }),
+  );
 
   await migrateSource("Rule34", "rule34-videos.json", (v: Rule34Entry) => ({
-    source: "rule34", source_id: v.id, slug: v.slug, url: v.url || "",
-    page_url: null, site: null, title: null,
-    thumbnail: v.thumbnail || "", preview: v.preview || "",
-    score: v.score || 0, favorites: 0,
-    tags: v.tags || [], characters: [], copyrights: [], artists: [],
-    width: v.width || 0, height: v.height || 0,
-    file_size: 0, duration: null,
+    source: "rule34",
+    source_id: v.id,
+    slug: v.slug,
+    url: v.url || "",
+    page_url: null,
+    site: null,
+    title: null,
+    thumbnail: v.thumbnail || "",
+    preview: v.preview || "",
+    score: v.score || 0,
+    favorites: 0,
+    tags: v.tags || [],
+    characters: [],
+    copyrights: [],
+    artists: [],
+    width: v.width || 0,
+    height: v.height || 0,
+    file_size: 0,
+    duration: null,
     created_at: v.createdAt || "",
   }));
 
-  await migrateSource("Rule34Video", "rule34video-videos.json", (v: R34VEntry) => ({
-    source: "rule34video", source_id: v.id, slug: v.slug, url: "",
-    page_url: v.pageUrl || "", site: null, title: v.title || "",
-    thumbnail: v.thumbnail || "", preview: v.thumbnail || "",
-    score: 0, favorites: 0,
-    tags: v.title ? v.title.toLowerCase().replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter((w: string) => w.length > 2).slice(0, 15) : [],
-    characters: [], copyrights: [], artists: [],
-    width: 1280, height: 720, file_size: 0,
-    duration: v.duration || null, created_at: v.date || "",
-  }));
+  await migrateSource(
+    "Rule34Video",
+    "rule34video-videos.json",
+    (v: R34VEntry) => ({
+      source: "rule34video",
+      source_id: v.id,
+      slug: v.slug,
+      url: "",
+      page_url: v.pageUrl || "",
+      site: null,
+      title: v.title || "",
+      thumbnail: v.thumbnail || "",
+      preview: v.thumbnail || "",
+      score: 0,
+      favorites: 0,
+      tags: v.title
+        ? v.title
+            .toLowerCase()
+            .replace(/[^a-z0-9\s]/g, "")
+            .split(/\s+/)
+            .filter((w: string) => w.length > 2)
+            .slice(0, 15)
+        : [],
+      characters: [],
+      copyrights: [],
+      artists: [],
+      width: 1280,
+      height: 720,
+      file_size: 0,
+      duration: v.duration || null,
+      created_at: v.date || "",
+    }),
+  );
 
   await migrateSource("WordPress", "wp-hentai-videos.json", (v: WPEntry) => ({
-    source: "wp", source_id: v.id, slug: v.slug, url: "",
-    page_url: v.pageUrl || "", site: v.site || "", title: v.title || "",
-    thumbnail: v.thumbnail || "", preview: "",
-    score: 0, favorites: 0,
-    tags: v.title ? v.title.toLowerCase().replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter((w: string) => w.length > 2).slice(0, 15) : [],
-    characters: [], copyrights: [], artists: [],
-    width: 1280, height: 720, file_size: 0,
-    duration: null, created_at: v.date || "",
+    source: "wp",
+    source_id: v.id,
+    slug: v.slug,
+    url: "",
+    page_url: v.pageUrl || "",
+    site: v.site || "",
+    title: v.title || "",
+    thumbnail: v.thumbnail || "",
+    preview: "",
+    score: 0,
+    favorites: 0,
+    tags: v.title
+      ? v.title
+          .toLowerCase()
+          .replace(/[^a-z0-9\s]/g, "")
+          .split(/\s+/)
+          .filter((w: string) => w.length > 2)
+          .slice(0, 15)
+      : [],
+    characters: [],
+    copyrights: [],
+    artists: [],
+    width: 1280,
+    height: 720,
+    file_size: 0,
+    duration: null,
+    created_at: v.date || "",
   }));
 
-  const { rows } = await pool.query("SELECT source, COUNT(*) as count FROM videos GROUP BY source ORDER BY count DESC");
+  const { rows } = await pool.query(
+    "SELECT source, COUNT(*) as count FROM videos GROUP BY source ORDER BY count DESC",
+  );
   console.log("\n═══════════════════════════════════════════");
   console.log("  Migration complete!");
   for (const row of rows) {

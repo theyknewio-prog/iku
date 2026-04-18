@@ -64,7 +64,9 @@ function emailShell(opts: {
             <td style="padding:32px 32px 24px;color:#fff;">
               <h1 style="margin:0 0 16px;font-size:24px;font-weight:800;color:#fff;line-height:1.3;">${escapeHtml(title)}</h1>
               <div style="font-size:15px;line-height:1.6;color:rgba(255,255,255,0.78);">${body}</div>
-              ${ctaUrl && ctaLabel ? `
+              ${
+                ctaUrl && ctaLabel
+                  ? `
               <div style="margin:28px 0 12px;text-align:center;">
                 <a href="${escapeHtml(ctaUrl)}" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#ff6b9d,#c084fc);color:#fff !important;text-decoration:none;font-weight:800;font-size:14px;border-radius:12px;letter-spacing:0.02em;">${escapeHtml(ctaLabel)}</a>
               </div>
@@ -72,7 +74,9 @@ function emailShell(opts: {
                 Or paste this link into your browser:<br>
                 <span style="color:#c084fc;word-break:break-all;">${escapeHtml(ctaUrl)}</span>
               </p>
-              ` : ""}
+              `
+                  : ""
+              }
               ${footnote ? `<p style="margin:24px 0 0;padding-top:20px;border-top:1px solid rgba(255,255,255,0.08);font-size:12px;color:rgba(255,255,255,0.5);line-height:1.5;">${footnote}</p>` : ""}
             </td>
           </tr>
@@ -122,7 +126,9 @@ async function rawSend(opts: {
   template: string;
 }): Promise<SendResult> {
   if (!resend) {
-    console.warn(`[email] RESEND_API_KEY not set — skipping ${opts.template} to ${opts.to}`);
+    console.warn(
+      `[email] RESEND_API_KEY not set — skipping ${opts.template} to ${opts.to}`,
+    );
     return { ok: false, error: "resend not configured" };
   }
 
@@ -186,7 +192,7 @@ async function logEmail(opts: {
         opts.status,
         opts.resendId ?? null,
         opts.error ?? null,
-      ]
+      ],
     );
   } catch (err) {
     console.error("email_log insert failed:", err);
@@ -201,24 +207,28 @@ function generateToken(): string {
   return crypto.randomBytes(32).toString("hex");
 }
 
-export async function createVerificationToken(userId: number | string): Promise<string> {
+export async function createVerificationToken(
+  userId: number | string,
+): Promise<string> {
   const token = generateToken();
   const expiresAt = new Date(Date.now() + 24 * 60 * 60_000); // 24h
   await pool.query(
     `INSERT INTO email_verification_tokens (token, user_id, expires_at)
      VALUES ($1, $2, $3)`,
-    [token, userId, expiresAt]
+    [token, userId, expiresAt],
   );
   return token;
 }
 
-export async function createPasswordResetToken(userId: number | string): Promise<string> {
+export async function createPasswordResetToken(
+  userId: number | string,
+): Promise<string> {
   const token = generateToken();
   const expiresAt = new Date(Date.now() + 60 * 60_000); // 1h
   await pool.query(
     `INSERT INTO password_reset_tokens (token, user_id, expires_at)
      VALUES ($1, $2, $3)`,
-    [token, userId, expiresAt]
+    [token, userId, expiresAt],
   );
   return token;
 }
@@ -250,7 +260,8 @@ export async function sendVerificationEmail(opts: {
     `,
     ctaLabel: "Confirm my email",
     ctaUrl: url,
-    footnote: "This link expires in 24 hours. If you didn't create an iku.gg account, you can safely ignore this message.",
+    footnote:
+      "This link expires in 24 hours. If you didn't create an iku.gg account, you can safely ignore this message.",
   });
 
   return rawSend({
@@ -279,7 +290,8 @@ export async function sendPasswordResetEmail(opts: {
     `,
     ctaLabel: "Reset my password",
     ctaUrl: url,
-    footnote: "This link expires in 1 hour. If you didn't request a password reset, your account is still safe — just ignore this email.",
+    footnote:
+      "This link expires in 1 hour. If you didn't request a password reset, your account is still safe — just ignore this email.",
   });
 
   return rawSend({
@@ -336,33 +348,42 @@ export async function sendWinbackEmail(opts: {
   score?: number;
   tier?: string;
 }): Promise<SendResult> {
-  const { daysInactive, username, currentStreak = 0, longestStreak = 0, score = 0, tier = "Wanderer" } = opts;
+  const {
+    daysInactive,
+    username,
+    currentStreak = 0,
+    longestStreak = 0,
+    score = 0,
+    tier = "Wanderer",
+  } = opts;
 
   // Tone ramps up: j7 soft, j14 with stakes, j30 last call
   const subjects: Record<number, string> = {
-    7:  `We miss you, ${username} 💔`,
+    7: `We miss you, ${username} 💔`,
     14: `${username}, your streak is getting cold ❄️`,
     30: `One last reminder, ${username} — we're still here 💖`,
   };
 
   const hooks: Record<number, string> = {
-    7:  "It's been a week since you last visited. Your spot on the leaderboard is getting hungry.",
+    7: "It's been a week since you last visited. Your spot on the leaderboard is getting hungry.",
     14: "Two weeks without watching. Your daily quests are piling up and the community is scoring past you.",
     30: "A full month. We know life gets busy — just a reminder that your account, favorites, and progress are still here waiting.",
   };
 
-  const streakLine = longestStreak > 0
-    ? `<p style="margin:0 0 16px;padding:14px 18px;background:rgba(255,107,157,0.08);border-left:3px solid #ff6b9d;border-radius:6px;font-size:14px;">
+  const streakLine =
+    longestStreak > 0
+      ? `<p style="margin:0 0 16px;padding:14px 18px;background:rgba(255,107,157,0.08);border-left:3px solid #ff6b9d;border-radius:6px;font-size:14px;">
          🔥 Your longest streak was <strong style="color:#ff6b9d;">${longestStreak} days</strong>. Think you can beat it?
        </p>`
-    : "";
+      : "";
 
-  const statLine = score > 0
-    ? `<p style="margin:0 0 20px;font-size:14px;color:rgba(255,255,255,0.65);">
+  const statLine =
+    score > 0
+      ? `<p style="margin:0 0 20px;font-size:14px;color:rgba(255,255,255,0.65);">
          Current tier: <strong style="color:#c084fc;">${escapeHtml(tier)}</strong>
          &nbsp;·&nbsp; Score: <strong style="color:#c084fc;">${score.toLocaleString()}</strong>
        </p>`
-    : "";
+      : "";
 
   const html = emailShell({
     title: subjects[daysInactive],
@@ -416,7 +437,7 @@ export async function sendDunningEmail(opts: {
        WHERE user_id = $1 AND template = 'dunning'
          AND created_at > NOW() - INTERVAL '7 days'
        LIMIT 1`,
-      [opts.userId]
+      [opts.userId],
     );
     if (rows.length > 0) {
       return { ok: true, skipped: true, reason: "already sent in last 7d" };
@@ -467,13 +488,15 @@ export async function sendDunningEmail(opts: {
 // Token consumption helpers (used by /api/auth/verify + /reset-password)
 // ─────────────────────────────────────────────────────────────
 
-export async function consumeVerificationToken(token: string): Promise<number | null> {
+export async function consumeVerificationToken(
+  token: string,
+): Promise<number | null> {
   const { rows } = await pool.query(
     `UPDATE email_verification_tokens
      SET used_at = NOW()
      WHERE token = $1 AND used_at IS NULL AND expires_at > NOW()
      RETURNING user_id`,
-    [token]
+    [token],
   );
   if (rows.length === 0) return null;
   const userId = Number(rows[0].user_id);
@@ -481,7 +504,7 @@ export async function consumeVerificationToken(token: string): Promise<number | 
   // Mark user email as verified + send welcome email
   await pool.query(
     `UPDATE users SET email_verified = TRUE, email_verified_at = NOW() WHERE id = $1`,
-    [userId]
+    [userId],
   );
 
   return userId;
@@ -495,13 +518,15 @@ export async function consumeVerificationToken(token: string): Promise<number | 
  * consider whether they need their own atomic claim — the reset route inlines
  * its own query for clarity.
  */
-export async function consumePasswordResetToken(token: string): Promise<number | null> {
+export async function consumePasswordResetToken(
+  token: string,
+): Promise<number | null> {
   const { rows } = await pool.query(
     `UPDATE password_reset_tokens
      SET used_at = NOW()
      WHERE token = $1 AND used_at IS NULL AND expires_at > NOW()
      RETURNING user_id`,
-    [token]
+    [token],
   );
   if (rows.length === 0) return null;
   return Number(rows[0].user_id);
@@ -510,6 +535,6 @@ export async function consumePasswordResetToken(token: string): Promise<number |
 export async function markPasswordResetTokenUsed(token: string): Promise<void> {
   await pool.query(
     `UPDATE password_reset_tokens SET used_at = NOW() WHERE token = $1`,
-    [token]
+    [token],
   );
 }

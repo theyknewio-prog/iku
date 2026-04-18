@@ -21,7 +21,14 @@ export const metadata: Metadata = {
       "Watch free 2D hentai anime videos. Full episodes, OAV & uncensored animations updated daily.",
     siteName: "iku.gg",
     type: "website",
-    images: [{ url: "https://iku.gg/og-default.png", width: 1200, height: 630, alt: "iku.gg" }],
+    images: [
+      {
+        url: "https://iku.gg/og-default.png",
+        width: 1200,
+        height: 630,
+        alt: "iku.gg",
+      },
+    ],
   },
   robots: { index: true, follow: true },
 };
@@ -36,9 +43,9 @@ type Props = {
 export default async function HentaiPage({ searchParams }: Props) {
   const { page = "1", sort = "score" } = await searchParams;
   const currentPage = Math.max(1, parseInt(String(page)));
-  const sortOrder = (["score", "date", "favcount"].includes(String(sort))
-    ? sort
-    : "score") as "score" | "date" | "favcount";
+  const sortOrder = (
+    ["score", "date", "favcount"].includes(String(sort)) ? sort : "score"
+  ) as "score" | "date" | "favcount";
 
   const [{ data: videos, hasMore }, totalCount] = await Promise.all([
     getVideos({
@@ -70,8 +77,8 @@ export default async function HentaiPage({ searchParams }: Props) {
               }}
             >
               Full 2D hentai episodes, OAV, and uncensored anime animations.
-              Long-form classic hentai from Hentaigasm, Hentaicity, and premium WordPress sources —
-              all free, no signup, updated daily.
+              Long-form classic hentai from Hentaigasm, Hentaicity, and premium
+              WordPress sources — all free, no signup, updated daily.
             </p>
           </div>
 
@@ -113,23 +120,32 @@ export default async function HentaiPage({ searchParams }: Props) {
             </div>
           ) : (
             <>
-            <Link href="/pricing" className="hp-premium-strip" aria-label="Get iku Premium">
-              <span className="hp-premium-strip__icon">🚫</span>
-              <span className="hp-premium-strip__text"><strong>Skip every ad</strong> · 4K when available · Early access · Unlimited favorites</span>
-              <span className="hp-premium-strip__cta">Premium 4.99€/mo →</span>
-            </Link>
-            <ListingAdBlock variant="mid" />
-            <div className="video-grid">
-              {videos.map((video: Video, i) => (
-                <ThumbnailCard
-                  key={video.id}
-                  video={video}
-                  priority={i < 4}
-                  lazy={i >= 4}
-                />
-              ))}
-            </div>
-            <ListingAdBlock variant="bottom" />
+              <Link
+                href="/pricing"
+                className="hp-premium-strip"
+                aria-label="Get iku Premium"
+              >
+                <span className="hp-premium-strip__icon">🚫</span>
+                <span className="hp-premium-strip__text">
+                  <strong>Skip every ad</strong> · 4K when available · Early
+                  access · Unlimited favorites
+                </span>
+                <span className="hp-premium-strip__cta">
+                  Premium 4.99€/mo →
+                </span>
+              </Link>
+              <ListingAdBlock variant="mid" />
+              <div className="video-grid">
+                {videos.map((video: Video, i) => (
+                  <ThumbnailCard
+                    key={video.id}
+                    video={video}
+                    priority={i < 4}
+                    lazy={i >= 4}
+                  />
+                ))}
+              </div>
+              <ListingAdBlock variant="bottom" />
             </>
           )}
 
@@ -137,7 +153,11 @@ export default async function HentaiPage({ searchParams }: Props) {
           {videos.length > 0 && (
             <div style={{ marginTop: "40px", marginBottom: "48px" }}>
               <Suspense>
-                <Pagination currentPage={currentPage} hasNextPage={hasMore} totalPages={totalPages} />
+                <Pagination
+                  currentPage={currentPage}
+                  hasNextPage={hasMore}
+                  totalPages={totalPages}
+                />
               </Suspense>
             </div>
           )}
@@ -154,19 +174,27 @@ export default async function HentaiPage({ searchParams }: Props) {
               lineHeight: "1.7",
             }}
           >
-            <h2 style={{ color: "var(--color-text-primary)", marginBottom: "16px" }}>
+            <h2
+              style={{
+                color: "var(--color-text-primary)",
+                marginBottom: "16px",
+              }}
+            >
               About 2D Hentai on iku.gg
             </h2>
             <p>
-              iku.gg hosts one of the largest free collections of <strong>2D hentai anime</strong> online.
-              You&apos;ll find full OAV episodes (15–30 minutes each), classic 2D hentai series, uncensored
-              animations, and both subbed and raw versions. All content is streaming-ready with no downloads
-              required.
+              iku.gg hosts one of the largest free collections of{" "}
+              <strong>2D hentai anime</strong> online. You&apos;ll find full OAV
+              episodes (15–30 minutes each), classic 2D hentai series,
+              uncensored animations, and both subbed and raw versions. All
+              content is streaming-ready with no downloads required.
             </p>
             <p style={{ marginTop: "12px" }}>
-              Looking for something specific? Browse <Link href="/character">by character</Link>,{" "}
-              <Link href="/series">by series</Link>, or <Link href="/tags">by tag</Link>. Want something
-              different? Try our <Link href="/3d">3D hentai catalogue</Link> or the{" "}
+              Looking for something specific? Browse{" "}
+              <Link href="/character">by character</Link>,{" "}
+              <Link href="/series">by series</Link>, or{" "}
+              <Link href="/tags">by tag</Link>. Want something different? Try
+              our <Link href="/3d">3D hentai catalogue</Link> or the{" "}
               <Link href="/feed">Shorts feed</Link> for quick clips.
             </p>
           </section>

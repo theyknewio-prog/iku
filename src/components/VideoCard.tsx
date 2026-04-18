@@ -29,7 +29,9 @@ function IconHeart({ filled }: { filled: boolean }) {
       strokeLinejoin="round"
       aria-hidden="true"
       style={{
-        filter: filled ? "drop-shadow(0 0 8px rgba(232,70,124,0.9))" : "drop-shadow(0 2px 6px rgba(0,0,0,0.7))",
+        filter: filled
+          ? "drop-shadow(0 0 8px rgba(232,70,124,0.9))"
+          : "drop-shadow(0 2px 6px rgba(0,0,0,0.7))",
         transition: "fill 0.15s ease, filter 0.15s ease",
       }}
     >
@@ -51,7 +53,9 @@ function IconBookmark({ filled }: { filled: boolean }) {
       strokeLinejoin="round"
       aria-hidden="true"
       style={{
-        filter: filled ? "drop-shadow(0 0 8px rgba(245,197,24,0.85))" : "drop-shadow(0 2px 6px rgba(0,0,0,0.7))",
+        filter: filled
+          ? "drop-shadow(0 0 8px rgba(245,197,24,0.85))"
+          : "drop-shadow(0 2px 6px rgba(0,0,0,0.7))",
         transition: "fill 0.15s ease, filter 0.15s ease",
       }}
     >
@@ -223,7 +227,9 @@ function ActionBtn({
       className={`feed-action${active ? " feed-action--active" : ""}${animating ? " feed-action--animating" : ""}`}
     >
       <span className="feed-action__circle">{children}</span>
-      {count !== undefined && <span className="feed-action__count">{count}</span>}
+      {count !== undefined && (
+        <span className="feed-action__count">{count}</span>
+      )}
       {label && <span className="feed-action__label">{label}</span>}
     </button>
   );
@@ -277,11 +283,16 @@ export function VideoCard({
   const [seeking, setSeeking] = useState(false);
   const [progressExpanded, setProgressExpanded] = useState(false);
   const [showMuteHint, setShowMuteHint] = useState(false);
-  const [seekOverlay, setSeekOverlay] = useState<{ side: "left" | "right"; id: number } | null>(null);
+  const [seekOverlay, setSeekOverlay] = useState<{
+    side: "left" | "right";
+    id: number;
+  } | null>(null);
   const [heartBursts, setHeartBursts] = useState<HeartBurst[]>([]);
 
   const muteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const seekOverlayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const seekOverlayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
   const tapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastTapTimeRef = useRef(0);
   const lastTapSideRef = useRef<"left" | "center" | "right" | null>(null);
@@ -324,7 +335,9 @@ export function VideoCard({
     fetch(url, {
       signal: ac.signal,
       headers: { Range: "bytes=0-1" },
-    }).catch(() => { /* benign: prefetch failed, will retry on play */ });
+    }).catch(() => {
+      /* benign: prefetch failed, will retry on play */
+    });
     return () => ac.abort();
   }, [preloadNext, isActive, video.videoUrl]);
 
@@ -335,7 +348,9 @@ export function VideoCard({
     if (isActive) {
       el.currentTime = 0;
       // Silent: autoplay policy may reject on first mount before user gesture.
-      el.play().catch(() => { /* autoplay policy */ });
+      el.play().catch(() => {
+        /* autoplay policy */
+      });
     } else {
       el.pause();
       setProgress(0);
@@ -372,14 +387,24 @@ export function VideoCard({
       ? `${video.character.replace(/_/g, " ")}${
           video.copyright ? ` — ${video.copyright.replace(/_/g, " ")}` : ""
         }`
-      : (video.tags || []).slice(0, 3).map((t) => t.replace(/_/g, " ")).join(", ") || "Untitled";
+      : (video.tags || [])
+          .slice(0, 3)
+          .map((t) => t.replace(/_/g, " "))
+          .join(", ") || "Untitled";
     return {
       id: video.id,
       slug: video.slug ?? "",
       title,
       thumbnail: video.thumbnail || "",
     };
-  }, [video.id, video.slug, video.thumbnail, video.character, video.copyright, video.tags]);
+  }, [
+    video.id,
+    video.slug,
+    video.thumbnail,
+    video.character,
+    video.copyright,
+    video.tags,
+  ]);
 
   /* Record a history entry + score event once per active cycle.
    * Gated by a per-card ref so refreshing or swiping back within the same
@@ -474,7 +499,7 @@ export function VideoCard({
       }
       return next;
     },
-    [video.slug, liked, favoriteEntry]
+    [video.slug, liked, favoriteEntry],
   );
 
   /* Heart burst — TikTok-style center double-tap animation. */
@@ -489,7 +514,7 @@ export function VideoCard({
         setHeartBursts((prev) => prev.filter((b) => b.id !== burst.id));
       }, 700);
     },
-    [applyFavorite]
+    [applyFavorite],
   );
 
   /* Progress bar seek — pointer events for drag + click */
@@ -511,7 +536,7 @@ export function VideoCard({
       setProgressExpanded(true);
       seekToPercent(e.clientX);
     },
-    [seekToPercent]
+    [seekToPercent],
   );
 
   const handleProgressPointerMove = useCallback(
@@ -520,7 +545,7 @@ export function VideoCard({
       e.stopPropagation();
       seekToPercent(e.clientX);
     },
-    [seeking, seekToPercent]
+    [seeking, seekToPercent],
   );
 
   const handleProgressPointerUp = useCallback(
@@ -530,7 +555,7 @@ export function VideoCard({
       setProgressExpanded(false);
       seekToPercent(e.clientX);
     },
-    [seekToPercent]
+    [seekToPercent],
   );
 
   /* Custom double-tap handler on the video area (left/center/right) */
@@ -585,7 +610,7 @@ export function VideoCard({
         }, 300);
       }
     },
-    [triggerHeartBurst, showSeekFeedback, toggleMute]
+    [triggerHeartBurst, showSeekFeedback, toggleMute],
   );
 
   const shouldLoad = isActive || preloadNext;
@@ -597,11 +622,29 @@ export function VideoCard({
 
   // Tags to exclude from display (generic/meta tags that add no value)
   const HIDDEN_TAGS = new Set([
-    "animated", "video", "sound", "has_audio", "webm", "mp4",
-    "1boy", "1girl", "1girls", "2girls", "1futa", "2boys",
-    "solo", "solo_female", "solo_male", "tagme",
-    "3d", "2d", "highres", "absurdres", "commentary",
-    "english_commentary", "japanese_text",
+    "animated",
+    "video",
+    "sound",
+    "has_audio",
+    "webm",
+    "mp4",
+    "1boy",
+    "1girl",
+    "1girls",
+    "2girls",
+    "1futa",
+    "2boys",
+    "solo",
+    "solo_female",
+    "solo_male",
+    "tagme",
+    "3d",
+    "2d",
+    "highres",
+    "absurdres",
+    "commentary",
+    "english_commentary",
+    "japanese_text",
   ]);
 
   // Build a clean title: character name > copyright > curated tags
@@ -621,18 +664,17 @@ export function VideoCard({
 
   // Curated tags: filter out noise, show the interesting ones
   const displayTags = video.tags
-    .filter((t) => !HIDDEN_TAGS.has(t) && t !== video.character && t !== video.copyright)
+    .filter(
+      (t) =>
+        !HIDDEN_TAGS.has(t) && t !== video.character && t !== video.copyright,
+    )
     .slice(0, 4)
     .filter(Boolean);
 
   const watchHref = video.slug ? `/watch/${video.slug}` : null;
 
   return (
-    <div
-      ref={containerRef}
-      className="feed-item"
-      data-index={index}
-    >
+    <div ref={containerRef} className="feed-item" data-index={index}>
       {/* Inject keyframe animations once */}
       <style>{HEART_BURST_STYLES}</style>
 
@@ -656,23 +698,23 @@ export function VideoCard({
               }}
             />
           )}
-          <div className="feed-loading-spinner" style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            zIndex: 6,
-          }}>
+          <div
+            className="feed-loading-spinner"
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              zIndex: 6,
+            }}
+          >
             <div className="loader" />
           </div>
         </>
       )}
 
       {/* Video — tap zone */}
-      <div
-        style={{ position: "absolute", inset: 0 }}
-        onClick={handleVideoTap}
-      >
+      <div style={{ position: "absolute", inset: 0 }} onClick={handleVideoTap}>
         <video
           ref={videoRef}
           src={shouldLoad ? video.videoUrl : undefined}
@@ -681,7 +723,12 @@ export function VideoCard({
           muted={muted}
           playsInline
           preload={isActive ? "auto" : shouldLoad ? "metadata" : "none"}
-          style={{ width: "100%", height: "100%", objectFit: "contain", background: "#000" }}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "contain",
+            background: "#000",
+          }}
           onLoadedData={() => setLoaded(true)}
           onTimeUpdate={handleTimeUpdate}
           onProgress={handleProgress}

@@ -31,32 +31,45 @@ const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour (URLs typically expire in 2h)
 const L1_MAX_SIZE = 500;
 
 // Rate limit: 10/min/IP (yt-dlp path is expensive — keep tight)
-const limiter = createRateLimiter({ name: "resolve-video", max: 10, windowMs: 60_000 });
+const limiter = createRateLimiter({
+  name: "resolve-video",
+  max: 10,
+  windowMs: 60_000,
+});
 
 // Periodic cleanup — L1 cache expiry + PG GC. Rate limiter cleans itself.
-const cleanupTimer = setInterval(() => {
-  const now = Date.now();
-  for (const [key, val] of l1Cache) {
-    if (now > val.expiresAt) l1Cache.delete(key);
-  }
-  if (l1Cache.size > L1_MAX_SIZE) {
-    const toDelete = l1Cache.size - L1_MAX_SIZE;
-    let i = 0;
-    for (const key of l1Cache.keys()) {
-      if (i++ >= toDelete) break;
-      l1Cache.delete(key);
+const cleanupTimer = setInterval(
+  () => {
+    const now = Date.now();
+    for (const [key, val] of l1Cache) {
+      if (now > val.expiresAt) l1Cache.delete(key);
     }
-  }
-  // Purge expired rows from PG (best-effort — see comment in catch).
-  pool
-    .query("DELETE FROM resolved_urls WHERE expires_at < NOW()")
-    .catch((err) => {
-      // GC failure just means the table grows a bit — not user-facing. Log so
-      // we notice if it's persistent (e.g. DB permissions regression).
-      console.warn("[resolve-video] resolved_urls GC failed:", err?.message ?? err);
-    });
-}, 5 * 60 * 1000);
-if (typeof (cleanupTimer as unknown as { unref?: () => void }).unref === "function") {
+    if (l1Cache.size > L1_MAX_SIZE) {
+      const toDelete = l1Cache.size - L1_MAX_SIZE;
+      let i = 0;
+      for (const key of l1Cache.keys()) {
+        if (i++ >= toDelete) break;
+        l1Cache.delete(key);
+      }
+    }
+    // Purge expired rows from PG (best-effort — see comment in catch).
+    pool
+      .query("DELETE FROM resolved_urls WHERE expires_at < NOW()")
+      .catch((err) => {
+        // GC failure just means the table grows a bit — not user-facing. Log so
+        // we notice if it's persistent (e.g. DB permissions regression).
+        console.warn(
+          "[resolve-video] resolved_urls GC failed:",
+          err?.message ?? err,
+        );
+      });
+  },
+  5 * 60 * 1000,
+);
+if (
+  typeof (cleanupTimer as unknown as { unref?: () => void }).unref ===
+  "function"
+) {
   (cleanupTimer as unknown as { unref: () => void }).unref();
 }
 
@@ -122,7 +135,7 @@ async function resolveViaYtDlp(pageUrl: string): Promise<string | null> {
     const { stdout } = await execFileAsync(
       "yt-dlp",
       ["-j", "--no-download", pageUrl],
-      { timeout: 15000 }
+      { timeout: 15000 },
     );
     const data = JSON.parse(stdout);
     return data.url ?? null;
@@ -138,7 +151,7 @@ async function getFromPgCache(pageUrl: string): Promise<string | null> {
   try {
     const { rows } = await pool.query(
       "SELECT video_url FROM resolved_urls WHERE page_url = $1 AND expires_at > NOW() LIMIT 1",
-      [pageUrl]
+      [pageUrl],
     );
     return rows[0]?.video_url ?? null;
   } catch {
@@ -153,7 +166,7 @@ async function setInPgCache(pageUrl: string, videoUrl: string): Promise<void> {
        VALUES ($1, $2, NOW() + INTERVAL '1 hour')
        ON CONFLICT (page_url) DO UPDATE
        SET video_url = EXCLUDED.video_url, expires_at = EXCLUDED.expires_at, created_at = NOW()`,
-      [pageUrl, videoUrl]
+      [pageUrl, videoUrl],
     );
   } catch {
     // Best-effort — cache miss is not fatal
@@ -165,13 +178,16 @@ export async function GET(request: NextRequest) {
   const pageUrl = searchParams.get("url");
 
   if (!pageUrl) {
-    return NextResponse.json({ error: "url parameter required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "url parameter required" },
+      { status: 400 },
+    );
   }
 
   if (limiter.consume(getClientIp(request))) {
     return NextResponse.json(
       { error: "too many requests, try again in a minute" },
-      { status: 429, headers: { "Retry-After": "60" } }
+      { status: 429, headers: { "Retry-After": "60" } },
     );
   }
 
@@ -196,7 +212,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "https required" }, { status: 400 });
   }
   const isAllowed = allowedDomains.some(
-    (domain) => parsedUrl.hostname === domain || parsedUrl.hostname.endsWith(`.${domain}`)
+    (domain) =>
+      parsedUrl.hostname === domain ||
+      parsedUrl.hostname.endsWith(`.${domain}`),
   );
   if (!isAllowed) {
     return NextResponse.json({ error: "unsupported source" }, { status: 400 });
@@ -212,7 +230,10 @@ export async function GET(request: NextRequest) {
   const l2 = await getFromPgCache(pageUrl);
   if (l2) {
     // Warm L1 for subsequent hits in the same container
-    l1Cache.set(pageUrl, { videoUrl: l2, expiresAt: Date.now() + CACHE_TTL_MS });
+    l1Cache.set(pageUrl, {
+      videoUrl: l2,
+      expiresAt: Date.now() + CACHE_TTL_MS,
+    });
     return NextResponse.json({ videoUrl: l2, cached: "l2" });
   }
 
@@ -220,7 +241,10 @@ export async function GET(request: NextRequest) {
   let videoUrl: string | null = null;
   try {
     // Fast path: direct HTML parse for rule34video (78% of catalog)
-    if (parsedUrl.hostname === "rule34video.com" || parsedUrl.hostname.endsWith(".rule34video.com")) {
+    if (
+      parsedUrl.hostname === "rule34video.com" ||
+      parsedUrl.hostname.endsWith(".rule34video.com")
+    ) {
       videoUrl = await resolveRule34Video(pageUrl);
     }
 
@@ -232,14 +256,17 @@ export async function GET(request: NextRequest) {
     if (err instanceof Error && err.message === "BUSY") {
       return NextResponse.json(
         { error: "server busy, try again shortly" },
-        { status: 503, headers: { "Retry-After": "5" } }
+        { status: 503, headers: { "Retry-After": "5" } },
       );
     }
     console.error("resolve error:", err);
   }
 
   if (!videoUrl) {
-    return NextResponse.json({ error: "could not extract video URL" }, { status: 502 });
+    return NextResponse.json(
+      { error: "could not extract video URL" },
+      { status: 502 },
+    );
   }
 
   // Store in both caches

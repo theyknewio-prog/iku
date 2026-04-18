@@ -10,7 +10,12 @@ interface CarouselProps {
   children: React.ReactNode;
 }
 
-export function Carousel({ title, badge, seeAllHref, children }: CarouselProps) {
+export function Carousel({
+  title,
+  badge,
+  seeAllHref,
+  children,
+}: CarouselProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   function scrollBy(direction: -1 | 1) {

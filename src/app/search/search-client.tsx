@@ -18,7 +18,7 @@ export function SearchClient() {
 
   useEffect(() => {
     const input = containerRef.current?.querySelector(
-      "input"
+      "input",
     ) as HTMLInputElement | null;
     input?.focus();
   }, []);

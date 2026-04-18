@@ -5,7 +5,8 @@ import { SignupForm } from "./signup-form";
 
 export const metadata: Metadata = {
   title: "Create account — iku.gg",
-  description: "Join iku.gg free. Save favorites, sync history across devices. 18+ only.",
+  description:
+    "Join iku.gg free. Save favorites, sync history across devices. 18+ only.",
   robots: { index: false, follow: false },
 };
 

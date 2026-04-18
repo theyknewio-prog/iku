@@ -49,7 +49,7 @@ async function _getHentaicityPost(id: number): Promise<Video | null> {
        AND NOT (COALESCE(characters, ARRAY[]::text[]) && $2::text[])
        AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $2::text[])
      LIMIT 1`,
-    [id, BANNED_TAGS_ARRAY]
+    [id, BANNED_TAGS_ARRAY],
   );
   if (rows.length === 0) return null;
   const video = rowToVideo(rows[0]);

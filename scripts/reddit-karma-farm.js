@@ -9,7 +9,18 @@
 
 (async function karmaFarmer() {
   const INTERVAL_MS = 10 * 60 * 1000; // 10 minutes between comments
-  const SUBS = ['ecchi', 'hentai', 'rule34', 'thighdeology', 'AraAra', 'BigAnimeTiddies', 'AnimeBooty', 'pantsu', 'nsfwanimegifs', 'animelegs'];
+  const SUBS = [
+    "ecchi",
+    "hentai",
+    "rule34",
+    "thighdeology",
+    "AraAra",
+    "BigAnimeTiddies",
+    "AnimeBooty",
+    "pantsu",
+    "nsfwanimegifs",
+    "animelegs",
+  ];
 
   // Natural-sounding comments that get upvotes on NSFW subs
   const COMMENTS = [
@@ -41,9 +52,9 @@
 
   function getToken() {
     try {
-      return JSON.parse(localStorage.getItem('chat:access-token')).token;
+      return JSON.parse(localStorage.getItem("chat:access-token")).token;
     } catch {
-      console.error('❌ No Reddit token found. Make sure you are logged in.');
+      console.error("❌ No Reddit token found. Make sure you are logged in.");
       return null;
     }
   }
@@ -54,13 +65,16 @@
 
     const sub = SUBS[Math.floor(Math.random() * SUBS.length)];
     try {
-      const resp = await fetch(`https://oauth.reddit.com/r/${sub}/hot?limit=10`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const resp = await fetch(
+        `https://oauth.reddit.com/r/${sub}/hot?limit=10`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
       const data = await resp.json();
       return (data.data?.children || [])
-        .filter(c => !c.data.stickied && c.data.ups > 50)
-        .map(c => ({
+        .filter((c) => !c.data.stickied && c.data.ups > 50)
+        .map((c) => ({
           id: c.data.name,
           title: c.data.title,
           ups: c.data.ups,
@@ -68,7 +82,7 @@
           comments: c.data.num_comments,
         }));
     } catch (e) {
-      console.error('Failed to fetch posts:', e);
+      console.error("Failed to fetch posts:", e);
       return [];
     }
   }
@@ -78,16 +92,16 @@
     if (!token) return false;
 
     const fd = new URLSearchParams();
-    fd.append('api_type', 'json');
-    fd.append('thing_id', postId);
-    fd.append('text', text);
+    fd.append("api_type", "json");
+    fd.append("thing_id", postId);
+    fd.append("text", text);
 
     try {
-      const resp = await fetch('https://oauth.reddit.com/api/comment', {
-        method: 'POST',
+      const resp = await fetch("https://oauth.reddit.com/api/comment", {
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/x-www-form-urlencoded",
         },
         body: fd.toString(),
       });
@@ -95,9 +109,11 @@
       const errors = data.json?.errors || [];
       if (errors.length) {
         const errMsg = errors[0][1];
-        if (errMsg.includes('Take a break')) {
+        if (errMsg.includes("Take a break")) {
           const mins = errMsg.match(/(\d+) minutes/);
-          console.log(`⏳ Rate limited. Waiting ${mins ? mins[1] : '?'} more minutes...`);
+          console.log(
+            `⏳ Rate limited. Waiting ${mins ? mins[1] : "?"} more minutes...`,
+          );
         } else {
           console.log(`❌ Error: ${errMsg}`);
         }
@@ -105,7 +121,7 @@
       }
       return true;
     } catch (e) {
-      console.error('Comment failed:', e);
+      console.error("Comment failed:", e);
       return false;
     }
   }
@@ -113,20 +129,24 @@
   async function doOneComment() {
     const posts = await getHotPosts();
     if (!posts.length) {
-      console.log('⚠️ No posts found, will retry next cycle');
+      console.log("⚠️ No posts found, will retry next cycle");
       return;
     }
 
     // Find a post we haven't commented on yet
-    const post = posts.find(p => !commented.has(p.id));
+    const post = posts.find((p) => !commented.has(p.id));
     if (!post) {
-      console.log('⚠️ Already commented on all hot posts, will retry next cycle');
+      console.log(
+        "⚠️ Already commented on all hot posts, will retry next cycle",
+      );
       return;
     }
 
     const comment = COMMENTS[Math.floor(Math.random() * COMMENTS.length)];
 
-    console.log(`\n💬 Commenting on r/${post.sub}: "${post.title.substring(0, 50)}..." (${post.ups} ups)`);
+    console.log(
+      `\n💬 Commenting on r/${post.sub}: "${post.title.substring(0, 50)}..." (${post.ups} ups)`,
+    );
     console.log(`   Comment: "${comment}"`);
 
     const success = await postComment(post.id, comment);
@@ -134,15 +154,17 @@
       commented.add(post.id);
       totalComments++;
       totalKarmaEst += Math.floor(post.ups * 0.02); // rough estimate
-      console.log(`✅ Comment #${totalComments} posted! Est. karma earned: ~${totalKarmaEst}`);
+      console.log(
+        `✅ Comment #${totalComments} posted! Est. karma earned: ~${totalKarmaEst}`,
+      );
     }
   }
 
   // Start
-  console.log('🚀 Reddit Karma Farmer started!');
+  console.log("🚀 Reddit Karma Farmer started!");
   console.log(`📋 ${SUBS.length} subs, ${COMMENTS.length} comment templates`);
   console.log(`⏰ Commenting every ${INTERVAL_MS / 60000} minutes`);
-  console.log('🛑 To stop: window.__stopKarmaFarm = true\n');
+  console.log("🛑 To stop: window.__stopKarmaFarm = true\n");
 
   // First comment immediately
   await doOneComment();
@@ -151,7 +173,9 @@
   const interval = setInterval(async () => {
     if (window.__stopKarmaFarm) {
       clearInterval(interval);
-      console.log(`\n🛑 Karma Farmer stopped. Total: ${totalComments} comments, ~${totalKarmaEst} karma est.`);
+      console.log(
+        `\n🛑 Karma Farmer stopped. Total: ${totalComments} comments, ~${totalKarmaEst} karma est.`,
+      );
       return;
     }
     await doOneComment();

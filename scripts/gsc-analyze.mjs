@@ -27,7 +27,9 @@ const SITE_URL_ALT = "https://iku.gg/"; // fallback: URL-prefix property
 function getAuth() {
   if (!existsSync(KEY_PATH)) {
     console.error("❌ gsc-service-account.json not found at project root.");
-    console.error("   Download it from Google Cloud Console → Service Accounts → Keys.");
+    console.error(
+      "   Download it from Google Cloud Console → Service Accounts → Keys.",
+    );
     process.exit(1);
   }
   const key = JSON.parse(readFileSync(KEY_PATH, "utf8"));
@@ -57,20 +59,28 @@ async function pullGSCData(days = 7) {
   const startDate = daysAgo(days);
   const endDate = daysAgo(1); // yesterday (today's data not final)
 
-  console.log(`\n📊 Pulling GSC data: ${startDate} → ${endDate} (${days} days)\n`);
+  console.log(
+    `\n📊 Pulling GSC data: ${startDate} → ${endDate} (${days} days)\n`,
+  );
 
   // Try domain property first, fallback to URL prefix
   let siteUrl = SITE_URL;
   try {
     await searchconsole.sites.get({ siteUrl });
   } catch {
-    console.log(`  ⚠ Domain property "${SITE_URL}" not accessible, trying URL prefix...`);
+    console.log(
+      `  ⚠ Domain property "${SITE_URL}" not accessible, trying URL prefix...`,
+    );
     siteUrl = SITE_URL_ALT;
     try {
       await searchconsole.sites.get({ siteUrl });
     } catch (e) {
-      console.error(`❌ Cannot access GSC for either "${SITE_URL}" or "${SITE_URL_ALT}".`);
-      console.error(`   Make sure the service account email is added as a user in GSC.`);
+      console.error(
+        `❌ Cannot access GSC for either "${SITE_URL}" or "${SITE_URL_ALT}".`,
+      );
+      console.error(
+        `   Make sure the service account email is added as a user in GSC.`,
+      );
       console.error(`   Error: ${e.message}`);
       process.exit(1);
     }
@@ -172,7 +182,16 @@ async function pullGSCData(days = 7) {
     position: r.position.toFixed(1),
   }));
 
-  return { queries, pages, countries, devices, queryPages, startDate, endDate, siteUrl };
+  return {
+    queries,
+    pages,
+    countries,
+    devices,
+    queryPages,
+    startDate,
+    endDate,
+    siteUrl,
+  };
 }
 
 // ── Analysis ────────────────────────────────────────────────────
@@ -187,30 +206,49 @@ function analyzeData(data) {
   // Summary
   const totalClicks = queries.reduce((s, q) => s + q.clicks, 0);
   const totalImpressions = queries.reduce((s, q) => s + q.impressions, 0);
-  console.log(`  Total: ${totalClicks} clicks | ${formatNum(totalImpressions)} impressions | ${queries.length} keywords | ${pages.length} pages\n`);
+  console.log(
+    `  Total: ${totalClicks} clicks | ${formatNum(totalImpressions)} impressions | ${queries.length} keywords | ${pages.length} pages\n`,
+  );
 
   // Top keywords by impressions
   console.log("── TOP KEYWORDS (by impressions) ──────────────────────");
-  console.log("  Keyword".padEnd(55), "Imp".padStart(6), "Clk".padStart(5), "Pos".padStart(6), "CTR".padStart(6));
+  console.log(
+    "  Keyword".padEnd(55),
+    "Imp".padStart(6),
+    "Clk".padStart(5),
+    "Pos".padStart(6),
+    "CTR".padStart(6),
+  );
   console.log("  " + "─".repeat(75));
-  const topQueries = [...queries].sort((a, b) => b.impressions - a.impressions).slice(0, 30);
+  const topQueries = [...queries]
+    .sort((a, b) => b.impressions - a.impressions)
+    .slice(0, 30);
   for (const q of topQueries) {
     console.log(
-      `  ${q.keyword.padEnd(53)} ${String(q.impressions).padStart(6)} ${String(q.clicks).padStart(5)} ${q.position.padStart(6)} ${(q.ctr + "%").padStart(6)}`
+      `  ${q.keyword.padEnd(53)} ${String(q.impressions).padStart(6)} ${String(q.clicks).padStart(5)} ${q.position.padStart(6)} ${(q.ctr + "%").padStart(6)}`,
     );
   }
 
   // Opportunities: high impressions + low CTR + good position (< 10)
-  console.log("\n── OPPORTUNITIES (high impressions, position < 10, CTR < 5%) ──");
+  console.log(
+    "\n── OPPORTUNITIES (high impressions, position < 10, CTR < 5%) ──",
+  );
   const opportunities = queries
-    .filter((q) => q.impressions >= 2 && parseFloat(q.position) < 10 && parseFloat(q.ctr) < 5)
+    .filter(
+      (q) =>
+        q.impressions >= 2 &&
+        parseFloat(q.position) < 10 &&
+        parseFloat(q.ctr) < 5,
+    )
     .sort((a, b) => b.impressions - a.impressions);
 
   if (opportunities.length === 0) {
     console.log("  No clear opportunities yet — need more data.\n");
   } else {
     for (const q of opportunities.slice(0, 15)) {
-      console.log(`  🎯 "${q.keyword}" — ${q.impressions} imp, pos ${q.position}, CTR ${q.ctr}%`);
+      console.log(
+        `  🎯 "${q.keyword}" — ${q.impressions} imp, pos ${q.position}, CTR ${q.ctr}%`,
+      );
       // Find which page this keyword lands on
       const landing = queryPages.find((qp) => qp.keyword === q.keyword);
       if (landing) console.log(`     └─ landing: ${landing.page}`);
@@ -229,7 +267,9 @@ function analyzeData(data) {
     console.log("  No clear gaps yet.\n");
   } else {
     for (const g of gaps.slice(0, 10)) {
-      console.log(`  📝 "${g.keyword}" — ${g.impressions} imp, pos ${g.position} → needs its own article`);
+      console.log(
+        `  📝 "${g.keyword}" — ${g.impressions} imp, pos ${g.position} → needs its own article`,
+      );
     }
   }
 
@@ -237,26 +277,39 @@ function analyzeData(data) {
   console.log("\n── PAGES ──────────────────────────────────────────────");
   for (const p of pages) {
     console.log(`  ${p.page}`);
-    console.log(`     ${p.impressions} imp | ${p.clicks} clicks | pos ${p.position} | CTR ${p.ctr}%`);
+    console.log(
+      `     ${p.impressions} imp | ${p.clicks} clicks | pos ${p.position} | CTR ${p.ctr}%`,
+    );
   }
 
   // Countries
   console.log("\n── TOP COUNTRIES ──────────────────────────────────────");
-  const topCountries = [...countries].sort((a, b) => b.impressions - a.impressions).slice(0, 10);
+  const topCountries = [...countries]
+    .sort((a, b) => b.impressions - a.impressions)
+    .slice(0, 10);
   for (const c of topCountries) {
-    console.log(`  ${c.country.padEnd(6)} ${String(c.impressions).padStart(5)} imp | ${c.clicks} clicks | pos ${c.position}`);
+    console.log(
+      `  ${c.country.padEnd(6)} ${String(c.impressions).padStart(5)} imp | ${c.clicks} clicks | pos ${c.position}`,
+    );
   }
 
   // Devices
   console.log("\n── DEVICES ────────────────────────────────────────────");
   for (const d of devices) {
-    console.log(`  ${d.device.padEnd(10)} ${String(d.impressions).padStart(6)} imp | ${d.clicks} clicks | CTR ${d.ctr}%`);
+    console.log(
+      `  ${d.device.padEnd(10)} ${String(d.impressions).padStart(6)} imp | ${d.clicks} clicks | CTR ${d.ctr}%`,
+    );
   }
 
   // New keywords (position > 10 = just appeared, might climb)
   console.log("\n── EMERGING KEYWORDS (position 5-20, could climb) ─────");
   const emerging = queries
-    .filter((q) => parseFloat(q.position) >= 5 && parseFloat(q.position) <= 20 && q.impressions >= 1)
+    .filter(
+      (q) =>
+        parseFloat(q.position) >= 5 &&
+        parseFloat(q.position) <= 20 &&
+        q.impressions >= 1,
+    )
     .sort((a, b) => parseFloat(a.position) - parseFloat(b.position));
   for (const q of emerging.slice(0, 10)) {
     console.log(`  ↗ "${q.keyword}" — pos ${q.position}, ${q.impressions} imp`);
@@ -292,7 +345,9 @@ function analyzeData(data) {
 
 // ── Main ────────────────────────────────────────────────────────
 const args = process.argv.slice(2);
-const days = args.includes("--days") ? parseInt(args[args.indexOf("--days") + 1]) || 7 : 7;
+const days = args.includes("--days")
+  ? parseInt(args[args.indexOf("--days") + 1]) || 7
+  : 7;
 
 try {
   const data = await pullGSCData(days);
@@ -300,9 +355,13 @@ try {
 } catch (err) {
   console.error("❌ Error:", err.message);
   if (err.message.includes("403")) {
-    console.error("\n   → The service account doesn't have access to this GSC property.");
+    console.error(
+      "\n   → The service account doesn't have access to this GSC property.",
+    );
     console.error("   → Go to GSC → Settings → Users → Add user:");
-    console.error("     iku-gg@jovial-evening-492020-c3.iam.gserviceaccount.com");
+    console.error(
+      "     iku-gg@jovial-evening-492020-c3.iam.gserviceaccount.com",
+    );
   }
   process.exit(1);
 }

@@ -39,6 +39,8 @@ interface WatchPlayerProps {
   poster?: string;
   /** For rule34video: page URL to resolve via /api/resolve-video */
   resolveUrl?: string;
+  /** Current video slug — used to mark dead on player error */
+  slug?: string;
   relatedVideos?: RelatedVideo[];
   /** Called when the video fires its native `ended` event (used by WatchPlayerWithPreroll to trigger post-roll). */
   onVideoEnded?: () => void;
@@ -68,6 +70,7 @@ export function WatchPlayer({
   src,
   poster,
   resolveUrl,
+  slug,
   relatedVideos,
   onVideoEnded,
   suppressEndOverlay,
@@ -541,7 +544,34 @@ export function WatchPlayer({
 
   const handleWaiting = useCallback(() => setBuffering(true), []);
   const handleCanPlay = useCallback(() => setBuffering(false), []);
-  const handleError = useCallback(() => setError(true), []);
+  const handleError = useCallback(() => {
+    setError(true);
+    // Fire-and-forget: mark this video dead so we stop serving it
+    if (slug) {
+      fetch("/api/mark-dead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug }),
+      }).catch(() => {});
+    }
+    // Auto-advance to next related video after 5s (same UX as end-of-video)
+    if (relatedVideos && relatedVideos.length > 0) {
+      setEnded(true);
+      setCountdown(5);
+      if (countdownRef.current) clearInterval(countdownRef.current);
+      countdownRef.current = setInterval(() => {
+        setCountdown((c) => {
+          if (c <= 1) {
+            clearInterval(countdownRef.current!);
+            countdownRef.current = null;
+            window.location.href = `/watch/${relatedVideos[0].slug}`;
+            return 0;
+          }
+          return c - 1;
+        });
+      }, 1000);
+    }
+  }, [slug, relatedVideos]);
 
   const handleVolumeChange = useCallback(() => {
     const v = videoRef.current;
@@ -1144,21 +1174,49 @@ export function WatchPlayer({
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              background: "rgba(0,0,0,0.8)",
+              background: "rgba(0,0,0,0.85)",
               zIndex: 6,
-              gap: 8,
+              gap: 12,
+              padding: 24,
+              textAlign: "center",
             }}
           >
-            <span style={{ fontSize: 32 }}>⚠</span>
+            <span style={{ fontSize: 40 }}>⚠</span>
+            <span
+              style={{
+                color: "#fff",
+                fontSize: 18,
+                fontWeight: 600,
+              }}
+            >
+              This video was removed
+            </span>
             <span
               style={{
                 color: "rgba(255,255,255,0.7)",
                 fontSize: 14,
-                fontWeight: 500,
+                maxWidth: 400,
               }}
             >
-              Video unavailable
+              The source took it offline. Playing next in {countdown || 5}s…
             </span>
+            {relatedVideos && relatedVideos.length > 0 && (
+              <a
+                href={`/watch/${relatedVideos[0].slug}`}
+                style={{
+                  marginTop: 8,
+                  padding: "10px 24px",
+                  background: "var(--color-accent-primary, #ff3366)",
+                  color: "#fff",
+                  textDecoration: "none",
+                  borderRadius: 8,
+                  fontWeight: 600,
+                  fontSize: 14,
+                }}
+              >
+                Watch next now →
+              </a>
+            )}
           </div>
         )}
 

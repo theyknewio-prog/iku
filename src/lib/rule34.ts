@@ -23,14 +23,15 @@ interface R34Post {
 }
 
 function buildSlug(id: number, tags: string): string {
-  const firstTag = (tags || "")
-    .trim()
-    .split(/\s+/)[0]
-    ?.toLowerCase()
-    .replace(/_/g, "-")
-    .replace(/[^a-z0-9-]/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "") ?? "";
+  const firstTag =
+    (tags || "")
+      .trim()
+      .split(/\s+/)[0]
+      ?.toLowerCase()
+      .replace(/_/g, "-")
+      .replace(/[^a-z0-9-]/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "") ?? "";
   return firstTag ? `r34-${id}-${firstTag}` : `r34-${id}`;
 }
 
@@ -73,7 +74,7 @@ async function _getRule34Post(id: number): Promise<Video | null> {
          AND NOT (COALESCE(characters, ARRAY[]::text[]) && $2::text[])
          AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $2::text[])
        LIMIT 1`,
-      [id, BANNED_TAGS_ARRAY]
+      [id, BANNED_TAGS_ARRAY],
     );
     if (rows.length > 0) {
       const row = rows[0];
@@ -126,4 +127,8 @@ async function _getRule34Post(id: number): Promise<Video | null> {
     return null;
   }
 }
-export const getRule34Post = memoize("rule34-post", _getRule34Post, 5 * 60 * 1000);
+export const getRule34Post = memoize(
+  "rule34-post",
+  _getRule34Post,
+  5 * 60 * 1000,
+);

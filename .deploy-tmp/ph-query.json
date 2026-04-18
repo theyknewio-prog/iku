@@ -1,0 +1,6 @@
+{
+  "query": {
+    "kind": "HogQLQuery",
+    "query": "SELECT toDate(timestamp) AS day, count() AS pv, count(distinct distinct_id) AS uniq FROM events WHERE event = '$pageview' AND timestamp >= now() - INTERVAL 7 DAY GROUP BY day ORDER BY day DESC"
+  }
+}

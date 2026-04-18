@@ -10,7 +10,11 @@
 
 import pool from "@/lib/db";
 import type { Video, PaginatedResult } from "@/types/video";
-import { BANNED_TAGS_ARRAY, containsBannedContent, filterBannedContent } from "@/lib/content";
+import {
+  BANNED_TAGS_ARRAY,
+  containsBannedContent,
+  filterBannedContent,
+} from "@/lib/content";
 import { memoize } from "@/lib/memo";
 
 /** Known slug prefixes for each WP site */
@@ -52,7 +56,7 @@ async function _getWPHentaiPost(id: number): Promise<Video | null> {
        AND NOT (COALESCE(characters, ARRAY[]::text[]) && $2::text[])
        AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $2::text[])
      LIMIT 1`,
-    [id, BANNED_TAGS_ARRAY]
+    [id, BANNED_TAGS_ARRAY],
   );
   if (rows.length === 0) return null;
   const video = rowToVideo(rows[0]);
@@ -78,7 +82,7 @@ export interface WPHentaiSearchOptions {
 }
 
 export async function searchWPHentai(
-  options: WPHentaiSearchOptions = {}
+  options: WPHentaiSearchOptions = {},
 ): Promise<PaginatedResult<Video>> {
   const { tags = "", page = 1, limit = 20, order = "date" } = options;
   const offset = (page - 1) * limit;
@@ -91,7 +95,7 @@ export async function searchWPHentai(
   conditions.push(
     `NOT (tags && $${paramIndex}::text[])
      AND NOT (COALESCE(characters, ARRAY[]::text[]) && $${paramIndex}::text[])
-     AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $${paramIndex}::text[])`
+     AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $${paramIndex}::text[])`,
   );
   params.push(BANNED_TAGS_ARRAY);
   paramIndex++;
@@ -99,13 +103,16 @@ export async function searchWPHentai(
   if (tags) {
     const searchTerms = tags.toLowerCase().split(/\s+/);
     for (const term of searchTerms) {
-      conditions.push(`(title ILIKE '%' || $${paramIndex} || '%' OR $${paramIndex} = ANY(tags))`);
+      conditions.push(
+        `(title ILIKE '%' || $${paramIndex} || '%' OR $${paramIndex} = ANY(tags))`,
+      );
       params.push(term);
       paramIndex++;
     }
   }
 
-  const orderClause = order === "date" ? "ORDER BY created_at DESC" : "ORDER BY score DESC";
+  const orderClause =
+    order === "date" ? "ORDER BY created_at DESC" : "ORDER BY score DESC";
 
   params.push(limit + 1, offset);
   const query = `SELECT * FROM videos WHERE ${conditions.join(" AND ")} ${orderClause} LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;

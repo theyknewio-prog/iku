@@ -16,7 +16,7 @@ import { advanceDailyQuests } from "@/lib/daily-quests";
 import { createRateLimiter } from "@/lib/rate-limit";
 
 const ALLOWED_EVENTS = new Set<ScoreEventType>(
-  Object.keys(POINTS) as ScoreEventType[]
+  Object.keys(POINTS) as ScoreEventType[],
 );
 
 // Per-user rate limit (anti point-farming). 30 events/min is more than enough
@@ -58,12 +58,13 @@ export async function POST(request: NextRequest) {
 
   // Advance daily quests based on this event (no-op for events that don't match)
   // daily_quest event itself should NOT advance quests (prevents infinite loops)
-  let completedQuests: Array<{ code: string; title: string; emoji: string }> = [];
+  let completedQuests: Array<{ code: string; title: string; emoji: string }> =
+    [];
   if (event !== "daily_quest") {
     completedQuests = await advanceDailyQuests(
       userId,
       event as string,
-      meta as { tags?: string[] } | undefined
+      meta as { tags?: string[] } | undefined,
     );
   }
 
@@ -78,14 +79,14 @@ export async function POST(request: NextRequest) {
     })),
     newTier: result.newTier
       ? {
-          name:  result.newTier.name,
+          name: result.newTier.name,
           emoji: result.newTier.emoji,
           index: result.newTier.index,
         }
       : null,
     completedQuests,
     stats: {
-      score:          result.stats.score,
+      score: result.stats.score,
       current_streak: result.stats.current_streak,
     },
   });

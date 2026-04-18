@@ -14,6 +14,7 @@ Tu es un expert UI/UX spécialisé dans les sites de streaming vidéo adult/anim
 Le système utilise Tailwind CSS v4 avec une config CSS-first (`@theme inline` dans `globals.css`).
 
 **Primitives** :
+
 ```
 Neutrals (surfaces) :
   neutral-0:   #ffffff (texte principal)
@@ -35,6 +36,7 @@ Accents :
 ```
 
 **Surfaces sémantiques** :
+
 ```
 bg-base:       #0a0a0a (fond de page)
 bg-elevated:   #111111 (éléments au-dessus)
@@ -48,6 +50,7 @@ bg-glass:      rgba(255,255,255,0.04) (glassmorphism)
 ### Typography
 
 3 font families chargées via `next/font` dans `layout.tsx` :
+
 - **Inter** — corps de texte, UI (variable, `--font-inter`)
 - **Poppins** — titres, headings (weight 600-700, `--font-poppins`)
 - **Righteous** — branding/logo uniquement (weight 400, `--font-righteous`)
@@ -84,26 +87,26 @@ bg-glass:      rgba(255,255,255,0.04) (glassmorphism)
 
 ### Composants existants
 
-| Composant | Fichier | Description |
-|-----------|---------|-------------|
-| `AppShell` | `AppShell.tsx` | Layout principal : sidebar + topbar + bottom nav |
-| `WatchPlayer` | `WatchPlayer.tsx` | Player vidéo custom (958 lignes) avec HLS |
-| `VideoCard` | `VideoCard.tsx` | Card vidéo pour les grilles |
-| `ThumbnailCard` | `ThumbnailCard.tsx` | Card avec thumbnail + info |
-| `PosterCard` | `PosterCard.tsx` | Card format poster (vertical) |
-| `Carousel` | `Carousel.tsx` | Carousel horizontal de vidéos |
-| `HomeFeed` | `HomeFeed.tsx` | Feed de la page d'accueil |
-| `HomePageClient` | `HomePageClient.tsx` | Client wrapper pour la home |
-| `SwipeFeed` | `SwipeFeed.tsx` | Feed swipe vertical (type TikTok) |
-| `Pagination` | `Pagination.tsx` | Navigation entre pages |
-| `SearchAutocomplete` | `SearchAutocomplete.tsx` | Barre de recherche avec suggestions |
-| `SearchBar` | `SearchBar.tsx` | Barre de recherche simple |
-| `AgeGate` | `AgeGate.tsx` | Modal de vérification d'âge |
-| `BlacklistFilter` | `BlacklistFilter.tsx` | Filtre de tags blacklistés |
-| `SkeletonGrid` | `SkeletonGrid.tsx` | Grille de placeholders skeleton |
-| `SiteFooter` | `SiteFooter.tsx` | Footer du site |
-| `SiteHeader` | `SiteHeader.tsx` | Header alternatif |
-| `WatchActions` | `WatchActions.tsx` | Actions sous le player (like, share, etc.) |
+| Composant            | Fichier                  | Description                                      |
+| -------------------- | ------------------------ | ------------------------------------------------ |
+| `AppShell`           | `AppShell.tsx`           | Layout principal : sidebar + topbar + bottom nav |
+| `WatchPlayer`        | `WatchPlayer.tsx`        | Player vidéo custom (958 lignes) avec HLS        |
+| `VideoCard`          | `VideoCard.tsx`          | Card vidéo pour les grilles                      |
+| `ThumbnailCard`      | `ThumbnailCard.tsx`      | Card avec thumbnail + info                       |
+| `PosterCard`         | `PosterCard.tsx`         | Card format poster (vertical)                    |
+| `Carousel`           | `Carousel.tsx`           | Carousel horizontal de vidéos                    |
+| `HomeFeed`           | `HomeFeed.tsx`           | Feed de la page d'accueil                        |
+| `HomePageClient`     | `HomePageClient.tsx`     | Client wrapper pour la home                      |
+| `SwipeFeed`          | `SwipeFeed.tsx`          | Feed swipe vertical (type TikTok)                |
+| `Pagination`         | `Pagination.tsx`         | Navigation entre pages                           |
+| `SearchAutocomplete` | `SearchAutocomplete.tsx` | Barre de recherche avec suggestions              |
+| `SearchBar`          | `SearchBar.tsx`          | Barre de recherche simple                        |
+| `AgeGate`            | `AgeGate.tsx`            | Modal de vérification d'âge                      |
+| `BlacklistFilter`    | `BlacklistFilter.tsx`    | Filtre de tags blacklistés                       |
+| `SkeletonGrid`       | `SkeletonGrid.tsx`       | Grille de placeholders skeleton                  |
+| `SiteFooter`         | `SiteFooter.tsx`         | Footer du site                                   |
+| `SiteHeader`         | `SiteHeader.tsx`         | Header alternatif                                |
+| `WatchActions`       | `WatchActions.tsx`       | Actions sous le player (like, share, etc.)       |
 
 ### Conventions CSS
 

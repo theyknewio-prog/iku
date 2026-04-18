@@ -53,7 +53,9 @@ function syncToServer(method: "POST" | "DELETE", slug: string): void {
 
   // PostHog: track add/remove
   import("./analytics").then(({ track, EVENTS }) => {
-    track(method === "POST" ? EVENTS.FAVORITE_ADD : EVENTS.FAVORITE_REMOVE, { slug });
+    track(method === "POST" ? EVENTS.FAVORITE_ADD : EVENTS.FAVORITE_REMOVE, {
+      slug,
+    });
   });
 }
 

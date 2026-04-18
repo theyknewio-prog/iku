@@ -22,7 +22,7 @@ export async function GET() {
      WHERE user_id = $1
      ORDER BY watched_at DESC
      LIMIT 500`,
-    [session.user.id]
+    [session.user.id],
   );
 
   return NextResponse.json({ history: rows });
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     await pool.query(
       `INSERT INTO user_history (user_id, video_slug) VALUES ${values}
        ON CONFLICT (user_id, video_slug) DO UPDATE SET watched_at = NOW()`,
-      [session.user.id, ...slugs]
+      [session.user.id, ...slugs],
     );
     return NextResponse.json({ ok: true });
   }
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
   await pool.query(
     `INSERT INTO user_history (user_id, video_slug) VALUES ($1, $2)
      ON CONFLICT (user_id, video_slug) DO UPDATE SET watched_at = NOW()`,
-    [session.user.id, slug]
+    [session.user.id, slug],
   );
 
   return NextResponse.json({ ok: true });
@@ -77,6 +77,8 @@ export async function DELETE() {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  await pool.query(`DELETE FROM user_history WHERE user_id = $1`, [session.user.id]);
+  await pool.query(`DELETE FROM user_history WHERE user_id = $1`, [
+    session.user.id,
+  ]);
   return NextResponse.json({ ok: true });
 }

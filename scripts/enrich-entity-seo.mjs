@@ -172,7 +172,10 @@ function buildIntro(slug, name, count, type, series) {
 function buildFaq(slug, name, count, type) {
   const pool = FAQ_POOL(name, count, type);
   // Pick 3 deterministically based on slug hash.
-  const h = crypto.createHash("md5").update(slug + ":faq").digest();
+  const h = crypto
+    .createHash("md5")
+    .update(slug + ":faq")
+    .digest();
   const seen = new Set();
   const out = [];
   let cursor = 0;
@@ -192,7 +195,11 @@ function buildFaq(slug, name, count, type) {
 
 async function enrichType(pool, type) {
   const colName =
-    type === "tag" ? "tags" : type === "character" ? "characters" : "copyrights";
+    type === "tag"
+      ? "tags"
+      : type === "character"
+        ? "characters"
+        : "copyrights";
   const minVideos = MIN_VIDEOS[type];
 
   const { rows } = await pool.query(
@@ -207,7 +214,7 @@ async function enrichType(pool, type) {
      HAVING COUNT(*) >= $1
      ORDER BY video_count DESC
      LIMIT $2`,
-    [minVideos, MAX_PER_TYPE]
+    [minVideos, MAX_PER_TYPE],
   );
 
   console.log(`  ${type}: ${rows.length} candidates (>=${minVideos} videos)`);
@@ -220,18 +227,22 @@ async function enrichType(pool, type) {
       `SELECT slug FROM entity_seo
        WHERE entity_type = $1 AND slug = ANY($2::text[])
          AND generated_at > NOW() - INTERVAL '${STALE_DAYS} days'`,
-      [type, slugs]
+      [type, slugs],
     );
     for (const r of existing) fresh.add(r.slug);
   }
   const todo = rows.filter((r) => !fresh.has(r.slug));
-  console.log(`  ${type}: ${todo.length} need refresh, ${fresh.size} already fresh`);
+  console.log(
+    `  ${type}: ${todo.length} need refresh, ${fresh.size} already fresh`,
+  );
 
   if (DRY_RUN) {
     todo.slice(0, 3).forEach((r) => {
       const name = titleCase(r.slug);
       console.log(`\n  preview ${type}=${r.slug} (${r.video_count} videos):`);
-      console.log(buildIntro(r.slug, name, r.video_count, type).slice(0, 400) + "...");
+      console.log(
+        buildIntro(r.slug, name, r.video_count, type).slice(0, 400) + "...",
+      );
     });
     return 0;
   }
@@ -247,7 +258,7 @@ async function enrichType(pool, type) {
          FROM videos
          WHERE characters && ARRAY[$1]::text[]
          LIMIT 50`,
-        [r.slug]
+        [r.slug],
       );
       const counts = {};
       for (const x of srows) counts[x.s] = (counts[x.s] || 0) + 1;
@@ -266,10 +277,11 @@ async function enrichType(pool, type) {
            intro        = EXCLUDED.intro,
            faq          = EXCLUDED.faq,
            generated_at = NOW()`,
-      [type, r.slug, name, r.video_count, intro, JSON.stringify(faq)]
+      [type, r.slug, name, r.video_count, intro, JSON.stringify(faq)],
     );
     written++;
-    if (written % 250 === 0) console.log(`    ${type}: ${written}/${todo.length} written`);
+    if (written % 250 === 0)
+      console.log(`    ${type}: ${written}/${todo.length} written`);
   }
   console.log(`  ${type}: done — ${written} rows written`);
   return written;

@@ -1,6 +1,6 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<!--
+  <!--
   Section : Full Streaming Platform Layout
   Reference : Netflix / Hanime.tv / Crunchyroll
   Fidelite estimee : 92%
@@ -8,2059 +8,2648 @@
           Carousels are CSS-only scroll snap with JS arrow controls.
           Sidebar is fixed collapsed (60px) — no expand animation in v2.
 -->
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IKU — Stream</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <style>
-    /* =====================================================
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IKU — Stream</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* =====================================================
        TOKENS
     ===================================================== */
-    :root {
-      --bg:            #0a0a0a;
-      --surface:       #111111;
-      --surface-2:     #181818;
-      --surface-3:     #222222;
-      --text:          #f5f5f5;
-      --text-secondary:#a0a0a0;
-      --accent-start:  #e8467c;
-      --accent-end:    #7b2ff7;
-      --accent:        #e8467c;
-      --sidebar-w:     60px;
-      --header-h:      0px;
+      :root {
+        --bg: #0a0a0a;
+        --surface: #111111;
+        --surface-2: #181818;
+        --surface-3: #222222;
+        --text: #f5f5f5;
+        --text-secondary: #a0a0a0;
+        --accent-start: #e8467c;
+        --accent-end: #7b2ff7;
+        --accent: #e8467c;
+        --sidebar-w: 60px;
+        --header-h: 0px;
 
-      --radius-sm:  6px;
-      --radius-md:  8px;
-      --radius-lg:  12px;
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
 
-      --font: 'Poppins', sans-serif;
+        --font: "Poppins", sans-serif;
 
-      --duration-fast:   120ms;
-      --duration-normal: 220ms;
-      --duration-slow:   380ms;
-      --ease-out:  cubic-bezier(0, 0, 0.4, 1);
-      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
+        --duration-fast: 120ms;
+        --duration-normal: 220ms;
+        --duration-slow: 380ms;
+        --ease-out: cubic-bezier(0, 0, 0.4, 1);
+        --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
 
-    /* =====================================================
+      /* =====================================================
        RESET
     ===================================================== */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 16px; scroll-behavior: smooth; }
-    body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    img, svg { display: block; }
-    button { cursor: pointer; border: none; background: none; font-family: var(--font); }
-    a { text-decoration: none; color: inherit; }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        font-size: 16px;
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: var(--font);
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+      img,
+      svg {
+        display: block;
+      }
+      button {
+        cursor: pointer;
+        border: none;
+        background: none;
+        font-family: var(--font);
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
 
-    /* =====================================================
+      /* =====================================================
        SCROLLBAR
     ===================================================== */
-    ::-webkit-scrollbar { width: 4px; height: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #333; border-radius: 99px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--accent-start); }
+      ::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #333;
+        border-radius: 99px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--accent-start);
+      }
 
-    /* =====================================================
+      /* =====================================================
        LAYOUT SHELL
     ===================================================== */
-    .app {
-      display: flex;
-      min-height: 100vh;
-    }
+      .app {
+        display: flex;
+        min-height: 100vh;
+      }
 
-    /* =====================================================
+      /* =====================================================
        SIDEBAR
     ===================================================== */
-    .sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: var(--sidebar-w);
-      height: 100vh;
-      background: rgba(10,10,10,0.72);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border-right: 1px solid rgba(255,255,255,0.05);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px 0;
-      gap: 6px;
-      z-index: 200;
-    }
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: var(--sidebar-w);
+        height: 100vh;
+        background: rgba(10, 10, 10, 0.72);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 0;
+        gap: 6px;
+        z-index: 200;
+      }
 
-    .sidebar__logo {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--accent-start), var(--accent-end));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      color: #fff;
-      margin-bottom: 24px;
-      flex-shrink: 0;
-    }
+      .sidebar__logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: linear-gradient(
+          135deg,
+          var(--accent-start),
+          var(--accent-end)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        color: #fff;
+        margin-bottom: 24px;
+        flex-shrink: 0;
+      }
 
-    .sidebar__divider {
-      width: 28px;
-      height: 1px;
-      background: rgba(255,255,255,0.08);
-      margin: 10px 0;
-    }
+      .sidebar__divider {
+        width: 28px;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.08);
+        margin: 10px 0;
+      }
 
-    .sidebar__item {
-      width: 44px;
-      height: 44px;
-      border-radius: var(--radius-md);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-secondary);
-      font-size: 18px;
-      transition: background var(--duration-fast) var(--ease-out),
-                  color var(--duration-fast) var(--ease-out);
-      position: relative;
-    }
-    .sidebar__item:hover {
-      background: rgba(255,255,255,0.07);
-      color: var(--text);
-    }
-    .sidebar__item.is-active {
-      background: linear-gradient(135deg, rgba(232,70,124,0.25), rgba(123,47,247,0.25));
-      color: var(--accent-start);
-    }
-    .sidebar__item.is-active::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 3px;
-      height: 20px;
-      border-radius: 0 3px 3px 0;
-      background: linear-gradient(to bottom, var(--accent-start), var(--accent-end));
-    }
+      .sidebar__item {
+        width: 44px;
+        height: 44px;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
+        font-size: 18px;
+        transition:
+          background var(--duration-fast) var(--ease-out),
+          color var(--duration-fast) var(--ease-out);
+        position: relative;
+      }
+      .sidebar__item:hover {
+        background: rgba(255, 255, 255, 0.07);
+        color: var(--text);
+      }
+      .sidebar__item.is-active {
+        background: linear-gradient(
+          135deg,
+          rgba(232, 70, 124, 0.25),
+          rgba(123, 47, 247, 0.25)
+        );
+        color: var(--accent-start);
+      }
+      .sidebar__item.is-active::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 20px;
+        border-radius: 0 3px 3px 0;
+        background: linear-gradient(
+          to bottom,
+          var(--accent-start),
+          var(--accent-end)
+        );
+      }
 
-    .sidebar__tooltip {
-      position: absolute;
-      left: calc(100% + 10px);
-      top: 50%;
-      transform: translateY(-50%);
-      background: var(--surface-3);
-      color: var(--text);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      padding: 5px 10px;
-      border-radius: var(--radius-sm);
-      white-space: nowrap;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity var(--duration-fast) var(--ease-out);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-    .sidebar__item:hover .sidebar__tooltip { opacity: 1; }
+      .sidebar__tooltip {
+        position: absolute;
+        left: calc(100% + 10px);
+        top: 50%;
+        transform: translateY(-50%);
+        background: var(--surface-3);
+        color: var(--text);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        padding: 5px 10px;
+        border-radius: var(--radius-sm);
+        white-space: nowrap;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity var(--duration-fast) var(--ease-out);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .sidebar__item:hover .sidebar__tooltip {
+        opacity: 1;
+      }
 
-    .sidebar__bottom {
-      margin-top: auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-    }
+      .sidebar__bottom {
+        margin-top: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+      }
 
-    .sidebar__avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #e8467c, #7b2ff7);
-      border: 2px solid rgba(232,70,124,0.5);
-    }
+      .sidebar__avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #e8467c, #7b2ff7);
+        border: 2px solid rgba(232, 70, 124, 0.5);
+      }
 
-    /* =====================================================
+      /* =====================================================
        MAIN CONTENT
     ===================================================== */
-    .main {
-      margin-left: var(--sidebar-w);
-      flex: 1;
-      min-width: 0;
-    }
+      .main {
+        margin-left: var(--sidebar-w);
+        flex: 1;
+        min-width: 0;
+      }
 
-    /* =====================================================
+      /* =====================================================
        TOP BAR
     ===================================================== */
-    .topbar {
-      position: fixed;
-      top: 0;
-      left: var(--sidebar-w);
-      right: 0;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 32px;
-      z-index: 100;
-      background: linear-gradient(to bottom, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0) 100%);
-      transition: background var(--duration-normal) var(--ease-out);
-    }
-    .topbar.scrolled {
-      background: rgba(10,10,10,0.96);
-      backdrop-filter: blur(16px);
-    }
+      .topbar {
+        position: fixed;
+        top: 0;
+        left: var(--sidebar-w);
+        right: 0;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 32px;
+        z-index: 100;
+        background: linear-gradient(
+          to bottom,
+          rgba(10, 10, 10, 0.95) 0%,
+          rgba(10, 10, 10, 0) 100%
+        );
+        transition: background var(--duration-normal) var(--ease-out);
+      }
+      .topbar.scrolled {
+        background: rgba(10, 10, 10, 0.96);
+        backdrop-filter: blur(16px);
+      }
 
-    .topbar__nav {
-      display: flex;
-      align-items: center;
-      gap: 28px;
-    }
+      .topbar__nav {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+      }
 
-    .topbar__nav-item {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      transition: color var(--duration-fast);
-      cursor: pointer;
-    }
-    .topbar__nav-item:hover { color: var(--text); }
-    .topbar__nav-item.is-active { color: var(--text); font-weight: 600; }
+      .topbar__nav-item {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        transition: color var(--duration-fast);
+        cursor: pointer;
+      }
+      .topbar__nav-item:hover {
+        color: var(--text);
+      }
+      .topbar__nav-item.is-active {
+        color: var(--text);
+        font-weight: 600;
+      }
 
-    .topbar__right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
+      .topbar__right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
 
-    .topbar__search {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 99px;
-      padding: 6px 14px;
-      font-size: 12px;
-      color: var(--text-secondary);
-      cursor: text;
-      transition: border-color var(--duration-fast), background var(--duration-fast);
-    }
-    .topbar__search:hover {
-      border-color: rgba(232,70,124,0.4);
-      background: rgba(255,255,255,0.1);
-    }
-    .topbar__search span { font-size: 14px; }
+      .topbar__search {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 99px;
+        padding: 6px 14px;
+        font-size: 12px;
+        color: var(--text-secondary);
+        cursor: text;
+        transition:
+          border-color var(--duration-fast),
+          background var(--duration-fast);
+      }
+      .topbar__search:hover {
+        border-color: rgba(232, 70, 124, 0.4);
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .topbar__search span {
+        font-size: 14px;
+      }
 
-    .topbar__bell {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.06);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      position: relative;
-      transition: background var(--duration-fast);
-    }
-    .topbar__bell:hover { background: rgba(255,255,255,0.12); }
-    .topbar__bell::after {
-      content: '';
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      width: 7px;
-      height: 7px;
-      background: var(--accent-start);
-      border-radius: 50%;
-      border: 2px solid var(--bg);
-    }
+      .topbar__bell {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.06);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        position: relative;
+        transition: background var(--duration-fast);
+      }
+      .topbar__bell:hover {
+        background: rgba(255, 255, 255, 0.12);
+      }
+      .topbar__bell::after {
+        content: "";
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 7px;
+        height: 7px;
+        background: var(--accent-start);
+        border-radius: 50%;
+        border: 2px solid var(--bg);
+      }
 
-    /* =====================================================
+      /* =====================================================
        HERO
     ===================================================== */
-    .hero {
-      position: relative;
-      width: 100%;
-      height: 90vh;
-      min-height: 600px;
-      max-height: 860px;
-      overflow: hidden;
-    }
+      .hero {
+        position: relative;
+        width: 100%;
+        height: 90vh;
+        min-height: 600px;
+        max-height: 860px;
+        overflow: hidden;
+      }
 
-    .hero__bg {
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(110deg,
-          rgba(123,47,247,0.35) 0%,
-          rgba(232,70,124,0.18) 45%,
-          rgba(10,10,10,0) 100%
-        ),
-        /* scene gradient simulating anime art */
-        linear-gradient(180deg,
-          #1a0a2e 0%,
-          #2d0d44 15%,
-          #4a1060 30%,
-          #1e0a38 50%,
-          #0a0a18 75%,
-          #0a0a0a 100%
+      .hero__bg {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(
+            110deg,
+            rgba(123, 47, 247, 0.35) 0%,
+            rgba(232, 70, 124, 0.18) 45%,
+            rgba(10, 10, 10, 0) 100%
+          ),
+          /* scene gradient simulating anime art */
+          linear-gradient(
+              180deg,
+              #1a0a2e 0%,
+              #2d0d44 15%,
+              #4a1060 30%,
+              #1e0a38 50%,
+              #0a0a18 75%,
+              #0a0a0a 100%
+            );
+      }
+
+      /* Decorative shapes to simulate cinematic bg */
+      .hero__bg::before {
+        content: "";
+        position: absolute;
+        top: -10%;
+        right: 5%;
+        width: 55%;
+        height: 130%;
+        background: linear-gradient(
+          160deg,
+          rgba(232, 70, 124, 0.12) 0%,
+          rgba(123, 47, 247, 0.22) 40%,
+          rgba(255, 160, 60, 0.08) 70%,
+          transparent 100%
         );
-    }
+        border-radius: 50% 30% 40% 60%;
+      }
+      .hero__bg::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 60%;
+        height: 100%;
+        background: radial-gradient(
+          ellipse at 70% 40%,
+          rgba(232, 70, 124, 0.08) 0%,
+          rgba(123, 47, 247, 0.06) 40%,
+          transparent 70%
+        );
+      }
 
-    /* Decorative shapes to simulate cinematic bg */
-    .hero__bg::before {
-      content: '';
-      position: absolute;
-      top: -10%;
-      right: 5%;
-      width: 55%;
-      height: 130%;
-      background: linear-gradient(160deg,
-        rgba(232,70,124,0.12) 0%,
-        rgba(123,47,247,0.22) 40%,
-        rgba(255,160,60,0.08) 70%,
-        transparent 100%
-      );
-      border-radius: 50% 30% 40% 60%;
-    }
-    .hero__bg::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      width: 60%;
-      height: 100%;
-      background: radial-gradient(ellipse at 70% 40%,
-        rgba(232,70,124,0.08) 0%,
-        rgba(123,47,247,0.06) 40%,
-        transparent 70%
-      );
-    }
+      /* Simulated character silhouette */
+      .hero__character {
+        position: absolute;
+        right: 6%;
+        bottom: 0;
+        width: 45%;
+        max-width: 600px;
+        height: 95%;
+        background: linear-gradient(
+          170deg,
+          rgba(232, 70, 124, 0.06) 0%,
+          rgba(200, 100, 180, 0.15) 20%,
+          rgba(150, 60, 200, 0.1) 50%,
+          rgba(80, 20, 140, 0.2) 80%,
+          rgba(20, 5, 40, 0.4) 100%
+        );
+        mask-image: radial-gradient(
+          ellipse 80% 100% at 50% 50%,
+          black 60%,
+          transparent 100%
+        );
+        -webkit-mask-image: radial-gradient(
+          ellipse 80% 100% at 50% 50%,
+          black 60%,
+          transparent 100%
+        );
+      }
 
-    /* Simulated character silhouette */
-    .hero__character {
-      position: absolute;
-      right: 6%;
-      bottom: 0;
-      width: 45%;
-      max-width: 600px;
-      height: 95%;
-      background: linear-gradient(170deg,
-        rgba(232,70,124,0.06) 0%,
-        rgba(200,100,180,0.15) 20%,
-        rgba(150,60,200,0.1) 50%,
-        rgba(80,20,140,0.2) 80%,
-        rgba(20,5,40,0.4) 100%
-      );
-      mask-image: radial-gradient(ellipse 80% 100% at 50% 50%, black 60%, transparent 100%);
-      -webkit-mask-image: radial-gradient(ellipse 80% 100% at 50% 50%, black 60%, transparent 100%);
-    }
+      .hero__gradient {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(
+            to right,
+            rgba(10, 10, 10, 0.92) 0%,
+            rgba(10, 10, 10, 0.6) 50%,
+            rgba(10, 10, 10, 0.1) 100%
+          ),
+          linear-gradient(
+            to top,
+            rgba(10, 10, 10, 1) 0%,
+            rgba(10, 10, 10, 0) 40%
+          );
+        z-index: 1;
+      }
 
-    .hero__gradient {
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(to right,  rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.6) 50%, rgba(10,10,10,0.1) 100%),
-        linear-gradient(to top,    rgba(10,10,10,1)    0%, rgba(10,10,10,0)   40%);
-      z-index: 1;
-    }
+      .hero__content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 55%;
+        max-width: 620px;
+        padding: 0 48px 80px;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
 
-    .hero__content {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 55%;
-      max-width: 620px;
-      padding: 0 48px 80px;
-      z-index: 2;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
+      .hero__badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(
+          90deg,
+          var(--accent-start),
+          var(--accent-end)
+        );
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        padding: 4px 12px;
+        border-radius: 4px;
+        align-self: flex-start;
+        text-transform: uppercase;
+      }
+      .hero__badge::before {
+        content: "▲";
+        font-size: 8px;
+      }
 
-    .hero__badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: linear-gradient(90deg, var(--accent-start), var(--accent-end));
-      color: #fff;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      padding: 4px 12px;
-      border-radius: 4px;
-      align-self: flex-start;
-      text-transform: uppercase;
-    }
-    .hero__badge::before {
-      content: '▲';
-      font-size: 8px;
-    }
+      .hero__meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .hero__meta-dot {
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        background: var(--text-secondary);
+      }
+      .hero__meta-score {
+        color: #f5c518;
+      }
 
-    .hero__meta {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-    .hero__meta-dot {
-      width: 3px;
-      height: 3px;
-      border-radius: 50%;
-      background: var(--text-secondary);
-    }
-    .hero__meta-score {
-      color: #f5c518;
-    }
+      .hero__title {
+        font-size: clamp(2.4rem, 4vw, 3.6rem);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.035em;
+        color: #fff;
+      }
 
-    .hero__title {
-      font-size: clamp(2.4rem, 4vw, 3.6rem);
-      font-weight: 800;
-      line-height: 1.0;
-      letter-spacing: -0.035em;
-      color: #fff;
-    }
+      .hero__title span {
+        background: linear-gradient(
+          90deg,
+          var(--accent-start),
+          var(--accent-end)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
 
-    .hero__title span {
-      background: linear-gradient(90deg, var(--accent-start), var(--accent-end));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+      .hero__tags {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .hero__tag {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 3px 10px;
+        border-radius: 4px;
+        letter-spacing: 0.04em;
+      }
 
-    .hero__tags {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-    .hero__tag {
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.1);
-      padding: 3px 10px;
-      border-radius: 4px;
-      letter-spacing: 0.04em;
-    }
+      .hero__desc {
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 1.65;
+        color: rgba(255, 255, 255, 0.72);
+        max-width: 460px;
+      }
 
-    .hero__desc {
-      font-size: 13px;
-      font-weight: 400;
-      line-height: 1.65;
-      color: rgba(255,255,255,0.72);
-      max-width: 460px;
-    }
+      .hero__actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 4px;
+      }
 
-    .hero__actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-top: 4px;
-    }
+      .btn-play {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(
+          90deg,
+          var(--accent-start),
+          var(--accent-end)
+        );
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+        padding: 12px 28px;
+        border-radius: 8px;
+        letter-spacing: 0.01em;
+        transition:
+          opacity var(--duration-fast) var(--ease-out),
+          transform var(--duration-fast) var(--ease-out),
+          box-shadow var(--duration-normal) var(--ease-out);
+        box-shadow: 0 4px 20px rgba(232, 70, 124, 0.35);
+      }
+      .btn-play:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+        box-shadow: 0 8px 32px rgba(232, 70, 124, 0.55);
+      }
+      .btn-play:active {
+        transform: translateY(0);
+      }
 
-    .btn-play {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: linear-gradient(90deg, var(--accent-start), var(--accent-end));
-      color: #fff;
-      font-size: 14px;
-      font-weight: 700;
-      padding: 12px 28px;
-      border-radius: 8px;
-      letter-spacing: 0.01em;
-      transition: opacity var(--duration-fast) var(--ease-out),
-                  transform var(--duration-fast) var(--ease-out),
-                  box-shadow var(--duration-normal) var(--ease-out);
-      box-shadow: 0 4px 20px rgba(232,70,124,0.35);
-    }
-    .btn-play:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
-      box-shadow: 0 8px 32px rgba(232,70,124,0.55);
-    }
-    .btn-play:active { transform: translateY(0); }
+      .btn-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 12px 24px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        letter-spacing: 0.01em;
+        backdrop-filter: blur(8px);
+        transition:
+          background var(--duration-fast),
+          transform var(--duration-fast);
+      }
+      .btn-info:hover {
+        background: rgba(255, 255, 255, 0.16);
+        transform: translateY(-1px);
+      }
 
-    .btn-info {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255,255,255,0.1);
-      color: #fff;
-      font-size: 14px;
-      font-weight: 600;
-      padding: 12px 24px;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.15);
-      letter-spacing: 0.01em;
-      backdrop-filter: blur(8px);
-      transition: background var(--duration-fast), transform var(--duration-fast);
-    }
-    .btn-info:hover {
-      background: rgba(255,255,255,0.16);
-      transform: translateY(-1px);
-    }
+      /* Hero side info panel */
+      .hero__side {
+        position: absolute;
+        right: 32px;
+        bottom: 80px;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-end;
+      }
 
-    /* Hero side info panel */
-    .hero__side {
-      position: absolute;
-      right: 32px;
-      bottom: 80px;
-      z-index: 2;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      align-items: flex-end;
-    }
+      .hero__episodes {
+        background: rgba(10, 10, 10, 0.75);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        padding: 12px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
 
-    .hero__episodes {
-      background: rgba(10,10,10,0.75);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 10px;
-      padding: 12px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+      .hero__ep-label {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+      }
+      .hero__ep-count {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--text);
+        line-height: 1;
+      }
+      .hero__ep-sub {
+        font-size: 10px;
+        color: var(--text-secondary);
+      }
 
-    .hero__ep-label {
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-    }
-    .hero__ep-count {
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--text);
-      line-height: 1;
-    }
-    .hero__ep-sub {
-      font-size: 10px;
-      color: var(--text-secondary);
-    }
+      .hero__volume {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background var(--duration-fast);
+      }
+      .hero__volume:hover {
+        background: rgba(255, 255, 255, 0.16);
+      }
 
-    .hero__volume {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background var(--duration-fast);
-    }
-    .hero__volume:hover { background: rgba(255,255,255,0.16); }
-
-    /* =====================================================
+      /* =====================================================
        CONTENT AREA
     ===================================================== */
-    .content {
-      padding: 0 48px 80px;
-      display: flex;
-      flex-direction: column;
-      gap: 48px;
-    }
+      .content {
+        padding: 0 48px 80px;
+        display: flex;
+        flex-direction: column;
+        gap: 48px;
+      }
 
-    /* =====================================================
+      /* =====================================================
        SECTION HEADER
     ===================================================== */
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
 
-    .section-header__left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+      .section-header__left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
 
-    .section-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: -0.01em;
-    }
+      .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text);
+        letter-spacing: -0.01em;
+      }
 
-    .section-badge {
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      background: linear-gradient(90deg, var(--accent-start), var(--accent-end));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+      .section-badge {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        background: linear-gradient(
+          90deg,
+          var(--accent-start),
+          var(--accent-end)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
 
-    .section-see-all {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      cursor: pointer;
-      transition: color var(--duration-fast);
-    }
-    .section-see-all:hover { color: var(--accent-start); }
-    .section-see-all::after { content: '›'; font-size: 16px; line-height: 1; }
+      .section-see-all {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        transition: color var(--duration-fast);
+      }
+      .section-see-all:hover {
+        color: var(--accent-start);
+      }
+      .section-see-all::after {
+        content: "›";
+        font-size: 16px;
+        line-height: 1;
+      }
 
-    /* =====================================================
+      /* =====================================================
        CAROUSEL WRAPPER
     ===================================================== */
-    .carousel-wrap {
-      position: relative;
-    }
+      .carousel-wrap {
+        position: relative;
+      }
 
-    .carousel {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-      padding-bottom: 4px;
-    }
-    .carousel::-webkit-scrollbar { display: none; }
+      .carousel {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: 4px;
+      }
+      .carousel::-webkit-scrollbar {
+        display: none;
+      }
 
-    .carousel__arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 40px;
-      height: 56px;
-      background: rgba(10,10,10,0.85);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      color: var(--text);
-      cursor: pointer;
-      transition: background var(--duration-fast), opacity var(--duration-fast), transform var(--duration-fast);
-      z-index: 10;
-      opacity: 0;
-    }
-    .carousel-wrap:hover .carousel__arrow { opacity: 1; }
-    .carousel__arrow:hover {
-      background: rgba(232,70,124,0.3);
-      border-color: rgba(232,70,124,0.4);
-    }
-    .carousel__arrow:active { transform: translateY(-50%) scale(0.95); }
-    .carousel__arrow--left  { left: -48px; }
-    .carousel__arrow--right { right: -48px; }
+      .carousel__arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 56px;
+        background: rgba(10, 10, 10, 0.85);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: var(--text);
+        cursor: pointer;
+        transition:
+          background var(--duration-fast),
+          opacity var(--duration-fast),
+          transform var(--duration-fast);
+        z-index: 10;
+        opacity: 0;
+      }
+      .carousel-wrap:hover .carousel__arrow {
+        opacity: 1;
+      }
+      .carousel__arrow:hover {
+        background: rgba(232, 70, 124, 0.3);
+        border-color: rgba(232, 70, 124, 0.4);
+      }
+      .carousel__arrow:active {
+        transform: translateY(-50%) scale(0.95);
+      }
+      .carousel__arrow--left {
+        left: -48px;
+      }
+      .carousel__arrow--right {
+        right: -48px;
+      }
 
-    /* =====================================================
+      /* =====================================================
        POSTER CARD (2:3 ratio)
     ===================================================== */
-    .poster-card {
-      flex: 0 0 auto;
-      width: 160px;
-      scroll-snap-align: start;
-      cursor: pointer;
-    }
+      .poster-card {
+        flex: 0 0 auto;
+        width: 160px;
+        scroll-snap-align: start;
+        cursor: pointer;
+      }
 
-    .poster-card__image {
-      width: 100%;
-      aspect-ratio: 2/3;
-      border-radius: var(--radius-md);
-      position: relative;
-      overflow: hidden;
-      transition: transform var(--duration-normal) var(--ease-spring),
-                  box-shadow var(--duration-normal) var(--ease-out);
-    }
-    .poster-card:hover .poster-card__image {
-      transform: scale(1.05) translateY(-4px);
-      box-shadow:
-        0 12px 40px rgba(0,0,0,0.6),
-        0 0 0 1.5px rgba(232,70,124,0.4),
-        0 4px 20px rgba(232,70,124,0.25);
-    }
+      .poster-card__image {
+        width: 100%;
+        aspect-ratio: 2/3;
+        border-radius: var(--radius-md);
+        position: relative;
+        overflow: hidden;
+        transition:
+          transform var(--duration-normal) var(--ease-spring),
+          box-shadow var(--duration-normal) var(--ease-out);
+      }
+      .poster-card:hover .poster-card__image {
+        transform: scale(1.05) translateY(-4px);
+        box-shadow:
+          0 12px 40px rgba(0, 0, 0, 0.6),
+          0 0 0 1.5px rgba(232, 70, 124, 0.4),
+          0 4px 20px rgba(232, 70, 124, 0.25);
+      }
 
-    /* Subtle shine overlay */
-    .poster-card__image::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        135deg,
-        rgba(255,255,255,0.06) 0%,
-        transparent 50%,
-        rgba(0,0,0,0.2) 100%
-      );
-      z-index: 1;
-      transition: opacity var(--duration-normal);
-    }
-    .poster-card:hover .poster-card__image::before { opacity: 0; }
+      /* Subtle shine overlay */
+      .poster-card__image::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.06) 0%,
+          transparent 50%,
+          rgba(0, 0, 0, 0.2) 100%
+        );
+        z-index: 1;
+        transition: opacity var(--duration-normal);
+      }
+      .poster-card:hover .poster-card__image::before {
+        opacity: 0;
+      }
 
-    .poster-card__badge {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      font-size: 8px;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      border-radius: 4px;
-      z-index: 3;
-    }
-    .poster-card__badge--new    { background: #e8467c; color: #fff; }
-    .poster-card__badge--hd     { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); }
-    .poster-card__badge--4k     { background: linear-gradient(90deg, #f5c518, #e07b00); color: #000; }
-    .poster-card__badge--update { background: #7b2ff7; color: #fff; }
-    .poster-card__badge--series { background: rgba(123,47,247,0.3); color: #b89bf7; border: 1px solid rgba(123,47,247,0.4); }
+      .poster-card__badge {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        font-size: 8px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 3px 8px;
+        border-radius: 4px;
+        z-index: 3;
+      }
+      .poster-card__badge--new {
+        background: #e8467c;
+        color: #fff;
+      }
+      .poster-card__badge--hd {
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+      .poster-card__badge--4k {
+        background: linear-gradient(90deg, #f5c518, #e07b00);
+        color: #000;
+      }
+      .poster-card__badge--update {
+        background: #7b2ff7;
+        color: #fff;
+      }
+      .poster-card__badge--series {
+        background: rgba(123, 47, 247, 0.3);
+        color: #b89bf7;
+        border: 1px solid rgba(123, 47, 247, 0.4);
+      }
 
-    .poster-card__progress {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: rgba(255,255,255,0.15);
-      z-index: 3;
-    }
-    .poster-card__progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent-start), var(--accent-end));
-      border-radius: 99px;
-    }
+      .poster-card__progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.15);
+        z-index: 3;
+      }
+      .poster-card__progress-fill {
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          var(--accent-start),
+          var(--accent-end)
+        );
+        border-radius: 99px;
+      }
 
-    .poster-card__overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 32px 10px 12px;
-      background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0) 100%);
-      z-index: 2;
-      opacity: 0;
-      transform: translateY(4px);
-      transition: opacity var(--duration-normal) var(--ease-out),
-                  transform var(--duration-normal) var(--ease-out);
-    }
-    .poster-card:hover .poster-card__overlay {
-      opacity: 1;
-      transform: translateY(0);
-    }
+      .poster-card__overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 32px 10px 12px;
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.88) 0%,
+          rgba(0, 0, 0, 0) 100%
+        );
+        z-index: 2;
+        opacity: 0;
+        transform: translateY(4px);
+        transition:
+          opacity var(--duration-normal) var(--ease-out),
+          transform var(--duration-normal) var(--ease-out);
+      }
+      .poster-card:hover .poster-card__overlay {
+        opacity: 1;
+        transform: translateY(0);
+      }
 
-    .poster-card__overlay h3 {
-      font-size: 12px;
-      font-weight: 700;
-      line-height: 1.3;
-      color: #fff;
-      margin-bottom: 2px;
-    }
-    .poster-card__overlay span {
-      font-size: 10px;
-      color: rgba(255,255,255,0.6);
-      font-weight: 400;
-    }
+      .poster-card__overlay h3 {
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1.3;
+        color: #fff;
+        margin-bottom: 2px;
+      }
+      .poster-card__overlay span {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.6);
+        font-weight: 400;
+      }
 
-    .poster-card__info {
-      margin-top: 8px;
-      padding: 0 2px;
-    }
-    .poster-card__name {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      line-height: 1.3;
-    }
-    .poster-card__sub {
-      font-size: 10px;
-      color: var(--text-secondary);
-      margin-top: 2px;
-    }
+      .poster-card__info {
+        margin-top: 8px;
+        padding: 0 2px;
+      }
+      .poster-card__name {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.3;
+      }
+      .poster-card__sub {
+        font-size: 10px;
+        color: var(--text-secondary);
+        margin-top: 2px;
+      }
 
-    /* Hover play icon */
-    .poster-card__play-hint {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 4;
-      opacity: 0;
-      transition: opacity var(--duration-normal);
-    }
-    .poster-card:hover .poster-card__play-hint { opacity: 1; }
-    .poster-card__play-hint-inner {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: rgba(232,70,124,0.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      color: #fff;
-      box-shadow: 0 4px 20px rgba(232,70,124,0.5);
-      transform: scale(0.8);
-      transition: transform var(--duration-normal) var(--ease-spring);
-    }
-    .poster-card:hover .poster-card__play-hint-inner { transform: scale(1); }
+      /* Hover play icon */
+      .poster-card__play-hint {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 4;
+        opacity: 0;
+        transition: opacity var(--duration-normal);
+      }
+      .poster-card:hover .poster-card__play-hint {
+        opacity: 1;
+      }
+      .poster-card__play-hint-inner {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(232, 70, 124, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: #fff;
+        box-shadow: 0 4px 20px rgba(232, 70, 124, 0.5);
+        transform: scale(0.8);
+        transition: transform var(--duration-normal) var(--ease-spring);
+      }
+      .poster-card:hover .poster-card__play-hint-inner {
+        transform: scale(1);
+      }
 
-    /* =====================================================
+      /* =====================================================
        WIDE CARD (16:9) for "Continue Watching"
     ===================================================== */
-    .wide-card {
-      flex: 0 0 auto;
-      width: 260px;
-      scroll-snap-align: start;
-      cursor: pointer;
-    }
+      .wide-card {
+        flex: 0 0 auto;
+        width: 260px;
+        scroll-snap-align: start;
+        cursor: pointer;
+      }
 
-    .wide-card__image {
-      width: 100%;
-      aspect-ratio: 16/9;
-      border-radius: var(--radius-md);
-      position: relative;
-      overflow: hidden;
-      transition: transform var(--duration-normal) var(--ease-spring),
-                  box-shadow var(--duration-normal) var(--ease-out);
-    }
-    .wide-card:hover .wide-card__image {
-      transform: scale(1.03) translateY(-3px);
-      box-shadow:
-        0 10px 36px rgba(0,0,0,0.6),
-        0 0 0 1.5px rgba(232,70,124,0.35),
-        0 4px 16px rgba(232,70,124,0.2);
-    }
+      .wide-card__image {
+        width: 100%;
+        aspect-ratio: 16/9;
+        border-radius: var(--radius-md);
+        position: relative;
+        overflow: hidden;
+        transition:
+          transform var(--duration-normal) var(--ease-spring),
+          box-shadow var(--duration-normal) var(--ease-out);
+      }
+      .wide-card:hover .wide-card__image {
+        transform: scale(1.03) translateY(-3px);
+        box-shadow:
+          0 10px 36px rgba(0, 0, 0, 0.6),
+          0 0 0 1.5px rgba(232, 70, 124, 0.35),
+          0 4px 16px rgba(232, 70, 124, 0.2);
+      }
 
-    .wide-card__ep-badge {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: rgba(255,255,255,0.12);
-      z-index: 3;
-    }
-    .wide-card__ep-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent-start), var(--accent-end));
-    }
+      .wide-card__ep-badge {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.12);
+        z-index: 3;
+      }
+      .wide-card__ep-fill {
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          var(--accent-start),
+          var(--accent-end)
+        );
+      }
 
-    .wide-card__overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity var(--duration-normal);
-    }
-    .wide-card:hover .wide-card__overlay { opacity: 1; }
-    .wide-card__play {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(232,70,124,0.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      color: #fff;
-    }
+      .wide-card__overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity var(--duration-normal);
+      }
+      .wide-card:hover .wide-card__overlay {
+        opacity: 1;
+      }
+      .wide-card__play {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(232, 70, 124, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: #fff;
+      }
 
-    .wide-card__badge {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      font-size: 8px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      background: rgba(0,0,0,0.7);
-      border: 1px solid rgba(255,255,255,0.15);
-      color: var(--text);
-      padding: 3px 8px;
-      border-radius: 4px;
-    }
+      .wide-card__badge {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        font-size: 8px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: rgba(0, 0, 0, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: var(--text);
+        padding: 3px 8px;
+        border-radius: 4px;
+      }
 
-    .wide-card__ep-num {
-      position: absolute;
-      bottom: 12px;
-      left: 10px;
-      font-size: 10px;
-      font-weight: 700;
-      color: rgba(255,255,255,0.85);
-      background: rgba(232,70,124,0.85);
-      padding: 2px 8px;
-      border-radius: 4px;
-      z-index: 3;
-    }
+      .wide-card__ep-num {
+        position: absolute;
+        bottom: 12px;
+        left: 10px;
+        font-size: 10px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.85);
+        background: rgba(232, 70, 124, 0.85);
+        padding: 2px 8px;
+        border-radius: 4px;
+        z-index: 3;
+      }
 
-    .wide-card__info {
-      margin-top: 8px;
-    }
-    .wide-card__title {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .wide-card__sub {
-      font-size: 11px;
-      color: var(--text-secondary);
-      margin-top: 2px;
-    }
+      .wide-card__info {
+        margin-top: 8px;
+      }
+      .wide-card__title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .wide-card__sub {
+        font-size: 11px;
+        color: var(--text-secondary);
+        margin-top: 2px;
+      }
 
-    /* =====================================================
+      /* =====================================================
        CHARACTER CARD
     ===================================================== */
-    .char-card {
-      flex: 0 0 auto;
-      width: 130px;
-      scroll-snap-align: start;
-      cursor: pointer;
-      text-align: center;
-    }
+      .char-card {
+        flex: 0 0 auto;
+        width: 130px;
+        scroll-snap-align: start;
+        cursor: pointer;
+        text-align: center;
+      }
 
-    .char-card__image {
-      width: 100%;
-      aspect-ratio: 1/1;
-      border-radius: 50%;
-      position: relative;
-      overflow: hidden;
-      border: 2px solid rgba(255,255,255,0.08);
-      transition: border-color var(--duration-normal), transform var(--duration-normal) var(--ease-spring);
-    }
-    .char-card:hover .char-card__image {
-      border-color: var(--accent-start);
-      transform: scale(1.06);
-      box-shadow: 0 0 20px rgba(232,70,124,0.3);
-    }
+      .char-card__image {
+        width: 100%;
+        aspect-ratio: 1/1;
+        border-radius: 50%;
+        position: relative;
+        overflow: hidden;
+        border: 2px solid rgba(255, 255, 255, 0.08);
+        transition:
+          border-color var(--duration-normal),
+          transform var(--duration-normal) var(--ease-spring);
+      }
+      .char-card:hover .char-card__image {
+        border-color: var(--accent-start);
+        transform: scale(1.06);
+        box-shadow: 0 0 20px rgba(232, 70, 124, 0.3);
+      }
 
-    .char-card__name {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text);
-      margin-top: 10px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .char-card__series {
-      font-size: 10px;
-      color: var(--text-secondary);
-      margin-top: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+      .char-card__name {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text);
+        margin-top: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .char-card__series {
+        font-size: 10px;
+        color: var(--text-secondary);
+        margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
-    /* =====================================================
+      /* =====================================================
        TAG CHIPS ROW
     ===================================================== */
-    .tags-row {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      padding-bottom: 2px;
-    }
-    .tags-row::-webkit-scrollbar { display: none; }
+      .tags-row {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding-bottom: 2px;
+      }
+      .tags-row::-webkit-scrollbar {
+        display: none;
+      }
 
-    .tag-chip {
-      flex: 0 0 auto;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      background: var(--surface-2);
-      border: 1px solid rgba(255,255,255,0.07);
-      padding: 7px 18px;
-      border-radius: 99px;
-      cursor: pointer;
-      transition: background var(--duration-fast),
-                  color var(--duration-fast),
-                  border-color var(--duration-fast);
-      white-space: nowrap;
-    }
-    .tag-chip:hover, .tag-chip.is-active {
-      background: linear-gradient(90deg, rgba(232,70,124,0.15), rgba(123,47,247,0.15));
-      border-color: rgba(232,70,124,0.35);
-      color: var(--text);
-    }
-    .tag-chip.is-active { color: var(--accent-start); font-weight: 600; }
+      .tag-chip {
+        flex: 0 0 auto;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        background: var(--surface-2);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        padding: 7px 18px;
+        border-radius: 99px;
+        cursor: pointer;
+        transition:
+          background var(--duration-fast),
+          color var(--duration-fast),
+          border-color var(--duration-fast);
+        white-space: nowrap;
+      }
+      .tag-chip:hover,
+      .tag-chip.is-active {
+        background: linear-gradient(
+          90deg,
+          rgba(232, 70, 124, 0.15),
+          rgba(123, 47, 247, 0.15)
+        );
+        border-color: rgba(232, 70, 124, 0.35);
+        color: var(--text);
+      }
+      .tag-chip.is-active {
+        color: var(--accent-start);
+        font-weight: 600;
+      }
 
-    /* =====================================================
+      /* =====================================================
        STUDIO CARD (square logo-style)
     ===================================================== */
-    .studio-card {
-      flex: 0 0 auto;
-      width: 180px;
-      scroll-snap-align: start;
-      cursor: pointer;
-    }
+      .studio-card {
+        flex: 0 0 auto;
+        width: 180px;
+        scroll-snap-align: start;
+        cursor: pointer;
+      }
 
-    .studio-card__image {
-      width: 100%;
-      aspect-ratio: 16/9;
-      border-radius: var(--radius-md);
-      position: relative;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.07);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform var(--duration-normal) var(--ease-spring),
-                  box-shadow var(--duration-normal);
-    }
-    .studio-card:hover .studio-card__image {
-      transform: scale(1.04) translateY(-2px);
-      box-shadow: 0 8px 28px rgba(0,0,0,0.5), 0 0 0 1px rgba(232,70,124,0.3);
-    }
+      .studio-card__image {
+        width: 100%;
+        aspect-ratio: 16/9;
+        border-radius: var(--radius-md);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          transform var(--duration-normal) var(--ease-spring),
+          box-shadow var(--duration-normal);
+      }
+      .studio-card:hover .studio-card__image {
+        transform: scale(1.04) translateY(-2px);
+        box-shadow:
+          0 8px 28px rgba(0, 0, 0, 0.5),
+          0 0 0 1px rgba(232, 70, 124, 0.3);
+      }
 
-    .studio-card__label {
-      font-size: 14px;
-      font-weight: 800;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: #fff;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
-      z-index: 1;
-    }
+      .studio-card__label {
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: #fff;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        z-index: 1;
+      }
 
-    .studio-card__name {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text);
-      margin-top: 8px;
-      text-align: center;
-    }
+      .studio-card__name {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text);
+        margin-top: 8px;
+        text-align: center;
+      }
 
-    /* =====================================================
+      /* =====================================================
        TOP 10 ROW
     ===================================================== */
-    .top10-card {
-      flex: 0 0 auto;
-      width: 180px;
-      scroll-snap-align: start;
-      cursor: pointer;
-      position: relative;
-    }
+      .top10-card {
+        flex: 0 0 auto;
+        width: 180px;
+        scroll-snap-align: start;
+        cursor: pointer;
+        position: relative;
+      }
 
-    .top10-card__number {
-      position: absolute;
-      bottom: -12px;
-      left: -8px;
-      font-size: 80px;
-      font-weight: 900;
-      letter-spacing: -0.06em;
-      color: transparent;
-      -webkit-text-stroke: 2px rgba(255,255,255,0.15);
-      z-index: 0;
-      line-height: 1;
-      pointer-events: none;
-      transition: -webkit-text-stroke-color var(--duration-normal);
-    }
-    .top10-card:hover .top10-card__number {
-      -webkit-text-stroke-color: rgba(232,70,124,0.35);
-    }
+      .top10-card__number {
+        position: absolute;
+        bottom: -12px;
+        left: -8px;
+        font-size: 80px;
+        font-weight: 900;
+        letter-spacing: -0.06em;
+        color: transparent;
+        -webkit-text-stroke: 2px rgba(255, 255, 255, 0.15);
+        z-index: 0;
+        line-height: 1;
+        pointer-events: none;
+        transition: -webkit-text-stroke-color var(--duration-normal);
+      }
+      .top10-card:hover .top10-card__number {
+        -webkit-text-stroke-color: rgba(232, 70, 124, 0.35);
+      }
 
-    .top10-card__image {
-      width: 100%;
-      aspect-ratio: 2/3;
-      border-radius: var(--radius-md);
-      position: relative;
-      overflow: hidden;
-      z-index: 1;
-      transition: transform var(--duration-normal) var(--ease-spring),
-                  box-shadow var(--duration-normal);
-    }
-    .top10-card:hover .top10-card__image {
-      transform: scale(1.05) translateY(-4px);
-      box-shadow:
-        0 14px 44px rgba(0,0,0,0.7),
-        0 0 0 1.5px rgba(232,70,124,0.4);
-    }
+      .top10-card__image {
+        width: 100%;
+        aspect-ratio: 2/3;
+        border-radius: var(--radius-md);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        transition:
+          transform var(--duration-normal) var(--ease-spring),
+          box-shadow var(--duration-normal);
+      }
+      .top10-card:hover .top10-card__image {
+        transform: scale(1.05) translateY(-4px);
+        box-shadow:
+          0 14px 44px rgba(0, 0, 0, 0.7),
+          0 0 0 1.5px rgba(232, 70, 124, 0.4);
+      }
 
-    .top10-card__info {
-      margin-top: 16px;
-      padding: 0 2px;
-    }
-    .top10-card__title {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .top10-card__sub {
-      font-size: 10px;
-      color: var(--text-secondary);
-      margin-top: 2px;
-    }
+      .top10-card__info {
+        margin-top: 16px;
+        padding: 0 2px;
+      }
+      .top10-card__title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .top10-card__sub {
+        font-size: 10px;
+        color: var(--text-secondary);
+        margin-top: 2px;
+      }
 
-    /* =====================================================
+      /* =====================================================
        GRADIENT HELPERS (poster backgrounds)
     ===================================================== */
-    .g1  { background: linear-gradient(160deg, #1a0a2e 0%, #e8467c 100%); }
-    .g2  { background: linear-gradient(160deg, #0d1a2e 0%, #7b2ff7 100%); }
-    .g3  { background: linear-gradient(160deg, #2e0d0d 0%, #e8467c 60%, #ff9a44 100%); }
-    .g4  { background: linear-gradient(160deg, #0a2e1a 0%, #22c55e 100%); }
-    .g5  { background: linear-gradient(160deg, #2e1a0a 0%, #f59e0b 100%); }
-    .g6  { background: linear-gradient(160deg, #1a0a2e 0%, #06b6d4 100%); }
-    .g7  { background: linear-gradient(160deg, #2e0a1a 0%, #f43f5e 100%); }
-    .g8  { background: linear-gradient(160deg, #0a1a2e 0%, #3b82f6 100%); }
-    .g9  { background: linear-gradient(160deg, #1e0a30 0%, #a855f7 100%); }
-    .g10 { background: linear-gradient(160deg, #2e1a00 0%, #fb923c 100%); }
-    .g11 { background: linear-gradient(160deg, #0a2a2e 0%, #2dd4bf 100%); }
-    .g12 { background: linear-gradient(160deg, #2e0a2e 0%, #e879f9 100%); }
+      .g1 {
+        background: linear-gradient(160deg, #1a0a2e 0%, #e8467c 100%);
+      }
+      .g2 {
+        background: linear-gradient(160deg, #0d1a2e 0%, #7b2ff7 100%);
+      }
+      .g3 {
+        background: linear-gradient(
+          160deg,
+          #2e0d0d 0%,
+          #e8467c 60%,
+          #ff9a44 100%
+        );
+      }
+      .g4 {
+        background: linear-gradient(160deg, #0a2e1a 0%, #22c55e 100%);
+      }
+      .g5 {
+        background: linear-gradient(160deg, #2e1a0a 0%, #f59e0b 100%);
+      }
+      .g6 {
+        background: linear-gradient(160deg, #1a0a2e 0%, #06b6d4 100%);
+      }
+      .g7 {
+        background: linear-gradient(160deg, #2e0a1a 0%, #f43f5e 100%);
+      }
+      .g8 {
+        background: linear-gradient(160deg, #0a1a2e 0%, #3b82f6 100%);
+      }
+      .g9 {
+        background: linear-gradient(160deg, #1e0a30 0%, #a855f7 100%);
+      }
+      .g10 {
+        background: linear-gradient(160deg, #2e1a00 0%, #fb923c 100%);
+      }
+      .g11 {
+        background: linear-gradient(160deg, #0a2a2e 0%, #2dd4bf 100%);
+      }
+      .g12 {
+        background: linear-gradient(160deg, #2e0a2e 0%, #e879f9 100%);
+      }
 
-    .gc1 { background: radial-gradient(circle at 40% 30%, #e8467c 0%, #7b2ff7 100%); }
-    .gc2 { background: radial-gradient(circle at 40% 30%, #7b2ff7 0%, #06b6d4 100%); }
-    .gc3 { background: radial-gradient(circle at 40% 30%, #f59e0b 0%, #e8467c 100%); }
-    .gc4 { background: radial-gradient(circle at 40% 30%, #22c55e 0%, #06b6d4 100%); }
-    .gc5 { background: radial-gradient(circle at 40% 30%, #e8467c 0%, #fb923c 100%); }
-    .gc6 { background: radial-gradient(circle at 40% 30%, #3b82f6 0%, #e879f9 100%); }
+      .gc1 {
+        background: radial-gradient(
+          circle at 40% 30%,
+          #e8467c 0%,
+          #7b2ff7 100%
+        );
+      }
+      .gc2 {
+        background: radial-gradient(
+          circle at 40% 30%,
+          #7b2ff7 0%,
+          #06b6d4 100%
+        );
+      }
+      .gc3 {
+        background: radial-gradient(
+          circle at 40% 30%,
+          #f59e0b 0%,
+          #e8467c 100%
+        );
+      }
+      .gc4 {
+        background: radial-gradient(
+          circle at 40% 30%,
+          #22c55e 0%,
+          #06b6d4 100%
+        );
+      }
+      .gc5 {
+        background: radial-gradient(
+          circle at 40% 30%,
+          #e8467c 0%,
+          #fb923c 100%
+        );
+      }
+      .gc6 {
+        background: radial-gradient(
+          circle at 40% 30%,
+          #3b82f6 0%,
+          #e879f9 100%
+        );
+      }
 
-    .gs1 { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
-    .gs2 { background: linear-gradient(135deg, #2e1a1a 0%, #4a0e0e 100%); }
-    .gs3 { background: linear-gradient(135deg, #0a2e1a 0%, #064e3b 100%); }
-    .gs4 { background: linear-gradient(135deg, #1a0a2e 0%, #3b0764 100%); }
+      .gs1 {
+        background: linear-gradient(
+          135deg,
+          #1a1a2e 0%,
+          #16213e 50%,
+          #0f3460 100%
+        );
+      }
+      .gs2 {
+        background: linear-gradient(135deg, #2e1a1a 0%, #4a0e0e 100%);
+      }
+      .gs3 {
+        background: linear-gradient(135deg, #0a2e1a 0%, #064e3b 100%);
+      }
+      .gs4 {
+        background: linear-gradient(135deg, #1a0a2e 0%, #3b0764 100%);
+      }
 
-    /* =====================================================
+      /* =====================================================
        FOOTER SPACER
     ===================================================== */
-    .footer-spacer { height: 40px; }
-
-  </style>
-</head>
-<body>
-
-  <!-- ===================================================
+      .footer-spacer {
+        height: 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ===================================================
        SIDEBAR
   =================================================== -->
-  <nav class="sidebar">
-    <div class="sidebar__logo">IK</div>
+    <nav class="sidebar">
+      <div class="sidebar__logo">IK</div>
 
-    <div class="sidebar__item is-active">
-      <span>⌂</span>
-      <div class="sidebar__tooltip">Home</div>
-    </div>
-    <div class="sidebar__item">
-      <span>◫</span>
-      <div class="sidebar__tooltip">Browse</div>
-    </div>
-    <div class="sidebar__item">
-      <span>▲</span>
-      <div class="sidebar__tooltip">Trending</div>
-    </div>
-
-    <div class="sidebar__divider"></div>
-
-    <div class="sidebar__item">
-      <span>♡</span>
-      <div class="sidebar__tooltip">Characters</div>
-    </div>
-    <div class="sidebar__item">
-      <span>#</span>
-      <div class="sidebar__tooltip">Tags</div>
-    </div>
-    <div class="sidebar__item">
-      <span>✦</span>
-      <div class="sidebar__tooltip">Studios</div>
-    </div>
-
-    <div class="sidebar__divider"></div>
-
-    <div class="sidebar__item">
-      <span>☆</span>
-      <div class="sidebar__tooltip">Favorites</div>
-    </div>
-    <div class="sidebar__item">
-      <span>◷</span>
-      <div class="sidebar__tooltip">History</div>
-    </div>
-
-    <div class="sidebar__bottom">
-      <div class="sidebar__item">
-        <span>⚙</span>
-        <div class="sidebar__tooltip">Settings</div>
+      <div class="sidebar__item is-active">
+        <span>⌂</span>
+        <div class="sidebar__tooltip">Home</div>
       </div>
-      <div class="sidebar__avatar"></div>
-    </div>
-  </nav>
+      <div class="sidebar__item">
+        <span>◫</span>
+        <div class="sidebar__tooltip">Browse</div>
+      </div>
+      <div class="sidebar__item">
+        <span>▲</span>
+        <div class="sidebar__tooltip">Trending</div>
+      </div>
 
-  <!-- ===================================================
+      <div class="sidebar__divider"></div>
+
+      <div class="sidebar__item">
+        <span>♡</span>
+        <div class="sidebar__tooltip">Characters</div>
+      </div>
+      <div class="sidebar__item">
+        <span>#</span>
+        <div class="sidebar__tooltip">Tags</div>
+      </div>
+      <div class="sidebar__item">
+        <span>✦</span>
+        <div class="sidebar__tooltip">Studios</div>
+      </div>
+
+      <div class="sidebar__divider"></div>
+
+      <div class="sidebar__item">
+        <span>☆</span>
+        <div class="sidebar__tooltip">Favorites</div>
+      </div>
+      <div class="sidebar__item">
+        <span>◷</span>
+        <div class="sidebar__tooltip">History</div>
+      </div>
+
+      <div class="sidebar__bottom">
+        <div class="sidebar__item">
+          <span>⚙</span>
+          <div class="sidebar__tooltip">Settings</div>
+        </div>
+        <div class="sidebar__avatar"></div>
+      </div>
+    </nav>
+
+    <!-- ===================================================
        TOP BAR
   =================================================== -->
-  <header class="topbar" id="topbar">
-    <nav class="topbar__nav">
-      <span class="topbar__nav-item is-active">Home</span>
-      <span class="topbar__nav-item">Series</span>
-      <span class="topbar__nav-item">Movies</span>
-      <span class="topbar__nav-item">OVA</span>
-      <span class="topbar__nav-item">Uncensored</span>
-      <span class="topbar__nav-item">New</span>
-    </nav>
-    <div class="topbar__right">
-      <div class="topbar__search">
-        <span>⌕</span>
-        Search titles, tags, characters...
+    <header class="topbar" id="topbar">
+      <nav class="topbar__nav">
+        <span class="topbar__nav-item is-active">Home</span>
+        <span class="topbar__nav-item">Series</span>
+        <span class="topbar__nav-item">Movies</span>
+        <span class="topbar__nav-item">OVA</span>
+        <span class="topbar__nav-item">Uncensored</span>
+        <span class="topbar__nav-item">New</span>
+      </nav>
+      <div class="topbar__right">
+        <div class="topbar__search">
+          <span>⌕</span>
+          Search titles, tags, characters...
+        </div>
+        <div class="topbar__bell">🔔</div>
       </div>
-      <div class="topbar__bell">🔔</div>
-    </div>
-  </header>
+    </header>
 
-  <!-- ===================================================
+    <!-- ===================================================
        MAIN
   =================================================== -->
-  <main class="main">
+    <main class="main">
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero__bg"></div>
+        <div class="hero__character"></div>
+        <div class="hero__gradient"></div>
 
-    <!-- HERO -->
-    <section class="hero">
-      <div class="hero__bg"></div>
-      <div class="hero__character"></div>
-      <div class="hero__gradient"></div>
+        <div class="hero__content">
+          <span class="hero__badge">Trending #1</span>
+          <div class="hero__meta">
+            <span>2024</span>
+            <span class="hero__meta-dot"></span>
+            <span>12 Episodes</span>
+            <span class="hero__meta-dot"></span>
+            <span>HD 1080p</span>
+            <span class="hero__meta-dot"></span>
+            <span class="hero__meta-score">★ 9.4</span>
+          </div>
+          <h1 class="hero__title">Overflow<span>.</span></h1>
+          <div class="hero__tags">
+            <span class="hero__tag">Romance</span>
+            <span class="hero__tag">Drama</span>
+            <span class="hero__tag">School Life</span>
+            <span class="hero__tag">Vanilla</span>
+          </div>
+          <p class="hero__desc">
+            When Kazushi reunites with his childhood friends after a late-night
+            accident, he finds himself sharing an apartment with two sisters —
+            and old feelings resurface in the most unexpected ways.
+          </p>
+          <div class="hero__actions">
+            <button class="btn-play">▶ Watch Now</button>
+            <button class="btn-info">ℹ Details</button>
+          </div>
+        </div>
 
-      <div class="hero__content">
-        <span class="hero__badge">Trending #1</span>
-        <div class="hero__meta">
-          <span>2024</span>
-          <span class="hero__meta-dot"></span>
-          <span>12 Episodes</span>
-          <span class="hero__meta-dot"></span>
-          <span>HD 1080p</span>
-          <span class="hero__meta-dot"></span>
-          <span class="hero__meta-score">★ 9.4</span>
+        <div class="hero__side">
+          <div class="hero__volume">🔇</div>
+          <div class="hero__episodes">
+            <span class="hero__ep-label">Episodes</span>
+            <span class="hero__ep-count">12</span>
+            <span class="hero__ep-sub">All available</span>
+          </div>
         </div>
-        <h1 class="hero__title">Overflow<span>.</span></h1>
-        <div class="hero__tags">
-          <span class="hero__tag">Romance</span>
-          <span class="hero__tag">Drama</span>
-          <span class="hero__tag">School Life</span>
-          <span class="hero__tag">Vanilla</span>
+      </section>
+
+      <!-- CONTENT AREA -->
+      <div class="content">
+        <!-- TAGS ROW -->
+        <div class="tags-row">
+          <span class="tag-chip is-active">All</span>
+          <span class="tag-chip">Vanilla</span>
+          <span class="tag-chip">Romance</span>
+          <span class="tag-chip">Uncensored</span>
+          <span class="tag-chip">School</span>
+          <span class="tag-chip">Office</span>
+          <span class="tag-chip">Fantasy</span>
+          <span class="tag-chip">Milf</span>
+          <span class="tag-chip">Yuri</span>
+          <span class="tag-chip">Isekai</span>
+          <span class="tag-chip">NTR</span>
+          <span class="tag-chip">Succubus</span>
+          <span class="tag-chip">Maid</span>
+          <span class="tag-chip">Nurse</span>
+          <span class="tag-chip">Teacher</span>
+          <span class="tag-chip">Swimsuit</span>
         </div>
-        <p class="hero__desc">
-          When Kazushi reunites with his childhood friends after a late-night accident,
-          he finds himself sharing an apartment with two sisters — and old feelings
-          resurface in the most unexpected ways.
-        </p>
-        <div class="hero__actions">
-          <button class="btn-play">▶ Watch Now</button>
-          <button class="btn-info">ℹ Details</button>
+
+        <!-- CONTINUE WATCHING -->
+        <div>
+          <div class="section-header">
+            <div class="section-header__left">
+              <h2 class="section-title">Continue Watching</h2>
+            </div>
+            <span class="section-see-all">See all</span>
+          </div>
+          <div class="carousel-wrap">
+            <button
+              class="carousel__arrow carousel__arrow--left"
+              onclick="scroll(this, -1)"
+            >
+              ‹
+            </button>
+            <div class="carousel" id="c-continue">
+              <div class="wide-card">
+                <div class="wide-card__image g1">
+                  <span class="wide-card__badge">HD</span>
+                  <span class="wide-card__ep-num">EP 4</span>
+                  <div class="wide-card__ep-badge">
+                    <div class="wide-card__ep-fill" style="width: 38%"></div>
+                  </div>
+                  <div class="wide-card__overlay">
+                    <div class="wide-card__play">▶</div>
+                  </div>
+                </div>
+                <div class="wide-card__info">
+                  <div class="wide-card__title">Overflow</div>
+                  <div class="wide-card__sub">Episode 4 • 38% watched</div>
+                </div>
+              </div>
+
+              <div class="wide-card">
+                <div class="wide-card__image g2">
+                  <span class="wide-card__badge">HD</span>
+                  <span class="wide-card__ep-num">EP 2</span>
+                  <div class="wide-card__ep-badge">
+                    <div class="wide-card__ep-fill" style="width: 72%"></div>
+                  </div>
+                  <div class="wide-card__overlay">
+                    <div class="wide-card__play">▶</div>
+                  </div>
+                </div>
+                <div class="wide-card__info">
+                  <div class="wide-card__title">Boin Lecture</div>
+                  <div class="wide-card__sub">Episode 2 • 72% watched</div>
+                </div>
+              </div>
+
+              <div class="wide-card">
+                <div class="wide-card__image g3">
+                  <span class="wide-card__badge">4K</span>
+                  <span class="wide-card__ep-num">EP 1</span>
+                  <div class="wide-card__ep-badge">
+                    <div class="wide-card__ep-fill" style="width: 15%"></div>
+                  </div>
+                  <div class="wide-card__overlay">
+                    <div class="wide-card__play">▶</div>
+                  </div>
+                </div>
+                <div class="wide-card__info">
+                  <div class="wide-card__title">Ane wa Yanmama</div>
+                  <div class="wide-card__sub">Episode 1 • Just started</div>
+                </div>
+              </div>
+
+              <div class="wide-card">
+                <div class="wide-card__image g9">
+                  <span class="wide-card__badge">HD</span>
+                  <span class="wide-card__ep-num">EP 6</span>
+                  <div class="wide-card__ep-badge">
+                    <div class="wide-card__ep-fill" style="width: 55%"></div>
+                  </div>
+                  <div class="wide-card__overlay">
+                    <div class="wide-card__play">▶</div>
+                  </div>
+                </div>
+                <div class="wide-card__info">
+                  <div class="wide-card__title">Shoujo Ramune</div>
+                  <div class="wide-card__sub">Episode 6 • 55% watched</div>
+                </div>
+              </div>
+
+              <div class="wide-card">
+                <div class="wide-card__image g5">
+                  <span class="wide-card__badge">HD</span>
+                  <span class="wide-card__ep-num">EP 3</span>
+                  <div class="wide-card__ep-badge">
+                    <div class="wide-card__ep-fill" style="width: 90%"></div>
+                  </div>
+                  <div class="wide-card__overlay">
+                    <div class="wide-card__play">▶</div>
+                  </div>
+                </div>
+                <div class="wide-card__info">
+                  <div class="wide-card__title">Tsuma Netori</div>
+                  <div class="wide-card__sub">Episode 3 • Almost done</div>
+                </div>
+              </div>
+
+              <div class="wide-card">
+                <div class="wide-card__image g6">
+                  <span class="wide-card__badge">HD</span>
+                  <span class="wide-card__ep-num">EP 7</span>
+                  <div class="wide-card__ep-badge">
+                    <div class="wide-card__ep-fill" style="width: 20%"></div>
+                  </div>
+                  <div class="wide-card__overlay">
+                    <div class="wide-card__play">▶</div>
+                  </div>
+                </div>
+                <div class="wide-card__info">
+                  <div class="wide-card__title">Nuki Doki</div>
+                  <div class="wide-card__sub">Episode 7 • 20% watched</div>
+                </div>
+              </div>
+            </div>
+            <button
+              class="carousel__arrow carousel__arrow--right"
+              onclick="scroll(this, 1)"
+            >
+              ›
+            </button>
+          </div>
         </div>
+
+        <!-- TRENDING THIS WEEK -->
+        <div>
+          <div class="section-header">
+            <div class="section-header__left">
+              <h2 class="section-title">Trending This Week</h2>
+              <span class="section-badge">HOT</span>
+            </div>
+            <span class="section-see-all">See all</span>
+          </div>
+          <div class="carousel-wrap">
+            <button
+              class="carousel__arrow carousel__arrow--left"
+              onclick="scroll(this, -1)"
+            >
+              ‹
+            </button>
+            <div class="carousel" id="c-trending">
+              <div class="poster-card">
+                <div class="poster-card__image g1">
+                  <span class="poster-card__badge poster-card__badge--new"
+                    >NEW</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Saimin Seishidou</h3>
+                    <span>4 eps • 2024</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Saimin Seishidou</div>
+                  <div class="poster-card__sub">4 episodes • 2024</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g2">
+                  <span class="poster-card__badge poster-card__badge--hd"
+                    >HD</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Boin Lecture</h3>
+                    <span>6 eps • 2023</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Boin Lecture</div>
+                  <div class="poster-card__sub">6 episodes • 2023</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g3">
+                  <span class="poster-card__badge poster-card__badge--4k"
+                    >4K</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Ane wa Yanmama</h3>
+                    <span>12 eps • 2024</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Ane wa Yanmama</div>
+                  <div class="poster-card__sub">12 episodes • 2024</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g4">
+                  <span class="poster-card__badge poster-card__badge--new"
+                    >NEW</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Eroge! H mo Game</h3>
+                    <span>4 eps • 2024</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Eroge! H mo Game</div>
+                  <div class="poster-card__sub">4 episodes • 2024</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g5">
+                  <span class="poster-card__badge poster-card__badge--hd"
+                    >HD</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Tsuma Netori</h3>
+                    <span>8 eps • 2023</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Tsuma Netori</div>
+                  <div class="poster-card__sub">8 episodes • 2023</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g6">
+                  <span class="poster-card__badge poster-card__badge--hd"
+                    >HD</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Nuki Doki</h3>
+                    <span>10 eps • 2023</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Nuki Doki!</div>
+                  <div class="poster-card__sub">10 episodes • 2023</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g7">
+                  <span class="poster-card__badge poster-card__badge--update"
+                    >UPD</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Kuroinu</h3>
+                    <span>6 eps • 2012</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Kuroinu</div>
+                  <div class="poster-card__sub">6 episodes • Classic</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g8">
+                  <span class="poster-card__badge poster-card__badge--hd"
+                    >HD</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Discipline</h3>
+                    <span>12 eps • 2003</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Discipline Zero</div>
+                  <div class="poster-card__sub">12 episodes • Classic</div>
+                </div>
+              </div>
+            </div>
+            <button
+              class="carousel__arrow carousel__arrow--right"
+              onclick="scroll(this, 1)"
+            >
+              ›
+            </button>
+          </div>
+        </div>
+
+        <!-- TOP 10 -->
+        <div>
+          <div class="section-header">
+            <div class="section-header__left">
+              <h2 class="section-title">Top 10 All Time</h2>
+            </div>
+            <span class="section-see-all">See all</span>
+          </div>
+          <div class="carousel-wrap">
+            <button
+              class="carousel__arrow carousel__arrow--left"
+              onclick="scroll(this, -1)"
+            >
+              ‹
+            </button>
+            <div class="carousel" id="c-top10">
+              <div class="top10-card">
+                <div class="top10-card__number">1</div>
+                <div class="top10-card__image g1">
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                </div>
+                <div class="top10-card__info">
+                  <div class="top10-card__title">Overflow</div>
+                  <div class="top10-card__sub">★ 9.4 • 12 eps</div>
+                </div>
+              </div>
+
+              <div class="top10-card">
+                <div class="top10-card__number">2</div>
+                <div class="top10-card__image g9">
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                </div>
+                <div class="top10-card__info">
+                  <div class="top10-card__title">Shoujo Ramune</div>
+                  <div class="top10-card__sub">★ 9.2 • 4 eps</div>
+                </div>
+              </div>
+
+              <div class="top10-card">
+                <div class="top10-card__number">3</div>
+                <div class="top10-card__image g3">
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                </div>
+                <div class="top10-card__info">
+                  <div class="top10-card__title">Ane wa Yanmama</div>
+                  <div class="top10-card__sub">★ 9.0 • 12 eps</div>
+                </div>
+              </div>
+
+              <div class="top10-card">
+                <div class="top10-card__number">4</div>
+                <div class="top10-card__image g7">
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                </div>
+                <div class="top10-card__info">
+                  <div class="top10-card__title">Kuroinu</div>
+                  <div class="top10-card__sub">★ 8.9 • 6 eps</div>
+                </div>
+              </div>
+
+              <div class="top10-card">
+                <div class="top10-card__number">5</div>
+                <div class="top10-card__image g6">
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                </div>
+                <div class="top10-card__info">
+                  <div class="top10-card__title">Nuki Doki!</div>
+                  <div class="top10-card__sub">★ 8.8 • 10 eps</div>
+                </div>
+              </div>
+
+              <div class="top10-card">
+                <div class="top10-card__number">6</div>
+                <div class="top10-card__image g2">
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                </div>
+                <div class="top10-card__info">
+                  <div class="top10-card__title">Boin Lecture</div>
+                  <div class="top10-card__sub">★ 8.7 • 6 eps</div>
+                </div>
+              </div>
+
+              <div class="top10-card">
+                <div class="top10-card__number">7</div>
+                <div class="top10-card__image g10">
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                </div>
+                <div class="top10-card__info">
+                  <div class="top10-card__title">Itadaki!</div>
+                  <div class="top10-card__sub">★ 8.6 • 3 eps</div>
+                </div>
+              </div>
+            </div>
+            <button
+              class="carousel__arrow carousel__arrow--right"
+              onclick="scroll(this, 1)"
+            >
+              ›
+            </button>
+          </div>
+        </div>
+
+        <!-- NEW RELEASES -->
+        <div>
+          <div class="section-header">
+            <div class="section-header__left">
+              <h2 class="section-title">New Releases</h2>
+              <span class="section-badge">2024</span>
+            </div>
+            <span class="section-see-all">See all</span>
+          </div>
+          <div class="carousel-wrap">
+            <button
+              class="carousel__arrow carousel__arrow--left"
+              onclick="scroll(this, -1)"
+            >
+              ‹
+            </button>
+            <div class="carousel" id="c-new">
+              <div class="poster-card">
+                <div class="poster-card__image g9">
+                  <span class="poster-card__badge poster-card__badge--new"
+                    >NEW</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Dosukebe Gal</h3>
+                    <span>2 eps • 2024</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Dosukebe Gal</div>
+                  <div class="poster-card__sub">2 episodes • 2024</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g10">
+                  <span class="poster-card__badge poster-card__badge--new"
+                    >NEW</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Itadaki!</h3>
+                    <span>3 eps • 2024</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Itadaki!</div>
+                  <div class="poster-card__sub">3 episodes • 2024</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g11">
+                  <span class="poster-card__badge poster-card__badge--new"
+                    >NEW</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Oyasumi Sex</h3>
+                    <span>1 ep • 2024</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Oyasumi Sex</div>
+                  <div class="poster-card__sub">1 episode • 2024</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g12">
+                  <span class="poster-card__badge poster-card__badge--new"
+                    >NEW</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Furyou ni Hamerarete</h3>
+                    <span>4 eps • 2024</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Furyou ni Hamerarete</div>
+                  <div class="poster-card__sub">4 episodes • 2024</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g4">
+                  <span class="poster-card__badge poster-card__badge--new"
+                    >NEW</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Eroge! H mo Game</h3>
+                    <span>4 eps • 2024</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Eroge! H mo Game</div>
+                  <div class="poster-card__sub">4 episodes • 2024</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g1">
+                  <span class="poster-card__badge poster-card__badge--series"
+                    >SERIES</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Saimin Seishidou</h3>
+                    <span>4 eps • 2024</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Saimin Seishidou</div>
+                  <div class="poster-card__sub">4 episodes • 2024</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g5">
+                  <span class="poster-card__badge poster-card__badge--4k"
+                    >4K</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Tsugunai</h3>
+                    <span>2 eps • 2024</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Tsugunai</div>
+                  <div class="poster-card__sub">2 episodes • 2024</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g8">
+                  <span class="poster-card__badge poster-card__badge--new"
+                    >NEW</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Himekishi Lilia</h3>
+                    <span>15 eps • 2024</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Himekishi Lilia</div>
+                  <div class="poster-card__sub">15 episodes • 2024</div>
+                </div>
+              </div>
+            </div>
+            <button
+              class="carousel__arrow carousel__arrow--right"
+              onclick="scroll(this, 1)"
+            >
+              ›
+            </button>
+          </div>
+        </div>
+
+        <!-- POPULAR CHARACTERS -->
+        <div>
+          <div class="section-header">
+            <div class="section-header__left">
+              <h2 class="section-title">Popular Characters</h2>
+            </div>
+            <span class="section-see-all">See all</span>
+          </div>
+          <div class="carousel-wrap">
+            <button
+              class="carousel__arrow carousel__arrow--left"
+              onclick="scroll(this, -1)"
+            >
+              ‹
+            </button>
+            <div class="carousel" id="c-chars">
+              <div class="char-card">
+                <div class="char-card__image gc1"></div>
+                <div class="char-card__name">Chitose</div>
+                <div class="char-card__series">Overflow</div>
+              </div>
+
+              <div class="char-card">
+                <div class="char-card__image gc2"></div>
+                <div class="char-card__name">Ayane</div>
+                <div class="char-card__series">Boin Lecture</div>
+              </div>
+
+              <div class="char-card">
+                <div class="char-card__image gc3"></div>
+                <div class="char-card__name">Saki</div>
+                <div class="char-card__series">Saimin Seishidou</div>
+              </div>
+
+              <div class="char-card">
+                <div class="char-card__image gc4"></div>
+                <div class="char-card__name">Yui</div>
+                <div class="char-card__series">Nuki Doki!</div>
+              </div>
+
+              <div class="char-card">
+                <div class="char-card__image gc5"></div>
+                <div class="char-card__name">Reina</div>
+                <div class="char-card__series">Kuroinu</div>
+              </div>
+
+              <div class="char-card">
+                <div class="char-card__image gc6"></div>
+                <div class="char-card__name">Mizuki</div>
+                <div class="char-card__series">Eroge! H mo Game</div>
+              </div>
+
+              <div class="char-card">
+                <div
+                  class="char-card__image gc1"
+                  style="filter: hue-rotate(120deg)"
+                ></div>
+                <div class="char-card__name">Haruka</div>
+                <div class="char-card__series">Tsuma Netori</div>
+              </div>
+
+              <div class="char-card">
+                <div
+                  class="char-card__image gc2"
+                  style="filter: hue-rotate(60deg)"
+                ></div>
+                <div class="char-card__name">Tomoe</div>
+                <div class="char-card__series">Himekishi Lilia</div>
+              </div>
+
+              <div class="char-card">
+                <div
+                  class="char-card__image gc3"
+                  style="filter: hue-rotate(200deg)"
+                ></div>
+                <div class="char-card__name">Kanon</div>
+                <div class="char-card__series">Dosukebe Gal</div>
+              </div>
+            </div>
+            <button
+              class="carousel__arrow carousel__arrow--right"
+              onclick="scroll(this, 1)"
+            >
+              ›
+            </button>
+          </div>
+        </div>
+
+        <!-- UNCENSORED PICKS -->
+        <div>
+          <div class="section-header">
+            <div class="section-header__left">
+              <h2 class="section-title">Uncensored Picks</h2>
+              <span class="section-badge">EXCLUSIVE</span>
+            </div>
+            <span class="section-see-all">See all</span>
+          </div>
+          <div class="carousel-wrap">
+            <button
+              class="carousel__arrow carousel__arrow--left"
+              onclick="scroll(this, -1)"
+            >
+              ‹
+            </button>
+            <div class="carousel" id="c-uncensored">
+              <div class="poster-card">
+                <div class="poster-card__image g7">
+                  <span class="poster-card__badge poster-card__badge--4k"
+                    >4K</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Kuroinu UC</h3>
+                    <span>6 eps • Uncensored</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Kuroinu UC</div>
+                  <div class="poster-card__sub">6 eps • Uncensored</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g2">
+                  <span class="poster-card__badge poster-card__badge--4k"
+                    >4K</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Boin Lecture UC</h3>
+                    <span>6 eps • Uncensored</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Boin Lecture UC</div>
+                  <div class="poster-card__sub">6 eps • Uncensored</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g9">
+                  <span class="poster-card__badge poster-card__badge--hd"
+                    >HD</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Overflow UC</h3>
+                    <span>12 eps • Uncensored</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Overflow UC</div>
+                  <div class="poster-card__sub">12 eps • Uncensored</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g3">
+                  <span class="poster-card__badge poster-card__badge--new"
+                    >NEW</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Ane Haramix</h3>
+                    <span>4 eps • Uncensored</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Ane Haramix</div>
+                  <div class="poster-card__sub">4 eps • Uncensored</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g12">
+                  <span class="poster-card__badge poster-card__badge--4k"
+                    >4K</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Furyou UC</h3>
+                    <span>4 eps • Uncensored</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Furyou ni UC</div>
+                  <div class="poster-card__sub">4 eps • Uncensored</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g6">
+                  <span class="poster-card__badge poster-card__badge--hd"
+                    >HD</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Nuki Doki UC</h3>
+                    <span>10 eps • Uncensored</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Nuki Doki UC</div>
+                  <div class="poster-card__sub">10 eps • Uncensored</div>
+                </div>
+              </div>
+            </div>
+            <button
+              class="carousel__arrow carousel__arrow--right"
+              onclick="scroll(this, 1)"
+            >
+              ›
+            </button>
+          </div>
+        </div>
+
+        <!-- STUDIOS -->
+        <div>
+          <div class="section-header">
+            <div class="section-header__left">
+              <h2 class="section-title">By Studio</h2>
+            </div>
+            <span class="section-see-all">See all</span>
+          </div>
+          <div class="carousel-wrap">
+            <button
+              class="carousel__arrow carousel__arrow--left"
+              onclick="scroll(this, -1)"
+            >
+              ‹
+            </button>
+            <div class="carousel" id="c-studios">
+              <div class="studio-card">
+                <div class="studio-card__image gs1">
+                  <span class="studio-card__label">PINK PINEAPPLE</span>
+                </div>
+                <div class="studio-card__name">Pink Pineapple</div>
+              </div>
+
+              <div class="studio-card">
+                <div class="studio-card__image gs2">
+                  <span class="studio-card__label">T-REX</span>
+                </div>
+                <div class="studio-card__name">T-Rex</div>
+              </div>
+
+              <div class="studio-card">
+                <div class="studio-card__image gs3">
+                  <span class="studio-card__label">STUDIO FOW</span>
+                </div>
+                <div class="studio-card__name">Studio FOW</div>
+              </div>
+
+              <div class="studio-card">
+                <div class="studio-card__image gs4">
+                  <span class="studio-card__label">WATCHDOG</span>
+                </div>
+                <div class="studio-card__name">Watchdog</div>
+              </div>
+
+              <div class="studio-card">
+                <div
+                  class="studio-card__image"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      #1a2e0a 0%,
+                      #1a3a0a 100%
+                    );
+                  "
+                >
+                  <span class="studio-card__label">MARY JANE</span>
+                </div>
+                <div class="studio-card__name">Mary Jane</div>
+              </div>
+
+              <div class="studio-card">
+                <div
+                  class="studio-card__image"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      #2e2a0a 0%,
+                      #3a3000 100%
+                    );
+                  "
+                >
+                  <span class="studio-card__label">MS PICTURES</span>
+                </div>
+                <div class="studio-card__name">MS Pictures</div>
+              </div>
+            </div>
+            <button
+              class="carousel__arrow carousel__arrow--right"
+              onclick="scroll(this, 1)"
+            >
+              ›
+            </button>
+          </div>
+        </div>
+
+        <!-- VANILLA / ROMANCE SECTION -->
+        <div>
+          <div class="section-header">
+            <div class="section-header__left">
+              <h2 class="section-title">Vanilla &amp; Romance</h2>
+            </div>
+            <span class="section-see-all">See all</span>
+          </div>
+          <div class="carousel-wrap">
+            <button
+              class="carousel__arrow carousel__arrow--left"
+              onclick="scroll(this, -1)"
+            >
+              ‹
+            </button>
+            <div class="carousel" id="c-vanilla">
+              <div class="poster-card">
+                <div class="poster-card__image g1">
+                  <span class="poster-card__badge poster-card__badge--hd"
+                    >HD</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Overflow</h3>
+                    <span>12 eps</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Overflow</div>
+                  <div class="poster-card__sub">★ 9.4 • Romance</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g4">
+                  <span class="poster-card__badge poster-card__badge--hd"
+                    >HD</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Eroge! H mo Game</h3>
+                    <span>4 eps</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Eroge! H mo Game</div>
+                  <div class="poster-card__sub">★ 8.5 • Vanilla</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g11">
+                  <span class="poster-card__badge poster-card__badge--new"
+                    >NEW</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Oyasumi Sex</h3>
+                    <span>1 ep</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Oyasumi Sex</div>
+                  <div class="poster-card__sub">★ 8.8 • Vanilla</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g10">
+                  <span class="poster-card__badge poster-card__badge--hd"
+                    >HD</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Itadaki!</h3>
+                    <span>3 eps</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Itadaki!</div>
+                  <div class="poster-card__sub">★ 8.6 • Romance</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g5">
+                  <span class="poster-card__badge poster-card__badge--hd"
+                    >HD</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Tsuma Netori</h3>
+                    <span>8 eps</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Tsuma Netori</div>
+                  <div class="poster-card__sub">★ 8.3 • Drama</div>
+                </div>
+              </div>
+
+              <div class="poster-card">
+                <div class="poster-card__image g2">
+                  <span class="poster-card__badge poster-card__badge--hd"
+                    >HD</span
+                  >
+                  <div class="poster-card__play-hint">
+                    <div class="poster-card__play-hint-inner">▶</div>
+                  </div>
+                  <div class="poster-card__overlay">
+                    <h3>Boin Lecture</h3>
+                    <span>6 eps</span>
+                  </div>
+                </div>
+                <div class="poster-card__info">
+                  <div class="poster-card__name">Boin Lecture</div>
+                  <div class="poster-card__sub">★ 8.7 • Vanilla</div>
+                </div>
+              </div>
+            </div>
+            <button
+              class="carousel__arrow carousel__arrow--right"
+              onclick="scroll(this, 1)"
+            >
+              ›
+            </button>
+          </div>
+        </div>
+
+        <div class="footer-spacer"></div>
       </div>
-
-      <div class="hero__side">
-        <div class="hero__volume">🔇</div>
-        <div class="hero__episodes">
-          <span class="hero__ep-label">Episodes</span>
-          <span class="hero__ep-count">12</span>
-          <span class="hero__ep-sub">All available</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTENT AREA -->
-    <div class="content">
-
-      <!-- TAGS ROW -->
-      <div class="tags-row">
-        <span class="tag-chip is-active">All</span>
-        <span class="tag-chip">Vanilla</span>
-        <span class="tag-chip">Romance</span>
-        <span class="tag-chip">Uncensored</span>
-        <span class="tag-chip">School</span>
-        <span class="tag-chip">Office</span>
-        <span class="tag-chip">Fantasy</span>
-        <span class="tag-chip">Milf</span>
-        <span class="tag-chip">Yuri</span>
-        <span class="tag-chip">Isekai</span>
-        <span class="tag-chip">NTR</span>
-        <span class="tag-chip">Succubus</span>
-        <span class="tag-chip">Maid</span>
-        <span class="tag-chip">Nurse</span>
-        <span class="tag-chip">Teacher</span>
-        <span class="tag-chip">Swimsuit</span>
-      </div>
-
-      <!-- CONTINUE WATCHING -->
-      <div>
-        <div class="section-header">
-          <div class="section-header__left">
-            <h2 class="section-title">Continue Watching</h2>
-          </div>
-          <span class="section-see-all">See all</span>
-        </div>
-        <div class="carousel-wrap">
-          <button class="carousel__arrow carousel__arrow--left" onclick="scroll(this, -1)">‹</button>
-          <div class="carousel" id="c-continue">
-
-            <div class="wide-card">
-              <div class="wide-card__image g1">
-                <span class="wide-card__badge">HD</span>
-                <span class="wide-card__ep-num">EP 4</span>
-                <div class="wide-card__ep-badge"><div class="wide-card__ep-fill" style="width:38%"></div></div>
-                <div class="wide-card__overlay"><div class="wide-card__play">▶</div></div>
-              </div>
-              <div class="wide-card__info">
-                <div class="wide-card__title">Overflow</div>
-                <div class="wide-card__sub">Episode 4 • 38% watched</div>
-              </div>
-            </div>
-
-            <div class="wide-card">
-              <div class="wide-card__image g2">
-                <span class="wide-card__badge">HD</span>
-                <span class="wide-card__ep-num">EP 2</span>
-                <div class="wide-card__ep-badge"><div class="wide-card__ep-fill" style="width:72%"></div></div>
-                <div class="wide-card__overlay"><div class="wide-card__play">▶</div></div>
-              </div>
-              <div class="wide-card__info">
-                <div class="wide-card__title">Boin Lecture</div>
-                <div class="wide-card__sub">Episode 2 • 72% watched</div>
-              </div>
-            </div>
-
-            <div class="wide-card">
-              <div class="wide-card__image g3">
-                <span class="wide-card__badge">4K</span>
-                <span class="wide-card__ep-num">EP 1</span>
-                <div class="wide-card__ep-badge"><div class="wide-card__ep-fill" style="width:15%"></div></div>
-                <div class="wide-card__overlay"><div class="wide-card__play">▶</div></div>
-              </div>
-              <div class="wide-card__info">
-                <div class="wide-card__title">Ane wa Yanmama</div>
-                <div class="wide-card__sub">Episode 1 • Just started</div>
-              </div>
-            </div>
-
-            <div class="wide-card">
-              <div class="wide-card__image g9">
-                <span class="wide-card__badge">HD</span>
-                <span class="wide-card__ep-num">EP 6</span>
-                <div class="wide-card__ep-badge"><div class="wide-card__ep-fill" style="width:55%"></div></div>
-                <div class="wide-card__overlay"><div class="wide-card__play">▶</div></div>
-              </div>
-              <div class="wide-card__info">
-                <div class="wide-card__title">Shoujo Ramune</div>
-                <div class="wide-card__sub">Episode 6 • 55% watched</div>
-              </div>
-            </div>
-
-            <div class="wide-card">
-              <div class="wide-card__image g5">
-                <span class="wide-card__badge">HD</span>
-                <span class="wide-card__ep-num">EP 3</span>
-                <div class="wide-card__ep-badge"><div class="wide-card__ep-fill" style="width:90%"></div></div>
-                <div class="wide-card__overlay"><div class="wide-card__play">▶</div></div>
-              </div>
-              <div class="wide-card__info">
-                <div class="wide-card__title">Tsuma Netori</div>
-                <div class="wide-card__sub">Episode 3 • Almost done</div>
-              </div>
-            </div>
-
-            <div class="wide-card">
-              <div class="wide-card__image g6">
-                <span class="wide-card__badge">HD</span>
-                <span class="wide-card__ep-num">EP 7</span>
-                <div class="wide-card__ep-badge"><div class="wide-card__ep-fill" style="width:20%"></div></div>
-                <div class="wide-card__overlay"><div class="wide-card__play">▶</div></div>
-              </div>
-              <div class="wide-card__info">
-                <div class="wide-card__title">Nuki Doki</div>
-                <div class="wide-card__sub">Episode 7 • 20% watched</div>
-              </div>
-            </div>
-
-          </div>
-          <button class="carousel__arrow carousel__arrow--right" onclick="scroll(this, 1)">›</button>
-        </div>
-      </div>
-
-      <!-- TRENDING THIS WEEK -->
-      <div>
-        <div class="section-header">
-          <div class="section-header__left">
-            <h2 class="section-title">Trending This Week</h2>
-            <span class="section-badge">HOT</span>
-          </div>
-          <span class="section-see-all">See all</span>
-        </div>
-        <div class="carousel-wrap">
-          <button class="carousel__arrow carousel__arrow--left" onclick="scroll(this, -1)">‹</button>
-          <div class="carousel" id="c-trending">
-
-            <div class="poster-card">
-              <div class="poster-card__image g1">
-                <span class="poster-card__badge poster-card__badge--new">NEW</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Saimin Seishidou</h3><span>4 eps • 2024</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Saimin Seishidou</div>
-                <div class="poster-card__sub">4 episodes • 2024</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g2">
-                <span class="poster-card__badge poster-card__badge--hd">HD</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Boin Lecture</h3><span>6 eps • 2023</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Boin Lecture</div>
-                <div class="poster-card__sub">6 episodes • 2023</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g3">
-                <span class="poster-card__badge poster-card__badge--4k">4K</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Ane wa Yanmama</h3><span>12 eps • 2024</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Ane wa Yanmama</div>
-                <div class="poster-card__sub">12 episodes • 2024</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g4">
-                <span class="poster-card__badge poster-card__badge--new">NEW</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Eroge! H mo Game</h3><span>4 eps • 2024</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Eroge! H mo Game</div>
-                <div class="poster-card__sub">4 episodes • 2024</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g5">
-                <span class="poster-card__badge poster-card__badge--hd">HD</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Tsuma Netori</h3><span>8 eps • 2023</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Tsuma Netori</div>
-                <div class="poster-card__sub">8 episodes • 2023</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g6">
-                <span class="poster-card__badge poster-card__badge--hd">HD</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Nuki Doki</h3><span>10 eps • 2023</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Nuki Doki!</div>
-                <div class="poster-card__sub">10 episodes • 2023</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g7">
-                <span class="poster-card__badge poster-card__badge--update">UPD</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Kuroinu</h3><span>6 eps • 2012</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Kuroinu</div>
-                <div class="poster-card__sub">6 episodes • Classic</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g8">
-                <span class="poster-card__badge poster-card__badge--hd">HD</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Discipline</h3><span>12 eps • 2003</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Discipline Zero</div>
-                <div class="poster-card__sub">12 episodes • Classic</div>
-              </div>
-            </div>
-
-          </div>
-          <button class="carousel__arrow carousel__arrow--right" onclick="scroll(this, 1)">›</button>
-        </div>
-      </div>
-
-      <!-- TOP 10 -->
-      <div>
-        <div class="section-header">
-          <div class="section-header__left">
-            <h2 class="section-title">Top 10 All Time</h2>
-          </div>
-          <span class="section-see-all">See all</span>
-        </div>
-        <div class="carousel-wrap">
-          <button class="carousel__arrow carousel__arrow--left" onclick="scroll(this, -1)">‹</button>
-          <div class="carousel" id="c-top10">
-
-            <div class="top10-card">
-              <div class="top10-card__number">1</div>
-              <div class="top10-card__image g1">
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-              </div>
-              <div class="top10-card__info">
-                <div class="top10-card__title">Overflow</div>
-                <div class="top10-card__sub">★ 9.4 • 12 eps</div>
-              </div>
-            </div>
-
-            <div class="top10-card">
-              <div class="top10-card__number">2</div>
-              <div class="top10-card__image g9">
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-              </div>
-              <div class="top10-card__info">
-                <div class="top10-card__title">Shoujo Ramune</div>
-                <div class="top10-card__sub">★ 9.2 • 4 eps</div>
-              </div>
-            </div>
-
-            <div class="top10-card">
-              <div class="top10-card__number">3</div>
-              <div class="top10-card__image g3">
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-              </div>
-              <div class="top10-card__info">
-                <div class="top10-card__title">Ane wa Yanmama</div>
-                <div class="top10-card__sub">★ 9.0 • 12 eps</div>
-              </div>
-            </div>
-
-            <div class="top10-card">
-              <div class="top10-card__number">4</div>
-              <div class="top10-card__image g7">
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-              </div>
-              <div class="top10-card__info">
-                <div class="top10-card__title">Kuroinu</div>
-                <div class="top10-card__sub">★ 8.9 • 6 eps</div>
-              </div>
-            </div>
-
-            <div class="top10-card">
-              <div class="top10-card__number">5</div>
-              <div class="top10-card__image g6">
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-              </div>
-              <div class="top10-card__info">
-                <div class="top10-card__title">Nuki Doki!</div>
-                <div class="top10-card__sub">★ 8.8 • 10 eps</div>
-              </div>
-            </div>
-
-            <div class="top10-card">
-              <div class="top10-card__number">6</div>
-              <div class="top10-card__image g2">
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-              </div>
-              <div class="top10-card__info">
-                <div class="top10-card__title">Boin Lecture</div>
-                <div class="top10-card__sub">★ 8.7 • 6 eps</div>
-              </div>
-            </div>
-
-            <div class="top10-card">
-              <div class="top10-card__number">7</div>
-              <div class="top10-card__image g10">
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-              </div>
-              <div class="top10-card__info">
-                <div class="top10-card__title">Itadaki!</div>
-                <div class="top10-card__sub">★ 8.6 • 3 eps</div>
-              </div>
-            </div>
-
-          </div>
-          <button class="carousel__arrow carousel__arrow--right" onclick="scroll(this, 1)">›</button>
-        </div>
-      </div>
-
-      <!-- NEW RELEASES -->
-      <div>
-        <div class="section-header">
-          <div class="section-header__left">
-            <h2 class="section-title">New Releases</h2>
-            <span class="section-badge">2024</span>
-          </div>
-          <span class="section-see-all">See all</span>
-        </div>
-        <div class="carousel-wrap">
-          <button class="carousel__arrow carousel__arrow--left" onclick="scroll(this, -1)">‹</button>
-          <div class="carousel" id="c-new">
-
-            <div class="poster-card">
-              <div class="poster-card__image g9">
-                <span class="poster-card__badge poster-card__badge--new">NEW</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Dosukebe Gal</h3><span>2 eps • 2024</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Dosukebe Gal</div>
-                <div class="poster-card__sub">2 episodes • 2024</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g10">
-                <span class="poster-card__badge poster-card__badge--new">NEW</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Itadaki!</h3><span>3 eps • 2024</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Itadaki!</div>
-                <div class="poster-card__sub">3 episodes • 2024</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g11">
-                <span class="poster-card__badge poster-card__badge--new">NEW</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Oyasumi Sex</h3><span>1 ep • 2024</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Oyasumi Sex</div>
-                <div class="poster-card__sub">1 episode • 2024</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g12">
-                <span class="poster-card__badge poster-card__badge--new">NEW</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Furyou ni Hamerarete</h3><span>4 eps • 2024</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Furyou ni Hamerarete</div>
-                <div class="poster-card__sub">4 episodes • 2024</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g4">
-                <span class="poster-card__badge poster-card__badge--new">NEW</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Eroge! H mo Game</h3><span>4 eps • 2024</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Eroge! H mo Game</div>
-                <div class="poster-card__sub">4 episodes • 2024</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g1">
-                <span class="poster-card__badge poster-card__badge--series">SERIES</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Saimin Seishidou</h3><span>4 eps • 2024</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Saimin Seishidou</div>
-                <div class="poster-card__sub">4 episodes • 2024</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g5">
-                <span class="poster-card__badge poster-card__badge--4k">4K</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Tsugunai</h3><span>2 eps • 2024</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Tsugunai</div>
-                <div class="poster-card__sub">2 episodes • 2024</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g8">
-                <span class="poster-card__badge poster-card__badge--new">NEW</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Himekishi Lilia</h3><span>15 eps • 2024</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Himekishi Lilia</div>
-                <div class="poster-card__sub">15 episodes • 2024</div>
-              </div>
-            </div>
-
-          </div>
-          <button class="carousel__arrow carousel__arrow--right" onclick="scroll(this, 1)">›</button>
-        </div>
-      </div>
-
-      <!-- POPULAR CHARACTERS -->
-      <div>
-        <div class="section-header">
-          <div class="section-header__left">
-            <h2 class="section-title">Popular Characters</h2>
-          </div>
-          <span class="section-see-all">See all</span>
-        </div>
-        <div class="carousel-wrap">
-          <button class="carousel__arrow carousel__arrow--left" onclick="scroll(this, -1)">‹</button>
-          <div class="carousel" id="c-chars">
-
-            <div class="char-card">
-              <div class="char-card__image gc1"></div>
-              <div class="char-card__name">Chitose</div>
-              <div class="char-card__series">Overflow</div>
-            </div>
-
-            <div class="char-card">
-              <div class="char-card__image gc2"></div>
-              <div class="char-card__name">Ayane</div>
-              <div class="char-card__series">Boin Lecture</div>
-            </div>
-
-            <div class="char-card">
-              <div class="char-card__image gc3"></div>
-              <div class="char-card__name">Saki</div>
-              <div class="char-card__series">Saimin Seishidou</div>
-            </div>
-
-            <div class="char-card">
-              <div class="char-card__image gc4"></div>
-              <div class="char-card__name">Yui</div>
-              <div class="char-card__series">Nuki Doki!</div>
-            </div>
-
-            <div class="char-card">
-              <div class="char-card__image gc5"></div>
-              <div class="char-card__name">Reina</div>
-              <div class="char-card__series">Kuroinu</div>
-            </div>
-
-            <div class="char-card">
-              <div class="char-card__image gc6"></div>
-              <div class="char-card__name">Mizuki</div>
-              <div class="char-card__series">Eroge! H mo Game</div>
-            </div>
-
-            <div class="char-card">
-              <div class="char-card__image gc1" style="filter:hue-rotate(120deg)"></div>
-              <div class="char-card__name">Haruka</div>
-              <div class="char-card__series">Tsuma Netori</div>
-            </div>
-
-            <div class="char-card">
-              <div class="char-card__image gc2" style="filter:hue-rotate(60deg)"></div>
-              <div class="char-card__name">Tomoe</div>
-              <div class="char-card__series">Himekishi Lilia</div>
-            </div>
-
-            <div class="char-card">
-              <div class="char-card__image gc3" style="filter:hue-rotate(200deg)"></div>
-              <div class="char-card__name">Kanon</div>
-              <div class="char-card__series">Dosukebe Gal</div>
-            </div>
-
-          </div>
-          <button class="carousel__arrow carousel__arrow--right" onclick="scroll(this, 1)">›</button>
-        </div>
-      </div>
-
-      <!-- UNCENSORED PICKS -->
-      <div>
-        <div class="section-header">
-          <div class="section-header__left">
-            <h2 class="section-title">Uncensored Picks</h2>
-            <span class="section-badge">EXCLUSIVE</span>
-          </div>
-          <span class="section-see-all">See all</span>
-        </div>
-        <div class="carousel-wrap">
-          <button class="carousel__arrow carousel__arrow--left" onclick="scroll(this, -1)">‹</button>
-          <div class="carousel" id="c-uncensored">
-
-            <div class="poster-card">
-              <div class="poster-card__image g7">
-                <span class="poster-card__badge poster-card__badge--4k">4K</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Kuroinu UC</h3><span>6 eps • Uncensored</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Kuroinu UC</div>
-                <div class="poster-card__sub">6 eps • Uncensored</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g2">
-                <span class="poster-card__badge poster-card__badge--4k">4K</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Boin Lecture UC</h3><span>6 eps • Uncensored</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Boin Lecture UC</div>
-                <div class="poster-card__sub">6 eps • Uncensored</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g9">
-                <span class="poster-card__badge poster-card__badge--hd">HD</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Overflow UC</h3><span>12 eps • Uncensored</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Overflow UC</div>
-                <div class="poster-card__sub">12 eps • Uncensored</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g3">
-                <span class="poster-card__badge poster-card__badge--new">NEW</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Ane Haramix</h3><span>4 eps • Uncensored</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Ane Haramix</div>
-                <div class="poster-card__sub">4 eps • Uncensored</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g12">
-                <span class="poster-card__badge poster-card__badge--4k">4K</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Furyou UC</h3><span>4 eps • Uncensored</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Furyou ni UC</div>
-                <div class="poster-card__sub">4 eps • Uncensored</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g6">
-                <span class="poster-card__badge poster-card__badge--hd">HD</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Nuki Doki UC</h3><span>10 eps • Uncensored</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Nuki Doki UC</div>
-                <div class="poster-card__sub">10 eps • Uncensored</div>
-              </div>
-            </div>
-
-          </div>
-          <button class="carousel__arrow carousel__arrow--right" onclick="scroll(this, 1)">›</button>
-        </div>
-      </div>
-
-      <!-- STUDIOS -->
-      <div>
-        <div class="section-header">
-          <div class="section-header__left">
-            <h2 class="section-title">By Studio</h2>
-          </div>
-          <span class="section-see-all">See all</span>
-        </div>
-        <div class="carousel-wrap">
-          <button class="carousel__arrow carousel__arrow--left" onclick="scroll(this, -1)">‹</button>
-          <div class="carousel" id="c-studios">
-
-            <div class="studio-card">
-              <div class="studio-card__image gs1">
-                <span class="studio-card__label">PINK PINEAPPLE</span>
-              </div>
-              <div class="studio-card__name">Pink Pineapple</div>
-            </div>
-
-            <div class="studio-card">
-              <div class="studio-card__image gs2">
-                <span class="studio-card__label">T-REX</span>
-              </div>
-              <div class="studio-card__name">T-Rex</div>
-            </div>
-
-            <div class="studio-card">
-              <div class="studio-card__image gs3">
-                <span class="studio-card__label">STUDIO FOW</span>
-              </div>
-              <div class="studio-card__name">Studio FOW</div>
-            </div>
-
-            <div class="studio-card">
-              <div class="studio-card__image gs4">
-                <span class="studio-card__label">WATCHDOG</span>
-              </div>
-              <div class="studio-card__name">Watchdog</div>
-            </div>
-
-            <div class="studio-card">
-              <div class="studio-card__image" style="background: linear-gradient(135deg, #1a2e0a 0%, #1a3a0a 100%)">
-                <span class="studio-card__label">MARY JANE</span>
-              </div>
-              <div class="studio-card__name">Mary Jane</div>
-            </div>
-
-            <div class="studio-card">
-              <div class="studio-card__image" style="background: linear-gradient(135deg, #2e2a0a 0%, #3a3000 100%)">
-                <span class="studio-card__label">MS PICTURES</span>
-              </div>
-              <div class="studio-card__name">MS Pictures</div>
-            </div>
-
-          </div>
-          <button class="carousel__arrow carousel__arrow--right" onclick="scroll(this, 1)">›</button>
-        </div>
-      </div>
-
-      <!-- VANILLA / ROMANCE SECTION -->
-      <div>
-        <div class="section-header">
-          <div class="section-header__left">
-            <h2 class="section-title">Vanilla &amp; Romance</h2>
-          </div>
-          <span class="section-see-all">See all</span>
-        </div>
-        <div class="carousel-wrap">
-          <button class="carousel__arrow carousel__arrow--left" onclick="scroll(this, -1)">‹</button>
-          <div class="carousel" id="c-vanilla">
-
-            <div class="poster-card">
-              <div class="poster-card__image g1">
-                <span class="poster-card__badge poster-card__badge--hd">HD</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Overflow</h3><span>12 eps</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Overflow</div>
-                <div class="poster-card__sub">★ 9.4 • Romance</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g4">
-                <span class="poster-card__badge poster-card__badge--hd">HD</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Eroge! H mo Game</h3><span>4 eps</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Eroge! H mo Game</div>
-                <div class="poster-card__sub">★ 8.5 • Vanilla</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g11">
-                <span class="poster-card__badge poster-card__badge--new">NEW</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Oyasumi Sex</h3><span>1 ep</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Oyasumi Sex</div>
-                <div class="poster-card__sub">★ 8.8 • Vanilla</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g10">
-                <span class="poster-card__badge poster-card__badge--hd">HD</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Itadaki!</h3><span>3 eps</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Itadaki!</div>
-                <div class="poster-card__sub">★ 8.6 • Romance</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g5">
-                <span class="poster-card__badge poster-card__badge--hd">HD</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Tsuma Netori</h3><span>8 eps</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Tsuma Netori</div>
-                <div class="poster-card__sub">★ 8.3 • Drama</div>
-              </div>
-            </div>
-
-            <div class="poster-card">
-              <div class="poster-card__image g2">
-                <span class="poster-card__badge poster-card__badge--hd">HD</span>
-                <div class="poster-card__play-hint"><div class="poster-card__play-hint-inner">▶</div></div>
-                <div class="poster-card__overlay"><h3>Boin Lecture</h3><span>6 eps</span></div>
-              </div>
-              <div class="poster-card__info">
-                <div class="poster-card__name">Boin Lecture</div>
-                <div class="poster-card__sub">★ 8.7 • Vanilla</div>
-              </div>
-            </div>
-
-          </div>
-          <button class="carousel__arrow carousel__arrow--right" onclick="scroll(this, 1)">›</button>
-        </div>
-      </div>
-
-      <div class="footer-spacer"></div>
-
-    </div><!-- /.content -->
-  </main>
-
-  <script>
-    // Topbar scroll state
-    const topbar = document.getElementById('topbar');
-    window.addEventListener('scroll', () => {
-      topbar.classList.toggle('scrolled', window.scrollY > 60);
-    }, { passive: true });
-
-    // Carousel arrow scroll
-    function scroll(btn, dir) {
-      const wrap = btn.closest('.carousel-wrap');
-      const carousel = wrap.querySelector('.carousel');
-      const cardWidth = carousel.querySelector('[class$="-card"]')?.offsetWidth || 200;
-      const scrollAmount = (cardWidth + 12) * 3;
-      carousel.scrollBy({ left: dir * scrollAmount, behavior: 'smooth' });
-    }
-  </script>
-
-</body>
+      <!-- /.content -->
+    </main>
+
+    <script>
+      // Topbar scroll state
+      const topbar = document.getElementById("topbar");
+      window.addEventListener(
+        "scroll",
+        () => {
+          topbar.classList.toggle("scrolled", window.scrollY > 60);
+        },
+        { passive: true },
+      );
+
+      // Carousel arrow scroll
+      function scroll(btn, dir) {
+        const wrap = btn.closest(".carousel-wrap");
+        const carousel = wrap.querySelector(".carousel");
+        const cardWidth =
+          carousel.querySelector('[class$="-card"]')?.offsetWidth || 200;
+        const scrollAmount = (cardWidth + 12) * 3;
+        carousel.scrollBy({ left: dir * scrollAmount, behavior: "smooth" });
+      }
+    </script>
+  </body>
 </html>

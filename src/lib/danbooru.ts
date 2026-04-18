@@ -33,7 +33,7 @@ async function throttle(): Promise<void> {
 async function fetchDanbooru<T>(
   path: string,
   params: Record<string, string> = {},
-  revalidate: number = REVALIDATE_SEARCH
+  revalidate: number = REVALIDATE_SEARCH,
 ): Promise<T> {
   await throttle();
 
@@ -61,7 +61,7 @@ async function fetchDanbooru<T>(
 
   if (!res.ok) {
     console.error(
-      `Danbooru API error: ${res.status} ${res.statusText} for ${url.toString()}`
+      `Danbooru API error: ${res.status} ${res.statusText} for ${url.toString()}`,
     );
     return [] as unknown as T;
   }
@@ -90,7 +90,7 @@ export function mapPostToVideo(post: DanbooruPost): Video | null {
     slug: generateSlug(
       post.id,
       post.tag_string_character,
-      post.tag_string_copyright
+      post.tag_string_copyright,
     ),
     url,
     thumbnail: post.preview_file_url ?? "",
@@ -126,7 +126,7 @@ export async function getPost(id: number): Promise<Video> {
   const post = await fetchDanbooru<DanbooruPost>(
     `/posts/${id}.json`,
     {},
-    REVALIDATE_POST
+    REVALIDATE_POST,
   );
   const video = mapPostToVideo(post);
   if (!video) throw new Error(`Post ${id} has no video URL`);
@@ -138,15 +138,9 @@ export async function getPost(id: number): Promise<Video> {
  * Default query includes `animated filetype:mp4 rating:e`.
  */
 export async function searchPosts(
-  options: SearchOptions = {}
+  options: SearchOptions = {},
 ): Promise<PaginatedResult<Video>> {
-  const {
-    tags = "",
-    page,
-    cursor,
-    limit = 40,
-    order = "score",
-  } = options;
+  const { tags = "", page, cursor, limit = 40, order = "score" } = options;
 
   const clampedLimit = Math.min(limit, 200);
 
@@ -185,18 +179,20 @@ export async function searchPosts(
   const posts = await fetchDanbooru<DanbooruPost[]>(
     "/posts.json",
     params,
-    REVALIDATE_SEARCH
+    REVALIDATE_SEARCH,
   );
 
   // When searching by user tag, filter to only MP4 videos (since we can't use filetype:mp4 tag)
   const filtered = tags
-    ? posts.filter((p) => p.file_url?.endsWith(".mp4") || p.file_url?.endsWith(".webm"))
+    ? posts.filter(
+        (p) => p.file_url?.endsWith(".mp4") || p.file_url?.endsWith(".webm"),
+      )
     : posts;
 
   return {
     // Banned content filter — live API bypasses the DB-level filter.
     data: filterBannedContent(
-      filtered.map(mapPostToVideo).filter((v): v is Video => v !== null)
+      filtered.map(mapPostToVideo).filter((v): v is Video => v !== null),
     ),
     hasMore: posts.length === clampedLimit,
   };
@@ -206,9 +202,7 @@ export async function searchPosts(
  * Get the most used tags on animated content.
  * Uses the tag listing endpoint sorted by post count, filtered to general tags.
  */
-export async function getPopularTags(
-  limit: number = 50
-): Promise<TagCount[]> {
+export async function getPopularTags(limit: number = 50): Promise<TagCount[]> {
   // Danbooru /tags.json supports search[name_matches] and order=count
   // Category 0 = general tags
   const tags = await fetchDanbooru<
@@ -221,7 +215,7 @@ export async function getPopularTags(
       "search[has_post]": "true",
       limit: String(Math.min(limit, 200)),
     },
-    REVALIDATE_TAGS
+    REVALIDATE_TAGS,
   );
 
   return tags.map((t) => ({ name: t.name, count: t.post_count }));
@@ -232,7 +226,7 @@ export async function getPopularTags(
  * Category 4 = character tags on Danbooru.
  */
 export async function getPopularCharacters(
-  limit: number = 50
+  limit: number = 50,
 ): Promise<TagCount[]> {
   const tags = await fetchDanbooru<
     Array<{ name: string; post_count: number; category: number }>
@@ -244,7 +238,7 @@ export async function getPopularCharacters(
       "search[has_post]": "true",
       limit: String(Math.min(limit, 200)),
     },
-    REVALIDATE_TAGS
+    REVALIDATE_TAGS,
   );
 
   return tags.map((t) => ({ name: t.name, count: t.post_count }));
@@ -256,7 +250,7 @@ export async function getPopularCharacters(
  */
 export async function getRelatedPosts(
   postId: number,
-  limit: number = 12
+  limit: number = 12,
 ): Promise<Video[]> {
   // First, fetch the source post to get its tags
   let source: DanbooruPost;
@@ -264,7 +258,7 @@ export async function getRelatedPosts(
     source = await fetchDanbooru<DanbooruPost>(
       `/posts/${postId}.json`,
       {},
-      REVALIDATE_POST
+      REVALIDATE_POST,
     );
     if (!source || !source.id) {
       const fallback = await searchPosts({ limit, order: "score" });
@@ -300,13 +294,17 @@ export async function getRelatedPosts(
       tags: `rating:e ${relatedTag} order:score`,
       limit: String(Math.min(limit + 5, 200)),
     },
-    REVALIDATE_SEARCH
+    REVALIDATE_SEARCH,
   );
 
   // Filter for MP4/WebM only (since we can't use filetype:mp4 tag)
   // Plus banned content filter — live API bypasses the DB-level filter.
   const mapped = posts
-    .filter((p) => p.id !== postId && (p.file_url?.endsWith(".mp4") || p.file_url?.endsWith(".webm")))
+    .filter(
+      (p) =>
+        p.id !== postId &&
+        (p.file_url?.endsWith(".mp4") || p.file_url?.endsWith(".webm")),
+    )
     .slice(0, limit + 5)
     .map(mapPostToVideo)
     .filter((v): v is Video => v !== null);

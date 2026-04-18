@@ -1,174 +1,174 @@
 - generic [active] [ref=e8]:
-  - generic [ref=e13]:
-    - complementary [ref=e14]:
-      - generic [ref=e15]:
-        - link [ref=e17] [cursor=pointer]:
-          - /url: /
-          - img [ref=e19]
-        - navigation [ref=e23]:
-          - generic [ref=e25]:
-            - link "Go back" [ref=e27] [cursor=pointer]:
-              - /url: /
-              - img "Go back" [ref=e28]
-            - button "My Profile" [ref=e31] [cursor=pointer]:
-              - heading "My Profile" [level=1] [ref=e33]
-          - generic [ref=e37]:
-            - button "Quick search..." [ref=e39] [cursor=pointer]:
-              - generic [ref=e40]:
-                - img [ref=e41]
-                - generic [ref=e43]: Quick search...
-                - generic [ref=e44]: Ctrl K
-            - list [ref=e45]:
-              - listitem [ref=e46]:
-                - link "Settings" [ref=e47] [cursor=pointer]:
-                  - /url: /profile/
-                  - generic [ref=e48]:
-                    - img [ref=e49]
-                    - generic [ref=e51]: Settings
-              - listitem [ref=e52]:
-                - link "Authentication" [ref=e53] [cursor=pointer]:
-                  - /url: /profile/authentication
-                  - generic [ref=e54]:
-                    - img [ref=e55]
-                    - generic [ref=e57]: Authentication
-              - listitem [ref=e58]:
-                - link "API Tokens" [ref=e59] [cursor=pointer]:
-                  - /url: /profile/api-tokens
-                  - generic [ref=e60]:
-                    - img [ref=e61]
-                    - generic [ref=e63]: API Tokens
-              - listitem [ref=e64]:
-                - link "Active sessions" [ref=e65] [cursor=pointer]:
-                  - /url: /profile/sessions
-                  - generic [ref=e66]:
-                    - img [ref=e67]
-                    - generic [ref=e70]: Active sessions
-      - button "Collapse sidebar" [expanded] [ref=e73] [cursor=pointer]:
-        - img
-    - generic [ref=e74]:
-      - banner [ref=e75]:
-        - generic [ref=e84]:
-          - button "Support" [ref=e85] [cursor=pointer]:
-            - img [ref=e86]
-            - generic [ref=e88]: Support
-          - button "User menu" [ref=e89] [cursor=pointer]:
-            - img [ref=e90]
-      - main [ref=e235]:
-        - generic [ref=e238]:
-          - button "Back to view all tokens" [ref=e240] [cursor=pointer]:
-            - img [ref=e241]
-            - text: Back to view all tokens
-          - generic [ref=e243]:
-            - generic [ref=e244]:
-              - heading "Create Custom Token" [level=4] [ref=e319]
-              - generic [ref=e320]:
-                - generic [ref=e321]: Token name
-                - generic [ref=e322]:
-                  - generic [ref=e323]: Give your API token a descriptive name.
-                  - textbox [ref=e324]: iku.gg deploy cache purge
-            - generic [ref=e325]:
-              - heading "Permissions" [level=4] [ref=e326]
-              - generic [ref=e327]: Select edit or read permissions to apply to your accounts or websites for this token.
-              - generic [ref=e328]:
-                - generic [ref=e496]:
-                  - generic [ref=e497]:
-                    - generic [ref=e498]: Resources
-                    - button "Resources" [ref=e500] [cursor=pointer]: Zone
-                  - generic [ref=e502]:
-                    - generic [ref=e503]: Permissions
-                    - combobox [ref=e504]:
-                      - textbox "Permissions" [ref=e505]:
-                        - /placeholder: Select
-                        - text: Cache Purge
-                      - button [ref=e506] [cursor=pointer]
-                  - generic [ref=e513]:
-                    - generic [ref=e514]: Purge
-                    - combobox "Permissions levels" [ref=e515]
-                - button "Add more" [ref=e343]:
-                  - img [ref=e344]
-                  - generic [ref=e346]: Add more
-            - generic [ref=e431]:
-              - heading "Zone Resources" [level=4] [ref=e432]
-              - generic [ref=e433]: Select zones to include or exclude.
-              - generic [ref=e434]:
-                - generic [ref=e436]:
-                  - generic [ref=e443]:
-                    - generic [ref=e444]: Include
-                    - combobox [ref=e445]
-                  - generic [ref=e455]:
-                    - generic [ref=e456]: All zones
-                    - combobox [ref=e457]
-                - button "Add more" [ref=e461]:
-                  - img [ref=e462]
-                  - generic [ref=e464]: Add more
-            - generic [ref=e381]:
-              - heading "Client IP Address Filtering" [level=4] [ref=e382]
-              - generic [ref=e383]: Select IP addresses or ranges of IP addresses to filter. This filter limits the client IP addresses that can use the API token with Cloudflare. By default, this token will apply to all addresses.
-              - generic [ref=e384]:
-                - generic [ref=e385]: Operator
-                - generic [ref=e386]: Value
-              - generic [ref=e387]:
-                - generic [ref=e389]:
-                  - generic [ref=e391]:
-                    - generic [ref=e392]: Select IP addresses or ranges of IP addresses to filter. This filter limits the client IP addresses that can use the API token with Cloudflare. By default, this token will apply to all addresses.
-                    - combobox [ref=e393]:
-                      - textbox "Select IP addresses or ranges of IP addresses to filter. This filter limits the client IP addresses that can use the API token with Cloudflare. By default, this token will apply to all addresses." [ref=e394]:
-                        - /placeholder: Select
-                      - button [ref=e395] [cursor=pointer]
-                  - generic [ref=e397]:
-                    - generic:
-                      - generic:
-                        - generic:
-                          - generic: e.g. 192.168.1.88
-                  - button "Use my IP" [disabled]
-                - button "Add more" [ref=e398]:
-                  - img [ref=e399]
-                  - generic [ref=e401]: Add more
-            - generic [ref=e402]:
-              - heading "TTL" [level=4] [ref=e403]
-              - generic [ref=e404]: Define how long this token will stay active.
-              - generic [ref=e408]:
-                - generic [ref=e409]:
-                  - textbox "Start Date" [ref=e410] [cursor=pointer]
-                  - paragraph [ref=e411]: Press the down arrow key to interact with the calendar and select a date. Press the question mark key to get the keyboard shortcuts for changing dates.
-                  - generic [ref=e412]: Start Date
-                - img [ref=e414]
-                - generic [ref=e416]:
-                  - textbox "End Date" [ref=e417] [cursor=pointer]
-                  - paragraph [ref=e418]: Press the down arrow key to interact with the calendar and select a date. Press the question mark key to get the keyboard shortcuts for changing dates.
-                  - generic [ref=e419]: End Date
-            - separator [ref=e420]
-            - generic [ref=e421]:
-              - button "Cancel" [ref=e422] [cursor=pointer]:
-                - generic [ref=e423]: Cancel
-              - button "Continue to summary" [ref=e424] [cursor=pointer]:
-                - generic [ref=e425]: Continue to summary
-      - contentinfo [ref=e215]:
-        - list [ref=e217]:
-          - listitem [ref=e218]:
-            - link "Support" [ref=e219] [cursor=pointer]:
-              - /url: https://support.cloudflare.com
-          - listitem [ref=e220]:
-            - link "System status" [ref=e221] [cursor=pointer]:
-              - /url: https://www.cloudflarestatus.com
-          - listitem [ref=e222]:
-            - link "Careers" [ref=e223] [cursor=pointer]:
-              - /url: https://www.cloudflare.com/careers/
-          - listitem [ref=e224]:
-            - link "Terms of Use" [ref=e225] [cursor=pointer]:
-              - /url: https://www.cloudflare.com/website-terms/
-          - listitem [ref=e226]:
-            - link "Report Security Issues" [ref=e227] [cursor=pointer]:
-              - /url: https://www.cloudflare.com/disclosure/
-          - listitem [ref=e228]:
-            - link "Privacy Policy" [ref=e229] [cursor=pointer]:
-              - /url: https://www.cloudflare.com/privacypolicy/
-          - listitem [ref=e230]:
-            - button "A blue and white pill with a checkmark and an x, representing privacy choices Cookie Preferences" [ref=e231] [cursor=pointer]:
-              - img "A blue and white pill with a checkmark and an x, representing privacy choices" [ref=e232]
-              - text: Cookie Preferences
-          - listitem [ref=e233]:
-            - generic [ref=e234]: © 2026 Cloudflare, Inc.
-  - generic:
-    - region "Notifications"
-  - status [ref=e426]
+    - generic [ref=e13]:
+        - complementary [ref=e14]:
+            - generic [ref=e15]:
+                - link [ref=e17] [cursor=pointer]:
+                    - /url: /
+                    - img [ref=e19]
+                - navigation [ref=e23]:
+                    - generic [ref=e25]:
+                        - link "Go back" [ref=e27] [cursor=pointer]:
+                            - /url: /
+                            - img "Go back" [ref=e28]
+                        - button "My Profile" [ref=e31] [cursor=pointer]:
+                            - heading "My Profile" [level=1] [ref=e33]
+                    - generic [ref=e37]:
+                        - button "Quick search..." [ref=e39] [cursor=pointer]:
+                            - generic [ref=e40]:
+                                - img [ref=e41]
+                                - generic [ref=e43]: Quick search...
+                                - generic [ref=e44]: Ctrl K
+                        - list [ref=e45]:
+                            - listitem [ref=e46]:
+                                - link "Settings" [ref=e47] [cursor=pointer]:
+                                    - /url: /profile/
+                                    - generic [ref=e48]:
+                                        - img [ref=e49]
+                                        - generic [ref=e51]: Settings
+                            - listitem [ref=e52]:
+                                - link "Authentication" [ref=e53] [cursor=pointer]:
+                                    - /url: /profile/authentication
+                                    - generic [ref=e54]:
+                                        - img [ref=e55]
+                                        - generic [ref=e57]: Authentication
+                            - listitem [ref=e58]:
+                                - link "API Tokens" [ref=e59] [cursor=pointer]:
+                                    - /url: /profile/api-tokens
+                                    - generic [ref=e60]:
+                                        - img [ref=e61]
+                                        - generic [ref=e63]: API Tokens
+                            - listitem [ref=e64]:
+                                - link "Active sessions" [ref=e65] [cursor=pointer]:
+                                    - /url: /profile/sessions
+                                    - generic [ref=e66]:
+                                        - img [ref=e67]
+                                        - generic [ref=e70]: Active sessions
+            - button "Collapse sidebar" [expanded] [ref=e73] [cursor=pointer]:
+                - img
+        - generic [ref=e74]:
+            - banner [ref=e75]:
+                - generic [ref=e84]:
+                    - button "Support" [ref=e85] [cursor=pointer]:
+                        - img [ref=e86]
+                        - generic [ref=e88]: Support
+                    - button "User menu" [ref=e89] [cursor=pointer]:
+                        - img [ref=e90]
+            - main [ref=e235]:
+                - generic [ref=e238]:
+                    - button "Back to view all tokens" [ref=e240] [cursor=pointer]:
+                        - img [ref=e241]
+                        - text: Back to view all tokens
+                    - generic [ref=e243]:
+                        - generic [ref=e244]:
+                            - heading "Create Custom Token" [level=4] [ref=e319]
+                            - generic [ref=e320]:
+                                - generic [ref=e321]: Token name
+                                - generic [ref=e322]:
+                                    - generic [ref=e323]: Give your API token a descriptive name.
+                                    - textbox [ref=e324]: iku.gg deploy cache purge
+                        - generic [ref=e325]:
+                            - heading "Permissions" [level=4] [ref=e326]
+                            - generic [ref=e327]: Select edit or read permissions to apply to your accounts or websites for this token.
+                            - generic [ref=e328]:
+                                - generic [ref=e496]:
+                                    - generic [ref=e497]:
+                                        - generic [ref=e498]: Resources
+                                        - button "Resources" [ref=e500] [cursor=pointer]: Zone
+                                    - generic [ref=e502]:
+                                        - generic [ref=e503]: Permissions
+                                        - combobox [ref=e504]:
+                                            - textbox "Permissions" [ref=e505]:
+                                                - /placeholder: Select
+                                                - text: Cache Purge
+                                            - button [ref=e506] [cursor=pointer]
+                                    - generic [ref=e513]:
+                                        - generic [ref=e514]: Purge
+                                        - combobox "Permissions levels" [ref=e515]
+                                - button "Add more" [ref=e343]:
+                                    - img [ref=e344]
+                                    - generic [ref=e346]: Add more
+                        - generic [ref=e431]:
+                            - heading "Zone Resources" [level=4] [ref=e432]
+                            - generic [ref=e433]: Select zones to include or exclude.
+                            - generic [ref=e434]:
+                                - generic [ref=e436]:
+                                    - generic [ref=e443]:
+                                        - generic [ref=e444]: Include
+                                        - combobox [ref=e445]
+                                    - generic [ref=e455]:
+                                        - generic [ref=e456]: All zones
+                                        - combobox [ref=e457]
+                                - button "Add more" [ref=e461]:
+                                    - img [ref=e462]
+                                    - generic [ref=e464]: Add more
+                        - generic [ref=e381]:
+                            - heading "Client IP Address Filtering" [level=4] [ref=e382]
+                            - generic [ref=e383]: Select IP addresses or ranges of IP addresses to filter. This filter limits the client IP addresses that can use the API token with Cloudflare. By default, this token will apply to all addresses.
+                            - generic [ref=e384]:
+                                - generic [ref=e385]: Operator
+                                - generic [ref=e386]: Value
+                            - generic [ref=e387]:
+                                - generic [ref=e389]:
+                                    - generic [ref=e391]:
+                                        - generic [ref=e392]: Select IP addresses or ranges of IP addresses to filter. This filter limits the client IP addresses that can use the API token with Cloudflare. By default, this token will apply to all addresses.
+                                        - combobox [ref=e393]:
+                                            - textbox "Select IP addresses or ranges of IP addresses to filter. This filter limits the client IP addresses that can use the API token with Cloudflare. By default, this token will apply to all addresses." [ref=e394]:
+                                                - /placeholder: Select
+                                            - button [ref=e395] [cursor=pointer]
+                                    - generic [ref=e397]:
+                                        - generic:
+                                            - generic:
+                                                - generic:
+                                                    - generic: e.g. 192.168.1.88
+                                    - button "Use my IP" [disabled]
+                                - button "Add more" [ref=e398]:
+                                    - img [ref=e399]
+                                    - generic [ref=e401]: Add more
+                        - generic [ref=e402]:
+                            - heading "TTL" [level=4] [ref=e403]
+                            - generic [ref=e404]: Define how long this token will stay active.
+                            - generic [ref=e408]:
+                                - generic [ref=e409]:
+                                    - textbox "Start Date" [ref=e410] [cursor=pointer]
+                                    - paragraph [ref=e411]: Press the down arrow key to interact with the calendar and select a date. Press the question mark key to get the keyboard shortcuts for changing dates.
+                                    - generic [ref=e412]: Start Date
+                                - img [ref=e414]
+                                - generic [ref=e416]:
+                                    - textbox "End Date" [ref=e417] [cursor=pointer]
+                                    - paragraph [ref=e418]: Press the down arrow key to interact with the calendar and select a date. Press the question mark key to get the keyboard shortcuts for changing dates.
+                                    - generic [ref=e419]: End Date
+                        - separator [ref=e420]
+                        - generic [ref=e421]:
+                            - button "Cancel" [ref=e422] [cursor=pointer]:
+                                - generic [ref=e423]: Cancel
+                            - button "Continue to summary" [ref=e424] [cursor=pointer]:
+                                - generic [ref=e425]: Continue to summary
+            - contentinfo [ref=e215]:
+                - list [ref=e217]:
+                    - listitem [ref=e218]:
+                        - link "Support" [ref=e219] [cursor=pointer]:
+                            - /url: https://support.cloudflare.com
+                    - listitem [ref=e220]:
+                        - link "System status" [ref=e221] [cursor=pointer]:
+                            - /url: https://www.cloudflarestatus.com
+                    - listitem [ref=e222]:
+                        - link "Careers" [ref=e223] [cursor=pointer]:
+                            - /url: https://www.cloudflare.com/careers/
+                    - listitem [ref=e224]:
+                        - link "Terms of Use" [ref=e225] [cursor=pointer]:
+                            - /url: https://www.cloudflare.com/website-terms/
+                    - listitem [ref=e226]:
+                        - link "Report Security Issues" [ref=e227] [cursor=pointer]:
+                            - /url: https://www.cloudflare.com/disclosure/
+                    - listitem [ref=e228]:
+                        - link "Privacy Policy" [ref=e229] [cursor=pointer]:
+                            - /url: https://www.cloudflare.com/privacypolicy/
+                    - listitem [ref=e230]:
+                        - button "A blue and white pill with a checkmark and an x, representing privacy choices Cookie Preferences" [ref=e231] [cursor=pointer]:
+                            - img "A blue and white pill with a checkmark and an x, representing privacy choices" [ref=e232]
+                            - text: Cookie Preferences
+                    - listitem [ref=e233]:
+                        - generic [ref=e234]: © 2026 Cloudflare, Inc.
+    - generic:
+        - region "Notifications"
+    - status [ref=e426]

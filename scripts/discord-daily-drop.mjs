@@ -46,16 +46,41 @@ async function api(method, path, body) {
   if (res.status === 204) return {};
   const text = await res.text();
   let data;
-  try { data = JSON.parse(text); } catch { data = text; }
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = text;
+  }
   if (!res.ok) throw new Error(`${method} ${path}: ${JSON.stringify(data)}`);
   return data;
 }
 
 const BANNED_TAGS = [
-  "loli","lolicon","lolidom","loli_focus","shota","shotacon","shotadom","shota_focus",
-  "child","children","minor","underage","toddler","toddlercon","infant",
-  "young_girl","young_boy","child_on_child","cub","baby","oppai_loli","legal_loli",
-  "elementary_school","kindergarten","randoseru",
+  "loli",
+  "lolicon",
+  "lolidom",
+  "loli_focus",
+  "shota",
+  "shotacon",
+  "shotadom",
+  "shota_focus",
+  "child",
+  "children",
+  "minor",
+  "underage",
+  "toddler",
+  "toddlercon",
+  "infant",
+  "young_girl",
+  "young_boy",
+  "child_on_child",
+  "cub",
+  "baby",
+  "oppai_loli",
+  "legal_loli",
+  "elementary_school",
+  "kindergarten",
+  "randoseru",
 ];
 
 function todaySeed() {
@@ -67,13 +92,19 @@ function todaySeed() {
 }
 
 function titleCase(s) {
-  return s.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+  return s.replace(
+    /\w\S*/g,
+    (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(),
+  );
 }
 
 function buildTitle(video) {
-  if (video.title && video.title.trim()) return titleCase(video.title.replace(/_/g, " "));
-  if (video.characters?.[0]) return titleCase(video.characters[0].replace(/_/g, " "));
-  if (video.copyrights?.[0]) return titleCase(video.copyrights[0].replace(/_/g, " "));
+  if (video.title && video.title.trim())
+    return titleCase(video.title.replace(/_/g, " "));
+  if (video.characters?.[0])
+    return titleCase(video.characters[0].replace(/_/g, " "));
+  if (video.copyrights?.[0])
+    return titleCase(video.copyrights[0].replace(/_/g, " "));
   return "Animated Hentai";
 }
 
@@ -93,7 +124,7 @@ async function run() {
          AND NOT (tags && $1::text[])
        ORDER BY score DESC
        LIMIT 500`,
-      [BANNED_TAGS]
+      [BANNED_TAGS],
     );
 
     if (rows.length === 0) {
@@ -134,7 +165,19 @@ async function run() {
     };
 
     const meaningfulTags = (video.tags || [])
-      .filter((t) => !["animated","video","sound","tagme","highres","1girl","1boy","solo"].includes(t.toLowerCase()))
+      .filter(
+        (t) =>
+          ![
+            "animated",
+            "video",
+            "sound",
+            "tagme",
+            "highres",
+            "1girl",
+            "1boy",
+            "solo",
+          ].includes(t.toLowerCase()),
+      )
       .slice(0, 4)
       .map((t) => `\`${t.replace(/_/g, " ")}\``)
       .join(" ");
@@ -160,4 +203,7 @@ async function run() {
   }
 }
 
-run().catch((err) => { console.error("❌", err); process.exit(1); });
+run().catch((err) => {
+  console.error("❌", err);
+  process.exit(1);
+});

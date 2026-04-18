@@ -31,6 +31,7 @@ Capture le trafic longue traîne sur les termes hentai/anime. Chaque terme = une
 **Fichier source** : `src/data/glossary.ts`
 
 **Structure d'un terme** :
+
 ```typescript
 {
   term: "ahegao",
@@ -44,6 +45,7 @@ Capture le trafic longue traîne sur les termes hentai/anime. Chaque terme = une
 ```
 
 **Règles pour les termes du glossaire** :
+
 - Le contenu doit être **éducatif et informatif**, pas juste une définition d'une ligne
 - Minimum 300 mots de contenu unique par terme
 - Toujours inclure `relatedTags` (pour linker vers `/tag/[tag]`) et `relatedTerms` (pour linker vers d'autres termes du glossaire)
@@ -59,6 +61,7 @@ Articles mid-tail ciblant des requêtes informationnelles à volume moyen.
 **Publication** : `scripts/publish-scheduled.ts` (cron quotidien)
 
 **Structure d'un article** :
+
 ```typescript
 {
   slug: "best-hentai-genres-2024",
@@ -75,6 +78,7 @@ Articles mid-tail ciblant des requêtes informationnelles à volume moyen.
 ```
 
 **Règles pour les articles** :
+
 - **Titre** : doit contenir "hentai" + keyword cible, 50-65 caractères
 - **Contenu** : minimum 1000 mots, HTML structuré avec H2/H3
 - **Maillage obligatoire** : chaque article doit linker vers au minimum 3 termes du glossaire, 3 pages tag, et 2 autres articles
@@ -91,6 +95,7 @@ Le `content-generator.ts` génère automatiquement du contenu unique pour chaque
 **Fichier** : `src/lib/content-generator.ts`
 
 **Ce qu'il génère** :
+
 - **Descriptions vidéo** : 2-3 phrases uniques par vidéo, basées sur les tags/personnages/série
 - **FAQ auto-générées** : 3-5 questions/réponses par vidéo pour le JSON-LD FAQPage
 - **Breadcrumbs** : fil d'Ariane contextuel (Home > Série > Personnage > Vidéo)
@@ -98,6 +103,7 @@ Le `content-generator.ts` génère automatiquement du contenu unique pour chaque
 **Comment ça marche** : le générateur utilise l'ID de la vidéo comme seed pour varier les formulations (templates × variations). Résultat : 353K descriptions uniques sans duplication.
 
 **Règles** :
+
 - Les templates doivent sembler naturels, pas robotiques
 - Varier les structures de phrases (ne pas commencer chaque description par "Watch...")
 - Inclure le nom du personnage et de la série quand disponibles
@@ -168,6 +174,7 @@ Terme glossaire /glossary/[term]
 ## Workflow pour ajouter du contenu
 
 ### Ajouter un terme au glossaire
+
 1. Ouvrir `src/data/glossary.ts`
 2. Ajouter l'objet terme avec tous les champs remplis
 3. Vérifier que `relatedTags` correspondent à des tags existants dans le site
@@ -175,12 +182,14 @@ Terme glossaire /glossary/[term]
 5. Le sitemap se met à jour automatiquement
 
 ### Ajouter un article de blog
+
 1. Option A (publication immédiate) : ajouter directement dans `src/data/blog.ts`
 2. Option B (programmé) : ajouter dans `src/data/content-queue.json` avec `scheduledDate`
 3. Inclure le maillage interne dans le contenu HTML
 4. Vérifier les liens vers glossaire/tags/autres articles
 
 ### Améliorer le content-generator
+
 1. Fichier : `src/lib/content-generator.ts`
 2. Ajouter de nouveaux templates de description/FAQ
 3. Tester que les variations sont suffisamment différentes
@@ -188,13 +197,13 @@ Terme glossaire /glossary/[term]
 
 ## Mots-clés cibles par type de contenu
 
-| Type | Exemples de keywords | Volume estimé |
-|------|---------------------|---------------|
-| Glossaire | "what is ahegao", "netorare meaning", "futanari definition" | 1K-10K/mois |
-| Blog guide | "best hentai genres", "how to watch hentai safely" | 5K-50K/mois |
-| Blog liste | "top 10 yuri hentai", "best milf anime" | 10K-100K/mois |
-| Page tag | "[tag] hentai videos" | Variable |
-| Page personnage | "[character name] hentai" | 1K-50K/mois |
+| Type            | Exemples de keywords                                        | Volume estimé |
+| --------------- | ----------------------------------------------------------- | ------------- |
+| Glossaire       | "what is ahegao", "netorare meaning", "futanari definition" | 1K-10K/mois   |
+| Blog guide      | "best hentai genres", "how to watch hentai safely"          | 5K-50K/mois   |
+| Blog liste      | "top 10 yuri hentai", "best milf anime"                     | 10K-100K/mois |
+| Page tag        | "[tag] hentai videos"                                       | Variable      |
+| Page personnage | "[character name] hentai"                                   | 1K-50K/mois   |
 
 ## Conventions d'écriture
 

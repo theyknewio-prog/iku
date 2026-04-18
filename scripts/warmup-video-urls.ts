@@ -61,8 +61,8 @@ async function resolveRule34Video(pageUrl: string): Promise<string | null> {
     const patterns: RegExp[] = [
       /video_alt_url3:\s*'([^']+)'/, // 1080p
       /video_alt_url2:\s*'([^']+)'/, // 720p
-      /video_alt_url:\s*'([^']+)'/,  // 480p
-      /video_url:\s*'([^']+)'/,       // 360p
+      /video_alt_url:\s*'([^']+)'/, // 480p
+      /video_url:\s*'([^']+)'/, // 360p
     ];
     for (const pattern of patterns) {
       const match = html.match(pattern);
@@ -81,7 +81,7 @@ async function upsert(pageUrl: string, videoUrl: string): Promise<void> {
      VALUES ($1, $2, NOW() + INTERVAL '1 hour')
      ON CONFLICT (page_url) DO UPDATE
      SET video_url = EXCLUDED.video_url, expires_at = EXCLUDED.expires_at, created_at = NOW()`,
-    [pageUrl, videoUrl]
+    [pageUrl, videoUrl],
   );
 }
 
@@ -107,7 +107,7 @@ async function main() {
        AND r.page_url IS NULL
      ORDER BY v.score DESC
      LIMIT $1`,
-    [WARMUP_LIMIT]
+    [WARMUP_LIMIT],
   );
 
   console.log(`→ ${rows.length} videos to warm (others already cached)`);
@@ -128,12 +128,14 @@ async function main() {
         } else {
           fail++;
         }
-      })
+      }),
     );
     // Pacing — avoid slamming Rule34Video
     await sleep(DELAY_MS);
     if ((i + CONCURRENCY) % 60 === 0) {
-      console.log(`  progress: ${i + CONCURRENCY}/${rows.length} (ok=${ok} fail=${fail})`);
+      console.log(
+        `  progress: ${i + CONCURRENCY}/${rows.length} (ok=${ok} fail=${fail})`,
+      );
     }
   }
 

@@ -38,7 +38,11 @@ async function api(method, path, body) {
   if (res.status === 204) return {};
   const text = await res.text();
   let data;
-  try { data = JSON.parse(text); } catch { data = text; }
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = text;
+  }
   if (!res.ok) throw new Error(`${method} ${path}: ${JSON.stringify(data)}`);
   return data;
 }
@@ -46,13 +50,14 @@ async function api(method, path, body) {
 const TIER_NAME = (score) => {
   if (score >= 50000) return "🔥 Hentai Sage";
   if (score >= 15000) return "💎 Waifu Scholar";
-  if (score >= 5000)  return "🎮 Otaku";
-  if (score >= 1000)  return "⭐ Senpai";
-  if (score >= 200)   return "🌸 Kouhai";
+  if (score >= 5000) return "🎮 Otaku";
+  if (score >= 1000) return "⭐ Senpai";
+  if (score >= 200) return "🌸 Kouhai";
   return "🌙 Wanderer";
 };
 
-const MEDAL = (i) => (i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `\`#${i + 1}\``);
+const MEDAL = (i) =>
+  i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `\`#${i + 1}\``;
 
 async function run() {
   console.log("🏆 Weekly leaderboard starting");
@@ -68,7 +73,7 @@ async function run() {
        JOIN users u ON u.id = s.user_id
        WHERE s.score > 0
        ORDER BY s.score DESC
-       LIMIT 10`
+       LIMIT 10`,
     );
 
     const channels = await api("GET", `/guilds/${GUILD_ID}/channels`);
@@ -83,14 +88,16 @@ async function run() {
 
     if (rows.length === 0) {
       await api("POST", `/channels/${channel.id}/messages`, {
-        content: "🏆 **Weekly Leaderboard** — no activity yet. Be the first to score some points!",
+        content:
+          "🏆 **Weekly Leaderboard** — no activity yet. Be the first to score some points!",
       });
       return;
     }
 
     // Build the embed
-    const lines = rows.map((u, i) =>
-      `${MEDAL(i)}  ${u.avatar_emoji} **${u.username}** · ${TIER_NAME(u.score)} · **${u.score.toLocaleString()}** pts · 🔥 ${u.current_streak}`
+    const lines = rows.map(
+      (u, i) =>
+        `${MEDAL(i)}  ${u.avatar_emoji} **${u.username}** · ${TIER_NAME(u.score)} · **${u.score.toLocaleString()}** pts · 🔥 ${u.current_streak}`,
     );
 
     const embed = {
@@ -114,4 +121,7 @@ async function run() {
   }
 }
 
-run().catch((err) => { console.error("❌", err); process.exit(1); });
+run().catch((err) => {
+  console.error("❌", err);
+  process.exit(1);
+});

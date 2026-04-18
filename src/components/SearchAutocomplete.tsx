@@ -21,19 +21,27 @@ function formatCount(n: number): string {
 
 function categoryColor(category: number): string {
   switch (category) {
-    case 4: return "#22c55e";   // character → green
-    case 3: return "#a855f7";   // copyright → purple
-    case 1: return "#ec4899";   // artist    → pink
-    default: return "#6b7280";  // general   → gray
+    case 4:
+      return "#22c55e"; // character → green
+    case 3:
+      return "#a855f7"; // copyright → purple
+    case 1:
+      return "#ec4899"; // artist    → pink
+    default:
+      return "#6b7280"; // general   → gray
   }
 }
 
 function categoryLabel(category: number): string {
   switch (category) {
-    case 4: return "character";
-    case 3: return "copyright";
-    case 1: return "artist";
-    default: return "general";
+    case 4:
+      return "character";
+    case 3:
+      return "copyright";
+    case 1:
+      return "artist";
+    default:
+      return "general";
   }
 }
 
@@ -68,7 +76,9 @@ function IconSearch({ size = 15 }: { size?: number }) {
 
 /* ── Component ──────────────────────────────────────────────── */
 
-export function SearchAutocomplete({ initialQuery = "" }: { initialQuery?: string } = {}) {
+export function SearchAutocomplete({
+  initialQuery = "",
+}: { initialQuery?: string } = {}) {
   const router = useRouter();
   const [query, setQuery] = useState(initialQuery);
   const [suggestions, setSuggestions] = useState<DanbooruTag[]>([]);
@@ -120,7 +130,10 @@ export function SearchAutocomplete({ initialQuery = "" }: { initialQuery?: strin
   /* Click outside → close */
   useEffect(() => {
     function onPointerDown(e: PointerEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         setOpen(false);
       }
     }
@@ -136,7 +149,7 @@ export function SearchAutocomplete({ initialQuery = "" }: { initialQuery?: strin
       setQuery("");
       router.push(`/tag/${encoded}`);
     },
-    [router]
+    [router],
   );
 
   /* Form submit — navigate to typed text */
@@ -182,7 +195,9 @@ export function SearchAutocomplete({ initialQuery = "" }: { initialQuery?: strin
         role="search"
         autoComplete="off"
       >
-        <span className="v2-topbar__search-icon" aria-hidden="true">🔍</span>
+        <span className="v2-topbar__search-icon" aria-hidden="true">
+          🔍
+        </span>
         <input
           ref={inputRef}
           type="search"
@@ -203,7 +218,9 @@ export function SearchAutocomplete({ initialQuery = "" }: { initialQuery?: strin
           onKeyDown={handleKeyDown}
           spellCheck={false}
         />
-        {loading && <span className="search-autocomplete__spinner" aria-hidden="true" />}
+        {loading && (
+          <span className="search-autocomplete__spinner" aria-hidden="true" />
+        )}
       </form>
 
       {showDropdown && (

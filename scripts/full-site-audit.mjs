@@ -40,7 +40,14 @@ async function checkUrl(url, type, retry = 0) {
     }
 
     if (res.status !== 200) {
-      return { url, type, status: res.status, elapsed, error: `HTTP ${res.status}`, issues: null };
+      return {
+        url,
+        type,
+        status: res.status,
+        elapsed,
+        error: `HTTP ${res.status}`,
+        issues: null,
+      };
     }
 
     const html = await res.text();
@@ -53,21 +60,38 @@ async function checkUrl(url, type, retry = 0) {
     if (!/name=["']description["']/i.test(html)) issues.push("no-meta-desc");
 
     if (type === "watch") {
-      if (!/"@type"\s*:\s*"VideoObject"/.test(html)) issues.push("no-video-jsonld");
-      if (!/<video[\s>]/i.test(html) && !/wp-video|WatchPlayer/.test(html)) issues.push("no-video-tag");
-      if (!/"@type"\s*:\s*"BreadcrumbList"/.test(html)) issues.push("no-breadcrumb");
+      if (!/"@type"\s*:\s*"VideoObject"/.test(html))
+        issues.push("no-video-jsonld");
+      if (!/<video[\s>]/i.test(html) && !/wp-video|WatchPlayer/.test(html))
+        issues.push("no-video-tag");
+      if (!/"@type"\s*:\s*"BreadcrumbList"/.test(html))
+        issues.push("no-breadcrumb");
     }
     if (type === "tag" || type === "character" || type === "series") {
       if (!/\/watch\//.test(html)) issues.push("no-videos-listed");
     }
 
-    return { url, type, status: 200, elapsed, error: null, issues: issues.length ? issues.join(",") : null };
+    return {
+      url,
+      type,
+      status: 200,
+      elapsed,
+      error: null,
+      issues: issues.length ? issues.join(",") : null,
+    };
   } catch (e) {
     if (retry < 1) {
       await new Promise((r) => setTimeout(r, 1500));
       return checkUrl(url, type, retry + 1);
     }
-    return { url, type, status: 0, elapsed: Date.now() - started, error: String(e.message || e).slice(0, 200), issues: null };
+    return {
+      url,
+      type,
+      status: 0,
+      elapsed: Date.now() - started,
+      error: String(e.message || e).slice(0, 200),
+      issues: null,
+    };
   }
 }
 
@@ -101,36 +125,75 @@ async function main() {
   const urls = [];
 
   const staticPages = [
-    "/", "/explore", "/trending", "/new", "/browse", "/feed",
-    "/tags", "/character", "/series", "/blog", "/glossary",
-    "/episodes", "/hentai", "/3d", "/login", "/signup", "/favorites",
-    "/history", "/settings", "/premium",
+    "/",
+    "/explore",
+    "/trending",
+    "/new",
+    "/browse",
+    "/feed",
+    "/tags",
+    "/character",
+    "/series",
+    "/blog",
+    "/glossary",
+    "/episodes",
+    "/hentai",
+    "/3d",
+    "/login",
+    "/signup",
+    "/favorites",
+    "/history",
+    "/settings",
+    "/premium",
   ];
-  for (const p of staticPages) urls.push({ url: `${BASE}${p}`, type: "static" });
+  for (const p of staticPages)
+    urls.push({ url: `${BASE}${p}`, type: "static" });
 
   const watch = await pool.query("SELECT slug FROM videos");
-  for (const r of watch.rows) urls.push({ url: `${BASE}/watch/${encodeURIComponent(r.slug)}`, type: "watch" });
+  for (const r of watch.rows)
+    urls.push({
+      url: `${BASE}/watch/${encodeURIComponent(r.slug)}`,
+      type: "watch",
+    });
 
-  const tags = await pool.query(`SELECT DISTINCT unnest(tags) AS t FROM videos WHERE array_length(tags,1) > 0`);
+  const tags = await pool.query(
+    `SELECT DISTINCT unnest(tags) AS t FROM videos WHERE array_length(tags,1) > 0`,
+  );
   for (const r of tags.rows) {
-    if (r.t && r.t.length <= 100) urls.push({ url: `${BASE}/tag/${encodeURIComponent(r.t)}`, type: "tag" });
+    if (r.t && r.t.length <= 100)
+      urls.push({ url: `${BASE}/tag/${encodeURIComponent(r.t)}`, type: "tag" });
   }
 
-  const chars = await pool.query(`SELECT DISTINCT unnest(characters) AS c FROM videos WHERE array_length(characters,1) > 0`);
+  const chars = await pool.query(
+    `SELECT DISTINCT unnest(characters) AS c FROM videos WHERE array_length(characters,1) > 0`,
+  );
   for (const r of chars.rows) {
-    if (r.c && r.c.length <= 100) urls.push({ url: `${BASE}/character/${encodeURIComponent(r.c)}`, type: "character" });
+    if (r.c && r.c.length <= 100)
+      urls.push({
+        url: `${BASE}/character/${encodeURIComponent(r.c)}`,
+        type: "character",
+      });
   }
 
-  const series = await pool.query(`SELECT DISTINCT unnest(copyrights) AS s FROM videos WHERE array_length(copyrights,1) > 0`);
+  const series = await pool.query(
+    `SELECT DISTINCT unnest(copyrights) AS s FROM videos WHERE array_length(copyrights,1) > 0`,
+  );
   for (const r of series.rows) {
-    if (r.s && r.s.length <= 100) urls.push({ url: `${BASE}/series/${encodeURIComponent(r.s)}`, type: "series" });
+    if (r.s && r.s.length <= 100)
+      urls.push({
+        url: `${BASE}/series/${encodeURIComponent(r.s)}`,
+        type: "series",
+      });
   }
 
   console.log(`Total URLs: ${urls.length}`);
-  await pool.query("INSERT INTO audit_progress (id, total, done, fail) VALUES (1, $1, 0, 0)", [urls.length]);
+  await pool.query(
+    "INSERT INTO audit_progress (id, total, done, fail) VALUES (1, $1, 0, 0)",
+    [urls.length],
+  );
 
   await notify(
-    `🔍 Full site audit started\n${urls.length.toLocaleString()} URLs\nConcurrency: ${CONCURRENCY}\nBase: ${BASE}\nETA: ${Math.round(urls.length / CONCURRENCY / 15 / 60)}h`
+    `🔍 Full site audit started\n${urls.length.toLocaleString()} URLs\nConcurrency: ${CONCURRENCY}\nBase: ${BASE}\nETA: ${Math.round(urls.length / CONCURRENCY / 15 / 60)}h`,
   );
 
   let done = 0;
@@ -152,7 +215,14 @@ async function main() {
             `INSERT INTO audit_results (url, type, status, elapsed, error, issues)
              VALUES ($1,$2,$3,$4,$5,$6)
              ON CONFLICT (url) DO UPDATE SET status=$3, elapsed=$4, error=$5, issues=$6, checked_at=NOW()`,
-            [result.url, result.type, result.status, result.elapsed, result.error, result.issues]
+            [
+              result.url,
+              result.type,
+              result.status,
+              result.elapsed,
+              result.error,
+              result.issues,
+            ],
           );
         } catch (e) {
           console.error("PG insert err:", e.message);
@@ -163,9 +233,14 @@ async function main() {
         const pct = ((done / urls.length) * 100).toFixed(2);
         const rate = done / ((Date.now() - startTime) / 1000);
         const eta = Math.round((urls.length - done) / rate / 60);
-        console.log(`[${done}/${urls.length}] ${pct}% — ${rate.toFixed(1)} req/s — ${fail} fails — ETA ${eta} min`);
+        console.log(
+          `[${done}/${urls.length}] ${pct}% — ${rate.toFixed(1)} req/s — ${fail} fails — ETA ${eta} min`,
+        );
         try {
-          await pool.query("UPDATE audit_progress SET done=$1, fail=$2 WHERE id=1", [done, fail]);
+          await pool.query(
+            "UPDATE audit_progress SET done=$1, fail=$2 WHERE id=1",
+            [done, fail],
+          );
         } catch {}
       }
     }
@@ -174,7 +249,10 @@ async function main() {
   const workers = Array.from({ length: CONCURRENCY }, () => worker());
   await Promise.all(workers);
 
-  await pool.query("UPDATE audit_progress SET done=$1, fail=$2, finished_at=NOW() WHERE id=1", [done, fail]);
+  await pool.query(
+    "UPDATE audit_progress SET done=$1, fail=$2, finished_at=NOW() WHERE id=1",
+    [done, fail],
+  );
 
   const summary = await pool.query(`
     SELECT type,

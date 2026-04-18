@@ -12,20 +12,20 @@ iku.gg is a hentai video aggregation platform combining a TikTok-style swipe fee
 
 ## Routes & Pages
 
-| Route | Rendering | Purpose |
-|-------|-----------|---------|
-| `/` | SSR | Homepage — trending grid + category navigation + search |
-| `/watch/[slug]` | SSR | Individual video page — the SEO workhorse |
-| `/tag/[tag]` | SSR | Tag listing with video grid — mid-tail SEO |
-| `/character/[name]` | SSR | Character page — captures character name searches |
-| `/trending` | SSR | Trending videos — head term SEO |
-| `/new` | SSR | Newest content — freshness signal for Google |
-| `/feed` | CSR | TikTok-style vertical swipe feed — engagement/retention |
-| `/search?q=xxx` | CSR | Search results |
-| `/sitemap.xml` | Dynamic | Auto-generated sitemap index |
-| `/sitemap/videos-[n].xml` | Dynamic | Paginated video sitemaps |
-| `/sitemap/tags.xml` | Dynamic | Tag page sitemap |
-| `/sitemap/characters.xml` | Dynamic | Character page sitemap |
+| Route                     | Rendering | Purpose                                                 |
+| ------------------------- | --------- | ------------------------------------------------------- |
+| `/`                       | SSR       | Homepage — trending grid + category navigation + search |
+| `/watch/[slug]`           | SSR       | Individual video page — the SEO workhorse               |
+| `/tag/[tag]`              | SSR       | Tag listing with video grid — mid-tail SEO              |
+| `/character/[name]`       | SSR       | Character page — captures character name searches       |
+| `/trending`               | SSR       | Trending videos — head term SEO                         |
+| `/new`                    | SSR       | Newest content — freshness signal for Google            |
+| `/feed`                   | CSR       | TikTok-style vertical swipe feed — engagement/retention |
+| `/search?q=xxx`           | CSR       | Search results                                          |
+| `/sitemap.xml`            | Dynamic   | Auto-generated sitemap index                            |
+| `/sitemap/videos-[n].xml` | Dynamic   | Paginated video sitemaps                                |
+| `/sitemap/tags.xml`       | Dynamic   | Tag page sitemap                                        |
+| `/sitemap/characters.xml` | Dynamic   | Character page sitemap                                  |
 
 ---
 
@@ -36,6 +36,7 @@ iku.gg is a hentai video aggregation platform combining a TikTok-style swipe fee
 Server-side rendered. Every video gets its own page.
 
 **Head/Meta:**
+
 - `<title>` — `{character} Hentai - {copyright} | iku.gg` or `{tags} Hentai | iku.gg`
 - `<meta name="description">` — Generated from tags, character, copyright
 - `<meta name="rating" content="adult">`
@@ -45,6 +46,7 @@ Server-side rendered. Every video gets its own page.
 - JSON-LD VideoObject schema
 
 **Body:**
+
 - Video player (native `<video>` tag with our controls)
 - Title (character + copyright or tags)
 - Tag pills (linked to `/tag/[tag]`)
@@ -56,6 +58,7 @@ Server-side rendered. Every video gets its own page.
 - "Open in swipe mode" button → `/feed?start=[id]`
 
 **Schema.org:**
+
 ```json
 {
   "@type": "VideoObject",
@@ -74,10 +77,12 @@ Server-side rendered. Every video gets its own page.
 Server-side rendered. ~500 tag pages.
 
 **Head/Meta:**
+
 - `<title>` — `{Tag} Hentai Videos - Best {Tag} Anime Porn | iku.gg`
 - `<meta name="description">` — `Watch the best {tag} hentai videos. {count} free {tag} anime porn clips on iku.gg`
 
 **Body:**
+
 - H1: `{Tag} Hentai`
 - Video count
 - Grid of video thumbnails (20 per page, paginated)
@@ -150,15 +155,16 @@ Client-side rendered. The TikTok experience.
 
 ### Ad Zones (ExoClick)
 
-| Zone | Format | Placement | Trigger |
-|------|--------|-----------|---------|
-| Popunder | 1 per session | First video play | Session start |
-| Banner | 300x250 or 728x90 | Below video on `/watch/` | Page load |
-| Native | In-feed card | Every 6-8 videos in `/feed` | Scroll |
-| Native | Mid-grid | Between rows on tag/character pages | Page load |
-| Interstitial | Full-screen | Between page navigations (max 1/5 pages) | Navigation |
+| Zone         | Format            | Placement                                | Trigger       |
+| ------------ | ----------------- | ---------------------------------------- | ------------- |
+| Popunder     | 1 per session     | First video play                         | Session start |
+| Banner       | 300x250 or 728x90 | Below video on `/watch/`                 | Page load     |
+| Native       | In-feed card      | Every 6-8 videos in `/feed`              | Scroll        |
+| Native       | Mid-grid          | Between rows on tag/character pages      | Page load     |
+| Interstitial | Full-screen       | Between page navigations (max 1/5 pages) | Navigation    |
 
 ### Future (Phase 3+)
+
 - Push notifications (ProPush)
 - Nutaku game affiliate links
 - Premium tier (ad-free)
@@ -168,6 +174,7 @@ Client-side rendered. The TikTok experience.
 ## Technical Architecture
 
 ### Stack
+
 - **Framework**: Next.js 15 App Router
 - **Styling**: Tailwind CSS v4
 - **Language**: TypeScript strict
@@ -268,6 +275,7 @@ src/
 ## Phase Plan
 
 ### Phase 1: Launch (this session)
+
 - All SSR pages (watch, tag, character, trending, new)
 - Danbooru API integration
 - Video player with our controls
@@ -277,6 +285,7 @@ src/
 - Deploy on iku.gg
 
 ### Phase 2: Engagement (week 2)
+
 - Swipe feed on /feed
 - ExoClick ad integration
 - Search functionality
@@ -284,6 +293,7 @@ src/
 - hanime.tv batch download pipeline
 
 ### Phase 3: Scale (month 2)
+
 - Gelbooru content integration
 - Push notifications (ProPush)
 - User favorites (localStorage)
@@ -291,6 +301,7 @@ src/
 - Google Search Console optimization
 
 ### Phase 4: Monetize (month 3)
+
 - ExoClick optimization
 - Nutaku affiliate integration
 - Premium tier (ad-free)
@@ -300,10 +311,10 @@ src/
 
 ## Success Metrics
 
-| Metric | Target (Month 3) | Target (Month 6) |
-|--------|-------------------|-------------------|
-| Pages indexed | 50K+ | 65K+ |
-| Organic visits/month | 50K | 200K |
-| RPM | $2-4 | $5-10 |
-| Revenue/month | $200-500 | $1K-3K |
-| Avg session duration | 3+ min | 5+ min |
+| Metric               | Target (Month 3) | Target (Month 6) |
+| -------------------- | ---------------- | ---------------- |
+| Pages indexed        | 50K+             | 65K+             |
+| Organic visits/month | 50K              | 200K             |
+| RPM                  | $2-4             | $5-10            |
+| Revenue/month        | $200-500         | $1K-3K           |
+| Avg session duration | 3+ min           | 5+ min           |

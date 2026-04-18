@@ -10,6 +10,7 @@ Tu es un expert en scraping web et pipelines de données à grande échelle. Tu 
 ## Les 5 sources de données
 
 ### 1. Danbooru (API live)
+
 - **Fichier** : `src/lib/danbooru.ts`, `scripts/scrape-danbooru.ts`
 - **JSON** : `src/data/videos.json` (~12MB)
 - **API** : `https://danbooru.donmai.us/posts.json`
@@ -22,6 +23,7 @@ Tu es un expert en scraping web et pipelines de données à grande échelle. Tu 
 - **CDN images** : `cdn.donmai.us`
 
 ### 2. Gelbooru (API live + proxy)
+
 - **Fichier** : `src/lib/gelbooru.ts`, `scripts/scrape-gelbooru.ts`
 - **JSON** : `src/data/gelbooru-videos.json` (~9.9MB)
 - **API** : `https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1`
@@ -38,6 +40,7 @@ Tu es un expert en scraping web et pipelines de données à grande échelle. Tu 
 - **Revalidation** : 600 secondes
 
 ### 3. Rule34.xxx (API live)
+
 - **Fichier** : `src/lib/rule34-search.ts`, `scripts/scrape-rule34.ts`
 - **JSON** : `src/data/rule34-videos.json` (~11MB)
 - **API** : `https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&json=1`
@@ -47,6 +50,7 @@ Tu es un expert en scraping web et pipelines de données à grande échelle. Tu 
 - **CDN images** : `api-cdn.rule34.xxx`, `api-cdn-mp4.rule34.xxx`
 
 ### 4. Rule34Video (JSON statique + yt-dlp)
+
 - **Fichier** : `src/lib/rule34video.ts`, `scripts/scrape-rule34video.ts`
 - **JSON** : `src/data/rule34video-videos.json` (~85MB ⚠️ LE PLUS GROS)
 - **Nombre** : ~278K vidéos
@@ -58,6 +62,7 @@ Tu es un expert en scraping web et pipelines de données à grande échelle. Tu 
 - **Particularité** : seules les métadonnées sont dans le JSON (titre, tags, thumbnail, URL page), pas l'URL du stream vidéo
 
 ### 5. WordPress sites (JSON statique + yt-dlp)
+
 - **Fichier** : `src/lib/wp-hentai.ts`, `scripts/scrape-wp-sites.ts`
 - **JSON** : `src/data/wp-hentai-videos.json` (~4.2MB)
 - **Nombre** : ~17.8K vidéos
@@ -82,6 +87,7 @@ htv-episode-2  → HentaiTV (WordPress)
 **Fichier** : `src/lib/slugify.ts`
 
 **Fonctions** :
+
 - `slugify(video)` → génère le slug avec le bon préfixe selon la source
 - `parseSlug(slug)` → retourne `{ source, id }` pour router vers le bon loader
 - Le slug est utilisé dans l'URL : `/watch/[slug]`
@@ -114,13 +120,14 @@ Le workflow `.github/workflows/daily-scrape.yml` s'exécute tous les jours à 4h
 **Fichier** : `src/lib/content.ts`
 
 La fonction `getVideos()` fusionne les 5 sources :
+
 ```typescript
 const results = await Promise.allSettled([
   getDanbooruVideos(),
   getGelbooruVideos(),
   getRule34Videos(),
   getRule34VideoVideos(),
-  getWpHentaiVideos()
+  getWpHentaiVideos(),
 ]);
 // Merge → dedup → sort → return
 ```
@@ -157,8 +164,8 @@ interface Video {
   title: string;
   tags: string[];
   thumbnail: string;
-  videoUrl?: string;     // Absent pour rule34video/wp (résolution yt-dlp)
-  pageUrl?: string;      // URL source originale
+  videoUrl?: string; // Absent pour rule34video/wp (résolution yt-dlp)
+  pageUrl?: string; // URL source originale
   width?: number;
   height?: number;
   score?: number;
@@ -177,6 +184,7 @@ Pour Rule34Video et WordPress, les URLs vidéo ne sont pas dans les JSONs. On le
 **Process** : spawn Python → parse JSON output → extraire l'URL du stream
 
 **Protections** :
+
 - Rate limit : 10 requêtes/minute/IP
 - Concurrency guard : max 3 process yt-dlp simultanés
 - Cache in-memory : TTL 1h (Map)
@@ -187,6 +195,7 @@ Pour Rule34Video et WordPress, les URLs vidéo ne sont pas dans les JSONs. On le
 ## Scripts de scraping (`scripts/`)
 
 Chaque script suit le même pattern :
+
 1. Charger le JSON existant (ou créer un array vide)
 2. Appeler l'API/site source avec pagination
 3. Normaliser les nouvelles données vers le type `Video`

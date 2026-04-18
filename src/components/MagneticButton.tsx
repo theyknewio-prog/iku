@@ -51,7 +51,9 @@ export function MagneticButton({
 
     // Touch devices skip magnetic hover entirely.
     const isTouch = window.matchMedia("(hover: none)").matches;
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     if (isTouch || prefersReduced) return;
 
     // Look for the first focusable child (button or anchor). Fallback to wrapper.
@@ -79,7 +81,12 @@ export function MagneticButton({
     };
 
     const onPointerLeave = () => {
-      gsap.to(target, { x: 0, y: 0, duration: 0.6, ease: "elastic.out(1, 0.4)" });
+      gsap.to(target, {
+        x: 0,
+        y: 0,
+        duration: 0.6,
+        ease: "elastic.out(1, 0.4)",
+      });
     };
 
     const onClick = (e: MouseEvent) => {

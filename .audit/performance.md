@@ -6,12 +6,14 @@ Scope: Next.js 16 / React 19 / Postgres 16 on Hetzner CX33 (8GB/4vCPU). Focus is
 
 **File:** `src/app/watch/[slug]/page.tsx:235, 712, 724` + `src/lib/danbooru.ts:23–69` (module-level `throttle()` + 200ms `MIN_INTERVAL`)
 **Impact:** Cold render = `getPost()` (Danbooru slugs) + `getRelatedPosts()` (top of page) + `RelatedGrid` fetch + `RelatedSidebar` fetch. `getRelatedPosts` itself does 2 API calls (source post + related search). That is **up to 5 upstream HTTP calls** serialized through a 200ms process-wide `throttle()` mutex. With 17K Danbooru slugs out of 351K and ISR revalidate=86400 you get decent cache hit rates, but:
+
 - The two `<Suspense>` children (`RelatedGrid`, `RelatedSidebar`) re-fetch with different `limit` params — no de-dup. On a 17K-slug catalog with ISR rebuilds, this is 2× the API load.
 - The `throttle()` is a module-level `lastRequest` variable. Under concurrent ISR regenerations it serializes **all** Danbooru calls across every concurrent request, so one slow fetch stalls all others. Not a cache, a global mutex.
 - When Google crawler hits 1000 uncached watch URLs in a minute, 200ms throttle × 3 calls each = baseline **600ms of sleeps per render** even if Danbooru is instant.
 - `fetch(..., { next: { revalidate: 21600 }})` helps on hot paths, but Danbooru search URLs vary by tag so hit rate is mediocre.
 
 **Fix (high value, 2h):**
+
 1. Drop the live Danbooru fetches entirely on `/watch/[slug]`. All 17K Danbooru videos are already in PG with tags/characters/copyrights. Add a PG-based `getRelatedVideos(video, limit)` that does `WHERE $1 = ANY(characters) OR $1 = ANY(copyrights) ORDER BY score DESC LIMIT N` — single query, indexed (GIN on `characters`/`copyrights` exists). Replace all 3 `getRelatedPosts` call sites.
 2. Same for `getPost` fallback on line 221 — query PG on `source='danbooru' AND source_id=$1`.
 3. Homepage `getPopularCharacters(12)` (page.tsx:100) — replace with a memoized PG query like `getCuratedGenreCounts`. It currently calls Danbooru `/tags.json` on every ISR revalidation.
@@ -22,7 +24,7 @@ Expected gain: watch page TTFB drops from ~600–1500ms (cold) to <80ms (PG-only
 ## BLOCKER — OFFSET pagination on 351K-row table
 
 **File:** `src/lib/content.ts:186`, `src/lib/rule34video.ts:78`, `src/lib/wp-hentai.ts:89`, `src/app/api/feed/route.ts:91` (catalogPage = page + sessionOffset, up to page 45)
-**Impact:** `ORDER BY score DESC, created_at DESC LIMIT 60 OFFSET N*60` with N up to 45 → PG scans and discards 2700+ rows per request. On the score index that's ~20-80ms cold for deep pages, cheap. BUT: `/api/feed` uses a random offset 0–40 per session, so every visitor's *first feed load* is likely a cold OFFSET-based query that can't share cache with anyone else. Under 1K DAU × 10 feed loads/session = 10K unique OFFSET queries/day, none memoized (the `memoize` layer keys on args, and random offsets mean ~zero hit rate). Postgres buffer cache will handle it, but this is the #1 DB load source at scale.
+**Impact:** `ORDER BY score DESC, created_at DESC LIMIT 60 OFFSET N*60` with N up to 45 → PG scans and discards 2700+ rows per request. On the score index that's ~20-80ms cold for deep pages, cheap. BUT: `/api/feed` uses a random offset 0–40 per session, so every visitor's _first feed load_ is likely a cold OFFSET-based query that can't share cache with anyone else. Under 1K DAU × 10 feed loads/session = 10K unique OFFSET queries/day, none memoized (the `memoize` layer keys on args, and random offsets mean ~zero hit rate). Postgres buffer cache will handle it, but this is the #1 DB load source at scale.
 
 **Fix:** Keyset/cursor pagination — `WHERE score < $last_score OR (score = $last_score AND created_at < $last_ts) ORDER BY score DESC, created_at DESC LIMIT 60`. Pass `lastScore`+`lastCreatedAt` instead of `page`. Index already supports it. Constant-time regardless of depth. Also allows killing the `memoize` cache invalidation problem since each cursor is globally deterministic.
 

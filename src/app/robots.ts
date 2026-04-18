@@ -16,9 +16,7 @@ async function getWatchSitemapCount(): Promise<number> {
 export default async function robots(): Promise<MetadataRoute.Robots> {
   const sitemapCount = await getWatchSitemapCount();
 
-  const sitemaps: string[] = [
-    "https://iku.gg/sitemap.xml",
-  ];
+  const sitemaps: string[] = ["https://iku.gg/sitemap.xml"];
 
   for (let i = 0; i < sitemapCount; i++) {
     sitemaps.push(`https://iku.gg/watch/sitemap/${i}.xml`);
@@ -35,12 +33,28 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
       userAgent: "*",
       allow: [
         "/",
-        "/hentai", "/3d",           // vertical hubs (added 2026-04-12)
-        "/watch/", "/tag/", "/character/", "/series/",
-        "/trending", "/new", "/tags", "/explore",
-        "/blog/", "/glossary/",
+        "/hentai",
+        "/3d", // vertical hubs (added 2026-04-12)
+        "/watch/",
+        "/tag/",
+        "/character/",
+        "/series/",
+        "/trending",
+        "/new",
+        "/tags",
+        "/explore",
+        "/blog/",
+        "/glossary/",
       ],
-      disallow: ["/api/", "/_next/", "/feed", "/v/", "/favorites", "/history", "/settings"],
+      disallow: [
+        "/api/",
+        "/_next/",
+        "/feed",
+        "/v/",
+        "/favorites",
+        "/history",
+        "/settings",
+      ],
     },
     sitemap: sitemaps,
   };

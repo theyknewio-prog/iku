@@ -33,6 +33,7 @@ interface Props {
   src: string;
   poster?: string;
   resolveUrl?: string;
+  slug?: string;
   relatedVideos?: RelatedVideo[];
 }
 
@@ -40,6 +41,7 @@ export function WatchPlayerWithPreroll({
   src,
   poster,
   resolveUrl,
+  slug,
   relatedVideos,
 }: Props) {
   const [prerollDone, setPrerollDone] = useState(false);
@@ -91,6 +93,7 @@ export function WatchPlayerWithPreroll({
         src={src}
         poster={poster}
         resolveUrl={resolveUrl}
+        slug={slug}
         relatedVideos={relatedVideos}
         onVideoEnded={handleEnded}
         suppressEndOverlay={showPostroll && !postrollDone}

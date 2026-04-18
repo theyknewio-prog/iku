@@ -13,7 +13,8 @@ import { hasBannedTagString } from "./banned-tags";
 import { pool, upsertVideos } from "./db";
 
 const BASE_URL = "https://gelbooru.com/index.php";
-const API_KEY = "3ed16caf49d543883a94b9e8beeb56804c4bbdd577bbb22697579e11d84aca13c755ad81e6c3caf03c8b158f07b92097466280dfec9ea35313b61efd3bcc1a41";
+const API_KEY =
+  "3ed16caf49d543883a94b9e8beeb56804c4bbdd577bbb22697579e11d84aca13c755ad81e6c3caf03c8b158f07b92097466280dfec9ea35313b61efd3bcc1a41";
 const USER_ID = "1943515";
 const DELAY = 1100; // 1.1s between requests
 const LIMIT = 100;
@@ -46,17 +47,22 @@ interface VideoEntry {
 
 function sanitize(raw: string): string {
   if (!raw || !raw.trim()) return "";
-  return raw.trim().split(/\s+/)[0]
-    ?.toLowerCase()
-    .replace(/_/g, "-")
-    .replace(/[^a-z0-9-]/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "") ?? "";
+  return (
+    raw
+      .trim()
+      .split(/\s+/)[0]
+      ?.toLowerCase()
+      .replace(/_/g, "-")
+      .replace(/[^a-z0-9-]/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "") ?? ""
+  );
 }
 
 function mapPost(post: GelbooruPost): VideoEntry | null {
   if (!post.file_url) return null;
-  if (!post.file_url.endsWith(".mp4") && !post.file_url.endsWith(".webm")) return null;
+  if (!post.file_url.endsWith(".mp4") && !post.file_url.endsWith(".webm"))
+    return null;
 
   // Skip banned content
   if (post.tags && hasBannedTagString(post.tags)) return null;
@@ -83,7 +89,9 @@ async function fetchPage(pid: number, retries = 2): Promise<GelbooruPost[]> {
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      const res = await fetch(url, { headers: { "User-Agent": "IkuScraper/1.0" } });
+      const res = await fetch(url, {
+        headers: { "User-Agent": "IkuScraper/1.0" },
+      });
 
       if (res.status === 429) {
         console.warn(`  429 rate limited on pid ${pid}, waiting 5s...`);
@@ -93,7 +101,10 @@ async function fetchPage(pid: number, retries = 2): Promise<GelbooruPost[]> {
 
       if (!res.ok) {
         console.error(`  HTTP ${res.status} on pid ${pid}`);
-        if (attempt < retries) { await new Promise((r) => setTimeout(r, 3000)); continue; }
+        if (attempt < retries) {
+          await new Promise((r) => setTimeout(r, 3000));
+          continue;
+        }
         return [];
       }
 
@@ -104,7 +115,10 @@ async function fetchPage(pid: number, retries = 2): Promise<GelbooruPost[]> {
       return posts;
     } catch (err) {
       console.error(`  Network error on pid ${pid}:`, err);
-      if (attempt < retries) { await new Promise((r) => setTimeout(r, 3000)); continue; }
+      if (attempt < retries) {
+        await new Promise((r) => setTimeout(r, 3000));
+        continue;
+      }
       return [];
     }
   }
@@ -135,10 +149,15 @@ async function main() {
     let added = 0;
     for (const post of posts) {
       const entry = mapPost(post);
-      if (entry) { results.push(entry); added++; }
+      if (entry) {
+        results.push(entry);
+        added++;
+      }
     }
 
-    process.stdout.write(`  Page ${pid}: ${posts.length} posts, ${added} videos (total: ${results.length})\r`);
+    process.stdout.write(
+      `  Page ${pid}: ${posts.length} posts, ${added} videos (total: ${results.length})\r`,
+    );
 
     if (posts.length < LIMIT) break;
     pid++;
@@ -165,13 +184,22 @@ async function main() {
   let upserted = 0;
   for (let i = 0; i < unique.length; i += BATCH) {
     const batch = unique.slice(i, i + BATCH).map((v) => ({
-      source: "gelbooru", source_id: v.id, slug: v.slug, url: v.url,
-      thumbnail: v.thumbnail, score: v.score,
-      tags: v.tags, width: v.width, height: v.height,
-      file_size: v.fileSize, created_at: v.createdAt,
+      source: "gelbooru",
+      source_id: v.id,
+      slug: v.slug,
+      url: v.url,
+      thumbnail: v.thumbnail,
+      score: v.score,
+      tags: v.tags,
+      width: v.width,
+      height: v.height,
+      file_size: v.fileSize,
+      created_at: v.createdAt,
     }));
     upserted += await upsertVideos(batch);
-    process.stdout.write(`  ${Math.min(i + BATCH, unique.length)}/${unique.length} upserted\r`);
+    process.stdout.write(
+      `  ${Math.min(i + BATCH, unique.length)}/${unique.length} upserted\r`,
+    );
   }
   console.log(`\n  ${upserted} videos upserted`);
   await pool.end();

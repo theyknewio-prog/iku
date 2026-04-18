@@ -46,7 +46,10 @@ const YEAR = new Date().getFullYear();
 const CHARACTERS_SEO_PATH = resolve(ROOT, "src/data/characters-seo.ts");
 const BLOG_LINKS_PATH = resolve(ROOT, "src/data/blog-internal-links.ts");
 const MINED_KEYWORDS_PATH = resolve(ROOT, "data/semrush-mined-keywords.json");
-const ENRICHMENT_FLAG_PATH = resolve(ROOT, "data/character-enrichment-last.json");
+const ENRICHMENT_FLAG_PATH = resolve(
+  ROOT,
+  "data/character-enrichment-last.json",
+);
 const INTERNAL_LINKS_FLAG_PATH = resolve(ROOT, "data/internal-links-last.json");
 
 // Semrush CSV paths (local dev only — these don't exist on the server)
@@ -57,7 +60,8 @@ const SEMRUSH_CSV_PATHS = [
 
 // ── Logging ─────────────────────────────────────────────────────
 const log = (msg) => console.log(`  ${msg}`);
-const section = (title) => console.log(`\n── ${title} ${"─".repeat(60 - title.length)}`);
+const section = (title) =>
+  console.log(`\n── ${title} ${"─".repeat(60 - title.length)}`);
 
 // ── Semrush Priority Keywords ───────────────────────────────────
 // Real data from Semrush keyword research. Sorted by KD ascending.
@@ -115,60 +119,60 @@ const PRIORITY_KEYWORDS = [
 // Character slug → iku.gg character page slug
 const CHAR_SLUGS = {
   "boa hancock": "boa-hancock",
-  "makima": "makima",
+  makima: "makima",
   "yor forger": "yor-forger",
   "2b": "2b",
-  "mikasa": "mikasa-ackerman",
-  "starfire": "starfire",
-  "raven": "raven",
-  "nami": "nami",
-  "tsunade": "tsunade",
-  "tatsumaki": "tatsumaki",
-  "hinata": "hinata-hyuga",
+  mikasa: "mikasa-ackerman",
+  starfire: "starfire",
+  raven: "raven",
+  nami: "nami",
+  tsunade: "tsunade",
+  tatsumaki: "tatsumaki",
+  hinata: "hinata-hyuga",
   "zero two": "zero-two",
-  "rem": "rem",
+  rem: "rem",
   "android 18": "android-18",
-  "asuka": "asuka-langley",
-  "erza": "erza-scarlet",
-  "lucy": "lucy-heartfilia",
-  "aqua": "aqua",
-  "megumin": "megumin",
+  asuka: "asuka-langley",
+  erza: "erza-scarlet",
+  lucy: "lucy-heartfilia",
+  aqua: "aqua",
+  megumin: "megumin",
   "raiden shogun": "raiden-shogun",
-  "ganyu": "ganyu",
-  "robin": "nico-robin",
-  "bulma": "bulma",
-  "ochako": "ochako-uraraka",
-  "mirko": "mirko",
-  "ryuko": "ryuko-matoi",
-  "tohru": "tohru",
-  "albedo": "albedo",
+  ganyu: "ganyu",
+  robin: "nico-robin",
+  bulma: "bulma",
+  ochako: "ochako-uraraka",
+  mirko: "mirko",
+  ryuko: "ryuko-matoi",
+  tohru: "tohru",
+  albedo: "albedo",
 };
 
 // Series slug → iku.gg series page slug
 const SERIES_SLUGS = {
-  "attack on titan": "demon-slayer",   // closest, or use tag
-  "evangelion": "evangelion",
-  "danmachi": "sword-art-online",      // closest isekai
+  "attack on titan": "demon-slayer", // closest, or use tag
+  evangelion: "evangelion",
+  danmachi: "sword-art-online", // closest isekai
   "dragon ball": "dragon-ball",
-  "dbz": "dragon-ball",
-  "high school dxd": "fairy-tail",     // ecchi series
+  dbz: "dragon-ball",
+  "high school dxd": "fairy-tail", // ecchi series
   "one piece": "one-piece",
-  "naruto": "naruto",
-  "bleach": "fairy-tail",
-  "overwatch": "overwatch",
+  naruto: "naruto",
+  bleach: "fairy-tail",
+  overwatch: "overwatch",
   "my hero academia": "my-hero-academia",
   "fairy tail": "fairy-tail",
-  "zelda": "final-fantasy",            // gaming
+  zelda: "final-fantasy", // gaming
   "nier automata": "nier-automata",
   "final fantasy": "final-fantasy",
   "genshin impact": "genshin-impact",
   "jujutsu kaisen": "jujutsu-kaisen",
   "chainsaw man": "chainsaw-man",
   "spy x family": "spy-x-family",
-  "konosuba": "konosuba",
+  konosuba: "konosuba",
   "re zero": "re-zero",
   "demon slayer": "demon-slayer",
-  "fate": "fate",
+  fate: "fate",
   "kill la kill": "kill-la-kill",
   "sword art online": "sword-art-online",
 };
@@ -193,7 +197,10 @@ const BLOG_LINKS = {
     { slug: "best-one-piece-hentai", label: "One Piece hentai" },
     { slug: "best-dragon-ball-hentai", label: "Dragon Ball hentai" },
     { slug: "best-my-hero-academia-hentai", label: "My Hero Academia hentai" },
-    { slug: "best-league-of-legends-hentai", label: "League of Legends hentai" },
+    {
+      slug: "best-league-of-legends-hentai",
+      label: "League of Legends hentai",
+    },
     { slug: "best-final-fantasy-hentai", label: "Final Fantasy hentai" },
     { slug: "best-nier-automata-2b-hentai", label: "Nier Automata 2B hentai" },
     { slug: "best-chainsaw-man-hentai", label: "Chainsaw Man hentai" },
@@ -244,27 +251,55 @@ async function pullGSC() {
   const [queriesRes, pagesRes, queryPageRes] = await Promise.all([
     sc.searchanalytics.query({
       siteUrl: SITE_URL,
-      requestBody: { startDate, endDate, dimensions: ["query"], rowLimit: 1000, dataState: "all" },
+      requestBody: {
+        startDate,
+        endDate,
+        dimensions: ["query"],
+        rowLimit: 1000,
+        dataState: "all",
+      },
     }),
     sc.searchanalytics.query({
       siteUrl: SITE_URL,
-      requestBody: { startDate, endDate, dimensions: ["page"], rowLimit: 200, dataState: "all" },
+      requestBody: {
+        startDate,
+        endDate,
+        dimensions: ["page"],
+        rowLimit: 200,
+        dataState: "all",
+      },
     }),
     sc.searchanalytics.query({
       siteUrl: SITE_URL,
-      requestBody: { startDate, endDate, dimensions: ["query", "page"], rowLimit: 1000, dataState: "all" },
+      requestBody: {
+        startDate,
+        endDate,
+        dimensions: ["query", "page"],
+        rowLimit: 1000,
+        dataState: "all",
+      },
     }),
   ]);
 
   const queries = (queriesRes.data.rows || []).map((r) => ({
-    kw: r.keys[0], clicks: r.clicks, imp: r.impressions,
-    ctr: +(r.ctr * 100).toFixed(1), pos: +r.position.toFixed(1),
+    kw: r.keys[0],
+    clicks: r.clicks,
+    imp: r.impressions,
+    ctr: +(r.ctr * 100).toFixed(1),
+    pos: +r.position.toFixed(1),
   }));
   const pages = (pagesRes.data.rows || []).map((r) => ({
-    page: r.keys[0], clicks: r.clicks, imp: r.impressions, pos: +r.position.toFixed(1),
+    page: r.keys[0],
+    clicks: r.clicks,
+    imp: r.impressions,
+    pos: +r.position.toFixed(1),
   }));
   const queryPages = (queryPageRes.data.rows || []).map((r) => ({
-    kw: r.keys[0], page: r.keys[1], clicks: r.clicks, imp: r.impressions, pos: +r.position.toFixed(1),
+    kw: r.keys[0],
+    page: r.keys[1],
+    clicks: r.clicks,
+    imp: r.impressions,
+    pos: +r.position.toFixed(1),
   }));
 
   log(`${queries.length} keywords | ${pages.length} pages indexed`);
@@ -276,7 +311,11 @@ async function pullGSC() {
   const snapshotPath = resolve(SNAPSHOT_DIR, `gsc-${today}-${hour}h.json`);
   writeFileSync(
     snapshotPath,
-    JSON.stringify({ date: today, startDate, endDate, queries, pages, queryPages }, null, 2)
+    JSON.stringify(
+      { date: today, startDate, endDate, queries, pages, queryPages },
+      null,
+      2,
+    ),
   );
   log(`Snapshot saved: gsc-${today}-${hour}h.json`);
 
@@ -287,13 +326,16 @@ async function pullGSC() {
 function loadPreviousSnapshot() {
   if (!existsSync(SNAPSHOT_DIR)) return null;
   try {
-    const files = require("fs").readdirSync(SNAPSHOT_DIR)
+    const files = require("fs")
+      .readdirSync(SNAPSHOT_DIR)
       .filter((f) => f.startsWith("gsc-") && f.endsWith(".json"))
       .sort()
       .reverse();
     // Skip first (current), take the most recent previous
     if (files.length < 2) return null;
-    const prev = JSON.parse(readFileSync(resolve(SNAPSHOT_DIR, files[1]), "utf8"));
+    const prev = JSON.parse(
+      readFileSync(resolve(SNAPSHOT_DIR, files[1]), "utf8"),
+    );
     return prev;
   } catch {
     return null;
@@ -334,7 +376,9 @@ function getExistingSlugs() {
       for (const item of queue) {
         if (item.data?.slug) slugs.add(item.data.slug);
       }
-    } catch { /* ignore parse errors */ }
+    } catch {
+      /* ignore parse errors */
+    }
   }
   return slugs;
 }
@@ -391,7 +435,9 @@ function pickNextKeywords(existingSlugs, minedKeywords = [], maxCount = 2) {
 
   log(`Skipped (already covered): ${skipped.length} keywords`);
   if (skipped.length > 0) {
-    log(`  ${skipped.slice(0, 10).join(", ")}${skipped.length > 10 ? "..." : ""}`);
+    log(
+      `  ${skipped.slice(0, 10).join(", ")}${skipped.length > 10 ? "..." : ""}`,
+    );
   }
   log(`Selected: ${candidates.length} keywords to write`);
   for (const c of candidates) {
@@ -411,12 +457,29 @@ function slugify(text) {
 }
 
 function titleCase(str) {
-  const small = new Set(["a", "an", "the", "and", "or", "but", "in", "on", "at", "to", "for", "of", "vs"]);
-  return str.split(" ").map((w, i) =>
-    i === 0 || !small.has(w.toLowerCase())
-      ? w.charAt(0).toUpperCase() + w.slice(1)
-      : w.toLowerCase()
-  ).join(" ");
+  const small = new Set([
+    "a",
+    "an",
+    "the",
+    "and",
+    "or",
+    "but",
+    "in",
+    "on",
+    "at",
+    "to",
+    "for",
+    "of",
+    "vs",
+  ]);
+  return str
+    .split(" ")
+    .map((w, i) =>
+      i === 0 || !small.has(w.toLowerCase())
+        ? w.charAt(0).toUpperCase() + w.slice(1)
+        : w.toLowerCase(),
+    )
+    .join(" ");
 }
 
 // Pick 5 random blog links from a category, excluding self
@@ -431,24 +494,37 @@ function pickRelatedCharacters(kw, count = 4) {
   const lower = kw.toLowerCase();
   // Prefer characters from the same franchise
   const franchiseChars = {
-    "naruto": ["tsunade", "hinata", "ino-yamanaka", "sakura-haruno", "temari", "kushina-uzumaki"],
+    naruto: [
+      "tsunade",
+      "hinata",
+      "ino-yamanaka",
+      "sakura-haruno",
+      "temari",
+      "kushina-uzumaki",
+    ],
     "one piece": ["nami", "nico-robin", "boa-hancock"],
     "dragon ball": ["android-18", "bulma", "chi-chi"],
-    "dbz": ["android-18", "bulma", "chi-chi"],
-    "my hero academia": ["ochako-uraraka", "momo-yaoyorozu", "mina-ashido", "mirko", "midnight"],
+    dbz: ["android-18", "bulma", "chi-chi"],
+    "my hero academia": [
+      "ochako-uraraka",
+      "momo-yaoyorozu",
+      "mina-ashido",
+      "mirko",
+      "midnight",
+    ],
     "fairy tail": ["erza-scarlet", "lucy-heartfilia", "mirajane-strauss"],
-    "evangelion": ["rei-ayanami", "asuka-langley"],
-    "genshin": ["raiden-shogun", "ganyu", "hu-tao"],
-    "overwatch": ["starfire", "raven"], // no OW chars in data, use popular
+    evangelion: ["rei-ayanami", "asuka-langley"],
+    genshin: ["raiden-shogun", "ganyu", "hu-tao"],
+    overwatch: ["starfire", "raven"], // no OW chars in data, use popular
     "re zero": ["rem", "emilia-re-zero", "ram"],
-    "konosuba": ["aqua", "darkness-konosuba", "megumin"],
+    konosuba: ["aqua", "darkness-konosuba", "megumin"],
     "attack on titan": ["mikasa-ackerman"],
-    "nier": ["2b"],
+    nier: ["2b"],
     "chainsaw man": ["makima"],
     "spy x family": ["yor-forger"],
     "kill la kill": ["ryuko-matoi", "satsuki-kiryuin"],
     "sword art online": ["asuna-yuuki", "sinon"],
-    "overlord": ["albedo", "shalltear-bloodfallen"],
+    overlord: ["albedo", "shalltear-bloodfallen"],
     "dragon maid": ["tohru", "lucoa"],
   };
 
@@ -503,10 +579,13 @@ function generateGenreArticle(entry) {
   const tagSlug = slugify(topic);
 
   const chars = pickRelatedCharacters(kw, 4);
-  const charLinks = chars.map((c) => `<a href="/character/${c.slug}">${c.name}</a>`).join(", ");
-  const charTagLinks = chars.slice(0, 2).map((c) =>
-    `<a href="/tag/${c.slug.replace(/-/g, "_")}">${c.name}</a>`
-  ).join(" and ");
+  const charLinks = chars
+    .map((c) => `<a href="/character/${c.slug}">${c.name}</a>`)
+    .join(", ");
+  const charTagLinks = chars
+    .slice(0, 2)
+    .map((c) => `<a href="/tag/${c.slug.replace(/-/g, "_")}">${c.name}</a>`)
+    .join(" and ");
 
   const series = findSeriesSlug(kw);
   const seriesLink = series
@@ -572,7 +651,13 @@ function generateGenreArticle(entry) {
 <h2>Related Guides and Resources</h2>
 <p>If you enjoyed this guide, you'll find these related articles valuable:</p>
 <ul>
-${allBlogLinks.slice(0, 6).map((l) => `<li><a href="/blog/${l.slug}">Best ${l.label}</a> — Our curated guide to the best ${l.label} content</li>`).join("\n")}
+${allBlogLinks
+  .slice(0, 6)
+  .map(
+    (l) =>
+      `<li><a href="/blog/${l.slug}">Best ${l.label}</a> — Our curated guide to the best ${l.label} content</li>`,
+  )
+  .join("\n")}
 <li><a href="/blog/popular-hentai-characters">Most popular hentai characters</a> — The community's all-time favorite characters</li>
 <li><a href="/blog/hentai-art-styles-explained">Hentai art styles explained</a> — From classic 2D to modern 3D animation</li>
 </ul>
@@ -585,7 +670,9 @@ ${allBlogLinks.slice(0, 6).map((l) => `<li><a href="/blog/${l.slug}">Best ${l.la
     title: `${topicTitle} Hentai — The Complete Guide (${YEAR})`,
     excerpt: `Everything you need to know about ${topic} hentai in ${YEAR}. Best studios, trending clips, popular characters, subgenres, and how to find the best ${topic} content on iku.gg.`,
     content,
-    tags: [tagSlug, "guide", "recommendations", topic.split(" ")[0]].filter(Boolean),
+    tags: [tagSlug, "guide", "recommendations", topic.split(" ")[0]].filter(
+      Boolean,
+    ),
     publishedAt: today,
     readingTime: 10,
     glossaryLinks: ["vanilla", "uncensored", tagSlug].filter(Boolean),
@@ -615,8 +702,9 @@ function generateCharacterArticle(entry) {
     : "their franchise";
 
   // Other characters from the same franchise
-  const relatedChars = pickRelatedCharacters(charName, 5)
-    .filter((c) => c.slug !== charSlug);
+  const relatedChars = pickRelatedCharacters(charName, 5).filter(
+    (c) => c.slug !== charSlug,
+  );
   const relatedCharLinks = relatedChars
     .slice(0, 4)
     .map((c) => `<a href="/character/${c.slug}">${c.name}</a>`)
@@ -678,7 +766,10 @@ function generateCharacterArticle(entry) {
 
 <h2>Related Guides</h2>
 <ul>
-${allBlogLinks.slice(0, 6).map((l) => `<li><a href="/blog/${l.slug}">Best ${l.label}</a></li>`).join("\n")}
+${allBlogLinks
+  .slice(0, 6)
+  .map((l) => `<li><a href="/blog/${l.slug}">Best ${l.label}</a></li>`)
+  .join("\n")}
 <li><a href="/blog/hentai-art-styles-explained">Hentai art styles explained</a></li>
 <li><a href="/blog/best-hentai-studios">Best hentai studios</a></li>
 </ul>
@@ -691,7 +782,9 @@ ${allBlogLinks.slice(0, 6).map((l) => `<li><a href="/blog/${l.slug}">Best ${l.la
     title: `${charTitle} Hentai — Best Content, Clips & Guide (${YEAR})`,
     excerpt: `The definitive guide to ${charTitle} hentai in ${YEAR}. Best clips, studios, 3D animations, related characters, and where to find top-rated ${charTitle} content free on iku.gg.`,
     content,
-    tags: [charSlug, charName.split(" ")[0], "character", "guide"].filter(Boolean),
+    tags: [charSlug, charName.split(" ")[0], "character", "guide"].filter(
+      Boolean,
+    ),
     publishedAt: today,
     readingTime: 10,
     glossaryLinks: ["vanilla", "uncensored"],
@@ -718,7 +811,9 @@ function addToQueue(articles) {
   let scheduleDate = new Date();
   scheduleDate.setDate(scheduleDate.getDate() + 1);
 
-  const scheduledDates = new Set(queue.filter((q) => q.status === "pending").map((q) => q.publishDate));
+  const scheduledDates = new Set(
+    queue.filter((q) => q.status === "pending").map((q) => q.publishDate),
+  );
 
   for (const article of articles) {
     if (!article || existingSlugs.has(article.slug)) continue;
@@ -742,7 +837,9 @@ function addToQueue(articles) {
     });
 
     added++;
-    log(`+ "${article.slug}" targeting "${article.targetKeyword}" (vol: ${article.semrushVolume}, KD: ${article.semrushKD}) -> ${publishDate}`);
+    log(
+      `+ "${article.slug}" targeting "${article.targetKeyword}" (vol: ${article.semrushVolume}, KD: ${article.semrushKD}) -> ${publishDate}`,
+    );
 
     scheduleDate.setDate(scheduleDate.getDate() + 1);
   }
@@ -783,7 +880,9 @@ function gitCommitAndPush(articlesAdded, charsEnriched = 0, linksUpdated = 0) {
       if (existsSync(fullPath)) {
         try {
           execSync(`git add "${f}"`, { cwd: ROOT, stdio: "pipe" });
-        } catch { /* file might not have changes */ }
+        } catch {
+          /* file might not have changes */
+        }
       }
     }
 
@@ -799,10 +898,16 @@ Generated by scripts/seo-autopilot.mjs (MAXIMUM POWER).`;
     log("Committed to git");
 
     try {
-      execSync("git push origin master", { cwd: ROOT, stdio: "pipe", timeout: 30000 });
+      execSync("git push origin master", {
+        cwd: ROOT,
+        stdio: "pipe",
+        timeout: 30000,
+      });
       log("Pushed to origin/master");
     } catch {
-      log("Push failed (GH flag?) — commit is local, push manually with: git push");
+      log(
+        "Push failed (GH flag?) — commit is local, push manually with: git push",
+      );
     }
   } catch (e) {
     log(`Git error: ${e.message}`);
@@ -813,14 +918,26 @@ Generated by scripts/seo-autopilot.mjs (MAXIMUM POWER).`;
 function sendTelegram(text) {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = "5617056258";
-  if (!token) { log("TELEGRAM_BOT_TOKEN not set — skipping notification"); return Promise.resolve(); }
+  if (!token) {
+    log("TELEGRAM_BOT_TOKEN not set — skipping notification");
+    return Promise.resolve();
+  }
 
   const payload = JSON.stringify({ chat_id: chatId, text, parse_mode: "HTML" });
   return new Promise((resolve) => {
     const req = https.request(
       `https://api.telegram.org/bot${token}/sendMessage`,
-      { method: "POST", headers: { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(payload) } },
-      (res) => { res.on("data", () => {}); res.on("end", resolve); }
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Content-Length": Buffer.byteLength(payload),
+        },
+      },
+      (res) => {
+        res.on("data", () => {});
+        res.on("end", resolve);
+      },
     );
     req.on("error", () => resolve());
     req.write(payload);
@@ -831,36 +948,216 @@ function sendTelegram(text) {
 // ── UPGRADE 1: Enrich Character Pages ─────────────────────────
 // Top 30 characters by Semrush search volume
 const TOP_30_CHARACTERS = [
-  { slug: "hinata-hyuga", name: "Hinata Hyuga", series: "Naruto", volume: 14800, tags: ["hyuuga_hinata", "naruto", "byakugan", "big_breasts"] },
-  { slug: "tsunade", name: "Tsunade", series: "Naruto", volume: 14800, tags: ["tsunade_(naruto)", "naruto", "milf", "big_breasts"] },
-  { slug: "nami", name: "Nami", series: "One Piece", volume: 14800, tags: ["nami_(one_piece)", "one_piece", "orange_hair", "big_breasts"] },
-  { slug: "tatsumaki", name: "Tatsumaki", series: "One Punch Man", volume: 14800, tags: ["tatsumaki", "one_punch_man", "green_hair", "petite"] },
-  { slug: "bulma", name: "Bulma", series: "Dragon Ball", volume: 14800, tags: ["bulma", "dragon_ball", "blue_hair", "milf"] },
-  { slug: "boa-hancock", name: "Boa Hancock", series: "One Piece", volume: 12100, tags: ["boa_hancock", "one_piece", "amazon_lily", "big_breasts"] },
-  { slug: "starfire", name: "Starfire", series: "Teen Titans", volume: 12100, tags: ["starfire", "teen_titans", "alien", "orange_skin"] },
-  { slug: "raven", name: "Raven", series: "Teen Titans", volume: 12100, tags: ["raven_(dc)", "teen_titans", "dark_skin", "magic"] },
-  { slug: "zelda", name: "Princess Zelda", series: "The Legend of Zelda", volume: 12100, tags: ["princess_zelda", "zelda", "elf", "pointy_ears"] },
-  { slug: "android-18", name: "Android 18", series: "Dragon Ball", volume: 8100, tags: ["android_18", "dragon_ball", "blonde_hair", "cyborg"] },
-  { slug: "2b", name: "2B", series: "Nier: Automata", volume: 5400, tags: ["yorha_no._2_type_b", "nier_automata", "blindfold", "thighhighs"] },
-  { slug: "mikasa-ackerman", name: "Mikasa Ackerman", series: "Attack on Titan", volume: 5400, tags: ["mikasa_ackerman", "attack_on_titan", "short_hair", "abs"] },
-  { slug: "nico-robin", name: "Nico Robin", series: "One Piece", volume: 5400, tags: ["nico_robin", "one_piece", "dark_skin", "black_hair"] },
-  { slug: "robin-one-piece", name: "Robin", series: "One Piece", volume: 5400, tags: ["nico_robin", "one_piece", "mature", "dark_hair"] },
-  { slug: "makima", name: "Makima", series: "Chainsaw Man", volume: 4400, tags: ["makima_(chainsaw_man)", "chainsaw_man", "red_hair", "domination"] },
-  { slug: "yor-forger", name: "Yor Forger", series: "Spy x Family", volume: 4400, tags: ["yor_forger", "spy_x_family", "black_hair", "assassin"] },
-  { slug: "tifa-lockhart", name: "Tifa Lockhart", series: "Final Fantasy VII", volume: 4400, tags: ["tifa_lockhart", "final_fantasy", "big_breasts", "brunette"] },
-  { slug: "sakura-haruno", name: "Sakura Haruno", series: "Naruto", volume: 4400, tags: ["haruno_sakura", "naruto", "pink_hair", "medical_ninja"] },
-  { slug: "ochako-uraraka", name: "Ochako Uraraka", series: "My Hero Academia", volume: 4400, tags: ["uraraka_ochako", "boku_no_hero_academia", "brown_hair", "hero"] },
-  { slug: "megumin", name: "Megumin", series: "Konosuba", volume: 4400, tags: ["megumin", "kono_subarashii_sekai", "explosion_magic", "witch"] },
-  { slug: "aqua", name: "Aqua", series: "Konosuba", volume: 4400, tags: ["aqua_(konosuba)", "kono_subarashii_sekai", "blue_hair", "goddess"] },
-  { slug: "rem", name: "Rem", series: "Re:Zero", volume: 4400, tags: ["rem_(re_zero)", "re_zero", "blue_hair", "maid"] },
-  { slug: "emilia-re-zero", name: "Emilia", series: "Re:Zero", volume: 4400, tags: ["emilia_(re_zero)", "re_zero", "silver_hair", "elf"] },
-  { slug: "asuka-langley", name: "Asuka Langley", series: "Neon Genesis Evangelion", volume: 4400, tags: ["souryuu_asuka_langley", "evangelion", "red_hair", "plugsuit"] },
-  { slug: "rei-ayanami", name: "Rei Ayanami", series: "Neon Genesis Evangelion", volume: 4400, tags: ["ayanami_rei", "evangelion", "blue_hair", "plugsuit"] },
-  { slug: "erza-scarlet", name: "Erza Scarlet", series: "Fairy Tail", volume: 4400, tags: ["erza_scarlet", "fairy_tail", "red_hair", "armor"] },
-  { slug: "lucy-heartfilia", name: "Lucy Heartfilia", series: "Fairy Tail", volume: 4400, tags: ["lucy_heartfilia", "fairy_tail", "blonde_hair", "celestial"] },
-  { slug: "rangiku-matsumoto", name: "Rangiku Matsumoto", series: "Bleach", volume: 2900, tags: ["matsumoto_rangiku", "bleach", "blonde_hair", "big_breasts"] },
-  { slug: "yoruichi", name: "Yoruichi Shihouin", series: "Bleach", volume: 2900, tags: ["shihouin_yoruichi", "bleach", "dark_skin", "purple_hair"] },
-  { slug: "misato-katsuragi", name: "Misato Katsuragi", series: "Neon Genesis Evangelion", volume: 2900, tags: ["katsuragi_misato", "evangelion", "purple_hair", "milf"] },
+  {
+    slug: "hinata-hyuga",
+    name: "Hinata Hyuga",
+    series: "Naruto",
+    volume: 14800,
+    tags: ["hyuuga_hinata", "naruto", "byakugan", "big_breasts"],
+  },
+  {
+    slug: "tsunade",
+    name: "Tsunade",
+    series: "Naruto",
+    volume: 14800,
+    tags: ["tsunade_(naruto)", "naruto", "milf", "big_breasts"],
+  },
+  {
+    slug: "nami",
+    name: "Nami",
+    series: "One Piece",
+    volume: 14800,
+    tags: ["nami_(one_piece)", "one_piece", "orange_hair", "big_breasts"],
+  },
+  {
+    slug: "tatsumaki",
+    name: "Tatsumaki",
+    series: "One Punch Man",
+    volume: 14800,
+    tags: ["tatsumaki", "one_punch_man", "green_hair", "petite"],
+  },
+  {
+    slug: "bulma",
+    name: "Bulma",
+    series: "Dragon Ball",
+    volume: 14800,
+    tags: ["bulma", "dragon_ball", "blue_hair", "milf"],
+  },
+  {
+    slug: "boa-hancock",
+    name: "Boa Hancock",
+    series: "One Piece",
+    volume: 12100,
+    tags: ["boa_hancock", "one_piece", "amazon_lily", "big_breasts"],
+  },
+  {
+    slug: "starfire",
+    name: "Starfire",
+    series: "Teen Titans",
+    volume: 12100,
+    tags: ["starfire", "teen_titans", "alien", "orange_skin"],
+  },
+  {
+    slug: "raven",
+    name: "Raven",
+    series: "Teen Titans",
+    volume: 12100,
+    tags: ["raven_(dc)", "teen_titans", "dark_skin", "magic"],
+  },
+  {
+    slug: "zelda",
+    name: "Princess Zelda",
+    series: "The Legend of Zelda",
+    volume: 12100,
+    tags: ["princess_zelda", "zelda", "elf", "pointy_ears"],
+  },
+  {
+    slug: "android-18",
+    name: "Android 18",
+    series: "Dragon Ball",
+    volume: 8100,
+    tags: ["android_18", "dragon_ball", "blonde_hair", "cyborg"],
+  },
+  {
+    slug: "2b",
+    name: "2B",
+    series: "Nier: Automata",
+    volume: 5400,
+    tags: ["yorha_no._2_type_b", "nier_automata", "blindfold", "thighhighs"],
+  },
+  {
+    slug: "mikasa-ackerman",
+    name: "Mikasa Ackerman",
+    series: "Attack on Titan",
+    volume: 5400,
+    tags: ["mikasa_ackerman", "attack_on_titan", "short_hair", "abs"],
+  },
+  {
+    slug: "nico-robin",
+    name: "Nico Robin",
+    series: "One Piece",
+    volume: 5400,
+    tags: ["nico_robin", "one_piece", "dark_skin", "black_hair"],
+  },
+  {
+    slug: "robin-one-piece",
+    name: "Robin",
+    series: "One Piece",
+    volume: 5400,
+    tags: ["nico_robin", "one_piece", "mature", "dark_hair"],
+  },
+  {
+    slug: "makima",
+    name: "Makima",
+    series: "Chainsaw Man",
+    volume: 4400,
+    tags: ["makima_(chainsaw_man)", "chainsaw_man", "red_hair", "domination"],
+  },
+  {
+    slug: "yor-forger",
+    name: "Yor Forger",
+    series: "Spy x Family",
+    volume: 4400,
+    tags: ["yor_forger", "spy_x_family", "black_hair", "assassin"],
+  },
+  {
+    slug: "tifa-lockhart",
+    name: "Tifa Lockhart",
+    series: "Final Fantasy VII",
+    volume: 4400,
+    tags: ["tifa_lockhart", "final_fantasy", "big_breasts", "brunette"],
+  },
+  {
+    slug: "sakura-haruno",
+    name: "Sakura Haruno",
+    series: "Naruto",
+    volume: 4400,
+    tags: ["haruno_sakura", "naruto", "pink_hair", "medical_ninja"],
+  },
+  {
+    slug: "ochako-uraraka",
+    name: "Ochako Uraraka",
+    series: "My Hero Academia",
+    volume: 4400,
+    tags: ["uraraka_ochako", "boku_no_hero_academia", "brown_hair", "hero"],
+  },
+  {
+    slug: "megumin",
+    name: "Megumin",
+    series: "Konosuba",
+    volume: 4400,
+    tags: ["megumin", "kono_subarashii_sekai", "explosion_magic", "witch"],
+  },
+  {
+    slug: "aqua",
+    name: "Aqua",
+    series: "Konosuba",
+    volume: 4400,
+    tags: ["aqua_(konosuba)", "kono_subarashii_sekai", "blue_hair", "goddess"],
+  },
+  {
+    slug: "rem",
+    name: "Rem",
+    series: "Re:Zero",
+    volume: 4400,
+    tags: ["rem_(re_zero)", "re_zero", "blue_hair", "maid"],
+  },
+  {
+    slug: "emilia-re-zero",
+    name: "Emilia",
+    series: "Re:Zero",
+    volume: 4400,
+    tags: ["emilia_(re_zero)", "re_zero", "silver_hair", "elf"],
+  },
+  {
+    slug: "asuka-langley",
+    name: "Asuka Langley",
+    series: "Neon Genesis Evangelion",
+    volume: 4400,
+    tags: ["souryuu_asuka_langley", "evangelion", "red_hair", "plugsuit"],
+  },
+  {
+    slug: "rei-ayanami",
+    name: "Rei Ayanami",
+    series: "Neon Genesis Evangelion",
+    volume: 4400,
+    tags: ["ayanami_rei", "evangelion", "blue_hair", "plugsuit"],
+  },
+  {
+    slug: "erza-scarlet",
+    name: "Erza Scarlet",
+    series: "Fairy Tail",
+    volume: 4400,
+    tags: ["erza_scarlet", "fairy_tail", "red_hair", "armor"],
+  },
+  {
+    slug: "lucy-heartfilia",
+    name: "Lucy Heartfilia",
+    series: "Fairy Tail",
+    volume: 4400,
+    tags: ["lucy_heartfilia", "fairy_tail", "blonde_hair", "celestial"],
+  },
+  {
+    slug: "rangiku-matsumoto",
+    name: "Rangiku Matsumoto",
+    series: "Bleach",
+    volume: 2900,
+    tags: ["matsumoto_rangiku", "bleach", "blonde_hair", "big_breasts"],
+  },
+  {
+    slug: "yoruichi",
+    name: "Yoruichi Shihouin",
+    series: "Bleach",
+    volume: 2900,
+    tags: ["shihouin_yoruichi", "bleach", "dark_skin", "purple_hair"],
+  },
+  {
+    slug: "misato-katsuragi",
+    name: "Misato Katsuragi",
+    series: "Neon Genesis Evangelion",
+    volume: 2900,
+    tags: ["katsuragi_misato", "evangelion", "purple_hair", "milf"],
+  },
 ];
 
 function enrichCharacterPages() {
@@ -875,7 +1172,9 @@ function enrichCharacterPages() {
         log("Already enriched today — skipping");
         return 0;
       }
-    } catch { /* proceed */ }
+    } catch {
+      /* proceed */
+    }
   }
 
   // Read existing characters-seo.ts to find already-enriched slugs
@@ -891,7 +1190,10 @@ function enrichCharacterPages() {
   if (toEnrich.length === 0) {
     log("All 30 characters already enriched");
     if (!DRY_RUN) {
-      writeFileSync(ENRICHMENT_FLAG_PATH, JSON.stringify({ lastRun: new Date().toISOString().split("T")[0] }));
+      writeFileSync(
+        ENRICHMENT_FLAG_PATH,
+        JSON.stringify({ lastRun: new Date().toISOString().split("T")[0] }),
+      );
     }
     return 0;
   }
@@ -917,7 +1219,12 @@ function enrichCharacterPages() {
       },
     ];
 
-    return { ...char, seoDescription: description, faq, generatedAt: new Date().toISOString().split("T")[0] };
+    return {
+      ...char,
+      seoDescription: description,
+      faq,
+      generatedAt: new Date().toISOString().split("T")[0],
+    };
   });
 
   if (DRY_RUN) {
@@ -926,11 +1233,15 @@ function enrichCharacterPages() {
   }
 
   // Build the TypeScript file content
-  const tsEntries = entries.map((e) => {
-    const faqStr = e.faq.map((f) =>
-      `    { question: ${JSON.stringify(f.question)}, answer: ${JSON.stringify(f.answer)} }`
-    ).join(",\n");
-    return `  {
+  const tsEntries = entries
+    .map((e) => {
+      const faqStr = e.faq
+        .map(
+          (f) =>
+            `    { question: ${JSON.stringify(f.question)}, answer: ${JSON.stringify(f.answer)} }`,
+        )
+        .join(",\n");
+      return `  {
     slug: ${JSON.stringify(e.slug)},
     name: ${JSON.stringify(e.name)},
     series: ${JSON.stringify(e.series)},
@@ -941,7 +1252,8 @@ ${faqStr}
     ],
     generatedAt: ${JSON.stringify(e.generatedAt)},
   }`;
-  }).join(",\n");
+    })
+    .join(",\n");
 
   const fileContent = `/**
  * characters-seo.ts — SEO-enriched descriptions and FAQs for top 30 characters
@@ -978,7 +1290,13 @@ export function getCharacterSEO(slug: string): CharacterSEO | undefined {
   // Save flag
   const flagDir = dirname(ENRICHMENT_FLAG_PATH);
   if (!existsSync(flagDir)) mkdirSync(flagDir, { recursive: true });
-  writeFileSync(ENRICHMENT_FLAG_PATH, JSON.stringify({ lastRun: new Date().toISOString().split("T")[0], count: entries.length }));
+  writeFileSync(
+    ENRICHMENT_FLAG_PATH,
+    JSON.stringify({
+      lastRun: new Date().toISOString().split("T")[0],
+      count: entries.length,
+    }),
+  );
 
   return entries.length;
 }
@@ -986,17 +1304,41 @@ export function getCharacterSEO(slug: string): CharacterSEO | undefined {
 // ── UPGRADE 2: Mine Semrush CSVs ──────────────────────────────
 // Navigational site names to exclude
 const NAV_EXCLUSIONS = new Set([
-  "hanime", "nhentai", "pornhub", "xvideos", "xhamster", "hentaihaven",
-  "hentai haven", "rule34", "gelbooru", "danbooru", "e621", "r34",
-  "fakku", "tsumino", "hitomi", "simply hentai", "animeidhentai",
-  "3dhentai", "hentai stream", "hentai mama", "hentaigasm", "muchohentai",
-  "animehentai", "rule 34", "xnxx", "redtube",
+  "hanime",
+  "nhentai",
+  "pornhub",
+  "xvideos",
+  "xhamster",
+  "hentaihaven",
+  "hentai haven",
+  "rule34",
+  "gelbooru",
+  "danbooru",
+  "e621",
+  "r34",
+  "fakku",
+  "tsumino",
+  "hitomi",
+  "simply hentai",
+  "animeidhentai",
+  "3dhentai",
+  "hentai stream",
+  "hentai mama",
+  "hentaigasm",
+  "muchohentai",
+  "animehentai",
+  "rule 34",
+  "xnxx",
+  "redtube",
 ]);
 
 async function readCSVLines(path) {
   return new Promise((resolve, reject) => {
     const lines = [];
-    const rl = createInterface({ input: createReadStream(path), crlfDelay: Infinity });
+    const rl = createInterface({
+      input: createReadStream(path),
+      crlfDelay: Infinity,
+    });
     rl.on("line", (line) => lines.push(line));
     rl.on("close", () => resolve(lines));
     rl.on("error", reject);
@@ -1014,10 +1356,14 @@ async function mineSemrushKeywords() {
     if (existsSync(MINED_KEYWORDS_PATH)) {
       try {
         const mined = JSON.parse(readFileSync(MINED_KEYWORDS_PATH, "utf8"));
-        log(`No CSVs found — loaded ${mined.length} previously mined keywords from JSON`);
+        log(
+          `No CSVs found — loaded ${mined.length} previously mined keywords from JSON`,
+        );
         return mined;
       } catch {
-        log("No CSVs found and no cached keywords — using PRIORITY_KEYWORDS only");
+        log(
+          "No CSVs found and no cached keywords — using PRIORITY_KEYWORDS only",
+        );
         return [];
       }
     }
@@ -1051,7 +1397,8 @@ async function mineSemrushKeywords() {
     for (let i = 1; i < lines.length; i++) {
       // Simple CSV parse (handles most cases without quoted fields)
       const cols = lines[i].split(",");
-      if (cols.length < Math.max(kwIdx, intentIdx, volumeIdx, kdIdx) + 1) continue;
+      if (cols.length < Math.max(kwIdx, intentIdx, volumeIdx, kdIdx) + 1)
+        continue;
 
       const kw = cols[kwIdx].trim().toLowerCase();
       const intent = intentIdx >= 0 ? cols[intentIdx].trim() : "";
@@ -1061,7 +1408,12 @@ async function mineSemrushKeywords() {
       // Filter criteria
       if (volume < 1000) continue;
       if (kd >= 40) continue;
-      if (intent && !intent.includes("Informational") && !intent.includes("Commercial")) continue;
+      if (
+        intent &&
+        !intent.includes("Informational") &&
+        !intent.includes("Commercial")
+      )
+        continue;
 
       // Exclude navigational keywords
       if (NAV_EXCLUSIONS.has(kw)) continue;
@@ -1081,7 +1433,9 @@ async function mineSemrushKeywords() {
       const score = volume / (kd + 1);
 
       // Determine type heuristic
-      const isCharacter = kw.match(/\b(hentai|porn)\b/) && !kw.match(/\b(best|top|how|what|guide|list|watch)\b/);
+      const isCharacter =
+        kw.match(/\b(hentai|porn)\b/) &&
+        !kw.match(/\b(best|top|how|what|guide|list|watch)\b/);
       const type = isCharacter ? "character" : "blog";
 
       allKeywords.push({ kw, volume, kd, type, score, intent });
@@ -1102,7 +1456,9 @@ async function mineSemrushKeywords() {
 
   log(`Mined ${unique.length} qualifying keywords, selected top 50`);
   for (const k of top50.slice(0, 10)) {
-    log(`  "${k.kw}" vol=${k.volume} KD=${k.kd} score=${k.score.toFixed(0)} type=${k.type}`);
+    log(
+      `  "${k.kw}" vol=${k.volume} KD=${k.kd} score=${k.score.toFixed(0)} type=${k.type}`,
+    );
   }
   if (top50.length > 10) log(`  ... and ${top50.length - 10} more`);
 
@@ -1111,7 +1467,9 @@ async function mineSemrushKeywords() {
     const dir = dirname(MINED_KEYWORDS_PATH);
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
     writeFileSync(MINED_KEYWORDS_PATH, JSON.stringify(top50, null, 2));
-    log(`Saved ${top50.length} mined keywords to data/semrush-mined-keywords.json`);
+    log(
+      `Saved ${top50.length} mined keywords to data/semrush-mined-keywords.json`,
+    );
   }
 
   return top50;
@@ -1130,7 +1488,9 @@ function updateInternalLinks() {
         log("Already updated today — skipping");
         return 0;
       }
-    } catch { /* proceed */ }
+    } catch {
+      /* proceed */
+    }
   }
 
   // Collect all blog slugs
@@ -1151,11 +1511,17 @@ function updateInternalLinks() {
     try {
       const queue = JSON.parse(readFileSync(QUEUE_PATH, "utf8"));
       for (const item of queue) {
-        if (item.status === "published" && item.data?.slug && item.data?.title) {
+        if (
+          item.status === "published" &&
+          item.data?.slug &&
+          item.data?.title
+        ) {
           allBlogSlugs.push({ slug: item.data.slug, title: item.data.title });
         }
       }
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
 
   // Collect character pages
@@ -1166,9 +1532,21 @@ function updateInternalLinks() {
 
   // Collect top tags
   const popularTags = [
-    "anal", "uncensored", "3d", "milf", "vanilla", "tentacle",
-    "big_breasts", "creampie", "blowjob", "group", "ahegao",
-    "femdom", "yuri", "cosplay", "monster",
+    "anal",
+    "uncensored",
+    "3d",
+    "milf",
+    "vanilla",
+    "tentacle",
+    "big_breasts",
+    "creampie",
+    "blowjob",
+    "group",
+    "ahegao",
+    "femdom",
+    "yuri",
+    "cosplay",
+    "monster",
   ];
   const tagLinks = popularTags.map((t) => ({
     text: `${t.replace(/_/g, " ")} hentai`,
@@ -1199,7 +1577,9 @@ function updateInternalLinks() {
     const links = [
       ...characterLinks.slice(0, 5),
       ...tagLinks.slice(0, 5),
-      ...recentBlogs.filter((b) => b.href !== `/blog/${articleSlug}`).slice(0, 5),
+      ...recentBlogs
+        .filter((b) => b.href !== `/blog/${articleSlug}`)
+        .slice(0, 5),
     ];
 
     linkEntries.push({
@@ -1210,23 +1590,30 @@ function updateInternalLinks() {
   }
 
   if (DRY_RUN) {
-    log(`DRY RUN: would generate internal links for ${linkEntries.length} articles`);
+    log(
+      `DRY RUN: would generate internal links for ${linkEntries.length} articles`,
+    );
     return linkEntries.length;
   }
 
   // Build TypeScript file
-  const entriesStr = linkEntries.map((entry) => {
-    const linksStr = entry.linksToAdd.map((l) =>
-      `      { text: ${JSON.stringify(l.text)}, href: ${JSON.stringify(l.href)} }`
-    ).join(",\n");
-    return `  {
+  const entriesStr = linkEntries
+    .map((entry) => {
+      const linksStr = entry.linksToAdd
+        .map(
+          (l) =>
+            `      { text: ${JSON.stringify(l.text)}, href: ${JSON.stringify(l.href)} }`,
+        )
+        .join(",\n");
+      return `  {
     articleSlug: ${JSON.stringify(entry.articleSlug)},
     linksToAdd: [
 ${linksStr}
     ],
     updatedAt: ${JSON.stringify(entry.updatedAt)},
   }`;
-  }).join(",\n");
+    })
+    .join(",\n");
 
   const fileContent = `/**
  * blog-internal-links.ts — Dynamic internal links appended to blog articles
@@ -1259,12 +1646,20 @@ export function getInternalLinksForArticle(slug: string): ArticleLinks | undefin
 `;
 
   writeFileSync(BLOG_LINKS_PATH, fileContent);
-  log(`Wrote internal links for ${linkEntries.length} articles to blog-internal-links.ts`);
+  log(
+    `Wrote internal links for ${linkEntries.length} articles to blog-internal-links.ts`,
+  );
 
   // Save flag
   const flagDir = dirname(INTERNAL_LINKS_FLAG_PATH);
   if (!existsSync(flagDir)) mkdirSync(flagDir, { recursive: true });
-  writeFileSync(INTERNAL_LINKS_FLAG_PATH, JSON.stringify({ lastRun: new Date().toISOString().split("T")[0], count: linkEntries.length }));
+  writeFileSync(
+    INTERNAL_LINKS_FLAG_PATH,
+    JSON.stringify({
+      lastRun: new Date().toISOString().split("T")[0],
+      count: linkEntries.length,
+    }),
+  );
 
   return linkEntries.length;
 }
@@ -1304,7 +1699,9 @@ async function main() {
       if (isCovered) covered++;
       else remaining++;
     }
-    log(`\n  Covered: ${covered}/${PRIORITY_KEYWORDS.length} | Remaining: ${remaining}`);
+    log(
+      `\n  Covered: ${covered}/${PRIORITY_KEYWORDS.length} | Remaining: ${remaining}`,
+    );
 
     if (minedKeywords.length > 0) {
       section("KEYWORD STATUS — MINED FROM SEMRUSH CSV");
@@ -1312,10 +1709,14 @@ async function main() {
       for (const entry of minedKeywords.slice(0, 20)) {
         const isCovered = isKeywordCovered(entry.kw, existingSlugs);
         const marker = isCovered ? "DONE" : `TODO (KD ${entry.kd})`;
-        log(`  [${marker}] "${entry.kw}" — vol ${entry.volume}, score ${entry.score?.toFixed(0) || "?"}`);
+        log(
+          `  [${marker}] "${entry.kw}" — vol ${entry.volume}, score ${entry.score?.toFixed(0) || "?"}`,
+        );
         if (isCovered) minedCovered++;
       }
-      log(`\n  Mined keywords shown: 20/${minedKeywords.length} | Covered: ${minedCovered}`);
+      log(
+        `\n  Mined keywords shown: 20/${minedKeywords.length} | Covered: ${minedCovered}`,
+      );
     }
 
     // Show position changes
@@ -1323,7 +1724,9 @@ async function main() {
       section("POSITION CHANGES");
       for (const c of posChanges.slice(0, 15)) {
         const arrow = c.delta > 0 ? "UP" : "DOWN";
-        log(`  ${arrow} ${Math.abs(c.delta).toFixed(1)} — "${c.kw}" (${c.from} -> ${c.to})`);
+        log(
+          `  ${arrow} ${Math.abs(c.delta).toFixed(1)} — "${c.kw}" (${c.from} -> ${c.to})`,
+        );
       }
     }
 
@@ -1381,14 +1784,20 @@ async function main() {
   const totalClicks = gsc.queries.reduce((s, q) => s + q.clicks, 0);
   const totalImp = gsc.queries.reduce((s, q) => s + q.imp, 0);
   const pagesIndexed = gsc.pages.length;
-  log(`GSC (3-day): ${totalClicks} clicks | ${totalImp} impressions | ${gsc.queries.length} keywords | ${pagesIndexed} pages`);
+  log(
+    `GSC (3-day): ${totalClicks} clicks | ${totalImp} impressions | ${gsc.queries.length} keywords | ${pagesIndexed} pages`,
+  );
   log(`Articles generated: ${articles.length}`);
   log(`Articles added to queue: ${added}`);
   log(`Characters enriched: ${charsEnriched}`);
   log(`Blog internal links: ${linksUpdated} articles`);
-  log(`URLs submitted to Google: ${urlsSubmitted.submitted} OK, ${urlsSubmitted.failed} failed`);
+  log(
+    `URLs submitted to Google: ${urlsSubmitted.submitted} OK, ${urlsSubmitted.failed} failed`,
+  );
   log(`Mined keywords available: ${minedKeywords.length}`);
-  log(`Semrush keywords covered: ${PRIORITY_KEYWORDS.filter((e) => isKeywordCovered(e.kw, getExistingSlugs())).length}/${PRIORITY_KEYWORDS.length}`);
+  log(
+    `Semrush keywords covered: ${PRIORITY_KEYWORDS.filter((e) => isKeywordCovered(e.kw, getExistingSlugs())).length}/${PRIORITY_KEYWORDS.length}`,
+  );
 
   // 13. Telegram recap
   const topKw = gsc.queries
@@ -1396,18 +1805,30 @@ async function main() {
     .map((q) => `  ${q.kw} — pos ${q.pos}, ${q.imp} imp, ${q.clicks} clics`)
     .join("\n");
 
-  const articleList = articles.length > 0
-    ? articles.map((a) => `  - "${a.targetKeyword}" (vol ${a.semrushVolume}, KD ${a.semrushKD})\n    -> ${a.slug}`).join("\n")
-    : "  (aucun — tous les keywords easy deja couverts)";
+  const articleList =
+    articles.length > 0
+      ? articles
+          .map(
+            (a) =>
+              `  - "${a.targetKeyword}" (vol ${a.semrushVolume}, KD ${a.semrushKD})\n    -> ${a.slug}`,
+          )
+          .join("\n")
+      : "  (aucun — tous les keywords easy deja couverts)";
 
-  const posChangesText = posChanges.length > 0
-    ? posChanges.slice(0, 5).map((c) => {
-        const arrow = c.delta > 0 ? "+" : "";
-        return `  ${arrow}${c.delta.toFixed(1)} "${c.kw}" (${c.from} -> ${c.to})`;
-      }).join("\n")
-    : "  (pas de donnees precedentes)";
+  const posChangesText =
+    posChanges.length > 0
+      ? posChanges
+          .slice(0, 5)
+          .map((c) => {
+            const arrow = c.delta > 0 ? "+" : "";
+            return `  ${arrow}${c.delta.toFixed(1)} "${c.kw}" (${c.from} -> ${c.to})`;
+          })
+          .join("\n")
+      : "  (pas de donnees precedentes)";
 
-  const coveredCount = PRIORITY_KEYWORDS.filter((e) => isKeywordCovered(e.kw, getExistingSlugs())).length;
+  const coveredCount = PRIORITY_KEYWORDS.filter((e) =>
+    isKeywordCovered(e.kw, getExistingSlugs()),
+  ).length;
 
   const msg = `<b>SEO Autopilot v3 — MAXIMUM POWER</b>
 ${new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" })}
@@ -1437,6 +1858,8 @@ ${added > 0 || charsEnriched > 0 || linksUpdated > 0 ? "Git commit OK" : "Rien a
 
 main().catch(async (err) => {
   console.error("AUTOPILOT FATAL:", err);
-  await sendTelegram(`<b>SEO Autopilot v3 CRASH</b>\n${err.message}`).catch(() => {});
+  await sendTelegram(`<b>SEO Autopilot v3 CRASH</b>\n${err.message}`).catch(
+    () => {},
+  );
   process.exit(1);
 });

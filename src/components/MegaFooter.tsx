@@ -46,7 +46,7 @@ async function _getTopGames(): Promise<TopEntry[]> {
        GROUP BY copy
        ORDER BY count DESC
        LIMIT 48`,
-      [BANNED_TAGS_ARRAY]
+      [BANNED_TAGS_ARRAY],
     );
     return rows as TopEntry[];
   } catch (err) {
@@ -72,7 +72,7 @@ async function _getTopCharacters(): Promise<TopEntry[]> {
        GROUP BY ch
        ORDER BY count DESC
        LIMIT 48`,
-      [BANNED_TAGS_ARRAY]
+      [BANNED_TAGS_ARRAY],
     );
     return rows as TopEntry[];
   } catch (err) {
@@ -80,16 +80,46 @@ async function _getTopCharacters(): Promise<TopEntry[]> {
     return [];
   }
 }
-const getTopCharacters = memoize("footer-top-chars", _getTopCharacters, 60 * 60 * 1000);
+const getTopCharacters = memoize(
+  "footer-top-chars",
+  _getTopCharacters,
+  60 * 60 * 1000,
+);
 
 // Curated tag list — we skip boring/utility tags that aren't useful SEO anchors
 const FOOTER_TAG_BLACKLIST = new Set([
-  "animated", "sound", "1girl", "1boy", "solo", "hetero", "video",
-  "tagme", "highres", "absurdres", "long_hair", "short_hair",
-  "breasts", "small_breasts", "commentary", "english_commentary",
-  "japanese_text", "artist_name", "signature", "with", "the", "and",
-  "1girls", "2girls", "multiple_girls", "looking_at_viewer", "nipples",
-  "pussy", "penis", "completely_nude", "nude", "naked",
+  "animated",
+  "sound",
+  "1girl",
+  "1boy",
+  "solo",
+  "hetero",
+  "video",
+  "tagme",
+  "highres",
+  "absurdres",
+  "long_hair",
+  "short_hair",
+  "breasts",
+  "small_breasts",
+  "commentary",
+  "english_commentary",
+  "japanese_text",
+  "artist_name",
+  "signature",
+  "with",
+  "the",
+  "and",
+  "1girls",
+  "2girls",
+  "multiple_girls",
+  "looking_at_viewer",
+  "nipples",
+  "pussy",
+  "penis",
+  "completely_nude",
+  "nude",
+  "naked",
 ]);
 
 async function _getTopTags(): Promise<TopEntry[]> {
@@ -107,7 +137,7 @@ async function _getTopTags(): Promise<TopEntry[]> {
        GROUP BY tag
        ORDER BY count DESC
        LIMIT 120`,
-      [BANNED_TAGS_ARRAY]
+      [BANNED_TAGS_ARRAY],
     );
     return (rows as TopEntry[])
       .filter((r) => !FOOTER_TAG_BLACKLIST.has(r.name.toLowerCase()))
@@ -145,22 +175,43 @@ export async function MegaFooter() {
   return (
     <footer className="mega-footer" role="contentinfo">
       <div className="mega-footer__inner">
-
         {/* ── Categories / Hubs ─────────────────────────────── */}
         <section className="mega-footer__section">
           <h3 className="mega-footer__title">Categories</h3>
           <ul className="mega-footer__links">
-            <li><Link href="/hentai">Hentai (2D)</Link></li>
-            <li><Link href="/3d">3D Hentai</Link></li>
-            <li><Link href="/feed">Shorts Feed</Link></li>
-            <li><Link href="/trending">Trending</Link></li>
-            <li><Link href="/new">New Releases</Link></li>
-            <li><Link href="/explore">Explore All</Link></li>
-            <li><Link href="/tags">All Tags</Link></li>
-            <li><Link href="/character">Characters</Link></li>
-            <li><Link href="/series">Series &amp; Games</Link></li>
-            <li><Link href="/blog">Blog Articles</Link></li>
-            <li><Link href="/glossary">Glossary</Link></li>
+            <li>
+              <Link href="/hentai">Hentai (2D)</Link>
+            </li>
+            <li>
+              <Link href="/3d">3D Hentai</Link>
+            </li>
+            <li>
+              <Link href="/feed">Shorts Feed</Link>
+            </li>
+            <li>
+              <Link href="/trending">Trending</Link>
+            </li>
+            <li>
+              <Link href="/new">New Releases</Link>
+            </li>
+            <li>
+              <Link href="/explore">Explore All</Link>
+            </li>
+            <li>
+              <Link href="/tags">All Tags</Link>
+            </li>
+            <li>
+              <Link href="/character">Characters</Link>
+            </li>
+            <li>
+              <Link href="/series">Series &amp; Games</Link>
+            </li>
+            <li>
+              <Link href="/blog">Blog Articles</Link>
+            </li>
+            <li>
+              <Link href="/glossary">Glossary</Link>
+            </li>
           </ul>
         </section>
 
@@ -172,7 +223,9 @@ export async function MegaFooter() {
               <li key={g.name}>
                 <Link href={`/series/${encodeURIComponent(g.name)}`}>
                   {formatName(g.name)}
-                  <span className="mega-footer__count">({formatCount(g.count)})</span>
+                  <span className="mega-footer__count">
+                    ({formatCount(g.count)})
+                  </span>
                 </Link>
               </li>
             ))}
@@ -187,7 +240,9 @@ export async function MegaFooter() {
               <li key={c.name}>
                 <Link href={`/character/${encodeURIComponent(c.name)}`}>
                   {formatName(c.name)}
-                  <span className="mega-footer__count">({formatCount(c.count)})</span>
+                  <span className="mega-footer__count">
+                    ({formatCount(c.count)})
+                  </span>
                 </Link>
               </li>
             ))}
@@ -202,7 +257,9 @@ export async function MegaFooter() {
               <li key={t.name}>
                 <Link href={`/tag/${encodeURIComponent(t.name)}`}>
                   {formatName(t.name)}
-                  <span className="mega-footer__count">({formatCount(t.count)})</span>
+                  <span className="mega-footer__count">
+                    ({formatCount(t.count)})
+                  </span>
                 </Link>
               </li>
             ))}
@@ -213,10 +270,42 @@ export async function MegaFooter() {
         <section className="mega-footer__section">
           <h3 className="mega-footer__title">Community</h3>
           <ul className="mega-footer__links">
-            <li><a href="https://discord.gg/cQZc8trq8N" target="_blank" rel="noopener noreferrer">Discord</a></li>
-            <li><a href="https://t.me/ikudotgg" target="_blank" rel="noopener noreferrer">Telegram</a></li>
-            <li><a href="https://twitter.com/ikudotgg" target="_blank" rel="noopener noreferrer">Twitter / X</a></li>
-            <li><a href="https://reddit.com/u/ikudotgg" target="_blank" rel="noopener noreferrer">Reddit</a></li>
+            <li>
+              <a
+                href="https://discord.gg/cQZc8trq8N"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Discord
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://t.me/ikudotgg"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Telegram
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://twitter.com/ikudotgg"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Twitter / X
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://reddit.com/u/ikudotgg"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Reddit
+              </a>
+            </li>
           </ul>
         </section>
 
@@ -224,12 +313,24 @@ export async function MegaFooter() {
         <section className="mega-footer__section">
           <h3 className="mega-footer__title">Account</h3>
           <ul className="mega-footer__links">
-            <li><Link href="/login">Sign In</Link></li>
-            <li><Link href="/signup">Sign Up</Link></li>
-            <li><Link href="/pricing">Go Premium</Link></li>
-            <li><Link href="/favorites">My Favorites</Link></li>
-            <li><Link href="/history">Watch History</Link></li>
-            <li><Link href="/settings">Settings</Link></li>
+            <li>
+              <Link href="/login">Sign In</Link>
+            </li>
+            <li>
+              <Link href="/signup">Sign Up</Link>
+            </li>
+            <li>
+              <Link href="/pricing">Go Premium</Link>
+            </li>
+            <li>
+              <Link href="/favorites">My Favorites</Link>
+            </li>
+            <li>
+              <Link href="/history">Watch History</Link>
+            </li>
+            <li>
+              <Link href="/settings">Settings</Link>
+            </li>
           </ul>
         </section>
 
@@ -237,10 +338,18 @@ export async function MegaFooter() {
         <section className="mega-footer__section">
           <h3 className="mega-footer__title">Legal</h3>
           <ul className="mega-footer__links">
-            <li><Link href="/dmca">DMCA / Copyright</Link></li>
-            <li><Link href="/terms">Terms of Service</Link></li>
-            <li><Link href="/privacy">Privacy Policy</Link></li>
-            <li><Link href="/contact">Contact</Link></li>
+            <li>
+              <Link href="/dmca">DMCA / Copyright</Link>
+            </li>
+            <li>
+              <Link href="/terms">Terms of Service</Link>
+            </li>
+            <li>
+              <Link href="/privacy">Privacy Policy</Link>
+            </li>
+            <li>
+              <Link href="/contact">Contact</Link>
+            </li>
           </ul>
         </section>
 
@@ -248,15 +357,23 @@ export async function MegaFooter() {
         <section className="mega-footer__section">
           <h3 className="mega-footer__title">Friends</h3>
           <ul className="mega-footer__links">
-            <li><a href="https://mypornadviser.com" target="_blank" rel="noopener">My Porn Adviser</a></li>
+            <li>
+              <a
+                href="https://mypornadviser.com"
+                target="_blank"
+                rel="noopener"
+              >
+                My Porn Adviser
+              </a>
+            </li>
           </ul>
         </section>
       </div>
 
       <div className="mega-footer__bottom">
         <p>
-          © 2026 iku.gg — All models depicted are 18+ years old. Strict zero-tolerance
-          policy on any content involving minors.
+          © 2026 iku.gg — All models depicted are 18+ years old. Strict
+          zero-tolerance policy on any content involving minors.
         </p>
         <p className="mega-footer__tagline">
           The largest free animated hentai &amp; 3D cartoon porn tube online.

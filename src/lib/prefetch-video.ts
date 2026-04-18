@@ -27,9 +27,9 @@ function getResolvePageUrl(slug: string): string | null {
     hmm: "https://hentaimama.io/",
     htv: "https://hentai.tv/hentai/",
     aid: "https://animeidhentai.com/",
-    wh:  "https://watchhentai.net/",
-    hw:  "https://hentaiworld.tv/",
-    hg:  "https://hentaigasm.com/",
+    wh: "https://watchhentai.net/",
+    hw: "https://hentaiworld.tv/",
+    hg: "https://hentaigasm.com/",
   };
   // hentaicity uses no standard prefix we track here — the page URL lives
   // in the DB (page_url column). Hover prefetch skips these — falls back

@@ -7,7 +7,10 @@ import sharp from "sharp";
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 const GUILD_ID = process.env.DISCORD_GUILD_ID;
-if (!BOT_TOKEN || !GUILD_ID) { console.error("Missing env"); process.exit(1); }
+if (!BOT_TOKEN || !GUILD_ID) {
+  console.error("Missing env");
+  process.exit(1);
+}
 
 const ICON_SVG = `
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
@@ -32,7 +35,10 @@ const ICON_SVG = `
   <text x="420" y="170" font-size="80" fill="#ffffff" opacity="0.9">✨</text>
 </svg>`;
 
-const png = await sharp(Buffer.from(ICON_SVG)).resize(512, 512).png().toBuffer();
+const png = await sharp(Buffer.from(ICON_SVG))
+  .resize(512, 512)
+  .png()
+  .toBuffer();
 console.log(`icon: ${png.length} bytes`);
 
 const res = await fetch(`https://discord.com/api/v10/guilds/${GUILD_ID}`, {

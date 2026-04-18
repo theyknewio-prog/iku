@@ -33,7 +33,10 @@ const DAILY_CAP = Number(process.env.DAILY_CAP || 25);
 const TG_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TG_CHAT = process.env.TELEGRAM_CHAT_ID || "5617056258";
 
-if (!DB_URL) { console.error("DATABASE_URL required"); process.exit(1); }
+if (!DB_URL) {
+  console.error("DATABASE_URL required");
+  process.exit(1);
+}
 
 const pool = new pg.Pool({ connectionString: DB_URL, max: 3 });
 
@@ -111,7 +114,8 @@ async function sendMail(to, subjectStr, textBody) {
     }),
   });
   const j = await r.json();
-  if (!r.ok) throw new Error(`resend ${r.status}: ${JSON.stringify(j).slice(0, 300)}`);
+  if (!r.ok)
+    throw new Error(`resend ${r.status}: ${JSON.stringify(j).slice(0, 300)}`);
   return j.id;
 }
 
@@ -124,7 +128,9 @@ async function pingTg(msg) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ chat_id: TG_CHAT, text: msg }),
     });
-  } catch { /* noop */ }
+  } catch {
+    /* noop */
+  }
 }
 
 // ── Commands ────────────────────────────────────────────────────
@@ -141,13 +147,15 @@ async function cmdInit() {
         `INSERT INTO bl_outreach (site_name, site_url, email)
          VALUES ($1, $2, $3)
          ON CONFLICT (email) DO NOTHING`,
-        [p.site, p.url, email.toLowerCase()]
+        [p.site, p.url, email.toLowerCase()],
       );
       inserted += r.rowCount;
     }
   }
   console.log(`Seeded ${inserted} new prospects.`);
-  const tot = await pool.query(`SELECT status, COUNT(*) FROM bl_outreach GROUP BY status`);
+  const tot = await pool.query(
+    `SELECT status, COUNT(*) FROM bl_outreach GROUP BY status`,
+  );
   console.log("Status:", tot.rows);
 }
 
@@ -158,32 +166,37 @@ async function cmdSend() {
       WHERE status = 'queued'
       ORDER BY id ASC
       LIMIT $1`,
-    [DAILY_CAP]
+    [DAILY_CAP],
   );
   if (!rows.length) {
     console.log("No queued prospects.");
     return;
   }
-  let sent = 0, failed = 0;
+  let sent = 0,
+    failed = 0;
   for (const p of rows) {
     try {
-      const id = await sendMail(p.email, subject(p.site_name), buildBody(p.site_name, p.site_url));
+      const id = await sendMail(
+        p.email,
+        subject(p.site_name),
+        buildBody(p.site_name, p.site_url),
+      );
       await pool.query(
         `UPDATE bl_outreach SET status='sent', sent_at=now(), resend_id=$2 WHERE id=$1`,
-        [p.id, id]
+        [p.id, id],
       );
       sent++;
       console.log(`✓ ${p.email} (${p.site_name})`);
     } catch (e) {
       await pool.query(
         `UPDATE bl_outreach SET status='failed', last_error=$2 WHERE id=$1`,
-        [p.id, String(e).slice(0, 500)]
+        [p.id, String(e).slice(0, 500)],
       );
       failed++;
       console.log(`✗ ${p.email}: ${String(e).slice(0, 120)}`);
     }
     // light throttle: 1 send every ~1.5s
-    await new Promise(r => setTimeout(r, 1500));
+    await new Promise((r) => setTimeout(r, 1500));
   }
   const msg = `📮 BL outreach batch\n✓ Sent: ${sent}\n✗ Failed: ${failed}\nQueue remaining: check --stats`;
   console.log(msg);
@@ -199,7 +212,7 @@ async function cmdFollowup() {
         AND sent_at < now() - INTERVAL '5 days'
       ORDER BY sent_at ASC
       LIMIT $1`,
-    [DAILY_CAP]
+    [DAILY_CAP],
   );
   if (!rows.length) {
     console.log("No follow-ups due.");
@@ -208,36 +221,41 @@ async function cmdFollowup() {
   let sent = 0;
   for (const p of rows) {
     try {
-      await sendMail(p.email, `Re: ${subject(p.site_name)}`, buildFollowupBody(p.site_name));
+      await sendMail(
+        p.email,
+        `Re: ${subject(p.site_name)}`,
+        buildFollowupBody(p.site_name),
+      );
       await pool.query(
         `UPDATE bl_outreach SET followup_sent_at=now() WHERE id=$1`,
-        [p.id]
+        [p.id],
       );
       sent++;
       console.log(`↻ ${p.email}`);
     } catch (e) {
       console.log(`✗ ${p.email}: ${String(e).slice(0, 120)}`);
     }
-    await new Promise(r => setTimeout(r, 1500));
+    await new Promise((r) => setTimeout(r, 1500));
   }
   await pingTg(`🔄 BL follow-up batch: ${sent} sent`);
 }
 
 async function cmdStats() {
   const r = await pool.query(
-    `SELECT status, COUNT(*) FROM bl_outreach GROUP BY status ORDER BY 1`
+    `SELECT status, COUNT(*) FROM bl_outreach GROUP BY status ORDER BY 1`,
   );
   console.log("Status breakdown:");
-  for (const row of r.rows) console.log(`  ${row.status.padEnd(10)} ${row.count}`);
+  for (const row of r.rows)
+    console.log(`  ${row.status.padEnd(10)} ${row.count}`);
   const recent = await pool.query(
     `SELECT site_name, email, status, sent_at, replied_at
        FROM bl_outreach
       WHERE sent_at IS NOT NULL
-      ORDER BY sent_at DESC LIMIT 10`
+      ORDER BY sent_at DESC LIMIT 10`,
   );
   console.log("\nLast 10 sent:");
   for (const row of recent.rows) {
-    const when = row.sent_at?.toISOString?.().slice(0, 16) || '';
+    const when = row.sent_at?.toISOString?.().slice(0, 16) || "";
     console.log(`  [${row.status}] ${when} ${row.site_name} (${row.email})`);
   }
 }
@@ -252,7 +270,9 @@ try {
   else if (cmd === "--followup") await cmdFollowup();
   else if (cmd === "--stats") await cmdStats();
   else {
-    console.log("Usage: node bl-outreach.mjs [--init | --send | --followup | --stats]");
+    console.log(
+      "Usage: node bl-outreach.mjs [--init | --send | --followup | --stats]",
+    );
     process.exit(1);
   }
 } finally {

@@ -82,7 +82,7 @@ async function buildUrlList(submitted) {
       `SELECT slug FROM videos
        WHERE thumbnail IS NOT NULL AND thumbnail <> ''
        ORDER BY score DESC NULLS LAST
-       LIMIT 5000`
+       LIMIT 5000`,
     );
     for (const r of videos) urls.push(`https://${HOST}/watch/${r.slug}`);
 
@@ -94,7 +94,7 @@ async function buildUrlList(submitted) {
        GROUP BY ch
        HAVING COUNT(*) > 5
        ORDER BY c DESC
-       LIMIT 1500`
+       LIMIT 1500`,
     );
     for (const r of chars) {
       urls.push(`https://${HOST}/character/${encodeURIComponent(r.name)}`);
@@ -108,7 +108,7 @@ async function buildUrlList(submitted) {
        GROUP BY t
        HAVING COUNT(*) > 20
        ORDER BY c DESC
-       LIMIT 1500`
+       LIMIT 1500`,
     );
     for (const r of tags) {
       urls.push(`https://${HOST}/tag/${encodeURIComponent(r.name)}`);
@@ -122,7 +122,7 @@ async function buildUrlList(submitted) {
        GROUP BY co
        HAVING COUNT(*) > 10
        ORDER BY c DESC
-       LIMIT 1000`
+       LIMIT 1000`,
     );
     for (const r of series) {
       urls.push(`https://${HOST}/series/${encodeURIComponent(r.name)}`);
@@ -142,7 +142,7 @@ async function buildUrlList(submitted) {
       `https://${HOST}/tags`,
       `https://${HOST}/blog`,
       `https://${HOST}/glossary`,
-      `https://${HOST}/pricing`
+      `https://${HOST}/pricing`,
     );
   } finally {
     await pool.end();
@@ -186,7 +186,7 @@ function postBatch(urlList) {
         let data = "";
         res.on("data", (c) => (data += c));
         res.on("end", () => resolve({ status: res.statusCode, body: data }));
-      }
+      },
     );
     req.on("error", reject);
     req.on("timeout", () => req.destroy(new Error("timeout")));
@@ -228,11 +228,13 @@ async function main() {
         okCount += slice.length;
         const now = Date.now();
         for (const u of slice) submitted[u] = now;
-        log(`Batch ${i / BATCH + 1}: ${slice.length} URLs → HTTP ${res.status}`);
+        log(
+          `Batch ${i / BATCH + 1}: ${slice.length} URLs → HTTP ${res.status}`,
+        );
       } else {
         log(
           `Batch ${i / BATCH + 1}: ${slice.length} URLs → HTTP ${res.status} ` +
-            `${res.body.slice(0, 120)}`
+            `${res.body.slice(0, 120)}`,
         );
       }
     } catch (err) {

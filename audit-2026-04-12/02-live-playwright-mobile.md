@@ -4,17 +4,18 @@
 
 ### hgasm1.com blocked by CSP → 80-97% of thumbnails fail
 
-| Page | Images broken | Total |
-|------|--------------|-------|
-| Homepage | **50 / 62** | 80.6% fail |
-| /trending | **22 / 41** | 53.7% fail |
-| /new | **40 / 41** | **97.6% fail** |
+| Page      | Images broken | Total          |
+| --------- | ------------- | -------------- |
+| Homepage  | **50 / 62**   | 80.6% fail     |
+| /trending | **22 / 41**   | 53.7% fail     |
+| /new      | **40 / 41**   | **97.6% fail** |
 
 Evidence from console: 20+ CSP violations on every page, all pointing at images from `hgasm1.com` being blocked by the `img-src` directive.
 
 **Why**: the hentaigasm scraper pulled thumbnails from `hgasm1.com` (probably the origin CDN), but `src/middleware.ts` CSP never whitelisted that domain. Every hentaigasm video shows as a black/empty card. That's why /new is "all black" and /trending has holes.
 
 **User complaint mapping**:
+
 - "footer fait 4km sur homepage" → actually the scroll height is 7314px because all the broken cards still reserve vertical space. When you scroll past 50+ invisible cards it FEELS like endless footer.
 - "trending jai des ad vide, c tout noir" → not ads, broken video thumbnails
 - "new releases tout est noir" → 97% broken thumbnails
@@ -33,6 +34,7 @@ On `/watch/[slug]` there's a visible white 300x250 area with an error icon + "Ad
 ## 🔴 P0 — Shorts interstitial never triggers
 
 After **15 rapid swipes** in `/feed`, agent found 0 dialogs/modals/interstitials. The `FeedInterstitial` component I replaced earlier today with HentaiPros 300x250 is wired but the trigger logic isn't firing. Either:
+
 - The swipe counter resets on each video mount
 - The threshold is too high (I think it's 5, so 15 swipes = should trigger 3 times)
 - The overlay renders but is invisible (z-index / display bug)
@@ -44,6 +46,7 @@ User complaint: "jai beau scroll les shorts, 0 pub, il en faut tous les 3 shorts
 ## 🔴 P1 — CSP blocks multiple ad networks
 
 Adsterra sub-networks being blocked:
+
 - `protrafficinspector.com`
 - `skinnycrawlinglax.com`
 - `sourshaped.com`
@@ -95,11 +98,11 @@ Note on `/explore` — user said it's "pas responsive tout est gros". Agent didn
 
 ## Metrics summary (iPhone 16 Pro Max 430x932)
 
-| Page | scrollHeight | Overflow | Broken imgs | Console errs |
-|------|-------------|----------|------------|--------------|
-| / | 7314 | -6 | 50/62 | 36 |
-| /trending | 5174 | -6 | 22/41 | 2 |
-| /new | 5167 | -6 | 40/41 | 82 |
-| /explore | normal | -6 | few | ok |
-| /feed | — | — | — | — |
-| /watch | 4144 | -6 | few | ok |
+| Page      | scrollHeight | Overflow | Broken imgs | Console errs |
+| --------- | ------------ | -------- | ----------- | ------------ |
+| /         | 7314         | -6       | 50/62       | 36           |
+| /trending | 5174         | -6       | 22/41       | 2            |
+| /new      | 5167         | -6       | 40/41       | 82           |
+| /explore  | normal       | -6       | few         | ok           |
+| /feed     | —            | —        | —           | —            |
+| /watch    | 4144         | -6       | few         | ok           |

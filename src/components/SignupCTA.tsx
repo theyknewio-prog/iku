@@ -51,24 +51,42 @@ export function SignupCTA({
   }
 
   return (
-    <section className="signup-cta signup-cta--inline" aria-label="Create a free account">
+    <section
+      className="signup-cta signup-cta--inline"
+      aria-label="Create a free account"
+    >
       <div className="signup-cta__glow" aria-hidden />
       <div className="signup-cta__content">
         <div className="signup-cta__eyebrow">💖 Free account · 30 seconds</div>
         <h3 className="signup-cta__headline">
-          Unlock the <span className="signup-cta__headline-accent">full iku.gg experience</span>
+          Unlock the{" "}
+          <span className="signup-cta__headline-accent">
+            full iku.gg experience
+          </span>
         </h3>
         <p className="signup-cta__sub">
           Save unlimited favorites, sync history across devices, earn points
           every day, and climb through 6 anime tiers on the leaderboard.
         </p>
         <ul className="signup-cta__perks">
-          <li><span aria-hidden>❤️</span> Unlimited favorites</li>
-          <li><span aria-hidden>🔥</span> Daily streak + bonuses</li>
-          <li><span aria-hidden>🎯</span> 3 daily quests · +15 pts each</li>
-          <li><span aria-hidden>🏆</span> Leaderboard + 11 badges</li>
-          <li><span aria-hidden>💎</span> 30% off Pro at tier 5</li>
-          <li><span aria-hidden>🎮</span> Discord Pro channel access</li>
+          <li>
+            <span aria-hidden>❤️</span> Unlimited favorites
+          </li>
+          <li>
+            <span aria-hidden>🔥</span> Daily streak + bonuses
+          </li>
+          <li>
+            <span aria-hidden>🎯</span> 3 daily quests · +15 pts each
+          </li>
+          <li>
+            <span aria-hidden>🏆</span> Leaderboard + 11 badges
+          </li>
+          <li>
+            <span aria-hidden>💎</span> 30% off Pro at tier 5
+          </li>
+          <li>
+            <span aria-hidden>🎮</span> Discord Pro channel access
+          </li>
         </ul>
         <div className="signup-cta__actions">
           <MagneticButton>

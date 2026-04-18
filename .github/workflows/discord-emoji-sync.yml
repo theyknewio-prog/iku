@@ -24,20 +24,20 @@ jobs:
       - name: Import static emojis (idempotent)
         env:
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
-          DISCORD_GUILD_ID:  ${{ secrets.DISCORD_GUILD_ID }}
+          DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
         run: node scripts/discord-import-emojis.mjs
         continue-on-error: true
 
       - name: Import animated emojis
         env:
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
-          DISCORD_GUILD_ID:  ${{ secrets.DISCORD_GUILD_ID }}
+          DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
         run: node scripts/discord-import-animated-emojis.mjs
         continue-on-error: true
 
       - name: Import stickers (idempotent)
         env:
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
-          DISCORD_GUILD_ID:  ${{ secrets.DISCORD_GUILD_ID }}
+          DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
         run: node scripts/discord-import-stickers.mjs
         continue-on-error: true

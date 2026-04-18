@@ -15,13 +15,23 @@
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 const GUILD_ID = process.env.DISCORD_GUILD_ID;
-if (!BOT_TOKEN || !GUILD_ID) { console.error("Missing env"); process.exit(1); }
+if (!BOT_TOKEN || !GUILD_ID) {
+  console.error("Missing env");
+  process.exit(1);
+}
 
 const API = "https://discord.com/api/v10";
-const headers = { Authorization: `Bot ${BOT_TOKEN}`, "Content-Type": "application/json" };
+const headers = {
+  Authorization: `Bot ${BOT_TOKEN}`,
+  "Content-Type": "application/json",
+};
 
 async function api(method, path, body) {
-  const res = await fetch(API + path, { method, headers, body: body ? JSON.stringify(body) : undefined });
+  const res = await fetch(API + path, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
   if (res.status === 429) {
     const r = await res.json();
     await new Promise((x) => setTimeout(x, (r.retry_after + 0.5) * 1000));
@@ -29,7 +39,12 @@ async function api(method, path, body) {
   }
   if (res.status === 204) return {};
   const text = await res.text();
-  let data; try { data = JSON.parse(text); } catch { data = text; }
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = text;
+  }
   if (!res.ok) {
     const e = new Error(`${method} ${path}: ${JSON.stringify(data)}`);
     e.status = res.status;
@@ -47,23 +62,72 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // Keep if title or description matches ANY of these
 const INCLUDE_KEYWORDS = [
   // anime themed
-  "anime", "ahegao", "waifu", "kawaii", "senpai", "uwu", "owo",
-  "chan", "tsundere", "yandere", "yuri", "baka", "nani",
+  "anime",
+  "ahegao",
+  "waifu",
+  "kawaii",
+  "senpai",
+  "uwu",
+  "owo",
+  "chan",
+  "tsundere",
+  "yandere",
+  "yuri",
+  "baka",
+  "nani",
   // reactions
-  "lewd", "horny", "blush", "smug", "pout", "moan", "wink",
-  "tongue", "lick", "kiss", "heart", "sparkle",
+  "lewd",
+  "horny",
+  "blush",
+  "smug",
+  "pout",
+  "moan",
+  "wink",
+  "tongue",
+  "lick",
+  "kiss",
+  "heart",
+  "sparkle",
   // characters / tropes
-  "catgirl", "nekomimi", "maid", "miko", "loli_queen", // FILTERED BELOW
-  "demon_girl", "angel", "goddess", "princess",
-  "hinata", "asuna", "rem", "nezuko", "zelda", "marin",
-  "mikasa", "hatsune", "miku", "ochako", "zero_two",
+  "catgirl",
+  "nekomimi",
+  "maid",
+  "miko",
+  "loli_queen", // FILTERED BELOW
+  "demon_girl",
+  "angel",
+  "goddess",
+  "princess",
+  "hinata",
+  "asuna",
+  "rem",
+  "nezuko",
+  "zelda",
+  "marin",
+  "mikasa",
+  "hatsune",
+  "miku",
+  "ochako",
+  "zero_two",
 ];
 
 // NEVER include anything matching these (opsec + legal)
 const EXCLUDE_KEYWORDS = [
-  "loli", "shota", "child", "kid", "minor", "underage", "infant",
-  "toddler", "baby", "young_girl", "cub",
-  "nazi", "hitler", "swastika", "slur",
+  "loli",
+  "shota",
+  "child",
+  "kid",
+  "minor",
+  "underage",
+  "infant",
+  "toddler",
+  "baby",
+  "young_girl",
+  "cub",
+  "nazi",
+  "hitler",
+  "swastika",
+  "slur",
 ];
 
 // ────────────────────────────────────────────────────────────────
@@ -93,7 +157,9 @@ function matchesExclude(text) {
 }
 
 async function downloadImage(url) {
-  const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0 iku-emoji-importer" } });
+  const res = await fetch(url, {
+    headers: { "User-Agent": "Mozilla/5.0 iku-emoji-importer" },
+  });
   if (!res.ok) throw new Error(`download ${url} → ${res.status}`);
   const buf = Buffer.from(await res.arrayBuffer());
   const contentType = res.headers.get("content-type") || "image/png";
@@ -155,7 +221,9 @@ async function run() {
     try {
       const { buf, contentType } = await downloadImage(e.image);
       if (buf.length > 256 * 1024) {
-        console.log(`  ⚠ ${name}: ${(buf.length / 1024).toFixed(0)}KB > 256KB, skipping`);
+        console.log(
+          `  ⚠ ${name}: ${(buf.length / 1024).toFixed(0)}KB > 256KB, skipping`,
+        );
         failed++;
         continue;
       }
@@ -168,7 +236,9 @@ async function run() {
       });
       existingNames.add(name);
       uploaded++;
-      console.log(`  ✓ :${name}: (${(buf.length / 1024).toFixed(0)}KB) — faves: ${e.faves || 0}`);
+      console.log(
+        `  ✓ :${name}: (${(buf.length / 1024).toFixed(0)}KB) — faves: ${e.faves || 0}`,
+      );
       await sleep(500); // Discord rate limit
     } catch (err) {
       failed++;
@@ -179,7 +249,12 @@ async function run() {
     }
   }
 
-  console.log(`\n✨ Done: ${uploaded} uploaded, ${skipped} skipped (already exist), ${failed} failed`);
+  console.log(
+    `\n✨ Done: ${uploaded} uploaded, ${skipped} skipped (already exist), ${failed} failed`,
+  );
 }
 
-run().catch((err) => { console.error("❌", err); process.exit(1); });
+run().catch((err) => {
+  console.error("❌", err);
+  process.exit(1);
+});

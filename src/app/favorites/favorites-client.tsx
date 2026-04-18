@@ -63,18 +63,15 @@ export function FavoritesClient({ initialItems, isAuthenticated }: Props) {
     setItems([]);
   }, [isAuthenticated]);
 
-  const handleRemove = useCallback(
-    async (slug: string) => {
-      // Remove-only, never toggles. Previously used `toggleFavorite`, which on
-      // a logged-in user's new device (empty localStorage) would ADD the item
-      // instead of removing it — the server DELETE would then race with a
-      // server POST from the same call, and the ghost favorite came back on
-      // refresh. See ux.md #3.
-      removeFavorite(slug);
-      setItems((prev) => prev.filter((f) => f.slug !== slug));
-    },
-    []
-  );
+  const handleRemove = useCallback(async (slug: string) => {
+    // Remove-only, never toggles. Previously used `toggleFavorite`, which on
+    // a logged-in user's new device (empty localStorage) would ADD the item
+    // instead of removing it — the server DELETE would then race with a
+    // server POST from the same call, and the ghost favorite came back on
+    // refresh. See ux.md #3.
+    removeFavorite(slug);
+    setItems((prev) => prev.filter((f) => f.slug !== slug));
+  }, []);
 
   if (!mounted) {
     return (
@@ -90,17 +87,29 @@ export function FavoritesClient({ initialItems, isAuthenticated }: Props) {
 
   return (
     <main className="shell-content">
-      <div className="page-container" style={{ paddingTop: "48px", paddingBottom: "80px" }}>
-
+      <div
+        className="page-container"
+        style={{ paddingTop: "48px", paddingBottom: "80px" }}
+      >
         {/* Header */}
         <div className="explore-header" style={{ marginBottom: "24px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: "12px",
+            }}
+          >
             <div>
               <h1 className="explore-header__title">Favorites</h1>
               <p className="explore-header__sub">
                 {items.length} saved video{items.length !== 1 ? "s" : ""}
                 {isAuthenticated && items.length > 0 && (
-                  <span style={{ marginLeft: 8, fontSize: 11, color: "#4ade80" }}>
+                  <span
+                    style={{ marginLeft: 8, fontSize: 11, color: "#4ade80" }}
+                  >
                     ✓ synced
                   </span>
                 )}
@@ -110,7 +119,10 @@ export function FavoritesClient({ initialItems, isAuthenticated }: Props) {
               <button
                 onClick={handleClear}
                 className="btn btn-ghost btn-sm"
-                style={{ color: "var(--color-error)", borderColor: "rgba(239,68,68,0.3)" }}
+                style={{
+                  color: "var(--color-error)",
+                  borderColor: "rgba(239,68,68,0.3)",
+                }}
               >
                 Clear All
               </button>
@@ -120,18 +132,51 @@ export function FavoritesClient({ initialItems, isAuthenticated }: Props) {
 
         {/* Empty state */}
         {items.length === 0 && (
-          <div style={{ textAlign: "center", padding: "80px 20px", color: "var(--color-text-tertiary)" }}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ margin: "0 auto 16px", display: "block", opacity: 0.3 }}>
+          <div
+            style={{
+              textAlign: "center",
+              padding: "80px 20px",
+              color: "var(--color-text-tertiary)",
+            }}
+          >
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ margin: "0 auto 16px", display: "block", opacity: 0.3 }}
+            >
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
-            <p style={{ fontSize: "var(--text-base)", marginBottom: "8px" }}>No favorites yet</p>
-            <p style={{ fontSize: "var(--text-sm)", opacity: 0.6 }}>Tap the heart on any video to save it here</p>
+            <p style={{ fontSize: "var(--text-base)", marginBottom: "8px" }}>
+              No favorites yet
+            </p>
+            <p style={{ fontSize: "var(--text-sm)", opacity: 0.6 }}>
+              Tap the heart on any video to save it here
+            </p>
             {!isAuthenticated && (
-              <p style={{ fontSize: "var(--text-xs)", opacity: 0.5, marginTop: "8px" }}>
-                <Link href="/login" style={{ color: "#ff6b9d" }}>Sign in</Link> to sync across devices
+              <p
+                style={{
+                  fontSize: "var(--text-xs)",
+                  opacity: 0.5,
+                  marginTop: "8px",
+                }}
+              >
+                <Link href="/login" style={{ color: "#ff6b9d" }}>
+                  Sign in
+                </Link>{" "}
+                to sync across devices
               </p>
             )}
-            <Link href="/" className="btn btn-ghost btn-sm" style={{ marginTop: "20px", display: "inline-flex" }}>
+            <Link
+              href="/"
+              className="btn btn-ghost btn-sm"
+              style={{ marginTop: "20px", display: "inline-flex" }}
+            >
               Browse videos
             </Link>
           </div>
@@ -141,14 +186,20 @@ export function FavoritesClient({ initialItems, isAuthenticated }: Props) {
         {items.length > 0 && (
           <div className="video-grid">
             {items.map((item) => (
-              <FavoriteCard key={item.slug} item={item} onRemove={handleRemove} />
+              <FavoriteCard
+                key={item.slug}
+                item={item}
+                onRemove={handleRemove}
+              />
             ))}
           </div>
         )}
 
         {/* Conversion CTA — anon user who already started saving favorites
             is a high-intent signup candidate. */}
-        {!isAuthenticated && items.length > 0 && <SignupCTA placement="favorites" />}
+        {!isAuthenticated && items.length > 0 && (
+          <SignupCTA placement="favorites" />
+        )}
       </div>
     </main>
   );
@@ -182,7 +233,9 @@ function FavoriteCard({
             onError={handleImgError}
           />
         ) : (
-          <div style={{ position: "absolute", inset: 0, background: gradientBg }} />
+          <div
+            style={{ position: "absolute", inset: 0, background: gradientBg }}
+          />
         )}
 
         <button
@@ -194,7 +247,16 @@ function FavoriteCard({
             onRemove(item.slug);
           }}
         >
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="#ff2080" stroke="#ff2080" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="#ff2080"
+            stroke="#ff2080"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
           </svg>
         </button>

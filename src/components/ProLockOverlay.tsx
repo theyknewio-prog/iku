@@ -94,7 +94,11 @@ export function ProLockOverlay({
           alt=""
           fill
           unoptimized
-          style={{ objectFit: "cover", filter: "blur(32px) brightness(0.4)", transform: "scale(1.15)" }}
+          style={{
+            objectFit: "cover",
+            filter: "blur(32px) brightness(0.4)",
+            transform: "scale(1.15)",
+          }}
         />
       )}
 
@@ -109,7 +113,8 @@ export function ProLockOverlay({
           padding: "24px 20px",
           textAlign: "center",
           color: "#fff",
-          background: "linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%)",
+          background:
+            "linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%)",
         }}
       >
         <div
@@ -162,10 +167,18 @@ export function ProLockOverlay({
             lineHeight: 1.45,
           }}
         >
-          {title.slice(0, 110)} — plus every other full-length episode on iku.gg.
+          {title.slice(0, 110)} — plus every other full-length episode on
+          iku.gg.
         </p>
 
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 10,
+            flexWrap: "wrap",
+            justifyContent: "center",
+          }}
+        >
           <Link
             href="/pricing"
             style={{
@@ -201,7 +214,9 @@ export function ProLockOverlay({
                 cursor: hasEnoughPoints && !busy ? "pointer" : "default",
               }}
             >
-              {busy ? "Unlocking…" : `🪙 Unlock with ${unlockCost} pts (you: ${userScore})`}
+              {busy
+                ? "Unlocking…"
+                : `🪙 Unlock with ${unlockCost} pts (you: ${userScore})`}
             </button>
           )}
           {!signedIn && (
@@ -224,7 +239,9 @@ export function ProLockOverlay({
         </div>
 
         {error && (
-          <div style={{ marginTop: 14, fontSize: 12, color: "#ff9999" }}>{error}</div>
+          <div style={{ marginTop: 14, fontSize: 12, color: "#ff9999" }}>
+            {error}
+          </div>
         )}
 
         <div
@@ -243,8 +260,15 @@ export function ProLockOverlay({
           <span>✓ 4K when available</span>
         </div>
         {!signedIn && (
-          <div style={{ marginTop: 10, fontSize: 11, color: "rgba(255,255,255,0.45)" }}>
-            Or sign up free to earn unlock points by watching, favoriting, and completing daily quests.
+          <div
+            style={{
+              marginTop: 10,
+              fontSize: 11,
+              color: "rgba(255,255,255,0.45)",
+            }}
+          >
+            Or sign up free to earn unlock points by watching, favoriting, and
+            completing daily quests.
           </div>
         )}
       </div>

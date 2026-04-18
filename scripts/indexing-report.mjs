@@ -28,7 +28,11 @@ const SITE_URL = "sc-domain:iku.gg";
 
 function loadJson(path) {
   if (!existsSync(path)) return {};
-  try { return JSON.parse(readFileSync(path, "utf8")); } catch { return {}; }
+  try {
+    return JSON.parse(readFileSync(path, "utf8"));
+  } catch {
+    return {};
+  }
 }
 
 function countSubmittedSince(map, ms) {
@@ -47,7 +51,10 @@ async function fetchGsc() {
       keyFile: KEY_PATH,
       scopes: ["https://www.googleapis.com/auth/webmasters.readonly"],
     });
-    const sc = google.searchconsole({ version: "v1", auth: await auth.getClient() });
+    const sc = google.searchconsole({
+      version: "v1",
+      auth: await auth.getClient(),
+    });
     const end = new Date();
     end.setDate(end.getDate() - 3);
     const start = new Date(end);
@@ -103,10 +110,13 @@ function sendTelegram(text) {
       (res) => {
         res.resume();
         resolve(res.statusCode);
-      }
+      },
     );
     req.on("error", () => resolve(0));
-    req.on("timeout", () => { req.destroy(); resolve(0); });
+    req.on("timeout", () => {
+      req.destroy();
+      resolve(0);
+    });
     req.write(body);
     req.end();
   });

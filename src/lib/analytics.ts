@@ -22,29 +22,32 @@ function getClient(): Promise<PostHog | null> {
   if (initPromise) return initPromise;
 
   const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-  const host = process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com";
+  const host =
+    process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com";
   if (!key) return Promise.resolve(null);
 
-  initPromise = import("posthog-js").then((mod) => {
-    const posthog = mod.default;
-    posthog.init(key, {
-      api_host: host,
-      capture_pageview: "history_change", // auto pageviews on SPA nav
-      autocapture: true,
-      persistence: "localStorage+cookie",
-      disable_session_recording: true, // no session replay by default (privacy for adult)
-      respect_dnt: true,
-      loaded: (ph) => {
-        // Flag user as "iku_user" to filter bot traffic in funnels
-        ph.register({ source: "iku.gg" });
-      },
+  initPromise = import("posthog-js")
+    .then((mod) => {
+      const posthog = mod.default;
+      posthog.init(key, {
+        api_host: host,
+        capture_pageview: "history_change", // auto pageviews on SPA nav
+        autocapture: true,
+        persistence: "localStorage+cookie",
+        disable_session_recording: true, // no session replay by default (privacy for adult)
+        respect_dnt: true,
+        loaded: (ph) => {
+          // Flag user as "iku_user" to filter bot traffic in funnels
+          ph.register({ source: "iku.gg" });
+        },
+      });
+      client = posthog;
+      return posthog;
+    })
+    .catch((err) => {
+      console.warn("posthog init failed:", err);
+      return null;
     });
-    client = posthog;
-    return posthog;
-  }).catch((err) => {
-    console.warn("posthog init failed:", err);
-    return null;
-  });
 
   return initPromise;
 }
@@ -52,7 +55,7 @@ function getClient(): Promise<PostHog | null> {
 /** Capture a named event. Silent no-op if PostHog isn't configured. */
 export async function track(
   event: string,
-  properties?: Record<string, unknown>
+  properties?: Record<string, unknown>,
 ): Promise<void> {
   const ph = await getClient();
   if (!ph) return;
@@ -62,7 +65,7 @@ export async function track(
 /** Identify a logged-in user (call after signup/login). */
 export async function identify(
   userId: string,
-  traits?: Record<string, unknown>
+  traits?: Record<string, unknown>,
 ): Promise<void> {
   const ph = await getClient();
   if (!ph) return;
@@ -79,25 +82,25 @@ export async function reset(): Promise<void> {
 // Well-known event names — use constants so we don't typo
 export const EVENTS = {
   // Auth
-  SIGNUP:              "signup",
-  LOGIN:               "login",
-  LOGOUT:              "logout",
-  DISCORD_LINK:        "discord_link",
+  SIGNUP: "signup",
+  LOGIN: "login",
+  LOGOUT: "logout",
+  DISCORD_LINK: "discord_link",
   // Content
-  VIDEO_VIEW:          "video_view",
-  VIDEO_COMPLETE:      "video_complete",
-  FAVORITE_ADD:        "favorite_add",
-  FAVORITE_REMOVE:     "favorite_remove",
-  SEARCH:              "search",
-  TAG_CLICK:           "tag_click",
-  CHARACTER_CLICK:     "character_click",
+  VIDEO_VIEW: "video_view",
+  VIDEO_COMPLETE: "video_complete",
+  FAVORITE_ADD: "favorite_add",
+  FAVORITE_REMOVE: "favorite_remove",
+  SEARCH: "search",
+  TAG_CLICK: "tag_click",
+  CHARACTER_CLICK: "character_click",
   // Monetization
-  PRO_CHECKOUT_START:  "pro_checkout_start",
-  PRO_PURCHASE:        "pro_purchase",
-  PRO_CANCEL:          "pro_cancel",
+  PRO_CHECKOUT_START: "pro_checkout_start",
+  PRO_PURCHASE: "pro_purchase",
+  PRO_CANCEL: "pro_cancel",
   // Gamification
-  BADGE_EARNED:        "badge_earned",
-  TIER_UP:             "tier_up",
+  BADGE_EARNED: "badge_earned",
+  TIER_UP: "tier_up",
   // Discord
   DISCORD_INVITE_CLICK: "discord_invite_click",
 } as const;

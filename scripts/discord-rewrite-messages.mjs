@@ -5,13 +5,23 @@
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 const GUILD_ID = process.env.DISCORD_GUILD_ID;
-if (!BOT_TOKEN || !GUILD_ID) { console.error("Missing env"); process.exit(1); }
+if (!BOT_TOKEN || !GUILD_ID) {
+  console.error("Missing env");
+  process.exit(1);
+}
 
 const API = "https://discord.com/api/v10";
-const headers = { Authorization: `Bot ${BOT_TOKEN}`, "Content-Type": "application/json" };
+const headers = {
+  Authorization: `Bot ${BOT_TOKEN}`,
+  "Content-Type": "application/json",
+};
 
 async function api(method, path, body) {
-  const res = await fetch(API + path, { method, headers, body: body ? JSON.stringify(body) : undefined });
+  const res = await fetch(API + path, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
   if (res.status === 429) {
     const r = await res.json();
     await new Promise((x) => setTimeout(x, (r.retry_after + 0.5) * 1000));
@@ -19,7 +29,12 @@ async function api(method, path, body) {
   }
   if (res.status === 204) return {};
   const text = await res.text();
-  let data; try { data = JSON.parse(text); } catch { data = text; }
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = text;
+  }
   if (!res.ok) throw new Error(`${method} ${path}: ${JSON.stringify(data)}`);
   return data;
 }
@@ -162,7 +177,10 @@ async function run() {
 
   for (const [chName, content] of Object.entries(MESSAGES)) {
     const ch = byName[chName];
-    if (!ch) { console.log(`⚠ ${chName} not found`); continue; }
+    if (!ch) {
+      console.log(`⚠ ${chName} not found`);
+      continue;
+    }
 
     // Delete all bot messages in the channel
     const msgs = await api("GET", `/channels/${ch.id}/messages?limit=50`);
@@ -177,7 +195,10 @@ async function run() {
     const chunks = [];
     let remaining = content;
     while (remaining.length > 0) {
-      if (remaining.length <= 1900) { chunks.push(remaining); break; }
+      if (remaining.length <= 1900) {
+        chunks.push(remaining);
+        break;
+      }
       const cut = remaining.lastIndexOf("\n\n", 1900);
       const split = cut > 500 ? cut : 1900;
       chunks.push(remaining.slice(0, split));
@@ -193,4 +214,7 @@ async function run() {
   console.log("\n✅ Done");
 }
 
-run().catch((err) => { console.error("❌", err); process.exit(1); });
+run().catch((err) => {
+  console.error("❌", err);
+  process.exit(1);
+});

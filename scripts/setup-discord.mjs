@@ -57,7 +57,11 @@ async function api(method, path, body) {
   if (res.status === 204) return {};
   const text = await res.text();
   let data;
-  try { data = JSON.parse(text); } catch { data = text; }
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = text;
+  }
   if (!res.ok) throw new Error(`${method} ${path}: ${JSON.stringify(data)}`);
   return data;
 }
@@ -91,111 +95,271 @@ const CATEGORIES_ORDER = [
  */
 const CHANNELS = {
   "✦ START HERE": [
-    { name: "👋-welcome",          locked: true,  topic: "Start here. Everything you need to know." },
-    { name: "📜-rules",            locked: true,  topic: "Read before posting. 18+ only." },
-    { name: "📣-announcements",    locked: true,  topic: "Site updates, new features, milestones." },
-    { name: "📰-changelog",        locked: true,  topic: "Every deploy. What shipped, when." },
-    { name: "🎭-roles-and-tags",   locked: true,  topic: "React to pick your taste roles + age-verify." },
-    { name: "❓-faq",              locked: true,  topic: "Answers to common questions." },
+    {
+      name: "👋-welcome",
+      locked: true,
+      topic: "Start here. Everything you need to know.",
+    },
+    { name: "📜-rules", locked: true, topic: "Read before posting. 18+ only." },
+    {
+      name: "📣-announcements",
+      locked: true,
+      topic: "Site updates, new features, milestones.",
+    },
+    {
+      name: "📰-changelog",
+      locked: true,
+      topic: "Every deploy. What shipped, when.",
+    },
+    {
+      name: "🎭-roles-and-tags",
+      locked: true,
+      topic: "React to pick your taste roles + age-verify.",
+    },
+    { name: "❓-faq", locked: true, topic: "Answers to common questions." },
   ],
   "💬 COMMUNITY": [
-    { name: "💬-general-chat",     topic: "Open chat. Be nice. 18+ vibes, SFW posts." },
-    { name: "👋-introductions",    topic: "Say hi. Where you from? What's your taste?" },
-    { name: "🎌-anime-weeb-talk",  topic: "Anime, manga, seasonal shows. No iku-only." },
-    { name: "💭-off-topic",        topic: "Games, music, life, random stuff." },
-    { name: "😂-memes",            topic: "Memes, shitposts, anime reactions." },
-    { name: "💡-suggestions",      topic: "Ideas to make iku.gg better. React 👍 to support." },
+    {
+      name: "💬-general-chat",
+      topic: "Open chat. Be nice. 18+ vibes, SFW posts.",
+    },
+    {
+      name: "👋-introductions",
+      topic: "Say hi. Where you from? What's your taste?",
+    },
+    {
+      name: "🎌-anime-weeb-talk",
+      topic: "Anime, manga, seasonal shows. No iku-only.",
+    },
+    { name: "💭-off-topic", topic: "Games, music, life, random stuff." },
+    { name: "😂-memes", topic: "Memes, shitposts, anime reactions." },
+    {
+      name: "💡-suggestions",
+      topic: "Ideas to make iku.gg better. React 👍 to support.",
+    },
   ],
   "🔥 TRENDING & DROPS": [
-    { name: "🔥-daily-drop",       nsfw: true,  locked: true, topic: "One hand-picked banger every day. Posted by staff." },
-    { name: "⭐-weekly-top",       nsfw: true,  locked: true, topic: "The 10 best clips of the week. Curated." },
-    { name: "🆕-new-releases",     nsfw: true,  locked: true, topic: "Fresh scrapes auto-posted by the bot (5000+ / week)." },
-    { name: "💎-hidden-gems",      nsfw: true,                topic: "Underrated clips you want people to see." },
-    { name: "🎯-recommend-me",     nsfw: true,  type: "forum", topic: "Describe your taste — get matched. One request per thread." },
-    { name: "🏷️-request-by-tag",   nsfw: true,  type: "forum", topic: "Looking for a specific tag/character/series? Ask here." },
+    {
+      name: "🔥-daily-drop",
+      nsfw: true,
+      locked: true,
+      topic: "One hand-picked banger every day. Posted by staff.",
+    },
+    {
+      name: "⭐-weekly-top",
+      nsfw: true,
+      locked: true,
+      topic: "The 10 best clips of the week. Curated.",
+    },
+    {
+      name: "🆕-new-releases",
+      nsfw: true,
+      locked: true,
+      topic: "Fresh scrapes auto-posted by the bot (5000+ / week).",
+    },
+    {
+      name: "💎-hidden-gems",
+      nsfw: true,
+      topic: "Underrated clips you want people to see.",
+    },
+    {
+      name: "🎯-recommend-me",
+      nsfw: true,
+      type: "forum",
+      topic: "Describe your taste — get matched. One request per thread.",
+    },
+    {
+      name: "🏷️-request-by-tag",
+      nsfw: true,
+      type: "forum",
+      topic: "Looking for a specific tag/character/series? Ask here.",
+    },
   ],
   "🎭 BY GENRE": [
-    { name: "💗-vanilla",           nsfw: true, type: "forum", topic: "Sweet, romantic, wholesome lewds." },
-    { name: "🎮-3d-blender-koikatsu", nsfw: true, type: "forum", topic: "3D animations — Blender, Koikatsu, MMD, Honey Select." },
-    { name: "✨-futa",              nsfw: true, type: "forum", topic: "Futanari everything." },
-    { name: "👹-monster-fantasy",    nsfw: true, type: "forum", topic: "Orcs, demons, beasts, elves, all things fantastical." },
-    { name: "🎒-schoolgirl-uniform", nsfw: true, type: "forum", topic: "Uniforms, schoolgirl aesthetic. All characters 18+." },
-    { name: "🧝-elf-maid-catgirl",   nsfw: true, type: "forum", topic: "Fantasy races + service class kinks." },
-    { name: "🐙-tentacles-kinky",    nsfw: true, type: "forum", topic: "Tentacles, monster girls, kinky stuff." },
-    { name: "💋-milf-older",         nsfw: true, type: "forum", topic: "MILFs, older women, mature." },
-    { name: "😵-ahegao",             nsfw: true, type: "forum", topic: "Face expressions, ahegao, rolling eyes." },
-    { name: "🔥-uncensored-only",    nsfw: true, type: "forum", topic: "Uncensored clips only. No mosaics." },
+    {
+      name: "💗-vanilla",
+      nsfw: true,
+      type: "forum",
+      topic: "Sweet, romantic, wholesome lewds.",
+    },
+    {
+      name: "🎮-3d-blender-koikatsu",
+      nsfw: true,
+      type: "forum",
+      topic: "3D animations — Blender, Koikatsu, MMD, Honey Select.",
+    },
+    {
+      name: "✨-futa",
+      nsfw: true,
+      type: "forum",
+      topic: "Futanari everything.",
+    },
+    {
+      name: "👹-monster-fantasy",
+      nsfw: true,
+      type: "forum",
+      topic: "Orcs, demons, beasts, elves, all things fantastical.",
+    },
+    {
+      name: "🎒-schoolgirl-uniform",
+      nsfw: true,
+      type: "forum",
+      topic: "Uniforms, schoolgirl aesthetic. All characters 18+.",
+    },
+    {
+      name: "🧝-elf-maid-catgirl",
+      nsfw: true,
+      type: "forum",
+      topic: "Fantasy races + service class kinks.",
+    },
+    {
+      name: "🐙-tentacles-kinky",
+      nsfw: true,
+      type: "forum",
+      topic: "Tentacles, monster girls, kinky stuff.",
+    },
+    {
+      name: "💋-milf-older",
+      nsfw: true,
+      type: "forum",
+      topic: "MILFs, older women, mature.",
+    },
+    {
+      name: "😵-ahegao",
+      nsfw: true,
+      type: "forum",
+      topic: "Face expressions, ahegao, rolling eyes.",
+    },
+    {
+      name: "🔥-uncensored-only",
+      nsfw: true,
+      type: "forum",
+      topic: "Uncensored clips only. No mosaics.",
+    },
   ],
   "💖 CHARACTERS & SERIES": [
-    { name: "👑-character-of-the-week", nsfw: true, locked: true, topic: "Staff pick every Monday. Vote in polls." },
-    { name: "💖-character-polls",        nsfw: true, topic: "Vote on the hottest character of the month." },
-    { name: "📺-series-discussion",      nsfw: true, topic: "Talk about specific hentai series / doujinshi." },
-    { name: "🎭-cosplay-share",          topic: "SFW cosplay pics (no NSFW in this one)." },
+    {
+      name: "👑-character-of-the-week",
+      nsfw: true,
+      locked: true,
+      topic: "Staff pick every Monday. Vote in polls.",
+    },
+    {
+      name: "💖-character-polls",
+      nsfw: true,
+      topic: "Vote on the hottest character of the month.",
+    },
+    {
+      name: "📺-series-discussion",
+      nsfw: true,
+      topic: "Talk about specific hentai series / doujinshi.",
+    },
+    {
+      name: "🎭-cosplay-share",
+      topic: "SFW cosplay pics (no NSFW in this one).",
+    },
   ],
   "🎨 CREATORS CORNER": [
-    { name: "🖌️-artist-showcase", topic: "Share your own art / animations. Credit yourself. No reposts." },
-    { name: "🎬-animation-wip",    topic: "Work-in-progress clips. Get feedback." },
-    { name: "📚-tutorials-tips",   topic: "Blender, Koikatsu, Live2D, MMD tutorials." },
-    { name: "💼-commissions",      topic: "Accepting / looking for commissions. Post rates." },
-    { name: "🤝-collab-requests",  topic: "Find collaborators. Riggers, animators, voice, writers." },
+    {
+      name: "🖌️-artist-showcase",
+      topic: "Share your own art / animations. Credit yourself. No reposts.",
+    },
+    {
+      name: "🎬-animation-wip",
+      topic: "Work-in-progress clips. Get feedback.",
+    },
+    {
+      name: "📚-tutorials-tips",
+      topic: "Blender, Koikatsu, Live2D, MMD tutorials.",
+    },
+    {
+      name: "💼-commissions",
+      topic: "Accepting / looking for commissions. Post rates.",
+    },
+    {
+      name: "🤝-collab-requests",
+      topic: "Find collaborators. Riggers, animators, voice, writers.",
+    },
   ],
   "🎙️ VOICE & WATCH PARTIES": [
-    { name: "🔊 General Voice",    type: "voice" },
-    { name: "🎬 Watch Party 1",    type: "voice", nsfw: true },
-    { name: "🎬 Watch Party 2",    type: "voice", nsfw: true },
-    { name: "🎮 Gaming",           type: "voice" },
-    { name: "💤 AFK",              type: "voice" },
+    { name: "🔊 General Voice", type: "voice" },
+    { name: "🎬 Watch Party 1", type: "voice", nsfw: true },
+    { name: "🎬 Watch Party 2", type: "voice", nsfw: true },
+    { name: "🎮 Gaming", type: "voice" },
+    { name: "💤 AFK", type: "voice" },
   ],
   "🛠️ SUPPORT": [
-    { name: "🐛-bug-reports",   topic: "Found a bug? Screenshot + URL + what you expected." },
-    { name: "💬-help-desk",     topic: "Site issues, account problems, video won't play — ask here." },
-    { name: "💭-feedback",      topic: "Honest feedback on the site. Good or bad." },
+    {
+      name: "🐛-bug-reports",
+      topic: "Found a bug? Screenshot + URL + what you expected.",
+    },
+    {
+      name: "💬-help-desk",
+      topic: "Site issues, account problems, video won't play — ask here.",
+    },
+    { name: "💭-feedback", topic: "Honest feedback on the site. Good or bad." },
   ],
   "💎 VIP LOUNGE": [
-    { name: "🌟-vip-chat",        topic: "Private chat for VIPs. Direct line to the founder." },
-    { name: "🎁-pro-perks",       topic: "Exclusive previews and perks for Pro members." },
-    { name: "🔮-early-access",    topic: "Features before anyone else sees them." },
-    { name: "🏆-top-fans",        topic: "Monthly leaderboard winners." },
+    {
+      name: "🌟-vip-chat",
+      topic: "Private chat for VIPs. Direct line to the founder.",
+    },
+    {
+      name: "🎁-pro-perks",
+      topic: "Exclusive previews and perks for Pro members.",
+    },
+    {
+      name: "🔮-early-access",
+      topic: "Features before anyone else sees them.",
+    },
+    { name: "🏆-top-fans", topic: "Monthly leaderboard winners." },
   ],
   "🤖 BOT ZONE": [
-    { name: "🤖-bot-commands",   topic: "Slash commands, bot spam, test your commands here." },
-    { name: "📊-server-stats",   locked: true, topic: "Auto-updated server stats. Coming soon." },
+    {
+      name: "🤖-bot-commands",
+      topic: "Slash commands, bot spam, test your commands here.",
+    },
+    {
+      name: "📊-server-stats",
+      locked: true,
+      topic: "Auto-updated server stats. Coming soon.",
+    },
   ],
 };
 
 /** Roles — hoisted = shown separately in member sidebar */
 const ROLES = [
   // ─── Staff & VIP (hoisted) ──────────────────────────────────
-  { name: "🌸 Founder",        color: 0xff6b9d, hoist: true },
-  { name: "⚔️ Moderator",      color: 0xef4444, hoist: true },
-  { name: "🛡️ Helper",         color: 0xf97316, hoist: true },
+  { name: "🌸 Founder", color: 0xff6b9d, hoist: true },
+  { name: "⚔️ Moderator", color: 0xef4444, hoist: true },
+  { name: "🛡️ Helper", color: 0xf97316, hoist: true },
   // ─── Paid tiers (hoisted) ───────────────────────────────────
-  { name: "💎 VIP",            color: 0xfbbf24, hoist: true },
-  { name: "✨ Pro",            color: 0xc084fc, hoist: true },
+  { name: "💎 VIP", color: 0xfbbf24, hoist: true },
+  { name: "✨ Pro", color: 0xc084fc, hoist: true },
   { name: "🚀 Server Booster", color: 0xf472b6, hoist: true },
   // ─── Community tiers (hoisted) ──────────────────────────────
   { name: "🎨 Verified Creator", color: 0x67e8f9, hoist: true },
-  { name: "🏆 Top Contributor",  color: 0xa855f7, hoist: true },
-  { name: "📣 Contributor",      color: 0x4ade80, hoist: true },
-  { name: "🌟 OG",               color: 0xffd700, hoist: true },
+  { name: "🏆 Top Contributor", color: 0xa855f7, hoist: true },
+  { name: "📣 Contributor", color: 0x4ade80, hoist: true },
+  { name: "🌟 OG", color: 0xffd700, hoist: true },
   // ─── Gating (hoisted, most important) ───────────────────────
-  { name: "🔞 18+ Verified",     color: 0xdc2626, hoist: true },
+  { name: "🔞 18+ Verified", color: 0xdc2626, hoist: true },
   // ─── Interest / Taste roles (NOT hoisted, gray) ─────────────
-  { name: "💗 Vanilla",         color: 0x64748b },
-  { name: "🎮 3D",              color: 0x64748b },
-  { name: "✨ Futa",            color: 0x64748b },
-  { name: "👹 Monster",         color: 0x64748b },
-  { name: "🧚 Fantasy",         color: 0x64748b },
-  { name: "🎒 Schoolgirl",      color: 0x64748b },
-  { name: "🎀 Maid",            color: 0x64748b },
-  { name: "🧝 Elf",             color: 0x64748b },
-  { name: "🐱 Catgirl",         color: 0x64748b },
-  { name: "🐙 Tentacles",       color: 0x64748b },
-  { name: "🔥 Uncensored",      color: 0x64748b },
-  { name: "💋 MILF",            color: 0x64748b },
-  { name: "😵 Ahegao",          color: 0x64748b },
-  { name: "🍦 Creampie",        color: 0x64748b },
-  { name: "👥 Group",           color: 0x64748b },
+  { name: "💗 Vanilla", color: 0x64748b },
+  { name: "🎮 3D", color: 0x64748b },
+  { name: "✨ Futa", color: 0x64748b },
+  { name: "👹 Monster", color: 0x64748b },
+  { name: "🧚 Fantasy", color: 0x64748b },
+  { name: "🎒 Schoolgirl", color: 0x64748b },
+  { name: "🎀 Maid", color: 0x64748b },
+  { name: "🧝 Elf", color: 0x64748b },
+  { name: "🐱 Catgirl", color: 0x64748b },
+  { name: "🐙 Tentacles", color: 0x64748b },
+  { name: "🔥 Uncensored", color: 0x64748b },
+  { name: "💋 MILF", color: 0x64748b },
+  { name: "😵 Ahegao", color: 0x64748b },
+  { name: "🍦 Creampie", color: 0x64748b },
+  { name: "👥 Group", color: 0x64748b },
 ];
 
 /** Populated welcome / rules / FAQ messages */
@@ -414,7 +578,7 @@ async function refreshRoles() {
 
 async function getOrCreateCategory(name) {
   const existing = channelsCache.find(
-    (c) => c.type === CHANNEL_TYPE.CATEGORY && c.name === name
+    (c) => c.type === CHANNEL_TYPE.CATEGORY && c.name === name,
   );
   if (existing) {
     console.log(`  = ${name}`);
@@ -435,7 +599,7 @@ async function getOrCreateChannel(name, parentId, opts = {}) {
   const discordType = CHANNEL_TYPE[typeKey] ?? CHANNEL_TYPE.TEXT;
 
   const existing = channelsCache.find(
-    (c) => c.name === name && c.parent_id === parentId
+    (c) => c.name === name && c.parent_id === parentId,
   );
   if (existing) {
     console.log(`    = ${name}`);
@@ -451,7 +615,7 @@ async function getOrCreateChannel(name, parentId, opts = {}) {
   if (opts.nsfw) body.nsfw = true;
   if (typeKey === "FORUM") {
     body.default_forum_layout = 1; // List view
-    body.default_sort_order = 0;   // Latest activity
+    body.default_sort_order = 0; // Latest activity
   }
 
   const created = await api("POST", `/guilds/${GUILD_ID}/channels`, body);
@@ -581,9 +745,13 @@ async function run() {
   console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
   console.log("✨ Done! Next steps:");
   console.log("  1. Create a server invite (Server Settings → Invites → New)");
-  console.log("  2. Add Carl-bot or MEE6 for reaction roles in #🎭-roles-and-tags");
+  console.log(
+    "  2. Add Carl-bot or MEE6 for reaction roles in #🎭-roles-and-tags",
+  );
   console.log("  3. Set Iku.gg avatar + server banner");
-  console.log("  4. Enable Community server (Server Settings → Enable Community)");
+  console.log(
+    "  4. Enable Community server (Server Settings → Enable Community)",
+  );
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 }
 

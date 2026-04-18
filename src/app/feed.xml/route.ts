@@ -35,20 +35,16 @@ export async function GET() {
      FROM videos
      WHERE thumbnail IS NOT NULL AND thumbnail <> ''
      ORDER BY created_at DESC
-     LIMIT 100`
+     LIMIT 100`,
   );
 
   const items = rows
     .map((v) => {
-      const titleBase =
-        v.title ||
-        v.characters?.[0] ||
-        v.tags?.[0] ||
-        v.slug;
+      const titleBase = v.title || v.characters?.[0] || v.tags?.[0] || v.slug;
       const title = escapeXml(`${titleBase} — Hentai`);
       const url = `${SITE}/watch/${v.slug}`;
       const desc = escapeXml(
-        `Watch ${titleBase} hentai video on iku.gg. Tags: ${(v.tags || []).slice(0, 5).join(", ")}.`
+        `Watch ${titleBase} hentai video on iku.gg. Tags: ${(v.tags || []).slice(0, 5).join(", ")}.`,
       );
       const pubDate = new Date(v.created_at).toUTCString();
       return `

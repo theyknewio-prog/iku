@@ -34,15 +34,19 @@ export function ProGatedPlayer(props: Props) {
   const [state, setState] = useState<State>({ status: "loading", score: 0 });
 
   const refresh = useCallback(() => {
-    fetch(`/api/pro-status?videoPk=${props.videoPk}`, { credentials: "include" })
+    fetch(`/api/pro-status?videoPk=${props.videoPk}`, {
+      credentials: "include",
+    })
       .then((r) => (r.ok ? r.json() : null))
       .then(
-        (d: {
-          signedIn: boolean;
-          pro: boolean;
-          score: number;
-          unlockedThisVideo: boolean;
-        } | null) => {
+        (
+          d: {
+            signedIn: boolean;
+            pro: boolean;
+            score: number;
+            unlockedThisVideo: boolean;
+          } | null,
+        ) => {
           if (!d) {
             setState({ status: "locked-signed-out", score: 0 });
             return;
@@ -54,12 +58,14 @@ export function ProGatedPlayer(props: Props) {
           } else {
             setState({ status: "locked-signed-out", score: 0 });
           }
-        }
+        },
       )
       .catch(() => setState({ status: "locked-signed-out", score: 0 }));
   }, [props.videoPk]);
 
-  useEffect(() => { refresh(); }, [refresh]);
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
 
   if (state.status === "loading") {
     return (

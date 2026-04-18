@@ -48,6 +48,6 @@ export function filterByBlacklist(videos: Video[]): Video[] {
   const blacklist = read();
   if (!blacklist.length) return videos;
   return videos.filter(
-    (v) => !v.tags.some((t) => blacklist.includes(t.toLowerCase()))
+    (v) => !v.tags.some((t) => blacklist.includes(t.toLowerCase())),
   );
 }

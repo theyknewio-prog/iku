@@ -19,7 +19,10 @@ function videoTitle(v: Video): string {
 
 export function buildVideoMetadata(video: Video): Metadata {
   const title = videoTitle(video);
-  const tags = [...video.characters, ...video.tags].slice(0, 5).map(humanize).join(", ");
+  const tags = [...video.characters, ...video.tags]
+    .slice(0, 5)
+    .map(humanize)
+    .join(", ");
   const pageTitle = `${title} Hentai | ${NAME}`;
   const description = `Watch free ${title} hentai video. ${tags ? `Tags: ${tags}.` : ""} Stream animated hentai clips on iku.gg.`;
   const canonical = `${SITE}/watch/${video.slug}`;
@@ -27,7 +30,13 @@ export function buildVideoMetadata(video: Video): Metadata {
   return {
     title: pageTitle,
     description,
-    keywords: [title, "hentai", "animated hentai", "free hentai", ...video.characters.slice(0, 3).map(humanize)],
+    keywords: [
+      title,
+      "hentai",
+      "animated hentai",
+      "free hentai",
+      ...video.characters.slice(0, 3).map(humanize),
+    ],
     other: { rating: "adult" },
     alternates: { canonical },
     openGraph: {
@@ -36,8 +45,19 @@ export function buildVideoMetadata(video: Video): Metadata {
       url: canonical,
       siteName: NAME,
       type: "video.other",
-      images: video.thumbnail ? [{ url: video.thumbnail, alt: title }] : undefined,
-      videos: video.url ? [{ url: video.url, type: "video/mp4", width: video.width, height: video.height }] : undefined,
+      images: video.thumbnail
+        ? [{ url: video.thumbnail, alt: title }]
+        : undefined,
+      videos: video.url
+        ? [
+            {
+              url: video.url,
+              type: "video/mp4",
+              width: video.width,
+              height: video.height,
+            },
+          ]
+        : undefined,
     },
     twitter: {
       card: "player",
@@ -49,24 +69,43 @@ export function buildVideoMetadata(video: Video): Metadata {
   };
 }
 
-export function buildTagMetadata(tagName: string, videoCount: number, page: number): Metadata {
+export function buildTagMetadata(
+  tagName: string,
+  videoCount: number,
+  page: number,
+): Metadata {
   const label = humanize(tagName);
-  const pageTitle = page > 1
-    ? `${label} Hentai Videos — Page ${page} | ${NAME}`
-    : `${label} Hentai Videos — Best ${label} Anime Porn | ${NAME}`;
+  const pageTitle =
+    page > 1
+      ? `${label} Hentai Videos — Page ${page} | ${NAME}`
+      : `${label} Hentai Videos — Best ${label} Anime Porn | ${NAME}`;
   const description = `Watch ${videoCount > 0 ? `${videoCount.toLocaleString()}+` : "free"} ${label} hentai videos on iku.gg. Stream the best animated ${label} hentai clips.`;
-  const canonical = page > 1
-    ? `${SITE}/tag/${encodeURIComponent(tagName)}?page=${page}`
-    : `${SITE}/tag/${encodeURIComponent(tagName)}`;
+  const canonical =
+    page > 1
+      ? `${SITE}/tag/${encodeURIComponent(tagName)}?page=${page}`
+      : `${SITE}/tag/${encodeURIComponent(tagName)}`;
 
   return {
     title: pageTitle,
     description,
-    keywords: [label, `${label} hentai`, "hentai", "animated hentai", "free hentai"],
+    keywords: [
+      label,
+      `${label} hentai`,
+      "hentai",
+      "animated hentai",
+      "free hentai",
+    ],
     other: { rating: "adult" },
     alternates: { canonical },
-    openGraph: { title: pageTitle, description, url: canonical, siteName: NAME, type: "website" },
-    robots: page > 1 ? { index: false, follow: true } : { index: true, follow: true },
+    openGraph: {
+      title: pageTitle,
+      description,
+      url: canonical,
+      siteName: NAME,
+      type: "website",
+    },
+    robots:
+      page > 1 ? { index: false, follow: true } : { index: true, follow: true },
   };
 }
 
@@ -88,11 +127,15 @@ export function buildVideoJsonLd(video: Video): object {
       interactionType: "https://schema.org/LikeAction",
       userInteractionCount: video.score,
     },
-    keywords: [title, "hentai", ...video.tags.slice(0, 5).map(humanize)].join(", "),
+    keywords: [title, "hentai", ...video.tags.slice(0, 5).map(humanize)].join(
+      ", ",
+    ),
   };
 }
 
-export function buildBreadcrumbJsonLd(items: { name: string; url: string }[]): object {
+export function buildBreadcrumbJsonLd(
+  items: { name: string; url: string }[],
+): object {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",

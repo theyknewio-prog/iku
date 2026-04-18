@@ -20,7 +20,13 @@ export const CHARACTERS: Character[] = [
     description:
       "Tsunade is the Fifth Hokage of the Hidden Leaf Village and one of the legendary Sannin in the Naruto franchise. Known for her incredible physical strength, mastery of medical ninjutsu, and a gambling habit that earned her the nickname 'The Legendary Sucker,' she remains one of the most powerful kunoichi in the series. Tsunade is widely recognized for her voluptuous figure, particularly her famously large bust, which has made her a staple in hentai fan art and animation. Her blonde hair tied in twin tails, diamond-shaped forehead seal, and green haori coat are instantly recognizable visual traits. Despite her mature appearance, she uses a transformation jutsu to maintain a youthful look, adding to her allure. Tsunade consistently ranks among the most popular Naruto characters in adult fan content, with thousands of animated works featuring her across major booru archives.",
     tags: ["tsunade_(naruto)"],
-    relatedCharacters: ["hinata-hyuga", "sakura-haruno", "ino-yamanaka", "temari", "kushina-uzumaki"],
+    relatedCharacters: [
+      "hinata-hyuga",
+      "sakura-haruno",
+      "ino-yamanaka",
+      "temari",
+      "kushina-uzumaki",
+    ],
     seoTitle: "Tsunade Hentai — Best Videos & Fan Animation | iku.gg",
     seoDescription:
       "Watch the best Tsunade hentai videos on iku.gg. Stream free animated Tsunade porn featuring the Fifth Hokage from Naruto. Top-rated fan animations.",
@@ -33,7 +39,13 @@ export const CHARACTERS: Character[] = [
     description:
       "Hinata Hyuga is a kunoichi from the Hyuga clan and the eventual wife of Naruto Uzumaki. Her character arc from a shy, timid girl into a confident and powerful ninja makes her one of the most beloved female characters in the entire franchise. Hinata is visually defined by her pale lavender Byakugan eyes, dark indigo hair, and a figure that becomes noticeably curvy in Naruto Shippuden and Boruto. Her gentle, reserved personality paired with her striking appearance has made her extraordinarily popular in hentai content. She consistently tops popularity polls for adult Naruto fan art. Animated hentai featuring Hinata often explores her shy demeanor contrasted with intimate scenarios, making her one of the most searched characters on booru platforms. Her iconic Shippuden outfit and Byakugan activation are frequently featured visual elements.",
     tags: ["hyuuga_hinata"],
-    relatedCharacters: ["tsunade", "sakura-haruno", "ino-yamanaka", "temari", "kushina-uzumaki"],
+    relatedCharacters: [
+      "tsunade",
+      "sakura-haruno",
+      "ino-yamanaka",
+      "temari",
+      "kushina-uzumaki",
+    ],
     seoTitle: "Hinata Hyuga Hentai — Best Videos & Fan Animation | iku.gg",
     seoDescription:
       "Watch the best Hinata Hyuga hentai videos. Stream free animated Hinata porn from Naruto. Top-rated fan animations featuring the Byakugan princess.",
@@ -46,7 +58,13 @@ export const CHARACTERS: Character[] = [
     description:
       "Sakura Haruno is a central character in the Naruto series, serving as the female member of Team 7 alongside Naruto and Sasuke. Trained under Tsunade, she becomes one of the most skilled medical ninjas in the shinobi world, possessing superhuman strength and advanced healing abilities. Sakura is visually characterized by her distinctive pink hair, green eyes, and the Strength of a Hundred Seal on her forehead that she develops in Shippuden. Her appearance evolves significantly throughout the series, maturing from a slender girl into a more defined kunoichi. In hentai fan content, Sakura is commonly depicted in her various outfits across the Naruto timeline, from her original red dress to her Shippuden combat attire and her adult Boruto-era look. She remains a consistent presence in animated adult content, frequently paired in scenarios with other Naruto characters.",
     tags: ["haruno_sakura"],
-    relatedCharacters: ["tsunade", "hinata-hyuga", "ino-yamanaka", "temari", "kushina-uzumaki"],
+    relatedCharacters: [
+      "tsunade",
+      "hinata-hyuga",
+      "ino-yamanaka",
+      "temari",
+      "kushina-uzumaki",
+    ],
     seoTitle: "Sakura Haruno Hentai — Best Videos & Fan Animation | iku.gg",
     seoDescription:
       "Watch the best Sakura Haruno hentai videos. Stream free animated Sakura porn from Naruto. Top-rated hentai featuring the pink-haired kunoichi.",
@@ -59,7 +77,13 @@ export const CHARACTERS: Character[] = [
     description:
       "Ino Yamanaka is a kunoichi from the Yamanaka clan, specializing in mind-transfer techniques and sensory abilities. She serves as a member of Team 10 alongside Shikamaru and Choji in the Naruto series. Ino is known for her confident, outgoing personality and her rivalry-turned-friendship with Sakura Haruno. Visually, she stands out with her long platinum blonde hair worn in a high ponytail, pale blue eyes, and a revealing purple outfit that highlights her slender yet curvaceous figure. In Shippuden and Boruto, her design becomes more mature and her outfit more form-fitting, which has only increased her popularity in adult fan content. Ino is a frequently featured character in hentai animations, with her bold personality and attractive design making her a natural subject for fan-created content. Her mind-transfer jutsu is sometimes creatively incorporated into adult-themed scenarios.",
     tags: ["yamanaka_ino"],
-    relatedCharacters: ["tsunade", "hinata-hyuga", "sakura-haruno", "temari", "kushina-uzumaki"],
+    relatedCharacters: [
+      "tsunade",
+      "hinata-hyuga",
+      "sakura-haruno",
+      "temari",
+      "kushina-uzumaki",
+    ],
     seoTitle: "Ino Yamanaka Hentai — Best Videos & Fan Animation | iku.gg",
     seoDescription:
       "Watch the best Ino Yamanaka hentai videos. Stream free animated Ino porn from Naruto. Top-rated fan animations of the blonde kunoichi.",
@@ -72,7 +96,13 @@ export const CHARACTERS: Character[] = [
     description:
       "Temari is a kunoichi from the Hidden Sand Village and the eldest of the Sand Siblings, alongside Gaara and Kankuro. She is a skilled wind-style user who wields a massive iron fan in battle, making her one of the most formidable long-range fighters in the Naruto universe. Temari is characterized by her sandy blonde hair styled in four spiky ponytails, teal eyes, and a confident, no-nonsense attitude that sets her apart from other female characters. Her outfit varies across the series but typically features a dark kimono-style garment that showcases her athletic build. Temari eventually marries Shikamaru Nara, and their dynamic is popular among fans. In hentai content, Temari is appreciated for her strong, dominant personality and her distinctive appearance. Her fan weapon and Sand Village aesthetic are commonly featured visual elements in animated adult content.",
     tags: ["temari_(naruto)"],
-    relatedCharacters: ["tsunade", "hinata-hyuga", "sakura-haruno", "ino-yamanaka", "kushina-uzumaki"],
+    relatedCharacters: [
+      "tsunade",
+      "hinata-hyuga",
+      "sakura-haruno",
+      "ino-yamanaka",
+      "kushina-uzumaki",
+    ],
     seoTitle: "Temari Hentai — Best Videos & Fan Animation | iku.gg",
     seoDescription:
       "Watch the best Temari hentai videos. Stream free animated Temari porn from Naruto. Top-rated fan animations of the Sand Village kunoichi.",
@@ -85,7 +115,13 @@ export const CHARACTERS: Character[] = [
     description:
       "Kushina Uzumaki is Naruto's mother and the former jinchuriki of the Nine-Tailed Fox. Originally from the Uzumaki clan of the Hidden Whirlpool Village, she was known as the 'Red Hot-Blooded Habanero' due to her fiery temper and her striking long red hair. Kushina's design features vibrant crimson hair that reaches past her waist, violet eyes, and a slender yet strong figure. Despite her relatively limited screen time in the series, she made a lasting impression on fans during the flashback arcs depicting her relationship with Minato Namikaze and her sacrifice to protect baby Naruto. In hentai fan content, Kushina has carved out a significant niche, with artists drawn to her distinctive red hair, her mature MILF appeal as Naruto's mother, and her passionate personality. She is frequently featured in animated adult content, often in scenarios that play on her maternal role or her younger pre-Hokage-era appearance.",
     tags: ["uzumaki_kushina"],
-    relatedCharacters: ["tsunade", "hinata-hyuga", "sakura-haruno", "ino-yamanaka", "temari"],
+    relatedCharacters: [
+      "tsunade",
+      "hinata-hyuga",
+      "sakura-haruno",
+      "ino-yamanaka",
+      "temari",
+    ],
     seoTitle: "Kushina Uzumaki Hentai — Best Videos & Fan Animation | iku.gg",
     seoDescription:
       "Watch the best Kushina Uzumaki hentai videos. Stream free animated Kushina porn from Naruto. Top-rated fan animations of the Red Hot Habanero.",
@@ -208,7 +244,12 @@ export const CHARACTERS: Character[] = [
     description:
       "Mina Ashido, also known by her hero name Pinky, is a student in Class 1-A at U.A. High School in My Hero Academia. Her Quirk, Acid, allows her to produce and manipulate corrosive liquid from her body. Mina stands out with one of the most unique character designs in the series: pink skin, short pink hair with small yellow horns, black sclera with golden irises, and an athletic, curvy build. Her energetic, outgoing personality and love of dancing make her the social butterfly of Class 1-A. Her hero costume is a purple and turquoise bodysuit with a camouflage pattern. In hentai content, Mina's distinctive alien-like appearance and vibrant pink skin make her highly recognizable and popular. Her cheerful, uninhibited personality translates well into adult scenarios, and her unique visual design provides a striking contrast to more conventionally designed characters, which has built her a dedicated following in fan animation.",
     tags: ["ashido_mina"],
-    relatedCharacters: ["ochako-uraraka", "momo-yaoyorozu", "mirko", "midnight"],
+    relatedCharacters: [
+      "ochako-uraraka",
+      "momo-yaoyorozu",
+      "mirko",
+      "midnight",
+    ],
     seoTitle: "Mina Ashido Hentai — Best Videos & Fan Animation | iku.gg",
     seoDescription:
       "Watch the best Mina Ashido hentai videos. Stream free animated Pinky porn from My Hero Academia. Top-rated fan animations of the acid hero.",
@@ -221,7 +262,12 @@ export const CHARACTERS: Character[] = [
     description:
       "Mirko, whose real name is Rumi Usagiyama, is the No. 5 Pro Hero in My Hero Academia and the highest-ranked female hero. Her Quirk, Rabbit, gives her incredible leg strength, enhanced hearing, and a rabbit-like appearance including long white rabbit ears and a fluffy tail. Mirko is characterized by her dark skin, muscular yet feminine build, wild white hair, red eyes, and an aggressive, battle-hungry personality. Her hero costume is a sleeveless white leotard that showcases her powerful, athletic physique. She is fiercely independent and refuses to work in teams. Despite relatively limited screen time, Mirko exploded in popularity upon her introduction and quickly became one of the most popular characters in hentai fan content from My Hero Academia. Her combination of dark skin, rabbit features, muscular thighs, and dominant personality has made her a phenomenon in adult fan animation, consistently generating high volumes of content across booru platforms.",
     tags: ["mirko_(boku_no_hero_academia)"],
-    relatedCharacters: ["ochako-uraraka", "momo-yaoyorozu", "mina-ashido", "midnight"],
+    relatedCharacters: [
+      "ochako-uraraka",
+      "momo-yaoyorozu",
+      "mina-ashido",
+      "midnight",
+    ],
     seoTitle: "Mirko Hentai — Best Videos & Fan Animation | iku.gg",
     seoDescription:
       "Watch the best Mirko hentai videos. Stream free animated Rumi Usagiyama porn from My Hero Academia. Top-rated rabbit hero fan animations.",
@@ -234,7 +280,12 @@ export const CHARACTERS: Character[] = [
     description:
       "Midnight, whose real name is Nemuri Kayama, is a Pro Hero and teacher at U.A. High School in My Hero Academia. Her Quirk, Somnambulist, allows her to emit a sleep-inducing aroma from her skin, which requires her to wear as little clothing as possible for maximum effectiveness. This has resulted in one of the most provocative hero costumes in the series: a skin-tight white bodysuit that she intentionally tears during combat to expose skin, paired with a domino mask, handcuffs on her wrist, and a whip. Midnight has long dark purple hair, blue eyes, and a voluptuous figure that she openly flaunts. Her personality is flirtatious and overtly sensual, and she is canonically described as an R-rated hero. In hentai fan content, Midnight's already suggestive canon design and dominant, seductive personality make her a natural fit. She is popular in BDSM-themed content and ranks consistently among the top MHA characters in adult animation.",
     tags: ["midnight_(boku_no_hero_academia)"],
-    relatedCharacters: ["ochako-uraraka", "momo-yaoyorozu", "mina-ashido", "mirko"],
+    relatedCharacters: [
+      "ochako-uraraka",
+      "momo-yaoyorozu",
+      "mina-ashido",
+      "mirko",
+    ],
     seoTitle: "Midnight Hentai — Best Videos & Fan Animation | iku.gg",
     seoDescription:
       "Watch the best Midnight hentai videos. Stream free animated Nemuri Kayama porn from My Hero Academia. Top-rated R-rated hero fan animations.",
@@ -457,7 +508,8 @@ export const CHARACTERS: Character[] = [
       "Shalltear Bloodfallen is the Floor Guardian of the first three floors of Nazarick in Overlord. She is a true vampire created by one of the Supreme Beings and is the most powerful Floor Guardian in single combat. Shalltear appears as a petite girl with silver hair, red eyes, and pale skin, wearing an elaborate gothic lolita dress with a large hoop skirt. However, her true vampire form is far more monstrous. She has a haughty, sadistic personality and a rivalry with Albedo over Ainz's affections. Shalltear is canonically bisexual and has necrophilic tendencies, making her one of the most overtly sexual characters in the Overlord cast. Her vampire nature, gothic aesthetic, and sharp fangs give her a distinct visual identity. In hentai fan content, Shalltear is the second most popular Overlord character. Her gothic lolita design, vampire features, and canonically deviant personality provide rich material for adult fan animation, and she is often paired with Albedo in duo content.",
     tags: ["shalltear_bloodfallen"],
     relatedCharacters: ["albedo"],
-    seoTitle: "Shalltear Bloodfallen Hentai — Best Videos & Fan Animation | iku.gg",
+    seoTitle:
+      "Shalltear Bloodfallen Hentai — Best Videos & Fan Animation | iku.gg",
     seoDescription:
       "Watch the best Shalltear hentai videos. Stream free animated Shalltear porn from Overlord. Top-rated vampire fan animations.",
   },

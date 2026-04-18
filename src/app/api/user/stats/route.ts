@@ -29,7 +29,7 @@ export async function GET() {
   try {
     const { rows } = await pool.query(
       `SELECT pro_status FROM users WHERE id = $1 LIMIT 1`,
-      [session.user.id]
+      [session.user.id],
     );
     const status = rows[0]?.pro_status;
     isPro = status === "active" || status === "lifetime";
@@ -39,13 +39,15 @@ export async function GET() {
 
   const progress = next
     ? {
-        current:  stats.score - tier.threshold,
-        needed:   next.threshold - tier.threshold,
-        percent:  Math.min(
+        current: stats.score - tier.threshold,
+        needed: next.threshold - tier.threshold,
+        percent: Math.min(
           100,
           Math.round(
-            ((stats.score - tier.threshold) / (next.threshold - tier.threshold)) * 100
-          )
+            ((stats.score - tier.threshold) /
+              (next.threshold - tier.threshold)) *
+              100,
+          ),
         ),
       }
     : null;
@@ -53,26 +55,26 @@ export async function GET() {
   return NextResponse.json({
     isPro,
     stats: {
-      score:           stats.score,
-      total_views:     stats.total_views,
+      score: stats.score,
+      total_views: stats.total_views,
       total_completes: stats.total_completes,
       total_favorites: stats.total_favorites,
-      current_streak:  stats.current_streak,
-      longest_streak:  stats.longest_streak,
-      streak_freezes:  stats.streak_freezes,
+      current_streak: stats.current_streak,
+      longest_streak: stats.longest_streak,
+      streak_freezes: stats.streak_freezes,
     },
     tier: {
-      index:     tier.index,
-      name:      tier.name,
-      emoji:     tier.emoji,
-      color:     tier.color,
+      index: tier.index,
+      name: tier.name,
+      emoji: tier.emoji,
+      color: tier.color,
       threshold: tier.threshold,
-      perks:     tier.perks,
+      perks: tier.perks,
     },
     nextTier: next
       ? {
-          name:      next.name,
-          emoji:     next.emoji,
+          name: next.name,
+          emoji: next.emoji,
           threshold: next.threshold,
         }
       : null,

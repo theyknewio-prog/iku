@@ -22,7 +22,8 @@ export function useDoubleTap({ onDoubleTap, onSingleTap }: DoubleTapHandlers) {
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLElement>) => {
       const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-      const side: DoubleTapSide = e.clientX < rect.left + rect.width / 2 ? "left" : "right";
+      const side: DoubleTapSide =
+        e.clientX < rect.left + rect.width / 2 ? "left" : "right";
       const now = Date.now();
       const delta = now - lastTapTime.current;
 
@@ -47,7 +48,7 @@ export function useDoubleTap({ onDoubleTap, onSingleTap }: DoubleTapHandlers) {
         }, 300);
       }
     },
-    [onDoubleTap, onSingleTap]
+    [onDoubleTap, onSingleTap],
   );
 
   return { handleClick };

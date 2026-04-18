@@ -31,8 +31,8 @@ const CONCURRENCY = 4;
 const DELAY_MS = 200;
 
 interface HgVideo {
-  id: number;           // stable hash of slug
-  slug: string;         // the hentaigasm URL slug
+  id: number; // stable hash of slug
+  slug: string; // the hentaigasm URL slug
   title: string;
   description: string | null;
   thumbnail: string;
@@ -75,7 +75,8 @@ function extractVideoUrls(listingHtml: string): string[] {
       slug.startsWith("page/") ||
       slug.startsWith("wp-") ||
       slug.length < 8
-    ) continue;
+    )
+      continue;
     urls.add(`${BASE}/${slug}/`);
   }
   return [...urls];
@@ -83,9 +84,7 @@ function extractVideoUrls(listingHtml: string): string[] {
 
 function extractDetail(html: string, pageUrl: string): HgVideo | null {
   // MP4 URL — the fluidplayer source
-  const mp4Match = html.match(
-    /src="(https:\/\/hgasm\d+\.com\/[^"]+\.mp4)"/
-  );
+  const mp4Match = html.match(/src="(https:\/\/hgasm\d+\.com\/[^"]+\.mp4)"/);
   if (!mp4Match) return null;
   const mp4Url = mp4Match[1];
 
@@ -109,7 +108,7 @@ function extractDetail(html: string, pageUrl: string): HgVideo | null {
   // Thumbnail — usually a preview image on same domain or logo.png
   let thumbnail = "";
   const thumbMatch = html.match(
-    /src="(https:\/\/hgasm\d+\.com\/preview\/[^"]+\.(?:jpg|webp|png))"/
+    /src="(https:\/\/hgasm\d+\.com\/preview\/[^"]+\.(?:jpg|webp|png))"/,
   );
   if (thumbMatch) thumbnail = thumbMatch[1];
   // Fallback: use the video poster if set
@@ -121,14 +120,13 @@ function extractDetail(html: string, pageUrl: string): HgVideo | null {
   // Description
   let description: string | null = null;
   const descMatch = html.match(
-    /<meta\s+name="description"\s+content="([^"]+)"/i
+    /<meta\s+name="description"\s+content="([^"]+)"/i,
   );
   if (descMatch) description = descMatch[1];
 
   // Tags (hentaigasm tags are in categories/genres links)
   const tags: string[] = [];
-  const tagRe =
-    /href="https:\/\/hentaigasm\.com\/category\/([a-z0-9-]+)\/?"/g;
+  const tagRe = /href="https:\/\/hentaigasm\.com\/category\/([a-z0-9-]+)\/?"/g;
   let tm: RegExpExecArray | null;
   while ((tm = tagRe.exec(html))) {
     const tag = tm[1];
@@ -222,7 +220,7 @@ async function main() {
   const startPage = startArg >= 0 ? parseInt(args[startArg + 1], 10) : 1;
 
   console.log(
-    `── scrape-hentaigasm ── starting at page ${startPage}, scraping ${totalPages} pages ──`
+    `── scrape-hentaigasm ── starting at page ${startPage}, scraping ${totalPages} pages ──`,
   );
 
   let totalUpserted = 0;
@@ -247,7 +245,10 @@ async function main() {
     const kept: HgVideo[] = [];
     let pageBanned = 0;
     for (const v of parsed) {
-      if (isBanned(v)) { pageBanned++; continue; }
+      if (isBanned(v)) {
+        pageBanned++;
+        continue;
+      }
       kept.push(v);
     }
 
@@ -264,14 +265,14 @@ async function main() {
 
     const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
     console.log(
-      `[page ${page}] ${detailUrls.length} urls (${fresh.length} new) → ${parsed.length} parsed → ${kept.length} kept (${pageBanned} banned) → ${upserted} upserted · ${elapsed}s`
+      `[page ${page}] ${detailUrls.length} urls (${fresh.length} new) → ${parsed.length} parsed → ${kept.length} kept (${pageBanned} banned) → ${upserted} upserted · ${elapsed}s`,
     );
 
     await sleep(DELAY_MS);
   }
 
   console.log(
-    `── done: upserted ${totalUpserted} videos, rejected ${totalBanned} banned ──`
+    `── done: upserted ${totalUpserted} videos, rejected ${totalBanned} banned ──`,
   );
   await pool.end();
 }

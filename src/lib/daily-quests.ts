@@ -33,19 +33,71 @@ export interface DailyQuest {
 
 // Pool of quest templates to pick from
 // Each day we pick 3 using a deterministic hash(user_id + date) as seed
-const QUEST_TEMPLATES: Array<Omit<DailyQuest, "progress" | "completed" | "rewardPoints">> = [
-  { code: "watch_3",       title: "Watch 3 clips today",          emoji: "👀", target: 3 },
-  { code: "watch_5",       title: "Watch 5 clips today",          emoji: "👀", target: 5 },
-  { code: "favorite_1",    title: "Add your first favorite today", emoji: "💖", target: 1 },
-  { code: "favorite_2",    title: "Add 2 favorites today",         emoji: "💖", target: 2 },
-  { code: "explore_anal",  title: "Watch 1 clip tagged #anal",     emoji: "🍑", target: 1 },
-  { code: "explore_3d",    title: "Watch 1 clip tagged #3d",       emoji: "🎮", target: 1 },
-  { code: "explore_vanilla", title: "Watch 1 clip tagged #vanilla", emoji: "💗", target: 1 },
-  { code: "explore_futa",  title: "Watch 1 clip tagged #futa",     emoji: "✨", target: 1 },
-  { code: "explore_uncens", title: "Watch 1 uncensored clip",     emoji: "🔥", target: 1 },
-  { code: "explore_monster", title: "Watch 1 clip tagged #monster", emoji: "👹", target: 1 },
-  { code: "complete_1",    title: "Finish 1 clip (80% watched)",  emoji: "🏁", target: 1 },
-  { code: "new_character", title: "Discover a new character",      emoji: "⭐", target: 1 },
+const QUEST_TEMPLATES: Array<
+  Omit<DailyQuest, "progress" | "completed" | "rewardPoints">
+> = [
+  { code: "watch_3", title: "Watch 3 clips today", emoji: "👀", target: 3 },
+  { code: "watch_5", title: "Watch 5 clips today", emoji: "👀", target: 5 },
+  {
+    code: "favorite_1",
+    title: "Add your first favorite today",
+    emoji: "💖",
+    target: 1,
+  },
+  {
+    code: "favorite_2",
+    title: "Add 2 favorites today",
+    emoji: "💖",
+    target: 2,
+  },
+  {
+    code: "explore_anal",
+    title: "Watch 1 clip tagged #anal",
+    emoji: "🍑",
+    target: 1,
+  },
+  {
+    code: "explore_3d",
+    title: "Watch 1 clip tagged #3d",
+    emoji: "🎮",
+    target: 1,
+  },
+  {
+    code: "explore_vanilla",
+    title: "Watch 1 clip tagged #vanilla",
+    emoji: "💗",
+    target: 1,
+  },
+  {
+    code: "explore_futa",
+    title: "Watch 1 clip tagged #futa",
+    emoji: "✨",
+    target: 1,
+  },
+  {
+    code: "explore_uncens",
+    title: "Watch 1 uncensored clip",
+    emoji: "🔥",
+    target: 1,
+  },
+  {
+    code: "explore_monster",
+    title: "Watch 1 clip tagged #monster",
+    emoji: "👹",
+    target: 1,
+  },
+  {
+    code: "complete_1",
+    title: "Finish 1 clip (80% watched)",
+    emoji: "🏁",
+    target: 1,
+  },
+  {
+    code: "new_character",
+    title: "Discover a new character",
+    emoji: "⭐",
+    target: 1,
+  },
 ];
 
 const REWARD_POINTS = 15;
@@ -81,7 +133,9 @@ function pickDaily(userId: string, date: string): typeof QUEST_TEMPLATES {
 // Ensure today's quests exist in the DB for a user
 // ─────────────────────────────────────────────────────────────
 
-export async function getOrCreateTodayQuests(userId: string | number): Promise<DailyQuest[]> {
+export async function getOrCreateTodayQuests(
+  userId: string | number,
+): Promise<DailyQuest[]> {
   const today = new Date().toISOString().slice(0, 10);
 
   // Try to fetch existing
@@ -89,7 +143,7 @@ export async function getOrCreateTodayQuests(userId: string | number): Promise<D
     `SELECT quest_code, progress, target, completed_at
      FROM user_daily_quests
      WHERE user_id = $1 AND quest_date = $2::date`,
-    [userId, today]
+    [userId, today],
   );
 
   if (rows.length === 3) {
@@ -113,7 +167,7 @@ export async function getOrCreateTodayQuests(userId: string | number): Promise<D
   if (rows.length > 0) {
     await pool.query(
       `DELETE FROM user_daily_quests WHERE user_id = $1 AND quest_date = $2::date`,
-      [userId, today]
+      [userId, today],
     );
   }
 
@@ -122,8 +176,8 @@ export async function getOrCreateTodayQuests(userId: string | number): Promise<D
     pool.query(
       `INSERT INTO user_daily_quests (user_id, quest_date, quest_code, progress, target)
        VALUES ($1, $2::date, $3, 0, $4)`,
-      [userId, today, p.code, p.target]
-    )
+      [userId, today, p.code, p.target],
+    ),
   );
   await Promise.all(inserts);
 
@@ -143,18 +197,21 @@ export async function getOrCreateTodayQuests(userId: string | number): Promise<D
 // ─────────────────────────────────────────────────────────────
 
 /** Quest codes this event type can advance */
-function getRelevantQuests(event: string, meta?: { tags?: string[] }): string[] {
+function getRelevantQuests(
+  event: string,
+  meta?: { tags?: string[] },
+): string[] {
   const matches: string[] = [];
   const tags = meta?.tags || [];
 
   if (event === "video_view") {
     matches.push("watch_3", "watch_5");
-    if (tags.includes("anal"))      matches.push("explore_anal");
-    if (tags.includes("3d"))        matches.push("explore_3d");
-    if (tags.includes("vanilla"))   matches.push("explore_vanilla");
-    if (tags.includes("futa"))      matches.push("explore_futa");
+    if (tags.includes("anal")) matches.push("explore_anal");
+    if (tags.includes("3d")) matches.push("explore_3d");
+    if (tags.includes("vanilla")) matches.push("explore_vanilla");
+    if (tags.includes("futa")) matches.push("explore_futa");
     if (tags.includes("uncensored")) matches.push("explore_uncens");
-    if (tags.includes("monster"))   matches.push("explore_monster");
+    if (tags.includes("monster")) matches.push("explore_monster");
   }
   if (event === "video_complete") {
     matches.push("complete_1");
@@ -175,7 +232,7 @@ function getRelevantQuests(event: string, meta?: { tags?: string[] }): string[] 
 export async function advanceDailyQuests(
   userId: string | number,
   event: string,
-  meta?: { tags?: string[] }
+  meta?: { tags?: string[] },
 ): Promise<Array<{ code: string; title: string; emoji: string }>> {
   const today = new Date().toISOString().slice(0, 10);
   const relevant = getRelevantQuests(event, meta);
@@ -197,17 +254,23 @@ export async function advanceDailyQuests(
        AND quest_code = ANY($3::text[])
        AND completed_at IS NULL
      RETURNING quest_code, progress, target, completed_at`,
-    [userId, today, relevant]
+    [userId, today, relevant],
   );
 
   // Quests that just completed (completed_at set on this update)
-  const justCompleted = rows.filter((r) => r.completed_at && r.progress >= r.target);
+  const justCompleted = rows.filter(
+    (r) => r.completed_at && r.progress >= r.target,
+  );
 
   // Award +15 pts per completed quest via recordScore
   const byCode = new Map(QUEST_TEMPLATES.map((t) => [t.code, t]));
   const toasted: Array<{ code: string; title: string; emoji: string }> = [];
   for (const r of justCompleted) {
-    await recordScore({ userId, event: "daily_quest", meta: { quest: r.quest_code } });
+    await recordScore({
+      userId,
+      event: "daily_quest",
+      meta: { quest: r.quest_code },
+    });
     const tpl = byCode.get(r.quest_code);
     toasted.push({
       code: r.quest_code,

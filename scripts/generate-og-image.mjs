@@ -144,9 +144,15 @@ const SVG = `
 
 async function run() {
   console.log("🎨 rendering og-default.png (1200×630)");
-  const png = await sharp(Buffer.from(SVG)).resize(1200, 630).png({ quality: 95 }).toBuffer();
+  const png = await sharp(Buffer.from(SVG))
+    .resize(1200, 630)
+    .png({ quality: 95 })
+    .toBuffer();
   await writeFile("public/og-default.png", png);
   console.log(`   ${png.length} bytes → public/og-default.png`);
 }
 
-run().catch((err) => { console.error("❌", err); process.exit(1); });
+run().catch((err) => {
+  console.error("❌", err);
+  process.exit(1);
+});

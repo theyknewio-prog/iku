@@ -65,8 +65,12 @@ export function ResetPasswordForm() {
     return (
       <div style={{ textAlign: "center", padding: "20px 0" }}>
         <div style={{ fontSize: 48, marginBottom: 16 }}>✅</div>
-        <p style={{ color: "#fff", fontSize: 15, fontWeight: 700 }}>Password updated</p>
-        <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginTop: 8 }}>
+        <p style={{ color: "#fff", fontSize: 15, fontWeight: 700 }}>
+          Password updated
+        </p>
+        <p
+          style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginTop: 8 }}
+        >
           Redirecting to sign in…
         </p>
       </div>

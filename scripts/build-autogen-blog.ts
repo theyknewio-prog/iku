@@ -118,14 +118,16 @@ import type { BlogArticle } from "./blog-types";
 export const BLOG_ARTICLES_AUTOGEN_2026_04_12: BlogArticle[] = ${JSON.stringify(
     articles,
     null,
-    2
+    2,
   )};
 `;
 
   writeFileSync(OUT, tsOutput, "utf-8");
   console.log(`Wrote ${articles.length} articles to ${OUT}`);
   console.log("Slugs:");
-  articles.forEach((a) => console.log(`  - /blog/${a.slug} (${a.readingTime} min)`));
+  articles.forEach((a) =>
+    console.log(`  - /blog/${a.slug} (${a.readingTime} min)`),
+  );
 }
 
 main();

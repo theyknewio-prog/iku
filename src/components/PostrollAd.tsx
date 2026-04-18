@@ -28,24 +28,24 @@ interface PostrollAdProps {
   onComplete: () => void;
 }
 
-const ZONE_ID    = AD_ZONES.exoclick.sidebar300;
+const ZONE_ID = AD_ZONES.exoclick.sidebar300;
 const DURATION_S = 5;
 const LOAD_TIMEOUT_MS = 3000;
 
 export function PostrollAd({ onComplete }: PostrollAdProps) {
-  const [secondsLeft, setSecondsLeft]   = useState(DURATION_S);
-  const [dismissed, setDismissed]       = useState(false);
-  const containerRef   = useRef<HTMLDivElement>(null);
-  const insertedRef    = useRef(false);
-  const timerRef       = useRef<ReturnType<typeof setInterval> | null>(null);
-  const loadTimerRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const completedRef   = useRef(false);
+  const [secondsLeft, setSecondsLeft] = useState(DURATION_S);
+  const [dismissed, setDismissed] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const insertedRef = useRef(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const loadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const completedRef = useRef(false);
 
   const finish = useCallback(() => {
     if (completedRef.current) return;
     completedRef.current = true;
     setDismissed(true);
-    if (timerRef.current)     clearInterval(timerRef.current);
+    if (timerRef.current) clearInterval(timerRef.current);
     if (loadTimerRef.current) clearTimeout(loadTimerRef.current);
     onComplete();
   }, [onComplete]);
@@ -61,7 +61,7 @@ export function PostrollAd({ onComplete }: PostrollAdProps) {
     if (container && !insertedRef.current) {
       insertedRef.current = true;
       const ins = document.createElement("ins");
-      ins.className    = "eas6a97888e2";
+      ins.className = "eas6a97888e2";
       ins.dataset.zoneid = ZONE_ID;
       container.appendChild(ins);
       waitForAdProvider(() => {
@@ -72,7 +72,10 @@ export function PostrollAd({ onComplete }: PostrollAdProps) {
     // Auto-dismiss after DURATION_S seconds
     timerRef.current = setInterval(() => {
       setSecondsLeft((prev) => {
-        if (prev <= 1) { finish(); return 0; }
+        if (prev <= 1) {
+          finish();
+          return 0;
+        }
         return prev - 1;
       });
     }, 1000);
@@ -83,14 +86,14 @@ export function PostrollAd({ onComplete }: PostrollAdProps) {
       if (!c) return;
       const hasContent =
         c.querySelector("iframe") ||
-        c.querySelector("img")    ||
-        c.querySelector("video")  ||
+        c.querySelector("img") ||
+        c.querySelector("video") ||
         c.querySelector("a");
       if (!hasContent) finish();
     }, LOAD_TIMEOUT_MS);
 
     return () => {
-      if (timerRef.current)     clearInterval(timerRef.current);
+      if (timerRef.current) clearInterval(timerRef.current);
       if (loadTimerRef.current) clearTimeout(loadTimerRef.current);
     };
   }, [finish]);

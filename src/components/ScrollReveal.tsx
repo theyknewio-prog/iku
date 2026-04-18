@@ -61,7 +61,9 @@ export function ScrollReveal({
     if (!el) return;
 
     // Respect reduced-motion: show content instantly, no tween.
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     if (prefersReduced) {
       el.style.opacity = "1";
       if (staggerChildren) {
@@ -110,7 +112,7 @@ export function ScrollReveal({
           }
         });
       },
-      { threshold }
+      { threshold },
     );
 
     observer.observe(el);

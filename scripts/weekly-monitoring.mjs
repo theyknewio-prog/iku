@@ -22,8 +22,9 @@ const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = "5617056258";
 const EXOCLICK_API_KEY = process.env.EXOCLICK_API_KEY;
 const GSC_SITE_URL = "sc-domain:iku.gg";
-const GSC_SA_PATH = process.env.GOOGLE_APPLICATION_CREDENTIALS
-  || "/opt/iku-scrapers/gsc-service-account.json";
+const GSC_SA_PATH =
+  process.env.GOOGLE_APPLICATION_CREDENTIALS ||
+  "/opt/iku-scrapers/gsc-service-account.json";
 
 const DRY_RUN = process.argv.includes("--dry-run");
 
@@ -35,7 +36,10 @@ async function fetchProdHealth(url) {
   for (let i = 0; i < 3; i++) {
     const t0 = performance.now();
     try {
-      const r = await fetch(url, { method: "GET", headers: { "User-Agent": "iku-monitor/1.0" } });
+      const r = await fetch(url, {
+        method: "GET",
+        headers: { "User-Agent": "iku-monitor/1.0" },
+      });
       const ttfb = Math.round(performance.now() - t0);
       samples.push({
         ttfb,
@@ -71,16 +75,22 @@ async function getGscAccessToken() {
     const raw = await readFile(GSC_SA_PATH, "utf8");
     const sa = JSON.parse(raw);
     const now = Math.floor(Date.now() / 1000);
-    const header = Buffer.from(JSON.stringify({ alg: "RS256", typ: "JWT" })).toString("base64url");
-    const claims = Buffer.from(JSON.stringify({
-      iss: sa.client_email,
-      scope: "https://www.googleapis.com/auth/webmasters.readonly",
-      aud: "https://oauth2.googleapis.com/token",
-      exp: now + 3600,
-      iat: now,
-    })).toString("base64url");
+    const header = Buffer.from(
+      JSON.stringify({ alg: "RS256", typ: "JWT" }),
+    ).toString("base64url");
+    const claims = Buffer.from(
+      JSON.stringify({
+        iss: sa.client_email,
+        scope: "https://www.googleapis.com/auth/webmasters.readonly",
+        aud: "https://oauth2.googleapis.com/token",
+        exp: now + 3600,
+        iat: now,
+      }),
+    ).toString("base64url");
     const signInput = `${header}.${claims}`;
-    const sig = createSign("RSA-SHA256").update(signInput).sign(sa.private_key, "base64url");
+    const sig = createSign("RSA-SHA256")
+      .update(signInput)
+      .sign(sa.private_key, "base64url");
     const jwt = `${signInput}.${sig}`;
     const r = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
@@ -111,15 +121,23 @@ async function fetchGscStats() {
       `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(GSC_SITE_URL)}/searchAnalytics/query`,
       {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(body),
-      }
+      },
     );
     if (!r.ok) return null;
     const d = await r.json();
     const row = d.rows?.[0];
     return row
-      ? { clicks: row.clicks, impressions: row.impressions, ctr: row.ctr, position: row.position }
+      ? {
+          clicks: row.clicks,
+          impressions: row.impressions,
+          ctr: row.ctr,
+          position: row.position,
+        }
       : { clicks: 0, impressions: 0, ctr: 0, position: 0 };
   } catch (err) {
     console.error("[gsc] stats:", err.message);
@@ -148,7 +166,7 @@ async function fetchExoClick() {
 
     const r = await fetch(
       `https://api.exoclick.com/v2/statistics/publisher/zone?date-from=${df}&date-to=${dt}`,
-      { headers: { Authorization: `Bearer ${token}` } }
+      { headers: { Authorization: `Bearer ${token}` } },
     );
     const d = await r.json();
     const zones = Array.isArray(d.result) ? d.result : [];
@@ -173,16 +191,19 @@ async function sendTelegram(text) {
     return;
   }
   try {
-    const r = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: TELEGRAM_CHAT_ID,
-        text,
-        parse_mode: "Markdown",
-        disable_web_page_preview: true,
-      }),
-    });
+    const r = await fetch(
+      `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: TELEGRAM_CHAT_ID,
+          text,
+          parse_mode: "Markdown",
+          disable_web_page_preview: true,
+        }),
+      },
+    );
     const d = await r.json();
     if (!d.ok) console.error("tg error:", d);
   } catch (err) {
@@ -220,10 +241,16 @@ function ttfbGrade(ms) {
 
   parts.push("*Prod health (TTFB median, 3 samples)*");
   for (const r of [health1, health2, health3]) {
-    if (!r || r.status === "down") { parts.push("• 🔴 _down_"); continue; }
+    if (!r || r.status === "down") {
+      parts.push("• 🔴 _down_");
+      continue;
+    }
     const path = r.url.replace("https://iku.gg", "") || "/";
-    const cacheStatus = r.cache === "HIT" ? "⚡ISR" : r.cfCache === "HIT" ? "⚡CF" : "miss";
-    parts.push(`${ttfbGrade(r.medianTtfb)} \`${path}\` — ${r.medianTtfb}ms (min ${r.minTtfb}, max ${r.maxTtfb}) · ${cacheStatus}`);
+    const cacheStatus =
+      r.cache === "HIT" ? "⚡ISR" : r.cfCache === "HIT" ? "⚡CF" : "miss";
+    parts.push(
+      `${ttfbGrade(r.medianTtfb)} \`${path}\` — ${r.medianTtfb}ms (min ${r.minTtfb}, max ${r.maxTtfb}) · ${cacheStatus}`,
+    );
   }
   parts.push("");
 

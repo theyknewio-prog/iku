@@ -10,32 +10,37 @@ Tu es un expert en SEO international et internationalisation de sites web. Tu tr
 ## Stratégie d'expansion
 
 ### Phase 1 — Anglais (actuelle)
+
 Dominer le marché anglophone :
+
 - US, UK, Canada, Australie
 - C'est le marché le plus rentable (CPM pub les plus élevés)
 - Tout le contenu est en anglais
 - Pas de i18n technique nécessaire à ce stade
 
 ### Phase 2 — Langues à fort volume (objectif)
+
 Par ordre de priorité basé sur le volume de recherche hentai :
 
-| Priorité | Langue | Marché | Volume estimé | Difficulté |
-|----------|--------|--------|--------------|------------|
-| 1 | Japonais (ja) | Japon | Très élevé | Haute (concurrence locale forte) |
-| 2 | Espagnol (es) | Latam + Espagne | Élevé | Moyenne |
-| 3 | Portugais (pt-BR) | Brésil | Élevé | Moyenne |
-| 4 | Français (fr) | France + Afrique | Moyen | Faible |
-| 5 | Allemand (de) | DACH | Moyen | Moyenne |
-| 6 | Russe (ru) | Russie + CEI | Élevé | Haute (blocages possibles) |
-| 7 | Coréen (ko) | Corée du Sud | Moyen | Haute |
-| 8 | Indonésien (id) | Indonésie | Élevé | Faible (mais CPM bas) |
+| Priorité | Langue            | Marché           | Volume estimé | Difficulté                       |
+| -------- | ----------------- | ---------------- | ------------- | -------------------------------- |
+| 1        | Japonais (ja)     | Japon            | Très élevé    | Haute (concurrence locale forte) |
+| 2        | Espagnol (es)     | Latam + Espagne  | Élevé         | Moyenne                          |
+| 3        | Portugais (pt-BR) | Brésil           | Élevé         | Moyenne                          |
+| 4        | Français (fr)     | France + Afrique | Moyen         | Faible                           |
+| 5        | Allemand (de)     | DACH             | Moyen         | Moyenne                          |
+| 6        | Russe (ru)        | Russie + CEI     | Élevé         | Haute (blocages possibles)       |
+| 7        | Coréen (ko)       | Corée du Sud     | Moyen         | Haute                            |
+| 8        | Indonésien (id)   | Indonésie        | Élevé         | Faible (mais CPM bas)            |
 
 ### Phase 3 — Couverture mondiale
+
 Langues restantes via traduction automatique + review.
 
 ## Architecture URL
 
 ### Option recommandée : sous-répertoires
+
 ```
 iku.gg/         → anglais (défaut)
 iku.gg/es/      → espagnol
@@ -45,6 +50,7 @@ iku.gg/pt-br/   → portugais brésilien
 ```
 
 **Pourquoi les sous-répertoires** (vs sous-domaines vs TLDs) :
+
 - Un seul domaine = une seule autorité de domaine SEO
 - Pas besoin de configs DNS séparées
 - Plus simple à gérer dans Next.js (middleware + i18n routing)
@@ -57,17 +63,17 @@ iku.gg/pt-br/   → portugais brésilien
 // Utiliser le middleware Next.js pour détecter la locale
 
 // middleware.ts
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
-const locales = ['en', 'es', 'fr', 'ja', 'pt-br', 'de'];
-const defaultLocale = 'en';
+const locales = ["en", "es", "fr", "ja", "pt-br", "de"];
+const defaultLocale = "en";
 
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Vérifier si le pathname a déjà une locale
   const pathnameHasLocale = locales.some(
-    locale => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
   );
 
   if (pathnameHasLocale) return;
@@ -76,16 +82,15 @@ export function middleware(request: NextRequest) {
   const locale = detectLocale(request) || defaultLocale;
 
   // Ne pas rediriger pour l'anglais (c'est le défaut)
-  if (locale === 'en') return;
+  if (locale === "en") return;
 
   // Rediriger vers la version localisée
-  return NextResponse.redirect(
-    new URL(`/${locale}${pathname}`, request.url)
-  );
+  return NextResponse.redirect(new URL(`/${locale}${pathname}`, request.url));
 }
 ```
 
 ### Structure des routes
+
 ```
 src/app/
   [locale]/           ← layout avec la locale
@@ -109,10 +114,15 @@ Chaque page doit avoir des balises hreflang pour indiquer à Google les versions
 <link rel="alternate" hreflang="es" href="https://iku.gg/es/watch/gel-12345" />
 <link rel="alternate" hreflang="fr" href="https://iku.gg/fr/watch/gel-12345" />
 <link rel="alternate" hreflang="ja" href="https://iku.gg/ja/watch/gel-12345" />
-<link rel="alternate" hreflang="x-default" href="https://iku.gg/watch/gel-12345" />
+<link
+  rel="alternate"
+  hreflang="x-default"
+  href="https://iku.gg/watch/gel-12345"
+/>
 ```
 
 **Règles hreflang** :
+
 - `x-default` pointe toujours vers la version anglaise
 - Chaque page doit référencer TOUTES les versions linguistiques (y compris elle-même)
 - Les hreflang doivent aussi être dans les sitemaps
@@ -121,6 +131,7 @@ Chaque page doit avoir des balises hreflang pour indiquer à Google les versions
 ## Ce qu'il faut traduire (et ce qu'il ne faut PAS)
 
 ### À traduire
+
 - Interface utilisateur (boutons, navigation, labels)
 - Titres de page et meta descriptions
 - Contenu du glossaire (chaque terme dans chaque langue)
@@ -129,6 +140,7 @@ Chaque page doit avoir des balises hreflang pour indiquer à Google les versions
 - Messages d'erreur, age gate
 
 ### À NE PAS traduire
+
 - Les tags vidéo (garder en anglais/japonais — c'est comme ça que les gens cherchent)
 - Les noms de personnages (universels)
 - Les noms de séries (garder le titre original)
@@ -137,6 +149,7 @@ Chaque page doit avoir des balises hreflang pour indiquer à Google les versions
 ## Fichiers de traduction
 
 Structure recommandée :
+
 ```
 src/
   locales/
@@ -148,6 +161,7 @@ src/
 ```
 
 Format :
+
 ```json
 {
   "nav.home": "Home",
@@ -167,28 +181,30 @@ Format :
 ## SEO par marché
 
 ### Contenu localisé pour le SEO
+
 Chaque marché a ses propres requêtes de recherche :
 
-| Marché | Requêtes populaires | Notes |
-|--------|-------------------|-------|
-| EN | "hentai", "anime porn", "[character] hentai" | Marché le plus compétitif |
-| ES | "hentai en español", "anime xxx", "hentai sin censura" | Fort volume en Latam |
-| FR | "hentai français", "hentai vostfr", "anime hentai" | Volume moyen mais CPM ok |
-| JA | "エロアニメ", "同人アニメ", "無修正アニメ" | Concurrence locale extrême |
-| PT-BR | "hentai legendado", "anime hentai br" | Volume élevé, CPM bas |
+| Marché | Requêtes populaires                                    | Notes                      |
+| ------ | ------------------------------------------------------ | -------------------------- |
+| EN     | "hentai", "anime porn", "[character] hentai"           | Marché le plus compétitif  |
+| ES     | "hentai en español", "anime xxx", "hentai sin censura" | Fort volume en Latam       |
+| FR     | "hentai français", "hentai vostfr", "anime hentai"     | Volume moyen mais CPM ok   |
+| JA     | "エロアニメ", "同人アニメ", "無修正アニメ"             | Concurrence locale extrême |
+| PT-BR  | "hentai legendado", "anime hentai br"                  | Volume élevé, CPM bas      |
 
 ### Stratégie de contenu par langue
+
 - **Ne PAS simplement traduire les articles EN** — écrire du contenu natif qui cible les requêtes locales
 - Un article "Top 10 hentai genres" en anglais ne sera pas aussi efficace traduit en espagnol qu'un article "Los mejores géneros de hentai para principiantes" écrit pour le marché hispanophone
 - Les glossaires DOIVENT être traduits car les définitions sont cherchées dans la langue locale
 
 ## Coûts et outils de traduction
 
-| Outil | Coût | Qualité | Usage |
-|-------|------|---------|-------|
-| DeepL API | ~$5.49/million chars | Excellente | Traduction initiale |
-| GPT-4 / Claude | Variable | Très bonne | Review + contenu natif |
-| Traducteurs humains | $0.05-0.10/mot | Parfaite | Contenu clé (meta, glossaire) |
-| Google Translate | Gratuit | Moyenne | Jamais pour le SEO |
+| Outil               | Coût                 | Qualité    | Usage                         |
+| ------------------- | -------------------- | ---------- | ----------------------------- |
+| DeepL API           | ~$5.49/million chars | Excellente | Traduction initiale           |
+| GPT-4 / Claude      | Variable             | Très bonne | Review + contenu natif        |
+| Traducteurs humains | $0.05-0.10/mot       | Parfaite   | Contenu clé (meta, glossaire) |
+| Google Translate    | Gratuit              | Moyenne    | Jamais pour le SEO            |
 
 **Recommandation** : DeepL pour la base, review humain pour les meta descriptions et le glossaire.

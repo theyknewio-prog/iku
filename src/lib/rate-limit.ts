@@ -56,7 +56,13 @@ export interface RateLimiter {
  * inside each request handler. Do NOT create a new limiter per request.
  */
 export function createRateLimiter(opts: RateLimitOptions): RateLimiter {
-  const { name, max, windowMs, maxKeys = 10_000, cleanupIntervalMs = 5 * 60_000 } = opts;
+  const {
+    name,
+    max,
+    windowMs,
+    maxKeys = 10_000,
+    cleanupIntervalMs = 5 * 60_000,
+  } = opts;
   const store = new Map<string, { count: number; resetAt: number }>();
 
   // Periodic cleanup — drops expired entries and enforces the hard cap.
@@ -75,7 +81,9 @@ export function createRateLimiter(opts: RateLimitOptions): RateLimiter {
     }
   }, cleanupIntervalMs);
   // unref() is Node-only — guard for edge runtime.
-  if (typeof (timer as unknown as { unref?: () => void }).unref === "function") {
+  if (
+    typeof (timer as unknown as { unref?: () => void }).unref === "function"
+  ) {
     (timer as unknown as { unref: () => void }).unref();
   }
 
@@ -95,7 +103,9 @@ export function createRateLimiter(opts: RateLimitOptions): RateLimiter {
       // Debug-only: warn if we're about to blow the cap (caught sooner than
       // the periodic cleanup would).
       if (store.size > maxKeys * 1.1) {
-        console.warn(`[rate-limit:${name}] store size ${store.size} > cap ${maxKeys}`);
+        console.warn(
+          `[rate-limit:${name}] store size ${store.size} > cap ${maxKeys}`,
+        );
       }
       return false;
     },
@@ -118,7 +128,10 @@ export function getClientIp(request: Request): string {
   if (real) return real;
   const fwd = request.headers.get("x-forwarded-for");
   if (fwd) {
-    const parts = fwd.split(",").map((p) => p.trim()).filter(Boolean);
+    const parts = fwd
+      .split(",")
+      .map((p) => p.trim())
+      .filter(Boolean);
     const last = parts[parts.length - 1];
     if (last) return last;
   }

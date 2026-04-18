@@ -35,8 +35,8 @@ jobs:
       - name: Sync Discord roles
         env:
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
-          DISCORD_GUILD_ID:  ${{ secrets.DISCORD_GUILD_ID }}
-          DATABASE_URL:       ${{ secrets.DATABASE_URL }}
+          DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: node scripts/discord-sync-roles.mjs
 
   daily-drop:
@@ -53,8 +53,8 @@ jobs:
       - name: Post daily drop
         env:
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
-          DISCORD_GUILD_ID:  ${{ secrets.DISCORD_GUILD_ID }}
-          DATABASE_URL:       ${{ secrets.DATABASE_URL }}
+          DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: node scripts/discord-daily-drop.mjs
 
   leaderboard:
@@ -71,6 +71,6 @@ jobs:
       - name: Post weekly leaderboard
         env:
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
-          DISCORD_GUILD_ID:  ${{ secrets.DISCORD_GUILD_ID }}
-          DATABASE_URL:       ${{ secrets.DATABASE_URL }}
+          DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: node scripts/discord-weekly-leaderboard.mjs

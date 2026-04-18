@@ -40,13 +40,13 @@ const USER_AGENT =
   "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1";
 
 // Knobs
-const CONCURRENCY = 6;                // parallel detail fetches
+const CONCURRENCY = 6; // parallel detail fetches
 const DELAY_BETWEEN_LISTINGS_MS = 250; // politeness
 const DELAY_BETWEEN_DETAILS_MS = 100;
 
 interface ParsedVideo {
   internalId: number;
-  slugId: string;          // e.g. "1kjKV8WkWIf" (alnum hash)
+  slugId: string; // e.g. "1kjKV8WkWIf" (alnum hash)
   title: string;
   titleSlug: string;
   description: string | null;
@@ -86,11 +86,14 @@ function extractDetailUrls(listingHtml: string): string[] {
 
 // ── Detail page: extract video metadata ────────────────────────────────
 
-function extractDetail(detailHtml: string, pageUrl: string): ParsedVideo | null {
+function extractDetail(
+  detailHtml: string,
+  pageUrl: string,
+): ParsedVideo | null {
   // MP4 URL: prefer the mobile.mp4 <video src=...>, fall back to HLS master
   let mp4 = "";
   const mp4Match = detailHtml.match(
-    /<video[^>]*preload="auto"[^>]*src="(https:\/\/www\.hentaicity\.com\/flv\/[^"]+mobile\.mp4)"/
+    /<video[^>]*preload="auto"[^>]*src="(https:\/\/www\.hentaicity\.com\/flv\/[^"]+mobile\.mp4)"/,
   );
   if (mp4Match) mp4 = mp4Match[1];
   if (!mp4) return null;
@@ -107,7 +110,7 @@ function extractDetail(detailHtml: string, pageUrl: string): ParsedVideo | null 
   // Thumbnail: cdn1.images.hentaicity.com/videos/0297/37809/1080p.jpg
   let thumbnail = "";
   const thumbMatch = detailHtml.match(
-    /poster="(https:\/\/cdn\d?\.images\.hentaicity\.com\/videos\/[^"]+)"/
+    /poster="(https:\/\/cdn\d?\.images\.hentaicity\.com\/videos\/[^"]+)"/,
   );
   if (thumbMatch) thumbnail = thumbMatch[1];
 
@@ -129,7 +132,7 @@ function extractDetail(detailHtml: string, pageUrl: string): ParsedVideo | null 
   // Description
   let description: string | null = null;
   const descMatch = detailHtml.match(
-    /<meta\s+name="description"\s+content="([^"]+)"/i
+    /<meta\s+name="description"\s+content="([^"]+)"/i,
   );
   if (descMatch) description = descMatch[1];
 
@@ -151,7 +154,7 @@ function extractDetail(detailHtml: string, pageUrl: string): ParsedVideo | null 
   // Upload date (optional — schema.org)
   let uploadDate: string | null = null;
   const dateMatch = detailHtml.match(
-    /"uploadDate"\s+content="([^"]+)"|"datePublished"\s+content="([^"]+)"/
+    /"uploadDate"\s+content="([^"]+)"|"datePublished"\s+content="([^"]+)"/,
   );
   if (dateMatch) uploadDate = dateMatch[1] || dateMatch[2];
 
@@ -251,7 +254,7 @@ async function main() {
   const startPage = startArg >= 0 ? parseInt(args[startArg + 1], 10) : 1;
 
   console.log(
-    `── scrape-hentaicity ── starting at page ${startPage}, scraping ${totalPages} pages (est. ~${totalPages * 48} videos) ──`
+    `── scrape-hentaicity ── starting at page ${startPage}, scraping ${totalPages} pages (est. ~${totalPages * 48} videos) ──`,
   );
 
   let totalUpserted = 0;
@@ -270,7 +273,10 @@ async function main() {
     const kept: ParsedVideo[] = [];
     let pageBanned = 0;
     for (const v of parsed) {
-      if (isBanned(v)) { pageBanned++; continue; }
+      if (isBanned(v)) {
+        pageBanned++;
+        continue;
+      }
       kept.push(v);
     }
 
@@ -289,14 +295,14 @@ async function main() {
 
     const elapsed = ((Date.now() - listingStart) / 1000).toFixed(1);
     console.log(
-      `[page ${page}] ${detailUrls.length} urls → ${parsed.length} parsed → ${kept.length} kept (${pageBanned} banned) → ${upserted} upserted · ${elapsed}s`
+      `[page ${page}] ${detailUrls.length} urls → ${parsed.length} parsed → ${kept.length} kept (${pageBanned} banned) → ${upserted} upserted · ${elapsed}s`,
     );
 
     await sleep(DELAY_BETWEEN_LISTINGS_MS);
   }
 
   console.log(
-    `── done: scraped ${totalScraped} videos, rejected ${totalBanned} for banned content, upserted ${totalUpserted} ──`
+    `── done: scraped ${totalScraped} videos, rejected ${totalBanned} for banned content, upserted ${totalUpserted} ──`,
   );
   await pool.end();
 }

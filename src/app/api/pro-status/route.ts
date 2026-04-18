@@ -27,13 +27,13 @@ export async function GET(req: NextRequest) {
   if (userId) {
     const { rows } = await pool.query<{ score: number }>(
       `SELECT score FROM user_stats WHERE user_id = $1 LIMIT 1`,
-      [userId]
+      [userId],
     );
     score = rows[0]?.score ?? 0;
     if (videoPkParam && /^\d+$/.test(videoPkParam)) {
       const { rows: u } = await pool.query(
         `SELECT 1 FROM user_unlocks WHERE user_id = $1 AND video_pk = $2 LIMIT 1`,
-        [userId, Number(videoPkParam)]
+        [userId, Number(videoPkParam)],
       );
       unlockedThisVideo = u.length > 0;
     }
@@ -46,6 +46,6 @@ export async function GET(req: NextRequest) {
         // Never cache — this is per-user state.
         "Cache-Control": "private, no-store",
       },
-    }
+    },
   );
 }

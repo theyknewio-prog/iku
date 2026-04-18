@@ -34,7 +34,7 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
             password_hash IS NOT NULL AS has_password,
             pro_status, pro_plan, pro_current_period_end, pro_started_at
      FROM users WHERE id = $1`,
-    [session.user.id]
+    [session.user.id],
   );
   const user = rows[0];
   if (!user) redirect("/login");
@@ -66,21 +66,21 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
     ? Math.min(
         100,
         Math.round(
-          ((stats.score - tier.threshold) / (next.threshold - tier.threshold)) * 100
-        )
+          ((stats.score - tier.threshold) / (next.threshold - tier.threshold)) *
+            100,
+        ),
       )
     : 100;
 
   // Show verification banner unless already verified or using a synthetic
   // Discord email that can't be verified anyway.
   const needsEmailVerification =
-    !user.email_verified && !String(user.email || "").endsWith("@discord.iku.gg");
+    !user.email_verified &&
+    !String(user.email || "").endsWith("@discord.iku.gg");
 
   return (
     <main className="profile-page">
-      {needsEmailVerification && (
-        <EmailVerificationBanner email={user.email} />
-      )}
+      {needsEmailVerification && <EmailVerificationBanner email={user.email} />}
 
       {/* ── Post-checkout confirmation card ──────────────────────────── */}
       {justUpgraded && (
@@ -113,7 +113,9 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
                 {proPeriodEnd && proPlan !== "lifetime" && (
                   <> Next renewal: {proPeriodEnd.toLocaleDateString()}.</>
                 )}
-                {proPlan === "lifetime" && <> Forever access — no renewal ever.</>}
+                {proPlan === "lifetime" && (
+                  <> Forever access — no renewal ever.</>
+                )}
               </div>
             </>
           ) : (
@@ -170,7 +172,8 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
           <h1 className="profile-name">{user.username}</h1>
           <div className="profile-email">{user.email}</div>
           <div className="profile-joined">
-            Joined {new Date(user.created_at).toLocaleDateString("en-US", {
+            Joined{" "}
+            {new Date(user.created_at).toLocaleDateString("en-US", {
               year: "numeric",
               month: "long",
             })}
@@ -190,9 +193,12 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
           <h2>Progress</h2>
           <div className="profile-progress">
             <div className="profile-progress__labels">
-              <span>{tier.emoji} {tier.name}</span>
+              <span>
+                {tier.emoji} {tier.name}
+              </span>
               <span style={{ opacity: 0.6 }}>
-                {stats.score - tier.threshold} / {next.threshold - tier.threshold} to {next.name} {next.emoji}
+                {stats.score - tier.threshold} /{" "}
+                {next.threshold - tier.threshold} to {next.name} {next.emoji}
               </span>
             </div>
             <div className="profile-progress__bar">
@@ -217,21 +223,39 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
       {/* Daily quests */}
       <div className="profile-section">
         <h2>Daily Quests</h2>
-        <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", margin: "0 0 14px" }}>
-          Complete 3 quests every day to earn bonus points · Resets at midnight UTC
+        <p
+          style={{
+            fontSize: 12,
+            color: "rgba(255,255,255,0.5)",
+            margin: "0 0 14px",
+          }}
+        >
+          Complete 3 quests every day to earn bonus points · Resets at midnight
+          UTC
         </p>
         <div className="profile-quests">
           {quests.map((q) => {
-            const pct = Math.min(100, Math.round((q.progress / q.target) * 100));
+            const pct = Math.min(
+              100,
+              Math.round((q.progress / q.target) * 100),
+            );
             return (
-              <div key={q.code} className={`profile-quest ${q.completed ? "profile-quest--done" : ""}`}>
+              <div
+                key={q.code}
+                className={`profile-quest ${q.completed ? "profile-quest--done" : ""}`}
+              >
                 <div className="profile-quest__header">
                   <span className="profile-quest__emoji">{q.emoji}</span>
                   <span className="profile-quest__title">{q.title}</span>
-                  <span className="profile-quest__reward">+{q.rewardPoints}</span>
+                  <span className="profile-quest__reward">
+                    +{q.rewardPoints}
+                  </span>
                 </div>
                 <div className="profile-quest__bar">
-                  <div className="profile-quest__fill" style={{ width: `${pct}%` }} />
+                  <div
+                    className="profile-quest__fill"
+                    style={{ width: `${pct}%` }}
+                  />
                 </div>
                 <div className="profile-quest__progress">
                   {q.completed ? "✓ Complete" : `${q.progress} / ${q.target}`}
@@ -255,11 +279,15 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
             <div className="profile-stat__label">Longest Streak</div>
           </div>
           <div className="profile-stat">
-            <div className="profile-stat__value">👀 {stats.total_views.toLocaleString()}</div>
+            <div className="profile-stat__value">
+              👀 {stats.total_views.toLocaleString()}
+            </div>
             <div className="profile-stat__label">Clips Watched</div>
           </div>
           <div className="profile-stat">
-            <div className="profile-stat__value">💖 {stats.total_favorites.toLocaleString()}</div>
+            <div className="profile-stat__value">
+              💖 {stats.total_favorites.toLocaleString()}
+            </div>
             <div className="profile-stat__label">Favorites</div>
           </div>
         </div>

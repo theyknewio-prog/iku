@@ -66,7 +66,11 @@ function sanitize(raw: string): string {
     .replace(/^-|-$/g, "");
 }
 
-function generateSlug(id: number, character: string, copyright: string): string {
+function generateSlug(
+  id: number,
+  character: string,
+  copyright: string,
+): string {
   const parts = [String(id)];
   const cleanChar = sanitize(character);
   if (cleanChar) parts.push(cleanChar);
@@ -85,13 +89,21 @@ function mapPost(post: DanbooruPost): VideoEntry | null {
   if (!url) return null;
 
   // Skip banned content (loli, shota, underage, etc.)
-  const allTags = [post.tag_string_general, post.tag_string_character, post.tag_string_copyright].join(" ");
+  const allTags = [
+    post.tag_string_general,
+    post.tag_string_character,
+    post.tag_string_copyright,
+  ].join(" ");
   if (hasBannedTagString(allTags)) return null;
 
   const thumbnail = post.preview_file_url ?? "";
   return {
     id: post.id,
-    slug: generateSlug(post.id, post.tag_string_character, post.tag_string_copyright),
+    slug: generateSlug(
+      post.id,
+      post.tag_string_character,
+      post.tag_string_copyright,
+    ),
     url,
     thumbnail,
     score: post.score,
@@ -108,7 +120,11 @@ function mapPost(post: DanbooruPost): VideoEntry | null {
   };
 }
 
-async function fetchPage(tags: string, page: number, retries = 2): Promise<DanbooruPost[]> {
+async function fetchPage(
+  tags: string,
+  page: number,
+  retries = 2,
+): Promise<DanbooruPost[]> {
   const url = `${BASE_URL}/posts.json?tags=${encodeURIComponent(tags)}&limit=${LIMIT}&page=${page}`;
 
   for (let attempt = 0; attempt <= retries; attempt++) {
@@ -171,7 +187,9 @@ async function scrapeAll(tags: string, label: string): Promise<VideoEntry[]> {
       }
     }
 
-    process.stdout.write(`  Page ${page}: ${posts.length} posts, ${added} valid videos (total: ${results.length})\r`);
+    process.stdout.write(
+      `  Page ${page}: ${posts.length} posts, ${added} valid videos (total: ${results.length})\r`,
+    );
 
     if (posts.length < LIMIT) break; // last page
 
@@ -189,8 +207,14 @@ async function main() {
   console.log("═══════════════════════════════════════════");
 
   // Scrape MP4 first (bulk), then WebM
-  const mp4 = await scrapeAll("animated filetype:mp4 rating:e order:id_desc", "MP4");
-  const webm = await scrapeAll("animated filetype:webm rating:e order:id_desc", "WebM");
+  const mp4 = await scrapeAll(
+    "animated filetype:mp4 rating:e order:id_desc",
+    "MP4",
+  );
+  const webm = await scrapeAll(
+    "animated filetype:webm rating:e order:id_desc",
+    "WebM",
+  );
 
   // Merge and dedupe
   const seen = new Set<number>();
@@ -209,7 +233,9 @@ async function main() {
   console.log(`  Total unique videos: ${all.length}`);
   console.log(`  Top score: ${all[0]?.score}`);
   console.log(`  Lowest score: ${all[all.length - 1]?.score}`);
-  console.log(`  Newest: ${all.reduce((a, b) => a.id > b.id ? a : b).createdAt?.slice(0, 10)}`);
+  console.log(
+    `  Newest: ${all.reduce((a, b) => (a.id > b.id ? a : b)).createdAt?.slice(0, 10)}`,
+  );
   console.log(`═══════════════════════════════════════════`);
 
   console.log(`\n  Upserting ${all.length} videos to PostgreSQL...`);
@@ -217,16 +243,32 @@ async function main() {
   let upserted = 0;
   for (let i = 0; i < all.length; i += BATCH) {
     const batch = all.slice(i, i + BATCH).map((v) => ({
-      source: "danbooru", source_id: v.id, slug: v.slug, url: v.url,
+      source: "danbooru",
+      source_id: v.id,
+      slug: v.slug,
+      url: v.url,
       thumbnail: v.thumbnail,
-      preview: v.thumbnail ? v.thumbnail.replace("/180x180/", "/720x720/").replace(/\.jpg$/, ".webp") : "",
-      score: v.score, favorites: v.favorites,
-      tags: v.tags, characters: v.characters, copyrights: v.copyrights, artists: v.artists,
-      width: v.width, height: v.height, file_size: v.fileSize,
-      duration: v.duration, created_at: v.createdAt,
+      preview: v.thumbnail
+        ? v.thumbnail
+            .replace("/180x180/", "/720x720/")
+            .replace(/\.jpg$/, ".webp")
+        : "",
+      score: v.score,
+      favorites: v.favorites,
+      tags: v.tags,
+      characters: v.characters,
+      copyrights: v.copyrights,
+      artists: v.artists,
+      width: v.width,
+      height: v.height,
+      file_size: v.fileSize,
+      duration: v.duration,
+      created_at: v.createdAt,
     }));
     upserted += await upsertVideos(batch);
-    process.stdout.write(`  ${Math.min(i + BATCH, all.length)}/${all.length} upserted\r`);
+    process.stdout.write(
+      `  ${Math.min(i + BATCH, all.length)}/${all.length} upserted\r`,
+    );
   }
   console.log(`\n  ${upserted} videos upserted to PostgreSQL`);
   await pool.end();

@@ -52,7 +52,11 @@ async function api(method, path, body) {
   if (res.status === 204) return {};
   const text = await res.text();
   let data;
-  try { data = JSON.parse(text); } catch { data = text; }
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = text;
+  }
   if (!res.ok) {
     const e = new Error(`${method} ${path}: ${JSON.stringify(data)}`);
     e.status = res.status;
@@ -68,12 +72,12 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // ─────────────────────────────────────────────────────────────
 
 const TIER_THRESHOLDS = [
-  { name: "Wanderer",       threshold: 0 },
-  { name: "Kouhai",         threshold: 200 },
-  { name: "Senpai",         threshold: 1000 },
-  { name: "Otaku",          threshold: 5000 },
-  { name: "Waifu Scholar",  threshold: 15000 },
-  { name: "Hentai Sage",    threshold: 50000 },
+  { name: "Wanderer", threshold: 0 },
+  { name: "Kouhai", threshold: 200 },
+  { name: "Senpai", threshold: 1000 },
+  { name: "Otaku", threshold: 5000 },
+  { name: "Waifu Scholar", threshold: 15000 },
+  { name: "Hentai Sage", threshold: 50000 },
 ];
 
 function tierFromScore(score) {
@@ -89,17 +93,17 @@ function tierFromScore(score) {
 // These roles MUST exist on the server (created by setup-discord.mjs)
 const TIER_ROLE_MAP = {
   // Tiers — only the 4 highest get a Discord visible role
-  "Otaku":         null, // no specific tier role — Senpai/Otaku don't need one
+  Otaku: null, // no specific tier role — Senpai/Otaku don't need one
   "Waifu Scholar": null,
-  "Hentai Sage":   null,
+  "Hentai Sage": null,
 };
-const PRO_ROLE     = "✨ Pro";
-const VIP_ROLE     = "💎 VIP";  // lifetime customers
-const STREAK_7_ROLE   = null;  // not created yet
-const STREAK_30_ROLE  = null;
+const PRO_ROLE = "✨ Pro";
+const VIP_ROLE = "💎 VIP"; // lifetime customers
+const STREAK_7_ROLE = null; // not created yet
+const STREAK_30_ROLE = null;
 const STREAK_100_ROLE = null;
-const TOP_FAN_ROLE = "🏆 Top Contributor";  // existing role, rotated weekly top 10
-const OG_ROLE      = "🌟 OG";
+const TOP_FAN_ROLE = "🏆 Top Contributor"; // existing role, rotated weekly top 10
+const OG_ROLE = "🌟 OG";
 const AGE_VERIFIED = "🔞 18+ Verified";
 
 // ─────────────────────────────────────────────────────────────
@@ -119,7 +123,9 @@ async function run() {
   const ogRoleId = roleByName[OG_ROLE];
   const ageVerifiedId = roleByName[AGE_VERIFIED];
 
-  console.log(`Roles: pro=${proRoleId} vip=${vipRoleId} topFan=${topFanRoleId} og=${ogRoleId}`);
+  console.log(
+    `Roles: pro=${proRoleId} vip=${vipRoleId} topFan=${topFanRoleId} og=${ogRoleId}`,
+  );
 
   // 2. Connect to PG + fetch linked users with their state
   const client = new pg.Client({ connectionString: DATABASE_URL });
@@ -131,7 +137,7 @@ async function run() {
       `SELECT s.user_id FROM user_stats s
        WHERE s.score > 0
        ORDER BY s.score DESC
-       LIMIT 10`
+       LIMIT 10`,
     );
     const top10Ids = new Set(top10Rows.map((r) => String(r.user_id)));
 
@@ -149,7 +155,7 @@ async function run() {
        JOIN user_oauth_accounts o
          ON o.user_id = u.id AND o.provider = 'discord'
        LEFT JOIN user_stats s
-         ON s.user_id = u.id`
+         ON s.user_id = u.id`,
     );
 
     console.log(`${users.length} linked Discord users to sync\n`);
@@ -162,7 +168,10 @@ async function run() {
         // Fetch current Discord member
         let member;
         try {
-          member = await api("GET", `/guilds/${GUILD_ID}/members/${u.discord_id}`);
+          member = await api(
+            "GET",
+            `/guilds/${GUILD_ID}/members/${u.discord_id}`,
+          );
         } catch (err) {
           if (err.status === 404) {
             console.log(`  ⚠ ${u.discord_id} left the guild, skipping`);
@@ -174,7 +183,8 @@ async function run() {
         const currentRoles = new Set(member.roles || []);
 
         // Compute desired state
-        const wantsPro = u.pro_status === "active" || u.pro_status === "past_due";
+        const wantsPro =
+          u.pro_status === "active" || u.pro_status === "past_due";
         const wantsVip = u.pro_status === "lifetime";
         const wantsTopFan = top10Ids.has(String(u.user_id));
         const joinedAt = new Date(u.joined_at);
@@ -187,13 +197,14 @@ async function run() {
           if (!roleId) return;
           const has = currentRoles.has(roleId);
           if (want && !has) roleDeltas.push({ type: "add", id: roleId, label });
-          else if (!want && has) roleDeltas.push({ type: "remove", id: roleId, label });
+          else if (!want && has)
+            roleDeltas.push({ type: "remove", id: roleId, label });
         };
 
-        addIfMissing(proRoleId,    wantsPro,    "Pro");
-        addIfMissing(vipRoleId,    wantsVip,    "VIP");
+        addIfMissing(proRoleId, wantsPro, "Pro");
+        addIfMissing(vipRoleId, wantsVip, "VIP");
         addIfMissing(topFanRoleId, wantsTopFan, "Top Contributor");
-        addIfMissing(ogRoleId,     wantsOg,     "OG");
+        addIfMissing(ogRoleId, wantsOg, "OG");
 
         if (roleDeltas.length === 0) {
           console.log(`  = ${u.discord_id} (no change)`);
@@ -203,10 +214,16 @@ async function run() {
         // Apply deltas
         for (const delta of roleDeltas) {
           if (delta.type === "add") {
-            await api("PUT", `/guilds/${GUILD_ID}/members/${u.discord_id}/roles/${delta.id}`);
+            await api(
+              "PUT",
+              `/guilds/${GUILD_ID}/members/${u.discord_id}/roles/${delta.id}`,
+            );
             console.log(`  + ${u.discord_id} → ${delta.label}`);
           } else {
-            await api("DELETE", `/guilds/${GUILD_ID}/members/${u.discord_id}/roles/${delta.id}`);
+            await api(
+              "DELETE",
+              `/guilds/${GUILD_ID}/members/${u.discord_id}/roles/${delta.id}`,
+            );
             console.log(`  - ${u.discord_id} ← ${delta.label}`);
           }
           await sleep(400);
@@ -225,4 +242,7 @@ async function run() {
   }
 }
 
-run().catch((err) => { console.error("❌", err); process.exit(1); });
+run().catch((err) => {
+  console.error("❌", err);
+  process.exit(1);
+});

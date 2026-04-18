@@ -2,7 +2,14 @@
 slug: hentai-compilation-best-multi-scene-videos
 title: "Hentai Compilation: Best Multi-Scene Videos to Watch [2026]"
 description: "The best hentai compilations in 2026 — character compilations, genre mixes, 3D animation collections, HMVs. How to find quality multi-scene hentai on iku.gg."
-keywords: ["hentai compilation", "hentai compilation video", "best hentai compilation 2026", "hentai mix", "animated compilation"]
+keywords:
+  [
+    "hentai compilation",
+    "hentai compilation video",
+    "best hentai compilation 2026",
+    "hentai mix",
+    "animated compilation",
+  ]
 category: guides
 published: "2026-04-12"
 author: "iku.gg editorial"
@@ -242,6 +249,7 @@ The curators have already done the work. Just press play.
 ---
 
 **Related articles:**
+
 - [HMV: What Is a Hentai Music Video?](/blog/hmv-hentai-music-video-explained)
 - [3D Hentai: The Complete Guide (2026)](/blog/3d-hentai-guide-2026)
 - [Genshin Impact Porn: Complete Fan Animation Guide](/blog/genshin-impact-porn-complete-guide)

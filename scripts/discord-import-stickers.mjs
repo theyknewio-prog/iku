@@ -15,7 +15,10 @@
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 const GUILD_ID = process.env.DISCORD_GUILD_ID;
-if (!BOT_TOKEN || !GUILD_ID) { console.error("Missing env"); process.exit(1); }
+if (!BOT_TOKEN || !GUILD_ID) {
+  console.error("Missing env");
+  process.exit(1);
+}
 
 const API = "https://discord.com/api/v10";
 
@@ -32,7 +35,12 @@ async function api(method, path, body, extraHeaders = {}) {
   }
   if (res.status === 204) return {};
   const text = await res.text();
-  let data; try { data = JSON.parse(text); } catch { data = text; }
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = text;
+  }
   if (!res.ok) {
     const e = new Error(`${method} ${path}: ${JSON.stringify(data)}`);
     e.status = res.status;
@@ -82,7 +90,9 @@ const STICKER_PICKS = [
 ];
 
 async function downloadImage(url) {
-  const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0 iku-sticker-importer" } });
+  const res = await fetch(url, {
+    headers: { "User-Agent": "Mozilla/5.0 iku-sticker-importer" },
+  });
   if (!res.ok) throw new Error(`download ${url} → ${res.status}`);
   const contentType = res.headers.get("content-type") || "image/png";
   return { buf: Buffer.from(await res.arrayBuffer()), contentType };
@@ -93,7 +103,8 @@ function pickBestMatch(catalog, searchTerms, usedIds) {
     .map((e) => {
       if (usedIds.has(e.id)) return null;
       if (e.image?.endsWith(".gif")) return null; // prefer static for free tier
-      const haystack = `${e.title || ""} ${e.slug || ""} ${e.description || ""}`.toLowerCase();
+      const haystack =
+        `${e.title || ""} ${e.slug || ""} ${e.description || ""}`.toLowerCase();
       // Exclude banned
       if (/\bloli\b|\bshota\b|child|minor|underage/.test(haystack)) return null;
       let score = 0;
@@ -102,7 +113,7 @@ function pickBestMatch(catalog, searchTerms, usedIds) {
       }
       if (score === 0) return null;
       // Prefer popular
-      score += (e.faves || 0);
+      score += e.faves || 0;
       return { emoji: e, score };
     })
     .filter(Boolean)
@@ -113,7 +124,9 @@ function pickBestMatch(catalog, searchTerms, usedIds) {
 
 async function run() {
   console.log("🏷️  Fetching emoji.gg catalog for sticker picks…");
-  const res = await fetch("https://emoji.gg/api/", { headers: { "User-Agent": "Mozilla/5.0" } });
+  const res = await fetch("https://emoji.gg/api/", {
+    headers: { "User-Agent": "Mozilla/5.0" },
+  });
   const all = await res.json();
 
   console.log("\n📦 Loading existing stickers…");
@@ -141,7 +154,9 @@ async function run() {
 
     const match = pickBestMatch(all, pick.searchTerms, usedIds);
     if (!match) {
-      console.log(`  ⚠ no match for '${pick.name}' (searched: ${pick.searchTerms.join(", ")})`);
+      console.log(
+        `  ⚠ no match for '${pick.name}' (searched: ${pick.searchTerms.join(", ")})`,
+      );
       continue;
     }
     usedIds.add(match.id);
@@ -149,7 +164,9 @@ async function run() {
     try {
       const { buf, contentType } = await downloadImage(match.image);
       if (buf.length > 512 * 1024) {
-        console.log(`  ⚠ ${pick.name}: ${(buf.length / 1024).toFixed(0)}KB > 512KB, skipping`);
+        console.log(
+          `  ⚠ ${pick.name}: ${(buf.length / 1024).toFixed(0)}KB > 512KB, skipping`,
+        );
         continue;
       }
 
@@ -158,7 +175,11 @@ async function run() {
       fd.append("name", pick.name);
       fd.append("description", pick.description);
       fd.append("tags", pick.tags);
-      fd.append("file", new Blob([buf], { type: contentType }), `${pick.name}.png`);
+      fd.append(
+        "file",
+        new Blob([buf], { type: contentType }),
+        `${pick.name}.png`,
+      );
 
       const uploadRes = await fetch(`${API}/guilds/${GUILD_ID}/stickers`, {
         method: "POST",
@@ -180,7 +201,9 @@ async function run() {
       }
 
       uploaded++;
-      console.log(`  ✓ sticker "${pick.name}" (${(buf.length / 1024).toFixed(0)}KB) — from emoji :${match.slug}:`);
+      console.log(
+        `  ✓ sticker "${pick.name}" (${(buf.length / 1024).toFixed(0)}KB) — from emoji :${match.slug}:`,
+      );
       await sleep(800);
     } catch (err) {
       console.log(`  ❌ ${pick.name}: ${(err.message || "").slice(0, 150)}`);
@@ -190,4 +213,7 @@ async function run() {
   console.log(`\n✨ Done: ${uploaded} sticker(s) uploaded`);
 }
 
-run().catch((err) => { console.error("❌", err); process.exit(1); });
+run().catch((err) => {
+  console.error("❌", err);
+  process.exit(1);
+});

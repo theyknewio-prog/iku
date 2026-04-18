@@ -74,7 +74,10 @@ async function fetchTtfb(url, samples = 3) {
     try {
       const r = await fetch(url, {
         method: "GET",
-        headers: { "User-Agent": "iku-health/1.0", "Cache-Control": "no-cache" },
+        headers: {
+          "User-Agent": "iku-health/1.0",
+          "Cache-Control": "no-cache",
+        },
       });
       ttfbs.push(Math.round(performance.now() - t0));
       status = r.status;
@@ -84,12 +87,18 @@ async function fetchTtfb(url, samples = 3) {
     }
   }
   ttfbs.sort((a, b) => a - b);
-  return { median: ttfbs[Math.floor(ttfbs.length / 2)], status, samples: ttfbs };
+  return {
+    median: ttfbs[Math.floor(ttfbs.length / 2)],
+    status,
+    samples: ttfbs,
+  };
 }
 
 async function fetchHealth() {
   try {
-    const r = await fetch(URLS.health, { headers: { "User-Agent": "iku-health/1.0" } });
+    const r = await fetch(URLS.health, {
+      headers: { "User-Agent": "iku-health/1.0" },
+    });
     if (!r.ok) return { ok: false, status: r.status };
     const j = await r.json();
     return {
@@ -107,7 +116,7 @@ function pgActiveQueryCount() {
   try {
     const out = execSync(
       `docker exec iku-postgres psql -U iku -d iku -tAc "SELECT count(*) FROM pg_stat_activity WHERE state='active'" 2>/dev/null`,
-      { encoding: "utf8", timeout: 5000 }
+      { encoding: "utf8", timeout: 5000 },
     );
     return parseInt(out.trim(), 10) || 0;
   } catch {
@@ -146,16 +155,19 @@ async function tg(text) {
     return;
   }
   try {
-    const r = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: TG_CHAT,
-        text,
-        parse_mode: "Markdown",
-        disable_web_page_preview: true,
-      }),
-    });
+    const r = await fetch(
+      `https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: TG_CHAT,
+          text,
+          parse_mode: "Markdown",
+          disable_web_page_preview: true,
+        }),
+      },
+    );
     const j = await r.json();
     if (!j.ok) console.error("tg err", j);
   } catch (err) {
@@ -180,36 +192,53 @@ function shouldAlert(state, key) {
   // 1. Homepage TTFB
   const home = await fetchTtfb(URLS.home);
   if (home.median == null) {
-    if (shouldAlert(state, "home-down")) alerts.push(`🔴 *Homepage DOWN* — ${home.error || "no response"}`);
+    if (shouldAlert(state, "home-down"))
+      alerts.push(`🔴 *Homepage DOWN* — ${home.error || "no response"}`);
   } else if (home.median > THRESHOLDS.homeTtfbMs) {
     if (shouldAlert(state, "home-slow"))
-      alerts.push(`🟡 *Homepage slow* — TTFB median ${home.median}ms > ${THRESHOLDS.homeTtfbMs}ms (samples ${home.samples.join("/")})`);
+      alerts.push(
+        `🟡 *Homepage slow* — TTFB median ${home.median}ms > ${THRESHOLDS.homeTtfbMs}ms (samples ${home.samples.join("/")})`,
+      );
   }
 
   // 2. Watch page TTFB
   const watch = await fetchTtfb(URLS.watchHC);
   if (watch.median == null) {
-    if (shouldAlert(state, "watch-down")) alerts.push(`🔴 *Hentaicity watch DOWN* — ${watch.error || "no response"}`);
+    if (shouldAlert(state, "watch-down"))
+      alerts.push(
+        `🔴 *Hentaicity watch DOWN* — ${watch.error || "no response"}`,
+      );
   } else if (watch.median > THRESHOLDS.watchTtfbMs) {
     if (shouldAlert(state, "watch-slow"))
-      alerts.push(`🟡 *Watch page slow* — TTFB median ${watch.median}ms > ${THRESHOLDS.watchTtfbMs}ms`);
+      alerts.push(
+        `🟡 *Watch page slow* — TTFB median ${watch.median}ms > ${THRESHOLDS.watchTtfbMs}ms`,
+      );
   }
 
   // 3. Health endpoint
   const h = await fetchHealth();
   if (!h.ok) {
     if (shouldAlert(state, "health-fail"))
-      alerts.push(`🔴 *API /health fail* — status ${h.status || "error"} ${h.error || ""}`);
-  } else if (h.uptimeSec != null && h.uptimeSec < THRESHOLDS.minUptimeAfterRestartSec) {
+      alerts.push(
+        `🔴 *API /health fail* — status ${h.status || "error"} ${h.error || ""}`,
+      );
+  } else if (
+    h.uptimeSec != null &&
+    h.uptimeSec < THRESHOLDS.minUptimeAfterRestartSec
+  ) {
     if (shouldAlert(state, "app-restart"))
-      alerts.push(`🟠 *App recently restarted* — uptime ${h.uptimeSec}s · heap ${h.heapUsedMB}MB · rss ${h.rssMB}MB`);
+      alerts.push(
+        `🟠 *App recently restarted* — uptime ${h.uptimeSec}s · heap ${h.heapUsedMB}MB · rss ${h.rssMB}MB`,
+      );
   }
 
   // 4. PG active queries
   const pg = pgActiveQueryCount();
   if (pg > THRESHOLDS.pgActiveQueries) {
     if (shouldAlert(state, "pg-saturation"))
-      alerts.push(`🟡 *PG queries piling up* — ${pg} active > ${THRESHOLDS.pgActiveQueries} threshold`);
+      alerts.push(
+        `🟡 *PG queries piling up* — ${pg} active > ${THRESHOLDS.pgActiveQueries} threshold`,
+      );
   } else if (pg === -1) {
     if (shouldAlert(state, "pg-unreachable"))
       alerts.push(`🔴 *iku-postgres unreachable via docker exec*`);
@@ -223,12 +252,18 @@ function shouldAlert(state, key) {
 
   // Send alerts if any
   if (alerts.length > 0) {
-    const msg = ["*⚠️ iku.gg health alert*", "", ...alerts, "", `_${new Date().toISOString()}_`].join("\n");
+    const msg = [
+      "*⚠️ iku.gg health alert*",
+      "",
+      ...alerts,
+      "",
+      `_${new Date().toISOString()}_`,
+    ].join("\n");
     await tg(msg);
     console.log("ALERTS:", alerts.length);
   } else {
     console.log(
-      `[${new Date().toISOString().slice(0, 19)}] OK home=${home.median}ms watch=${watch.median}ms uptime=${h.uptimeSec}s pg=${pg}`
+      `[${new Date().toISOString().slice(0, 19)}] OK home=${home.median}ms watch=${watch.median}ms uptime=${h.uptimeSec}s pg=${pg}`,
     );
   }
 

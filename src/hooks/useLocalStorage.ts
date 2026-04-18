@@ -9,7 +9,7 @@ import { useState, useEffect, useCallback } from "react";
  */
 export function useLocalStorage<T>(
   key: string,
-  initialValue: T
+  initialValue: T,
 ): [T, (value: T | ((prev: T) => T)) => void] {
   const [storedValue, setStoredValue] = useState<T>(() => {
     if (typeof window === "undefined") return initialValue;
@@ -36,7 +36,7 @@ export function useLocalStorage<T>(
         // ignore
       }
     },
-    [key, storedValue]
+    [key, storedValue],
   );
 
   /* Keep in sync when another tab/component writes the same key */

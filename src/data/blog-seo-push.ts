@@ -17,7 +17,8 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
   {
     slug: "best-vanilla-hentai-2026",
     title: "Best Vanilla Hentai 2026 — Romantic & Wholesome Adult Anime",
-    excerpt: "The top vanilla hentai titles focused on love, romance, and consensual relationships — the opposite of extreme content.",
+    excerpt:
+      "The top vanilla hentai titles focused on love, romance, and consensual relationships — the opposite of extreme content.",
     content: `<h2>What is Vanilla Hentai?</h2>
 <p><strong>Vanilla hentai</strong> is the romantic, consensual, emotionally warm end of the adult anime spectrum. The term "vanilla" in hentai context describes content without extreme elements — no <a href="/blog/mind-control-hypnosis-hentai-guide">mind control</a>, no <a href="/blog/best-ntr-netorare-hentai-2026">netorare</a>, no dark fantasy setups. Just two (or sometimes more) characters in a caring, mutually enthusiastic romantic scenario. It is, by a significant margin, the most searched positive-sentiment category in hentai.</p>
 <p>The appeal is simple: most viewers want intimacy that looks like an actual relationship. Vanilla titles emphasize eye contact, dialogue, emotional connection, and slow pacing. They are the hentai equivalent of a romance film — structured around characters who genuinely like each other rather than around shock value.</p>
@@ -80,13 +81,15 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
     readingTime: 9,
     glossaryLinks: ["hentai", "vanilla", "milf"],
     seoTitle: "Best Vanilla Hentai 2026 — Romantic Adult Anime Ranked | iku.gg",
-    seoDescription: "The top vanilla hentai titles of 2026. Romantic, consensual, emotionally warm adult anime — PoRO, Collaboration Works, Overflow, and more. Full genre guide.",
+    seoDescription:
+      "The top vanilla hentai titles of 2026. Romantic, consensual, emotionally warm adult anime — PoRO, Collaboration Works, Overflow, and more. Full genre guide.",
   },
 
   {
     slug: "best-ntr-netorare-hentai-2026",
     title: "Best NTR Hentai 2026 — The Definitive Netorare Guide",
-    excerpt: "The top netorare (NTR) hentai titles ranked. Dark romance, betrayal scenarios, and the genre's most iconic releases.",
+    excerpt:
+      "The top netorare (NTR) hentai titles ranked. Dark romance, betrayal scenarios, and the genre's most iconic releases.",
     content: `<h2>What is NTR Hentai?</h2>
 <p><strong>NTR</strong> — short for <strong>netorare</strong> (寝取られ), literally "sleeping with and being taken from" — is the genre category where a character's partner ends up with someone else. It is one of the most distinctive and divisive hentai genres, generating intense loyalty from fans and equally intense rejection from viewers who prefer <a href="/blog/best-vanilla-hentai-2026">vanilla</a> content.</p>
 <p>NTR's popularity is impossible to ignore. It consistently ranks among the top-searched hentai tags globally, and multiple major studios have built reputations specifically on NTR production. Understanding NTR as a genre — its conventions, its variants, and its best-regarded titles — is essential context for anyone serious about hentai discovery.</p>
@@ -157,13 +160,15 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
     readingTime: 10,
     glossaryLinks: ["hentai", "ntr", "netorare"],
     seoTitle: "Best NTR Hentai 2026 — Top Netorare Titles Ranked | iku.gg",
-    seoDescription: "The definitive NTR (netorare) hentai guide. Top titles, subvariants (netori, netorase), key artists, and how to find quality NTR content on iku.gg.",
+    seoDescription:
+      "The definitive NTR (netorare) hentai guide. Top titles, subvariants (netori, netorase), key artists, and how to find quality NTR content on iku.gg.",
   },
 
   {
     slug: "best-milf-hentai-2026",
     title: "Best MILF Hentai 2026 — The Top Mature Character Titles",
-    excerpt: "The top MILF hentai titles of 2026. Mature female characters, domestic scenarios, and the studios that specialize in the genre.",
+    excerpt:
+      "The top MILF hentai titles of 2026. Mature female characters, domestic scenarios, and the studios that specialize in the genre.",
     content: `<h2>What is MILF Hentai?</h2>
 <p><strong>MILF hentai</strong> centers on mature female characters — typically mothers, wives, or older professionals — rather than the student-age archetypes that dominate other subgenres. In Japanese, the nearest equivalent terms are <em>hitozuma</em> (人妻, wife) and <em>jukujo</em> (熟女, mature woman). Both are major production categories with their own tag ecosystems on iku.gg.</p>
 <p>The MILF genre has been one of the fastest-growing hentai categories over the last decade. The flagship title <em>Ane wa Yanmama Junyuu-chuu</em> alone has surpassed 43 million views, establishing that mature-character hentai is not a niche but a mainstream pillar of the industry.</p>
@@ -228,13 +233,15 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
     readingTime: 9,
     glossaryLinks: ["hentai", "milf", "hitozuma"],
     seoTitle: "Best MILF Hentai 2026 — Top Mature Character Titles | iku.gg",
-    seoDescription: "The top MILF hentai titles of 2026. Mature characters, hitozuma scenarios, Bunnywalker productions, and the characters driving the genre. Full guide.",
+    seoDescription:
+      "The top MILF hentai titles of 2026. Mature characters, hitozuma scenarios, Bunnywalker productions, and the characters driving the genre. Full guide.",
   },
 
   {
     slug: "best-succubus-hentai-2026",
     title: "Best Succubus Hentai 2026 — Demon Girl Adult Anime Ranked",
-    excerpt: "The top succubus hentai titles. Itadaki Seieki, demon girl scenarios, and the fantasy creatures dominating the genre.",
+    excerpt:
+      "The top succubus hentai titles. Itadaki Seieki, demon girl scenarios, and the fantasy creatures dominating the genre.",
     content: `<h2>What is Succubus Hentai?</h2>
 <p><strong>Succubus hentai</strong> features demon girl characters whose fantasy premise is sexual — succubi, in traditional European folklore, are demons who seduce mortals in their sleep. Japanese hentai has adopted and transformed this concept into one of its most beloved subgenres, producing titles that range from comedy to dark fantasy.</p>
 <p>Succubus scenarios solve a core hentai production challenge: they provide built-in narrative justification for unusual scenarios, exotic character designs (horns, wings, tails), and supernatural dynamics. The result is a subgenre with distinctive visual signatures and a devoted fan base.</p>
@@ -295,13 +302,15 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
     readingTime: 9,
     glossaryLinks: ["hentai", "succubus"],
     seoTitle: "Best Succubus Hentai 2026 — Top Demon Girl Titles | iku.gg",
-    seoDescription: "The best succubus hentai ranked. Itadaki Seieki, Morrigan, Albedo, and the top demon girl titles and characters of the genre. Full guide.",
+    seoDescription:
+      "The best succubus hentai ranked. Itadaki Seieki, Morrigan, Albedo, and the top demon girl titles and characters of the genre. Full guide.",
   },
 
   {
     slug: "best-maid-hentai-2026",
     title: "Best Maid Hentai 2026 — The Top Maid Outfit Titles Ranked",
-    excerpt: "The top maid hentai titles of 2026. Classic French maid aesthetics, dragon maids, and the scenarios defining the genre.",
+    excerpt:
+      "The top maid hentai titles of 2026. Classic French maid aesthetics, dragon maids, and the scenarios defining the genre.",
     content: `<h2>What is Maid Hentai?</h2>
 <p><strong>Maid hentai</strong> is one of the most visually recognizable hentai subgenres, built around the French maid outfit archetype that emerged in Japanese otaku culture in the 1990s and became dominant in the 2000s. The genre is enormous: maid tags consistently appear among the top-searched terms on every major hentai platform, and the maid outfit has become so iconic that it generates significant search volume independent of any specific title.</p>
 <p>The appeal combines visual aesthetics (the distinctive outfit design), power dynamics (servant-master framing), and character archetypes (the loyal personal maid, the clumsy maid, the secretly-dangerous maid). Each of these can drive a full scenario on its own, and good maid hentai often combines several.</p>
@@ -363,13 +372,15 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
     readingTime: 9,
     glossaryLinks: ["hentai", "waifu"],
     seoTitle: "Best Maid Hentai 2026 — Top Maid Outfit Titles | iku.gg",
-    seoDescription: "The top maid hentai titles and characters. Rem, Tohru, Lucoa, Dragon Maid fan works, and the classic maid outfit genre. Full guide.",
+    seoDescription:
+      "The top maid hentai titles and characters. Rem, Tohru, Lucoa, Dragon Maid fan works, and the classic maid outfit genre. Full guide.",
   },
 
   {
     slug: "best-ahegao-hentai-2026",
     title: "Best Ahegao Hentai 2026 — The Top Face-Expression Titles",
-    excerpt: "The top ahegao hentai titles. The iconic face expression, its origins, and the titles and artists that made it famous.",
+    excerpt:
+      "The top ahegao hentai titles. The iconic face expression, its origins, and the titles and artists that made it famous.",
     content: `<h2>What is Ahegao?</h2>
 <p><strong>Ahegao</strong> (アヘ顔) is the exaggerated face expression that has become one of hentai's most recognizable visual signatures. The term translates roughly as "weird face" and describes the specific expression: eyes rolled back or crossed, tongue out, flushed cheeks, and an open mouth. It originated in Japanese hentai manga in the early 2000s and has since become globally recognized to the point where the expression is used in mainstream internet culture entirely divorced from its hentai origins.</p>
 <p>Despite its mainstream visibility, ahegao remains fundamentally a hentai subgenre. Fans search specifically for content featuring the expression, and certain titles and artists have built reputations on delivering it. Understanding ahegao as a category helps navigate the significant volume of content tagged with it.</p>
@@ -433,13 +444,15 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
     readingTime: 10,
     glossaryLinks: ["hentai", "ahegao"],
     seoTitle: "Best Ahegao Hentai 2026 — Top Face Expression Titles | iku.gg",
-    seoDescription: "The top ahegao hentai titles of 2026. The iconic face expression, its origins, the artists who popularized it, and where to find the best content.",
+    seoDescription:
+      "The top ahegao hentai titles of 2026. The iconic face expression, its origins, the artists who popularized it, and where to find the best content.",
   },
 
   {
     slug: "best-tentacle-hentai-2026",
     title: "Best Tentacle Hentai 2026 — From Hokusai to Modern Adult Anime",
-    excerpt: "The top tentacle hentai titles. From 1814 shunga origins to modern releases — the genre's defining productions.",
+    excerpt:
+      "The top tentacle hentai titles. From 1814 shunga origins to modern releases — the genre's defining productions.",
     content: `<h2>What is Tentacle Hentai?</h2>
 <p><strong>Tentacle hentai</strong> is arguably the oldest and most historically significant hentai subgenre, with a genealogy that traces directly from 1814 Japanese woodblock prints to modern animated productions. It is also the subgenre most associated with hentai in Western cultural memory, for better and worse — many viewers' first exposure to hentai was tentacle content, and the genre's visibility has shaped global perceptions of Japanese adult animation for decades.</p>
 <p>Despite its cultural visibility, tentacle hentai is a relatively small slice of modern hentai production by volume. It remains a vital but niche subgenre, with distinctive conventions and a dedicated fan base. Understanding its history and its current productions is essential context for serious hentai discovery.</p>
@@ -504,14 +517,17 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
     publishedAt: "2026-04-05",
     readingTime: 10,
     glossaryLinks: ["hentai", "tentacle"],
-    seoTitle: "Best Tentacle Hentai 2026 — Top Titles from Hokusai to Today | iku.gg",
-    seoDescription: "The best tentacle hentai titles of 2026. Urotsukidoji, La Blue Girl, modern productions, and the Hokusai lineage. The definitive genre guide.",
+    seoTitle:
+      "Best Tentacle Hentai 2026 — Top Titles from Hokusai to Today | iku.gg",
+    seoDescription:
+      "The best tentacle hentai titles of 2026. Urotsukidoji, La Blue Girl, modern productions, and the Hokusai lineage. The definitive genre guide.",
   },
 
   {
     slug: "best-isekai-hentai-2026",
     title: "Best Isekai Hentai 2026 — Fantasy World Adult Anime Ranked",
-    excerpt: "The top isekai hentai titles. Another-world fantasy adventures with adult content and the characters driving the genre.",
+    excerpt:
+      "The top isekai hentai titles. Another-world fantasy adventures with adult content and the characters driving the genre.",
     content: `<h2>What is Isekai Hentai?</h2>
 <p><strong>Isekai hentai</strong> takes the dominant modern anime genre — stories about characters transported to fantasy worlds — and applies it to adult content. The isekai genre has been the single biggest driver of mainstream anime production since roughly 2015, and its hentai counterpart has grown in parallel. Isekai hentai is now one of the most actively-produced subgenres, combining the fantasy-adventure framing that isekai fans love with adult content.</p>
 <p>The appeal is simple: isekai narratives provide natural justification for exotic settings, diverse cast members (elves, dragonkin, goddesses, demon lords), and scenarios that wouldn't fit in realistic settings. The result is hentai that feels like fantasy adventure with adult elements rather than adult content with fantasy decoration.</p>
@@ -578,13 +594,15 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
     readingTime: 10,
     glossaryLinks: ["hentai", "isekai"],
     seoTitle: "Best Isekai Hentai 2026 — Fantasy World Adult Anime | iku.gg",
-    seoDescription: "The top isekai hentai titles of 2026. Re:Zero, Overlord, Konosuba, Sword Art Online fan works, and the characters driving the genre. Full guide.",
+    seoDescription:
+      "The top isekai hentai titles of 2026. Re:Zero, Overlord, Konosuba, Sword Art Online fan works, and the characters driving the genre. Full guide.",
   },
 
   {
     slug: "best-bondage-hentai-2026",
     title: "Best Bondage Hentai 2026 — Shibari and BDSM Adult Anime",
-    excerpt: "The top bondage hentai titles. Shibari, restraint scenarios, and the Japanese tradition that shaped the genre.",
+    excerpt:
+      "The top bondage hentai titles. Shibari, restraint scenarios, and the Japanese tradition that shaped the genre.",
     content: `<h2>What is Bondage Hentai?</h2>
 <p><strong>Bondage hentai</strong> draws on Japan's distinctive tradition of rope art — known as <strong>shibari</strong> or <strong>kinbaku</strong> — to create scenarios centered on restraint and consensual power exchange. Unlike Western bondage imagery, which tends toward leather and metal aesthetics, Japanese bondage hentai typically features rope work in patterns that are themselves recognized as art forms. The result is a visual language unique to Japanese adult content.</p>
 <p>Shibari is taken seriously as an art form in Japan, with practitioners, performances, and educational materials. Its hentai adaptation inherits this seriousness: the best bondage hentai treats rope work as a visual signature requiring specific artistic skill, not as a generic prop.</p>
@@ -641,13 +659,15 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
     readingTime: 10,
     glossaryLinks: ["hentai", "bondage"],
     seoTitle: "Best Bondage Hentai 2026 — Top Shibari & BDSM Titles | iku.gg",
-    seoDescription: "The top bondage hentai titles of 2026. Shibari tradition, kinbaku, BDSM scenarios, and the production quality that defines the genre. Full guide.",
+    seoDescription:
+      "The top bondage hentai titles of 2026. Shibari tradition, kinbaku, BDSM scenarios, and the production quality that defines the genre. Full guide.",
   },
 
   {
     slug: "best-schoolgirl-hentai-2026",
     title: "Best Schoolgirl Hentai 2026 — Top School Uniform Titles",
-    excerpt: "The top schoolgirl hentai titles of 2026 featuring adult characters in school settings. JK scenarios and uniform aesthetics.",
+    excerpt:
+      "The top schoolgirl hentai titles of 2026 featuring adult characters in school settings. JK scenarios and uniform aesthetics.",
     content: `<h2>What is Schoolgirl Hentai?</h2>
 <p><strong>Schoolgirl hentai</strong> is one of the most recognizable and most-produced hentai subgenres. It centers on the Japanese school uniform — the distinctive sailor fuku or modern blazer design — and on characters in school or after-school settings. Importantly, on iku.gg and in the broader responsible hentai ecosystem, <strong>schoolgirl hentai refers exclusively to adult characters</strong> in school-coded settings: teachers, adult senpai characters, university students, and aged-up fan works of mainstream anime characters. Any content depicting actual minors is strictly prohibited.</p>
 <p>The school uniform aesthetic has its own visual grammar: the sailor collar, the pleated skirt, the knee socks, the cardigan. These elements are instantly recognizable globally and have become one of Japanese animation's defining visual exports. Schoolgirl hentai is the adult content branch of this visual tradition.</p>
@@ -712,8 +732,10 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
     publishedAt: "2026-04-05",
     readingTime: 10,
     glossaryLinks: ["hentai", "waifu"],
-    seoTitle: "Best Schoolgirl Hentai 2026 — Top School Uniform Titles | iku.gg",
-    seoDescription: "The top schoolgirl hentai titles featuring adult characters. School uniform aesthetics, teacher scenarios, and the genre's production standards.",
+    seoTitle:
+      "Best Schoolgirl Hentai 2026 — Top School Uniform Titles | iku.gg",
+    seoDescription:
+      "The top schoolgirl hentai titles featuring adult characters. School uniform aesthetics, teacher scenarios, and the genre's production standards.",
   },
 
   // ─────────────────────────────────────────────────────────────
@@ -722,7 +744,8 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
   {
     slug: "best-naruto-hentai",
     title: "Best Naruto Hentai 2026 — Tsunade, Hinata, Sakura & More",
-    excerpt: "The definitive Naruto hentai guide. The top characters, artists, and titles driving the biggest franchise fanart genre.",
+    excerpt:
+      "The definitive Naruto hentai guide. The top characters, artists, and titles driving the biggest franchise fanart genre.",
     content: `<h2>Why Naruto Dominates Hentai Production</h2>
 <p><strong>Naruto</strong> is, by most measurements, the single most-produced franchise in the history of hentai fan art. No other anime property has generated as much adult fan content across as many characters over as long a time period. Since the original manga's serialization began in 1999, Naruto characters have been central to the hentai fan community in a way that only a handful of other franchises (Dragon Ball, Overwatch, Genshin Impact) approach.</p>
 <p>The reasons are structural. Naruto has an enormous cast of visually distinctive characters, most of whom had their designs aged up significantly during the Shippuden timeskip, creating a robust population of adult characters for fan production. The series' global popularity means fans from every country have contributed to the hentai catalog. And the characters themselves have the design specificity — distinctive hair, signature outfits, recognizable faces — that makes them ideal subjects for fan art at scale.</p>
@@ -796,14 +819,17 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
     publishedAt: "2026-04-05",
     readingTime: 11,
     glossaryLinks: ["hentai", "milf", "waifu"],
-    seoTitle: "Best Naruto Hentai 2026 — Tsunade, Hinata, Sakura Guide | iku.gg",
-    seoDescription: "The definitive Naruto hentai guide. Top characters (Tsunade, Hinata, Sakura, Ino, Temari), artists, and where to find the best content.",
+    seoTitle:
+      "Best Naruto Hentai 2026 — Tsunade, Hinata, Sakura Guide | iku.gg",
+    seoDescription:
+      "The definitive Naruto hentai guide. Top characters (Tsunade, Hinata, Sakura, Ino, Temari), artists, and where to find the best content.",
   },
 
   {
     slug: "best-bleach-hentai",
     title: "Best Bleach Hentai 2026 — Orihime, Rukia, Rangiku Guide",
-    excerpt: "The top Bleach hentai characters and fan works. Orihime, Rukia, Rangiku, Yoruichi, and the Soul Society's adult fan art.",
+    excerpt:
+      "The top Bleach hentai characters and fan works. Orihime, Rukia, Rangiku, Yoruichi, and the Soul Society's adult fan art.",
     content: `<h2>Why Bleach Has an Enormous Hentai Catalog</h2>
 <p><strong>Bleach</strong>, Tite Kubo's long-running shounen about a teenager who becomes a Soul Reaper, is one of the defining franchises of the 2000s anime era and has generated one of the largest hentai fan art catalogs of any anime property. The series' appeal to hentai artists is structural: an enormous cast of visually distinctive female characters, a supernatural setting that justifies exotic design elements, and a long run that gave artists decades to build catalogs.</p>
 <p>Even years after the original manga's conclusion, Bleach remains in the top tier of hentai-produced franchises. The 2022 <em>Thousand-Year Blood War</em> anime adaptation renewed mainstream attention and triggered a new wave of hentai fan production.</p>
@@ -878,14 +904,17 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
     publishedAt: "2026-04-05",
     readingTime: 10,
     glossaryLinks: ["hentai", "milf", "waifu"],
-    seoTitle: "Best Bleach Hentai 2026 — Orihime, Rukia, Rangiku Guide | iku.gg",
-    seoDescription: "The definitive Bleach hentai guide. Top characters (Orihime, Rukia, Rangiku, Yoruichi, Harribel), scenarios, and where to find the best content.",
+    seoTitle:
+      "Best Bleach Hentai 2026 — Orihime, Rukia, Rangiku Guide | iku.gg",
+    seoDescription:
+      "The definitive Bleach hentai guide. Top characters (Orihime, Rukia, Rangiku, Yoruichi, Harribel), scenarios, and where to find the best content.",
   },
 
   {
     slug: "best-one-piece-hentai",
     title: "Best One Piece Hentai 2026 — Nami, Robin, Boa Hancock Guide",
-    excerpt: "The definitive One Piece hentai guide. Nami, Nico Robin, Boa Hancock, and the Straw Hat crew's fan art landscape.",
+    excerpt:
+      "The definitive One Piece hentai guide. Nami, Nico Robin, Boa Hancock, and the Straw Hat crew's fan art landscape.",
     content: `<h2>Why One Piece Has a Massive Hentai Catalog</h2>
 <p><strong>One Piece</strong> is, by manga sales, the most successful franchise in manga history. With over 500 million copies sold and 25+ years of continuous serialization, it has had more time to generate fan art than almost any other anime property. Its hentai catalog is correspondingly enormous, particularly concentrated on a handful of core female characters whose designs became iconic during the series' run.</p>
 <p>The series' design philosophy — distinctive silhouettes, exaggerated body proportions, adventure-based outfit variety — makes its characters ideal subjects for fan art at scale. One Piece hentai spans from the earliest East Blue saga through the current arcs, with fan productions for every era and outfit variation.</p>
@@ -958,14 +987,17 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
     publishedAt: "2026-04-05",
     readingTime: 10,
     glossaryLinks: ["hentai", "milf", "waifu"],
-    seoTitle: "Best One Piece Hentai 2026 — Nami, Robin, Hancock Guide | iku.gg",
-    seoDescription: "The definitive One Piece hentai guide. Top characters (Nami, Robin, Boa Hancock, Vivi, Perona), scenarios, and where to find the best content.",
+    seoTitle:
+      "Best One Piece Hentai 2026 — Nami, Robin, Hancock Guide | iku.gg",
+    seoDescription:
+      "The definitive One Piece hentai guide. Top characters (Nami, Robin, Boa Hancock, Vivi, Perona), scenarios, and where to find the best content.",
   },
 
   {
     slug: "best-dragon-ball-hentai",
     title: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, Android 18 Guide",
-    excerpt: "The definitive Dragon Ball hentai guide. Bulma, Chi-Chi, Android 18, Videl, and the franchise's extensive fan art catalog.",
+    excerpt:
+      "The definitive Dragon Ball hentai guide. Bulma, Chi-Chi, Android 18, Videl, and the franchise's extensive fan art catalog.",
     content: `<h2>Why Dragon Ball Has a Legendary Hentai Catalog</h2>
 <p><strong>Dragon Ball</strong> is the longest-running major franchise in hentai fan art history. From the original manga's 1984 debut through <em>Dragon Ball Z</em>, <em>Super</em>, and continuing productions, the franchise has had four decades to generate fan art. Its hentai catalog is consequently one of the oldest and deepest of any property, with fan productions spanning every era and every era's art style evolution.</p>
 <p>The franchise's appeal to hentai artists is structural. Dragon Ball has a specific set of recurring female characters — not an enormous cast like Naruto, but a tightly defined group whose designs became iconic through decades of exposure. The result is concentrated hentai production on a smaller number of characters than Naruto or Bleach, but with extraordinary depth for each character.</p>
@@ -1035,14 +1067,17 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
     publishedAt: "2026-04-05",
     readingTime: 10,
     glossaryLinks: ["hentai", "waifu"],
-    seoTitle: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, Android 18 | iku.gg",
-    seoDescription: "The definitive Dragon Ball hentai guide. Top characters (Bulma, Chi-Chi, Android 18, Videl, Caulifla), scenarios, and where to find the best content.",
+    seoTitle:
+      "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, Android 18 | iku.gg",
+    seoDescription:
+      "The definitive Dragon Ball hentai guide. Top characters (Bulma, Chi-Chi, Android 18, Videl, Caulifla), scenarios, and where to find the best content.",
   },
 
   {
     slug: "best-my-hero-academia-hentai",
     title: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midnight, Mirko",
-    excerpt: "The top MHA hentai guide focused on adult pro hero characters. Mt. Lady, Midnight, Mirko, Nejire, and fan art landscape.",
+    excerpt:
+      "The top MHA hentai guide focused on adult pro hero characters. Mt. Lady, Midnight, Mirko, Nejire, and fan art landscape.",
     content: `<h2>Why My Hero Academia Has Strong Hentai Production</h2>
 <p><strong>My Hero Academia</strong> (Boku no Hero Academia), Kohei Horikoshi's superhero shounen, has become one of the biggest anime franchises of the 2010s and 2020s. Its hentai catalog is substantial, though with an important distinction from other shounen: the responsible hentai community focuses almost exclusively on the franchise's <strong>adult pro hero characters</strong> — the teachers, heroes, and adult villains — rather than the student cast. On iku.gg and across the major platforms with content filtering, this adult-only focus is enforced through tag-based content moderation.</p>
 <p>The pro hero cast alone is large enough to have generated a significant hentai catalog. Characters like Midnight, Mt. Lady, Mirko, and Nejire Hado have become fan art staples, and the superhero genre framing gives scenarios visual creativity beyond standard hentai templates.</p>
@@ -1105,18 +1140,27 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
 
 <h2>Related Franchise Guides</h2>
 <p>For other modern shounen franchises in hentai production, see our <a href="/blog/best-jujutsu-kaisen-hentai">Jujutsu Kaisen hentai guide</a> and <a href="/blog/best-chainsaw-man-hentai">Chainsaw Man hentai guide</a>. For the big classic shounen franchises, our <a href="/blog/best-naruto-hentai">Naruto guide</a> and <a href="/blog/best-bleach-hentai">Bleach guide</a> cover the predecessors. For broader context, read the <a href="/blog/most-popular-hentai-characters-2026">popular characters guide</a>.</p>`,
-    tags: ["my-hero-academia", "mha", "franchise", "characters", "recommendations"],
+    tags: [
+      "my-hero-academia",
+      "mha",
+      "franchise",
+      "characters",
+      "recommendations",
+    ],
     publishedAt: "2026-04-05",
     readingTime: 10,
     glossaryLinks: ["hentai", "waifu"],
-    seoTitle: "Best My Hero Academia Hentai 2026 — Mt Lady, Mirko, Midnight | iku.gg",
-    seoDescription: "The top My Hero Academia hentai guide. Adult pro heroes (Midnight, Mt Lady, Mirko, Nejire) and the franchise's fan art landscape.",
+    seoTitle:
+      "Best My Hero Academia Hentai 2026 — Mt Lady, Mirko, Midnight | iku.gg",
+    seoDescription:
+      "The top My Hero Academia hentai guide. Adult pro heroes (Midnight, Mt Lady, Mirko, Nejire) and the franchise's fan art landscape.",
   },
 
   {
     slug: "best-league-of-legends-hentai",
     title: "Best League of Legends Hentai 2026 — Ahri, Kai'Sa, Miss Fortune",
-    excerpt: "The top LoL hentai guide. Ahri, Akali, Kai'Sa, Miss Fortune, Sona, Lux — Runeterra's most-produced champions in adult fan art.",
+    excerpt:
+      "The top LoL hentai guide. Ahri, Akali, Kai'Sa, Miss Fortune, Sona, Lux — Runeterra's most-produced champions in adult fan art.",
     content: `<h2>Why League of Legends Dominates Game Hentai Production</h2>
 <p><strong>League of Legends</strong> has the largest hentai catalog of any video game property, competing only with <a href="/blog/overwatch-hentai-dva-widowmaker-sfm">Overwatch</a> for that title. With over 165 champions — dozens of them female and visually distinctive — Riot Games' MOBA has provided fan artists with a design space no other game approaches. The combination of character variety, regular new champion releases, and Riot's commitment to distinctive character design has made LoL a sustained source of hentai fan art for over a decade.</p>
 <p>The fan art ecosystem for LoL has multiple sub-communities. The SFM (Source Filmmaker) and Blender animation communities produce extensive 3D LoL hentai. The 2D doujinshi community produces traditional manga and illustration content. Individual character fandoms exist for the most popular champions, generating continuous new work.</p>
@@ -1191,14 +1235,17 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
     publishedAt: "2026-04-05",
     readingTime: 11,
     glossaryLinks: ["hentai", "waifu", "3d-hentai"],
-    seoTitle: "Best League of Legends Hentai 2026 — Ahri, Akali, Kai'Sa | iku.gg",
-    seoDescription: "The top League of Legends hentai. Ahri, Akali, Kai'Sa, Miss Fortune, Sona, Lux, and the K/DA fan art that dominates LoL hentai production.",
+    seoTitle:
+      "Best League of Legends Hentai 2026 — Ahri, Akali, Kai'Sa | iku.gg",
+    seoDescription:
+      "The top League of Legends hentai. Ahri, Akali, Kai'Sa, Miss Fortune, Sona, Lux, and the K/DA fan art that dominates LoL hentai production.",
   },
 
   {
     slug: "best-final-fantasy-hentai",
     title: "Best Final Fantasy Hentai 2026 — Tifa, Aerith, Yuna, Lightning",
-    excerpt: "The top Final Fantasy hentai guide. Tifa Lockhart, Aerith, Yuna, Lightning, and the franchise's 30-year fan art legacy.",
+    excerpt:
+      "The top Final Fantasy hentai guide. Tifa Lockhart, Aerith, Yuna, Lightning, and the franchise's 30-year fan art legacy.",
     content: `<h2>Why Final Fantasy Has a Legacy Hentai Catalog</h2>
 <p><strong>Final Fantasy</strong> is the longest-running major JRPG franchise, with continuous production since 1987. Its hentai catalog reflects that longevity — characters from multiple entries across four decades have generated fan art, and the franchise has been one of the foundational subjects of game hentai production since the community emerged in the 1990s. The specific characters that drive Final Fantasy hentai production are among the most recognizable in all of gaming.</p>
 <p>Unlike most franchise hentai categories, Final Fantasy production is concentrated on specific entries rather than the whole series. <em>Final Fantasy VII</em> (Tifa and Aerith), <em>Final Fantasy X</em> (Yuna), and <em>Final Fantasy XIII</em> (Lightning) account for the overwhelming majority of Final Fantasy hentai fan art, with smaller catalogs for characters from other entries.</p>
@@ -1273,14 +1320,17 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
     publishedAt: "2026-04-05",
     readingTime: 11,
     glossaryLinks: ["hentai", "waifu", "3d-hentai"],
-    seoTitle: "Best Final Fantasy Hentai 2026 — Tifa, Aerith, Yuna, Lightning | iku.gg",
-    seoDescription: "The top Final Fantasy hentai guide. Tifa Lockhart, Aerith, Yuna, Lightning, and 30 years of FF fan art production history.",
+    seoTitle:
+      "Best Final Fantasy Hentai 2026 — Tifa, Aerith, Yuna, Lightning | iku.gg",
+    seoDescription:
+      "The top Final Fantasy hentai guide. Tifa Lockhart, Aerith, Yuna, Lightning, and 30 years of FF fan art production history.",
   },
 
   {
     slug: "best-nier-automata-2b-hentai",
     title: "Best Nier Automata 2B Hentai 2026 — The Definitive Guide",
-    excerpt: "The definitive Nier Automata 2B hentai guide. The android heroine who became one of the most-produced game characters in modern hentai.",
+    excerpt:
+      "The definitive Nier Automata 2B hentai guide. The android heroine who became one of the most-produced game characters in modern hentai.",
     content: `<h2>Why 2B Dominates Modern Game Hentai</h2>
 <p><strong>2B</strong> — YoRHa No. 2 Type B, the protagonist of <em>Nier: Automata</em> — is, since the 2017 release of the game, arguably the single most-produced video game character in hentai fan art. No other character from the post-2015 gaming era comes close to the sheer volume of 2B content across 2D illustration, 3D animation, cosplay, and fan works. Her impact on modern game hentai production is difficult to overstate.</p>
 <p>The reasons are specific to her design and presentation. 2B's character design combines a distinctive white hair and blindfold aesthetic with the black combat dress that has become one of the most recognizable outfits in gaming history. Her android premise provides narrative justification for unusual scenarios. And the game's emotional weight and visual style gave fans a character they wanted to engage with extensively.</p>
@@ -1356,14 +1406,17 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
     publishedAt: "2026-04-05",
     readingTime: 11,
     glossaryLinks: ["hentai", "waifu", "3d-hentai"],
-    seoTitle: "Best Nier Automata 2B Hentai 2026 — The Definitive Guide | iku.gg",
-    seoDescription: "The definitive Nier Automata 2B hentai guide. The android heroine, Nagoonimation productions, A2, 9S, and the most-produced modern game character.",
+    seoTitle:
+      "Best Nier Automata 2B Hentai 2026 — The Definitive Guide | iku.gg",
+    seoDescription:
+      "The definitive Nier Automata 2B hentai guide. The android heroine, Nagoonimation productions, A2, 9S, and the most-produced modern game character.",
   },
 
   {
     slug: "best-chainsaw-man-hentai",
     title: "Best Chainsaw Man Hentai 2026 — Makima, Power, Reze Guide",
-    excerpt: "The top Chainsaw Man hentai guide. Makima, Power, Reze, Kobeni, and the franchise that became a modern hentai phenomenon.",
+    excerpt:
+      "The top Chainsaw Man hentai guide. Makima, Power, Reze, Kobeni, and the franchise that became a modern hentai phenomenon.",
     content: `<h2>Why Chainsaw Man Became a Hentai Phenomenon</h2>
 <p><strong>Chainsaw Man</strong>, Tatsuki Fujimoto's devil-hunting manga, became one of the most-discussed anime properties of 2022-2023 when the first season of the anime adaptation aired. The series' combination of extreme violence, dark humor, and a cast of visually distinctive female characters made it an immediate fan art subject, and the hentai community responded with extensive production for the franchise's main characters. By 2024-2025, Chainsaw Man had become one of the most-produced modern anime properties in hentai fan art.</p>
 <p>The series' appeal to hentai artists is specific: each major female character has a sharply distinctive visual identity and an unusual character concept (devils, hybrid-humans, power dynamics). This combination gives fan artists specific subject matter that can't be generated by generic anime-girl templates.</p>
@@ -1433,14 +1486,17 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
     publishedAt: "2026-04-05",
     readingTime: 10,
     glossaryLinks: ["hentai", "waifu"],
-    seoTitle: "Best Chainsaw Man Hentai 2026 — Makima, Power, Reze Guide | iku.gg",
-    seoDescription: "The top Chainsaw Man hentai. Makima, Power, Reze, Kobeni, and the modern shounen franchise driving new hentai production waves.",
+    seoTitle:
+      "Best Chainsaw Man Hentai 2026 — Makima, Power, Reze Guide | iku.gg",
+    seoDescription:
+      "The top Chainsaw Man hentai. Makima, Power, Reze, Kobeni, and the modern shounen franchise driving new hentai production waves.",
   },
 
   {
     slug: "best-jujutsu-kaisen-hentai",
     title: "Best Jujutsu Kaisen Hentai 2026 — Nobara, Maki, Mei Mei Guide",
-    excerpt: "The top Jujutsu Kaisen hentai guide. Nobara, Maki, Mei Mei, Shoko, and the franchise's adult sorcerer fan art.",
+    excerpt:
+      "The top Jujutsu Kaisen hentai guide. Nobara, Maki, Mei Mei, Shoko, and the franchise's adult sorcerer fan art.",
     content: `<h2>Why Jujutsu Kaisen Became a Hentai Production Giant</h2>
 <p><strong>Jujutsu Kaisen</strong> (JJK), Gege Akutami's supernatural shounen, became one of the biggest anime franchises of the 2020s following the anime adaptation's launch in 2020. Its hentai catalog has grown correspondingly, with fan art production centered on the franchise's adult sorcerer characters — the Kyoto sorcerers, teachers, special-grade sorcerers, and aged-up university-equivalent characters.</p>
 <p>As with <a href="/blog/best-my-hero-academia-hentai">My Hero Academia</a>, responsible JJK hentai production focuses on adult characters. The series has a substantial adult cast: the teachers at Jujutsu High, the Kyoto sorcerers, the special-grade characters, and the non-student sorcerers who populate Akutami's world. This adult cast alone is large enough to drive significant fan art production, and the community's convention of aging-up student characters for explicit fan works produces additional content.</p>
@@ -1509,11 +1565,19 @@ export const SEO_PUSH_ARTICLES: BlogArticle[] = [
 
 <h2>Related Franchise Guides</h2>
 <p>For the other major modern shounen franchises in hentai production, see our <a href="/blog/best-chainsaw-man-hentai">Chainsaw Man hentai guide</a> and <a href="/blog/best-my-hero-academia-hentai">My Hero Academia hentai guide</a>. For the classic shounen big three, read our <a href="/blog/best-naruto-hentai">Naruto guide</a>, <a href="/blog/best-bleach-hentai">Bleach guide</a>, and <a href="/blog/best-one-piece-hentai">One Piece guide</a>. For the broader character ecosystem, see the <a href="/blog/most-popular-hentai-characters-2026">popular characters guide</a>.</p>`,
-    tags: ["jujutsu-kaisen", "jjk", "franchise", "characters", "recommendations"],
+    tags: [
+      "jujutsu-kaisen",
+      "jjk",
+      "franchise",
+      "characters",
+      "recommendations",
+    ],
     publishedAt: "2026-04-05",
     readingTime: 10,
     glossaryLinks: ["hentai", "waifu"],
-    seoTitle: "Best Jujutsu Kaisen Hentai 2026 — Maki, Mei Mei, Shoko Guide | iku.gg",
-    seoDescription: "The top Jujutsu Kaisen hentai. Maki Zenin, Mei Mei, Shoko Ieiri, Utahime, Yuki Tsukumo — the adult sorcerers driving JJK fan art.",
+    seoTitle:
+      "Best Jujutsu Kaisen Hentai 2026 — Maki, Mei Mei, Shoko Guide | iku.gg",
+    seoDescription:
+      "The top Jujutsu Kaisen hentai. Maki Zenin, Mei Mei, Shoko Ieiri, Utahime, Yuki Tsukumo — the adult sorcerers driving JJK fan art.",
   },
 ];

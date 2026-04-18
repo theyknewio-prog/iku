@@ -26,8 +26,8 @@ jobs:
       - name: Send winback emails (j7 + j14 + j30)
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          DATABASE_URL:   ${{ secrets.DATABASE_URL }}
-          EMAIL_FROM:     ${{ secrets.EMAIL_FROM }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
           NEXT_PUBLIC_SITE_URL: https://iku.gg
           WINBACK_DRY_RUN: ${{ github.event.inputs.dry_run && '1' || '' }}
         run: node scripts/winback-email-cron.mjs

@@ -30,11 +30,26 @@ export const BLOG_INTERNAL_LINKS: ArticleLinks[] = [
       { text: "3d hentai", href: "/tag/3d" },
       { text: "milf hentai", href: "/tag/milf" },
       { text: "vanilla hentai", href: "/tag/vanilla" },
-      { text: "Best Naruto Hentai 2026 — Tsunade, Hinata, Sakura ...", href: "/blog/best-naruto-hentai" },
-      { text: "Best Bleach Hentai 2026 — Orihime, Rukia, Rangiku ...", href: "/blog/best-bleach-hentai" },
-      { text: "Best One Piece Hentai 2026 — Nami, Robin, Boa Hanc...", href: "/blog/best-one-piece-hentai" },
-      { text: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, And...", href: "/blog/best-dragon-ball-hentai" },
-      { text: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midn...", href: "/blog/best-my-hero-academia-hentai" }
+      {
+        text: "Best Naruto Hentai 2026 — Tsunade, Hinata, Sakura ...",
+        href: "/blog/best-naruto-hentai",
+      },
+      {
+        text: "Best Bleach Hentai 2026 — Orihime, Rukia, Rangiku ...",
+        href: "/blog/best-bleach-hentai",
+      },
+      {
+        text: "Best One Piece Hentai 2026 — Nami, Robin, Boa Hanc...",
+        href: "/blog/best-one-piece-hentai",
+      },
+      {
+        text: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, And...",
+        href: "/blog/best-dragon-ball-hentai",
+      },
+      {
+        text: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midn...",
+        href: "/blog/best-my-hero-academia-hentai",
+      },
     ],
     updatedAt: "2026-04-10",
   },
@@ -51,11 +66,26 @@ export const BLOG_INTERNAL_LINKS: ArticleLinks[] = [
       { text: "3d hentai", href: "/tag/3d" },
       { text: "milf hentai", href: "/tag/milf" },
       { text: "vanilla hentai", href: "/tag/vanilla" },
-      { text: "Best Naruto Hentai 2026 — Tsunade, Hinata, Sakura ...", href: "/blog/best-naruto-hentai" },
-      { text: "Best Bleach Hentai 2026 — Orihime, Rukia, Rangiku ...", href: "/blog/best-bleach-hentai" },
-      { text: "Best One Piece Hentai 2026 — Nami, Robin, Boa Hanc...", href: "/blog/best-one-piece-hentai" },
-      { text: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, And...", href: "/blog/best-dragon-ball-hentai" },
-      { text: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midn...", href: "/blog/best-my-hero-academia-hentai" }
+      {
+        text: "Best Naruto Hentai 2026 — Tsunade, Hinata, Sakura ...",
+        href: "/blog/best-naruto-hentai",
+      },
+      {
+        text: "Best Bleach Hentai 2026 — Orihime, Rukia, Rangiku ...",
+        href: "/blog/best-bleach-hentai",
+      },
+      {
+        text: "Best One Piece Hentai 2026 — Nami, Robin, Boa Hanc...",
+        href: "/blog/best-one-piece-hentai",
+      },
+      {
+        text: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, And...",
+        href: "/blog/best-dragon-ball-hentai",
+      },
+      {
+        text: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midn...",
+        href: "/blog/best-my-hero-academia-hentai",
+      },
     ],
     updatedAt: "2026-04-10",
   },
@@ -72,11 +102,26 @@ export const BLOG_INTERNAL_LINKS: ArticleLinks[] = [
       { text: "3d hentai", href: "/tag/3d" },
       { text: "milf hentai", href: "/tag/milf" },
       { text: "vanilla hentai", href: "/tag/vanilla" },
-      { text: "Best Naruto Hentai 2026 — Tsunade, Hinata, Sakura ...", href: "/blog/best-naruto-hentai" },
-      { text: "Best Bleach Hentai 2026 — Orihime, Rukia, Rangiku ...", href: "/blog/best-bleach-hentai" },
-      { text: "Best One Piece Hentai 2026 — Nami, Robin, Boa Hanc...", href: "/blog/best-one-piece-hentai" },
-      { text: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, And...", href: "/blog/best-dragon-ball-hentai" },
-      { text: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midn...", href: "/blog/best-my-hero-academia-hentai" }
+      {
+        text: "Best Naruto Hentai 2026 — Tsunade, Hinata, Sakura ...",
+        href: "/blog/best-naruto-hentai",
+      },
+      {
+        text: "Best Bleach Hentai 2026 — Orihime, Rukia, Rangiku ...",
+        href: "/blog/best-bleach-hentai",
+      },
+      {
+        text: "Best One Piece Hentai 2026 — Nami, Robin, Boa Hanc...",
+        href: "/blog/best-one-piece-hentai",
+      },
+      {
+        text: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, And...",
+        href: "/blog/best-dragon-ball-hentai",
+      },
+      {
+        text: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midn...",
+        href: "/blog/best-my-hero-academia-hentai",
+      },
     ],
     updatedAt: "2026-04-10",
   },
@@ -93,11 +138,26 @@ export const BLOG_INTERNAL_LINKS: ArticleLinks[] = [
       { text: "3d hentai", href: "/tag/3d" },
       { text: "milf hentai", href: "/tag/milf" },
       { text: "vanilla hentai", href: "/tag/vanilla" },
-      { text: "Best Naruto Hentai 2026 — Tsunade, Hinata, Sakura ...", href: "/blog/best-naruto-hentai" },
-      { text: "Best Bleach Hentai 2026 — Orihime, Rukia, Rangiku ...", href: "/blog/best-bleach-hentai" },
-      { text: "Best One Piece Hentai 2026 — Nami, Robin, Boa Hanc...", href: "/blog/best-one-piece-hentai" },
-      { text: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, And...", href: "/blog/best-dragon-ball-hentai" },
-      { text: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midn...", href: "/blog/best-my-hero-academia-hentai" }
+      {
+        text: "Best Naruto Hentai 2026 — Tsunade, Hinata, Sakura ...",
+        href: "/blog/best-naruto-hentai",
+      },
+      {
+        text: "Best Bleach Hentai 2026 — Orihime, Rukia, Rangiku ...",
+        href: "/blog/best-bleach-hentai",
+      },
+      {
+        text: "Best One Piece Hentai 2026 — Nami, Robin, Boa Hanc...",
+        href: "/blog/best-one-piece-hentai",
+      },
+      {
+        text: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, And...",
+        href: "/blog/best-dragon-ball-hentai",
+      },
+      {
+        text: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midn...",
+        href: "/blog/best-my-hero-academia-hentai",
+      },
     ],
     updatedAt: "2026-04-10",
   },
@@ -114,11 +174,26 @@ export const BLOG_INTERNAL_LINKS: ArticleLinks[] = [
       { text: "3d hentai", href: "/tag/3d" },
       { text: "milf hentai", href: "/tag/milf" },
       { text: "vanilla hentai", href: "/tag/vanilla" },
-      { text: "Best Naruto Hentai 2026 — Tsunade, Hinata, Sakura ...", href: "/blog/best-naruto-hentai" },
-      { text: "Best Bleach Hentai 2026 — Orihime, Rukia, Rangiku ...", href: "/blog/best-bleach-hentai" },
-      { text: "Best One Piece Hentai 2026 — Nami, Robin, Boa Hanc...", href: "/blog/best-one-piece-hentai" },
-      { text: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, And...", href: "/blog/best-dragon-ball-hentai" },
-      { text: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midn...", href: "/blog/best-my-hero-academia-hentai" }
+      {
+        text: "Best Naruto Hentai 2026 — Tsunade, Hinata, Sakura ...",
+        href: "/blog/best-naruto-hentai",
+      },
+      {
+        text: "Best Bleach Hentai 2026 — Orihime, Rukia, Rangiku ...",
+        href: "/blog/best-bleach-hentai",
+      },
+      {
+        text: "Best One Piece Hentai 2026 — Nami, Robin, Boa Hanc...",
+        href: "/blog/best-one-piece-hentai",
+      },
+      {
+        text: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, And...",
+        href: "/blog/best-dragon-ball-hentai",
+      },
+      {
+        text: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midn...",
+        href: "/blog/best-my-hero-academia-hentai",
+      },
     ],
     updatedAt: "2026-04-10",
   },
@@ -135,11 +210,26 @@ export const BLOG_INTERNAL_LINKS: ArticleLinks[] = [
       { text: "3d hentai", href: "/tag/3d" },
       { text: "milf hentai", href: "/tag/milf" },
       { text: "vanilla hentai", href: "/tag/vanilla" },
-      { text: "Best Naruto Hentai 2026 — Tsunade, Hinata, Sakura ...", href: "/blog/best-naruto-hentai" },
-      { text: "Best Bleach Hentai 2026 — Orihime, Rukia, Rangiku ...", href: "/blog/best-bleach-hentai" },
-      { text: "Best One Piece Hentai 2026 — Nami, Robin, Boa Hanc...", href: "/blog/best-one-piece-hentai" },
-      { text: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, And...", href: "/blog/best-dragon-ball-hentai" },
-      { text: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midn...", href: "/blog/best-my-hero-academia-hentai" }
+      {
+        text: "Best Naruto Hentai 2026 — Tsunade, Hinata, Sakura ...",
+        href: "/blog/best-naruto-hentai",
+      },
+      {
+        text: "Best Bleach Hentai 2026 — Orihime, Rukia, Rangiku ...",
+        href: "/blog/best-bleach-hentai",
+      },
+      {
+        text: "Best One Piece Hentai 2026 — Nami, Robin, Boa Hanc...",
+        href: "/blog/best-one-piece-hentai",
+      },
+      {
+        text: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, And...",
+        href: "/blog/best-dragon-ball-hentai",
+      },
+      {
+        text: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midn...",
+        href: "/blog/best-my-hero-academia-hentai",
+      },
     ],
     updatedAt: "2026-04-10",
   },
@@ -156,19 +246,36 @@ export const BLOG_INTERNAL_LINKS: ArticleLinks[] = [
       { text: "3d hentai", href: "/tag/3d" },
       { text: "milf hentai", href: "/tag/milf" },
       { text: "vanilla hentai", href: "/tag/vanilla" },
-      { text: "Best Naruto Hentai 2026 — Tsunade, Hinata, Sakura ...", href: "/blog/best-naruto-hentai" },
-      { text: "Best Bleach Hentai 2026 — Orihime, Rukia, Rangiku ...", href: "/blog/best-bleach-hentai" },
-      { text: "Best One Piece Hentai 2026 — Nami, Robin, Boa Hanc...", href: "/blog/best-one-piece-hentai" },
-      { text: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, And...", href: "/blog/best-dragon-ball-hentai" },
-      { text: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midn...", href: "/blog/best-my-hero-academia-hentai" }
+      {
+        text: "Best Naruto Hentai 2026 — Tsunade, Hinata, Sakura ...",
+        href: "/blog/best-naruto-hentai",
+      },
+      {
+        text: "Best Bleach Hentai 2026 — Orihime, Rukia, Rangiku ...",
+        href: "/blog/best-bleach-hentai",
+      },
+      {
+        text: "Best One Piece Hentai 2026 — Nami, Robin, Boa Hanc...",
+        href: "/blog/best-one-piece-hentai",
+      },
+      {
+        text: "Best Dragon Ball Hentai 2026 — Bulma, Chi-Chi, And...",
+        href: "/blog/best-dragon-ball-hentai",
+      },
+      {
+        text: "Best My Hero Academia Hentai 2026 — Mt. Lady, Midn...",
+        href: "/blog/best-my-hero-academia-hentai",
+      },
     ],
     updatedAt: "2026-04-10",
-  }
+  },
 ];
 
 /**
  * Get internal links for a specific article slug.
  */
-export function getInternalLinksForArticle(slug: string): ArticleLinks | undefined {
+export function getInternalLinksForArticle(
+  slug: string,
+): ArticleLinks | undefined {
   return BLOG_INTERNAL_LINKS.find((a) => a.articleSlug === slug);
 }

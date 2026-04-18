@@ -40,7 +40,11 @@ async function api(method, path, body) {
   if (res.status === 204) return {};
   const text = await res.text();
   let data;
-  try { data = JSON.parse(text); } catch { data = text; }
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = text;
+  }
   if (!res.ok) {
     const err = new Error(`${method} ${path}: ${JSON.stringify(data)}`);
     err.status = res.status;
@@ -81,10 +85,7 @@ async function renderIcon() {
   <text x="420" y="170" font-size="80" fill="#ffffff" opacity="0.9">✨</text>
 </svg>`.trim();
 
-  return sharp(Buffer.from(svg))
-    .resize(512, 512)
-    .png()
-    .toBuffer();
+  return sharp(Buffer.from(svg)).resize(512, 512).png().toBuffer();
 }
 
 async function renderBanner() {
@@ -126,10 +127,7 @@ async function renderBanner() {
   </text>
 </svg>`.trim();
 
-  return sharp(Buffer.from(svg))
-    .resize(960, 540)
-    .png()
-    .toBuffer();
+  return sharp(Buffer.from(svg)).resize(960, 540).png().toBuffer();
 }
 
 function toDataURI(buf) {
@@ -162,7 +160,8 @@ async function run() {
   console.log("▸ Uploading server icon + description");
   await api("PATCH", `/guilds/${GUILD_ID}`, {
     icon: toDataURI(iconBuf),
-    description: "353,000+ free animated hentai clips. Community, curation, creators. 18+ only.",
+    description:
+      "353,000+ free animated hentai clips. Community, curation, creators. 18+ only.",
   });
   console.log("  ✓ icon + description updated");
   await sleep(500);
@@ -205,12 +204,29 @@ async function run() {
   try {
     await api("PATCH", `/guilds/${GUILD_ID}/welcome-screen`, {
       enabled: true,
-      description: "The biggest animated hentai community. 353K+ clips, forums, creators, watch parties. 18+ only.",
+      description:
+        "The biggest animated hentai community. 353K+ clips, forums, creators, watch parties. 18+ only.",
       welcome_channels: [
-        { channel_id: rules.id, description: "Read the rules first",       emoji_name: "📜" },
-        { channel_id: rolesAndTags?.id || rules.id, description: "Pick your taste & verify 18+", emoji_name: "🎭" },
-        { channel_id: introductions?.id || rules.id, description: "Say hi to the community",     emoji_name: "👋" },
-        { channel_id: generalChat?.id || rules.id, description: "Jump in the chat",              emoji_name: "💬" },
+        {
+          channel_id: rules.id,
+          description: "Read the rules first",
+          emoji_name: "📜",
+        },
+        {
+          channel_id: rolesAndTags?.id || rules.id,
+          description: "Pick your taste & verify 18+",
+          emoji_name: "🎭",
+        },
+        {
+          channel_id: introductions?.id || rules.id,
+          description: "Say hi to the community",
+          emoji_name: "👋",
+        },
+        {
+          channel_id: generalChat?.id || rules.id,
+          description: "Jump in the chat",
+          emoji_name: "💬",
+        },
       ].slice(0, 5),
     });
     console.log("  ✓ welcome screen configured");
@@ -226,21 +242,47 @@ async function run() {
 
   const ageRole = rolesByName["🔞 18+ Verified"];
   const tasteRoleNames = [
-    "💗 Vanilla", "🎮 3D", "✨ Futa", "👹 Monster", "🧚 Fantasy",
-    "🎒 Schoolgirl", "🎀 Maid", "🧝 Elf", "🐱 Catgirl",
-    "🐙 Tentacles", "🔥 Uncensored", "💋 MILF", "😵 Ahegao",
-    "🍦 Creampie", "👥 Group",
+    "💗 Vanilla",
+    "🎮 3D",
+    "✨ Futa",
+    "👹 Monster",
+    "🧚 Fantasy",
+    "🎒 Schoolgirl",
+    "🎀 Maid",
+    "🧝 Elf",
+    "🐱 Catgirl",
+    "🐙 Tentacles",
+    "🔥 Uncensored",
+    "💋 MILF",
+    "😵 Ahegao",
+    "🍦 Creampie",
+    "👥 Group",
   ];
   const tasteEmojis = {
-    "💗 Vanilla": "💗", "🎮 3D": "🎮", "✨ Futa": "✨", "👹 Monster": "👹",
-    "🧚 Fantasy": "🧚", "🎒 Schoolgirl": "🎒", "🎀 Maid": "🎀",
-    "🧝 Elf": "🧝", "🐱 Catgirl": "🐱", "🐙 Tentacles": "🐙",
-    "🔥 Uncensored": "🔥", "💋 MILF": "💋", "😵 Ahegao": "😵",
-    "🍦 Creampie": "🍦", "👥 Group": "👥",
+    "💗 Vanilla": "💗",
+    "🎮 3D": "🎮",
+    "✨ Futa": "✨",
+    "👹 Monster": "👹",
+    "🧚 Fantasy": "🧚",
+    "🎒 Schoolgirl": "🎒",
+    "🎀 Maid": "🎀",
+    "🧝 Elf": "🧝",
+    "🐱 Catgirl": "🐱",
+    "🐙 Tentacles": "🐙",
+    "🔥 Uncensored": "🔥",
+    "💋 MILF": "💋",
+    "😵 Ahegao": "😵",
+    "🍦 Creampie": "🍦",
+    "👥 Group": "👥",
   };
 
   // Channels a new user should always see before role selection
-  const defaultChannelIds = [welcome.id, rules.id, introductions?.id, generalChat?.id].filter(Boolean);
+  const defaultChannelIds = [
+    welcome.id,
+    rules.id,
+    introductions?.id,
+    generalChat?.id,
+  ].filter(Boolean);
 
   const prompts = [];
 
@@ -277,12 +319,23 @@ async function run() {
   });
 
   const mainTastes = [
-    "💗 Vanilla", "🎮 3D", "✨ Futa", "👹 Monster", "🧚 Fantasy",
-    "🔥 Uncensored", "💋 MILF",
+    "💗 Vanilla",
+    "🎮 3D",
+    "✨ Futa",
+    "👹 Monster",
+    "🧚 Fantasy",
+    "🔥 Uncensored",
+    "💋 MILF",
   ].filter((n) => rolesByName[n]);
   const kinkTastes = [
-    "🎒 Schoolgirl", "🎀 Maid", "🧝 Elf", "🐱 Catgirl",
-    "🐙 Tentacles", "😵 Ahegao", "🍦 Creampie", "👥 Group",
+    "🎒 Schoolgirl",
+    "🎀 Maid",
+    "🧝 Elf",
+    "🐱 Catgirl",
+    "🐙 Tentacles",
+    "😵 Ahegao",
+    "🍦 Creampie",
+    "👥 Group",
   ].filter((n) => rolesByName[n]);
 
   if (mainTastes.length > 0) {
@@ -324,8 +377,8 @@ async function run() {
   console.log("\n▸ Creating permanent invite link");
   try {
     const invite = await api("POST", `/channels/${welcome.id}/invites`, {
-      max_age: 0,        // never expires
-      max_uses: 0,       // unlimited
+      max_age: 0, // never expires
+      max_uses: 0, // unlimited
       temporary: false,
       unique: true,
     });

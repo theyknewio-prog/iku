@@ -13,36 +13,42 @@ Tu peux les créer via l'UI PostHog OU via l'API (script `scripts/posthog-setup-
 ### Insights à créer
 
 **1. Total pageviews (last 30 days)**
+
 - Type: Trends
 - Events: `$pageview`
 - Interval: Day
 - Chart: Line
 
 **2. Unique visitors (daily)**
+
 - Type: Trends
 - Events: `$pageview`
 - Math: `DAU` (unique per day)
 - Chart: Line
 
 **3. Top landing pages**
+
 - Type: Trends
 - Events: `$pageview`
 - Breakdown: `$pathname`
 - Chart: Bar horizontal, top 10
 
 **4. Top referrers**
+
 - Type: Trends
 - Events: `$pageview`
 - Breakdown: `$referring_domain`
 - Chart: Bar horizontal, top 10
 
 **5. Countries (where traffic comes from)**
+
 - Type: Trends
 - Events: `$pageview`
 - Breakdown: `$geoip_country_code`
 - Chart: World map
 
 **6. Mobile vs Desktop**
+
 - Type: Trends
 - Events: `$pageview`
 - Breakdown: `$device_type`
@@ -53,6 +59,7 @@ Tu peux les créer via l'UI PostHog OU via l'API (script `scripts/posthog-setup-
 ## Dashboard 2 : 🎯 Conversion Funnels
 
 ### Funnel A : Anon → Signup → Active User
+
 - Type: Funnel
 - Steps:
   1. `$pageview` (any page)
@@ -62,6 +69,7 @@ Tu peux les créer via l'UI PostHog OU via l'API (script `scripts/posthog-setup-
 - Conversion window: 7 days
 
 ### Funnel B : Signup → Pro Purchase
+
 - Type: Funnel
 - Steps:
   1. `signup`
@@ -71,20 +79,22 @@ Tu peux les créer via l'UI PostHog OU via l'API (script `scripts/posthog-setup-
 - Conversion window: 30 days
 
 ### Funnel C : Video Engagement
+
 - Type: Funnel
 - Steps:
   1. `$pageview` where pathname starts with `/watch/`
   2. `video_view`
-  3. `video_complete` *(need to wire this first from watch page)*
+  3. `video_complete` _(need to wire this first from watch page)_
   4. `favorite_add`
 - Conversion window: 1 session
 
 ### Funnel D : Discord Community Join
+
 - Type: Funnel
 - Steps:
   1. `$pageview` (landing)
   2. `discord_invite_click`
-  3. `discord_link` *(only if user actually completes Discord OAuth)*
+  3. `discord_link` _(only if user actually completes Discord OAuth)_
 - Conversion window: 1 day
 
 ---
@@ -92,29 +102,34 @@ Tu peux les créer via l'UI PostHog OU via l'API (script `scripts/posthog-setup-
 ## Dashboard 3 : 🔁 Retention & Gamification
 
 ### Cohort retention
+
 - Type: Retention
 - Cohortize on: `signup`
 - Returning event: `$pageview`
 - Interval: Day
 
 ### Daily active users (DAU/WAU/MAU)
+
 - Type: Trends
 - Events: `$pageview`
 - Math: DAU, WAU, MAU side by side
 
 ### Streak distribution
+
 - Type: Trends
 - Event: `tier_up`
 - Breakdown: `tier_name`
 - Chart: Bar
 
 ### Badge earning rate
+
 - Type: Trends
 - Event: `badge_earned`
 - Breakdown: `code`
 - Chart: Bar horizontal, all badges
 
 ### Gamification engagement
+
 - Type: Trends
 - Multiple events :
   - `video_view` → count
@@ -124,6 +139,7 @@ Tu peux les créer via l'UI PostHog OU via l'API (script `scripts/posthog-setup-
 - Chart: Line, stacked
 
 ### Leaderboard / top users
+
 - Type: Trends
 - Event: `video_view`
 - Breakdown: `distinct_id`
@@ -135,25 +151,25 @@ Tu peux les créer via l'UI PostHog OU via l'API (script `scripts/posthog-setup-
 
 Ces events sont déjà câblés dans le code et devraient apparaître dans PostHog dès que les users interagissent :
 
-| Event | Déclenché par |
-|-------|---------------|
-| `$pageview` | Auto (toute navigation) |
-| `$autocapture` | Auto (clics boutons/liens) |
-| `app_loaded` | Auto (chaque chargement initial) |
-| `signup` | `/api/signup` réussi (client-side) |
-| `login` | Login credentials ou Discord réussi |
-| `logout` | Bouton sign out profile page |
-| `discord_link` | Click sur "Continue with Discord" (login ou signup) |
-| `video_view` | `addToHistory()` — ouverture d'une page /watch |
-| `favorite_add` | Toggle favorite ON |
-| `favorite_remove` | Toggle favorite OFF |
-| `search` | Form submit SearchAutocomplete |
-| `pro_checkout_start` | Click sur "Get Pro" dans /pricing |
-| `pro_purchase` | Landing sur /profile?upgraded=1 après Stripe |
-| `badge_earned` | Award automatique via scoring engine |
-| `tier_up` | Transition de tier via scoring engine |
-| `discord_invite_click` | Click sur JoinDiscordCTA component |
-| `email_verified` | Landing sur /profile?verified=1 |
+| Event                  | Déclenché par                                       |
+| ---------------------- | --------------------------------------------------- |
+| `$pageview`            | Auto (toute navigation)                             |
+| `$autocapture`         | Auto (clics boutons/liens)                          |
+| `app_loaded`           | Auto (chaque chargement initial)                    |
+| `signup`               | `/api/signup` réussi (client-side)                  |
+| `login`                | Login credentials ou Discord réussi                 |
+| `logout`               | Bouton sign out profile page                        |
+| `discord_link`         | Click sur "Continue with Discord" (login ou signup) |
+| `video_view`           | `addToHistory()` — ouverture d'une page /watch      |
+| `favorite_add`         | Toggle favorite ON                                  |
+| `favorite_remove`      | Toggle favorite OFF                                 |
+| `search`               | Form submit SearchAutocomplete                      |
+| `pro_checkout_start`   | Click sur "Get Pro" dans /pricing                   |
+| `pro_purchase`         | Landing sur /profile?upgraded=1 après Stripe        |
+| `badge_earned`         | Award automatique via scoring engine                |
+| `tier_up`              | Transition de tier via scoring engine               |
+| `discord_invite_click` | Click sur JoinDiscordCTA component                  |
+| `email_verified`       | Landing sur /profile?verified=1                     |
 
 ---
 

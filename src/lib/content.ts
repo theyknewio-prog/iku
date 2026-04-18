@@ -272,6 +272,11 @@ async function _getVideos(
   conditions.push(banned.condition);
   paramIndex = banned.nextIdx;
 
+  // Dead-source filter — source removed the video (marked by batch scanner
+  // or by the player's onError POST to /api/mark-dead). Pages stay reachable
+  // via /watch/[slug] for SEO, but they won't appear in listings.
+  conditions.push(`dead_at IS NULL`);
+
   // Thumbnail filter — hide WP entries that still lack a poster image
   if (requireThumbnail) {
     conditions.push(`thumbnail IS NOT NULL AND thumbnail <> ''`);
@@ -528,6 +533,10 @@ async function _countVideos(options: GetVideosOptions = {}): Promise<number> {
   const banned = buildBannedSqlCondition("", params, paramIndex);
   conditions.push(banned.condition);
   paramIndex = banned.nextIdx;
+
+  // Match getVideos: exclude dead rows from counts so pagination totals
+  // stay consistent with what's actually listed.
+  conditions.push(`dead_at IS NULL`);
 
   if (requireThumbnail) {
     conditions.push(`thumbnail IS NOT NULL AND thumbnail <> ''`);
@@ -962,6 +971,8 @@ async function pickRandomStartCursor(opts: {
   conditions.push(banned.condition);
   p = banned.nextIdx;
 
+  conditions.push(`dead_at IS NULL`);
+
   if (requireThumbnail) {
     conditions.push(`thumbnail IS NOT NULL AND thumbnail <> ''`);
   }
@@ -1086,6 +1097,8 @@ export async function getFeedKeyset(options: {
   const banned = buildBannedSqlCondition("", params, p);
   conditions.push(banned.condition);
   p = banned.nextIdx;
+
+  conditions.push(`dead_at IS NULL`);
 
   if (requireThumbnail) {
     conditions.push(`thumbnail IS NOT NULL AND thumbnail <> ''`);

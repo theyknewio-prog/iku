@@ -49,19 +49,22 @@ const SITES: SiteConfig[] = [
   {
     domain: "hentai.tv",
     prefix: "htv",
-    sitemaps: Array.from({ length: 8 }, (_, i) =>
-      `https://hentai.tv/hentai-sitemap${i + 1}.xml`
+    sitemaps: Array.from(
+      { length: 8 },
+      (_, i) => `https://hentai.tv/hentai-sitemap${i + 1}.xml`,
     ),
   },
   {
     domain: "animeidhentai.com",
     prefix: "aid",
     sitemaps: [
-      ...Array.from({ length: 4 }, (_, i) =>
-        `https://animeidhentai.com/hentai-sitemap${i + 1}.xml`
+      ...Array.from(
+        { length: 4 },
+        (_, i) => `https://animeidhentai.com/hentai-sitemap${i + 1}.xml`,
       ),
-      ...Array.from({ length: 4 }, (_, i) =>
-        `https://animeidhentai.com/episodes-sitemap${i + 1}.xml`
+      ...Array.from(
+        { length: 4 },
+        (_, i) => `https://animeidhentai.com/episodes-sitemap${i + 1}.xml`,
       ),
     ],
   },
@@ -78,8 +81,9 @@ const SITES: SiteConfig[] = [
   {
     domain: "hentaiworld.tv",
     prefix: "hw",
-    sitemaps: Array.from({ length: 7 }, (_, i) =>
-      `https://hentaiworld.tv/post-sitemap${i + 1}.xml`
+    sitemaps: Array.from(
+      { length: 7 },
+      (_, i) => `https://hentaiworld.tv/post-sitemap${i + 1}.xml`,
     ),
   },
   {
@@ -135,7 +139,8 @@ function parseSitemap(xml: string, site: SiteConfig): WPEntry[] {
       pageUrl.includes("/genre") ||
       pageUrl.includes("/category") ||
       pageUrl.includes("/tag/")
-    ) continue;
+    )
+      continue;
 
     let date = "";
     const dateMatch = content.match(/<lastmod>([^<]+)<\/lastmod>/);
@@ -201,7 +206,9 @@ async function scrapeSite(site: SiteConfig): Promise<WPEntry[]> {
 
     const entries = parseSitemap(xml, site);
     results.push(...entries);
-    console.log(`    ${sitemapUrl.split("/").pop()}: +${entries.length} (subtotal: ${results.length})`);
+    console.log(
+      `    ${sitemapUrl.split("/").pop()}: +${entries.length} (subtotal: ${results.length})`,
+    );
 
     await new Promise((r) => setTimeout(r, DELAY));
   }
@@ -241,13 +248,26 @@ async function main() {
   let upserted = 0;
   for (let i = 0; i < allEntries.length; i += BATCH) {
     const batch = allEntries.slice(i, i + BATCH).map((v) => ({
-      source: "wp", source_id: v.id, slug: v.slug,
-      title: v.title, page_url: v.pageUrl, site: v.site,
+      source: "wp",
+      source_id: v.id,
+      slug: v.slug,
+      title: v.title,
+      page_url: v.pageUrl,
+      site: v.site,
       created_at: v.date,
-      tags: v.title ? v.title.toLowerCase().replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter((w: string) => w.length > 2).slice(0, 15) : [],
+      tags: v.title
+        ? v.title
+            .toLowerCase()
+            .replace(/[^a-z0-9\s]/g, "")
+            .split(/\s+/)
+            .filter((w: string) => w.length > 2)
+            .slice(0, 15)
+        : [],
     }));
     upserted += await upsertVideos(batch);
-    process.stdout.write(`  ${Math.min(i + BATCH, allEntries.length)}/${allEntries.length} upserted\r`);
+    process.stdout.write(
+      `  ${Math.min(i + BATCH, allEntries.length)}/${allEntries.length} upserted\r`,
+    );
   }
   console.log(`\n  ${upserted} videos upserted`);
   await pool.end();

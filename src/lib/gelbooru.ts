@@ -1,5 +1,9 @@
 import type { Video, PaginatedResult } from "@/types/video";
-import { filterBannedContent, containsBannedContent, BANNED_TAGS_ARRAY } from "./content";
+import {
+  filterBannedContent,
+  containsBannedContent,
+  BANNED_TAGS_ARRAY,
+} from "./content";
 import { pool } from "./db";
 import { memoize } from "./memo";
 
@@ -57,16 +61,14 @@ async function throttle(): Promise<void> {
   const now = Date.now();
   const elapsed = now - lastGelbooruRequest;
   if (elapsed < MIN_INTERVAL) {
-    await new Promise((resolve) =>
-      setTimeout(resolve, MIN_INTERVAL - elapsed)
-    );
+    await new Promise((resolve) => setTimeout(resolve, MIN_INTERVAL - elapsed));
   }
   lastGelbooruRequest = Date.now();
 }
 
 async function fetchGelbooru(
   params: Record<string, string>,
-  revalidate: number = REVALIDATE_SEARCH
+  revalidate: number = REVALIDATE_SEARCH,
 ): Promise<GelbooruResponse | null> {
   await throttle();
 
@@ -112,9 +114,7 @@ async function fetchGelbooru(
   }
 
   if (!res.ok) {
-    console.error(
-      `Gelbooru API error: ${res.status} ${res.statusText}`
-    );
+    console.error(`Gelbooru API error: ${res.status} ${res.statusText}`);
     return null;
   }
 
@@ -131,14 +131,15 @@ async function fetchGelbooru(
 // ---------------------------------------------------------------------------
 
 function buildGelbooruSlug(id: number, tags: string): string {
-  const firstTag = (tags || "")
-    .trim()
-    .split(/\s+/)[0]
-    ?.toLowerCase()
-    .replace(/_/g, "-")
-    .replace(/[^a-z0-9-]/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "") ?? "";
+  const firstTag =
+    (tags || "")
+      .trim()
+      .split(/\s+/)[0]
+      ?.toLowerCase()
+      .replace(/_/g, "-")
+      .replace(/[^a-z0-9-]/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "") ?? "";
 
   return firstTag ? `gel-${id}-${firstTag}` : `gel-${id}`;
 }
@@ -158,10 +159,7 @@ export function mapGelbooruToVideo(post: GelbooruPost): Video | null {
   if (!rawUrl) return null; // Skip posts with no video URL
 
   const tagList = post.tags
-    ? post.tags
-        .trim()
-        .split(/\s+/)
-        .filter(Boolean)
+    ? post.tags.trim().split(/\s+/).filter(Boolean)
     : [];
 
   return {
@@ -190,7 +188,9 @@ export function mapGelbooruToVideo(post: GelbooruPost): Video | null {
 // Normalise post array — Gelbooru returns a single object when count === 1
 // ---------------------------------------------------------------------------
 
-function normalisePosts(raw: GelbooruPost[] | GelbooruPost | undefined): GelbooruPost[] {
+function normalisePosts(
+  raw: GelbooruPost[] | GelbooruPost | undefined,
+): GelbooruPost[] {
   if (!raw) return [];
   return Array.isArray(raw) ? raw : [raw];
 }
@@ -212,7 +212,7 @@ export interface GelbooruSearchOptions {
  * Gracefully returns an empty result on any failure.
  */
 export async function searchGelbooru(
-  options: GelbooruSearchOptions = {}
+  options: GelbooruSearchOptions = {},
 ): Promise<PaginatedResult<Video>> {
   const { tags = "", page = 1, limit = 20, order = "score" } = options;
 
@@ -249,8 +249,7 @@ export async function searchGelbooru(
     // Keep only MP4 — Gelbooru serves WebM and other formats too
     const videos = posts
       .filter(
-        (p) =>
-          p.file_url?.endsWith(".mp4") || p.file_url?.endsWith(".webm")
+        (p) => p.file_url?.endsWith(".mp4") || p.file_url?.endsWith(".webm"),
       )
       .map(mapGelbooruToVideo)
       .filter((v): v is Video => v !== null);
@@ -282,7 +281,7 @@ async function _getGelbooruPost(id: number): Promise<Video | null> {
          AND NOT (COALESCE(characters, ARRAY[]::text[]) && $2::text[])
          AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $2::text[])
        LIMIT 1`,
-      [id, BANNED_TAGS_ARRAY]
+      [id, BANNED_TAGS_ARRAY],
     );
     if (rows.length > 0) {
       const row = rows[0];
@@ -328,4 +327,8 @@ async function _getGelbooruPost(id: number): Promise<Video | null> {
     return null;
   }
 }
-export const getGelbooruPost = memoize("gelbooru-post", _getGelbooruPost, 5 * 60 * 1000);
+export const getGelbooruPost = memoize(
+  "gelbooru-post",
+  _getGelbooruPost,
+  5 * 60 * 1000,
+);

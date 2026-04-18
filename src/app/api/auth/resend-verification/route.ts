@@ -44,7 +44,7 @@ export async function POST() {
     const retryAfter = Math.ceil((COOLDOWN_MS - (Date.now() - last)) / 1000);
     return NextResponse.json(
       { error: "cooldown", retry_after: retryAfter },
-      { status: 429, headers: { "Retry-After": String(retryAfter) } }
+      { status: 429, headers: { "Retry-After": String(retryAfter) } },
     );
   }
 
@@ -71,7 +71,7 @@ export async function POST() {
   if (!result.ok) {
     return NextResponse.json(
       { error: "send_failed", detail: result.error },
-      { status: 500 }
+      { status: 500 },
     );
   }
 

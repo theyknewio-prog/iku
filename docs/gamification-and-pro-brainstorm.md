@@ -1,6 +1,6 @@
 # iku.gg — Gamification + Pro subscription brainstorm
 
-*Synthèse de 5 agents spécialisés (strategy, CRO, customer experience, merchandising, community). 2026-04-05.*
+_Synthèse de 5 agents spécialisés (strategy, CRO, customer experience, merchandising, community). 2026-04-05._
 
 ---
 
@@ -23,28 +23,31 @@ Gamification **après** Pro parce que : (1) on a déjà du trafic à monétiser,
 ## Phase 1 — Analytics baseline (semaine 1)
 
 ### Pourquoi c'est non-négociable
+
 Sans ces métriques, toutes les décisions qui suivent sont des paris aveugles. Ne pas lancer Pro sans baseline.
 
 ### Stack
+
 - **PostHog self-hosted** (pas Google Analytics — GA bannit facilement les sites adult)
 - RGPD-friendly, auto-hostable sur le même VPS Hetzner
 - Events visuels + funnels + cohort retention
 
 ### Métriques à tracker dès J1
 
-| Métrique | Target | Benchmark |
-|---|---|---|
-| D1 retention | 25-30% | Industrie tube adult |
-| D7 retention | 10-15% | xVideos interne estimé |
-| D30 retention | 5-8% | Paid streaming niche |
-| Session avg | 8-9 min | xVideos 8:26, Pornhub 8:42 |
-| Pages/session | 7-9 | xVideos 8.89 |
-| Anon → Registered | 3-5% | Réaliste early stage |
-| Registered → Active J7 | 40%+ | Patreon créateur moyen |
-| Free → Pro | 2-4% | Standard adult ad-free premium |
-| Churn Pro mensuel | <8% | Nebula ~5% |
+| Métrique               | Target  | Benchmark                      |
+| ---------------------- | ------- | ------------------------------ |
+| D1 retention           | 25-30%  | Industrie tube adult           |
+| D7 retention           | 10-15%  | xVideos interne estimé         |
+| D30 retention          | 5-8%    | Paid streaming niche           |
+| Session avg            | 8-9 min | xVideos 8:26, Pornhub 8:42     |
+| Pages/session          | 7-9     | xVideos 8.89                   |
+| Anon → Registered      | 3-5%    | Réaliste early stage           |
+| Registered → Active J7 | 40%+    | Patreon créateur moyen         |
+| Free → Pro             | 2-4%    | Standard adult ad-free premium |
+| Churn Pro mensuel      | <8%     | Nebula ~5%                     |
 
 ### Events à logger
+
 - `video_view` (threshold 30s), `video_complete` (80%)
 - `favorite_add`, `favorite_remove`
 - `signup`, `login`, `discord_link`
@@ -56,9 +59,11 @@ Sans ces métriques, toutes les décisions qui suivent sont des paris aveugles. 
 ## Phase 2 — Stripe Pro (semaine 2-3)
 
 ### ⚠️ Action la plus urgente de la session
+
 **Contacter Stripe support dès maintenant** pour activer le compte en "adult content enabled". Ce n'est pas automatique. Sans ça, le compte sera suspendu au premier paiement adult.
 
 Conditions à respecter :
+
 - Age gate ✅ (déjà en place)
 - DMCA policy visible ✅
 - 2257 compliance notice ✅
@@ -71,12 +76,12 @@ Conditions à respecter :
 
 ### Structure tarifaire
 
-| Plan | Prix | Équivalent/mois | Notes |
-|---|---|---|---|
-| **Mensuel** | 4.99€ | 4.99€ | Sweet spot (entre Patreon 3€ et Crunchyroll 7.99€) |
-| **Annuel** | 39.99€ | 3.33€ | -33% standard SaaS |
-| **Lifetime (launch)** | 69.99€ | ~14 mois | **Limité 500 spots**, compteur visible |
-| **First month** | 0.99€ puis 4.99€ | — | Coupe la friction premier achat |
+| Plan                  | Prix             | Équivalent/mois | Notes                                              |
+| --------------------- | ---------------- | --------------- | -------------------------------------------------- |
+| **Mensuel**           | 4.99€            | 4.99€           | Sweet spot (entre Patreon 3€ et Crunchyroll 7.99€) |
+| **Annuel**            | 39.99€           | 3.33€           | -33% standard SaaS                                 |
+| **Lifetime (launch)** | 69.99€           | ~14 mois        | **Limité 500 spots**, compteur visible             |
+| **First month**       | 0.99€ puis 4.99€ | —               | Coupe la friction premier achat                    |
 
 **Pourquoi 4.99€ et pas 3.99€ ?** En-dessous de 4€, perçu comme low-value sur contenu adult. Au-dessus de 5€, seuil cognitif qui allonge la décision. 4.99€ = charm price optimal.
 
@@ -97,12 +102,12 @@ Rangées par **valeur perçue** pour l'audience :
 
 ### Offres de lancement (J0→J90)
 
-| Jour | Action | Message |
-|---|---|---|
-| J0 | Launch | 0.99€ first month + lifetime 69.99€ (500 spots) |
-| J30 | Push FOMO | "Derniers 100 lifetimes" |
-| J60 | Fin lifetimes | Annuel 29.99€ (2 semaines only) |
-| J90 | Pricing standard | 4.99€/mois, 39.99€/an, plus de deals |
+| Jour | Action           | Message                                         |
+| ---- | ---------------- | ----------------------------------------------- |
+| J0   | Launch           | 0.99€ first month + lifetime 69.99€ (500 spots) |
+| J30  | Push FOMO        | "Derniers 100 lifetimes"                        |
+| J60  | Fin lifetimes    | Annuel 29.99€ (2 semaines only)                 |
+| J90  | Pricing standard | 4.99€/mois, 39.99€/an, plus de deals            |
 
 ### Risques identifiés
 
@@ -117,56 +122,61 @@ Rangées par **valeur perçue** pour l'audience :
 ### Mécaniques à implémenter (par ROI rétention)
 
 **1. Daily streak (ROI #1 — Duolingo = 3x rétention J30)**
+
 - Flamme sur l'avatar dès J3
 - Streak Freeze consommable (2 max, rechargement mensuel) — perte aversion > gain
 - Badge "Monthly Devotee" à J30 permanent
 
 **2. Daily quests (Twitch Drops model)**
+
 - 3 quêtes/jour qui prennent 3-5 min total
 - Exemples : "Watch 3 clips", "Discover a new character", "Watch a Top Rated clip"
 - Reset minuit UTC avec timer visible
 - Récompense : points XP + chance de badge
 
 **3. Collection system (Danbooru/AniList)**
+
 - Character collections : "Collect all 12 clips of [X] this week"
 - Badges par série/artiste complete
 - Pornhub Premium badges series = +18% rétention segment
 
 **4. Tier public visible (badge profile)**
+
 - Apparaît dans les commentaires futurs, profil, Discord
 - Vanity = conversion
 
 **5. Video of the Day (Criterion/Mubi model)**
+
 - Une seule vidéo mise en avant par jour (pas un carousel)
 - Bonus XP si vue avant minuit
 - Singularité = valeur perçue
 
 ### Scoring formula
 
-| Action | Points |
-|---|---|
-| Video view (>30s) | +2 |
-| Video complete (>80%) | +5 |
-| Favorite add | +8 |
-| Daily quest complete | +15 |
-| Video of the Day viewed | +20 |
-| New character discovered | +10 |
-| Share click | +5 |
-| Streak 7 days bonus | +50 |
-| Streak 30 days bonus | +200 |
+| Action                   | Points |
+| ------------------------ | ------ |
+| Video view (>30s)        | +2     |
+| Video complete (>80%)    | +5     |
+| Favorite add             | +8     |
+| Daily quest complete     | +15    |
+| Video of the Day viewed  | +20    |
+| New character discovered | +10    |
+| Share click              | +5     |
+| Streak 7 days bonus      | +50    |
+| Streak 30 days bonus     | +200   |
 
 **Anti-farm** : cap 100 pts/jour sur les vues, pas de cap sur qualité (favorites, quests).
 
 ### Tiers (6 niveaux, thème anime)
 
-| Tier | Nom | Seuil | Unlock |
-|---|---|---|---|
-| T1 | Wanderer | 0 | Default |
-| T2 | Kouhai | 200 | Badge profil animé + stats personnelles |
-| T3 | Senpai | 1 000 | Border profil coloré + historique 90j + 1 streak freeze supplémentaire |
-| T4 | Otaku | 5 000 | Discord role visible + early access sources + priority resolve |
-| T5 | Waifu Scholar | 15 000 | **-30% sur Pro** + custom avatar border + Curator Picks hebdo |
-| T6 | Hentai Sage | 50 000 | Badge SAGE animé + VIP Discord + vote sur features + nom dans credits |
+| Tier | Nom           | Seuil  | Unlock                                                                 |
+| ---- | ------------- | ------ | ---------------------------------------------------------------------- |
+| T1   | Wanderer      | 0      | Default                                                                |
+| T2   | Kouhai        | 200    | Badge profil animé + stats personnelles                                |
+| T3   | Senpai        | 1 000  | Border profil coloré + historique 90j + 1 streak freeze supplémentaire |
+| T4   | Otaku         | 5 000  | Discord role visible + early access sources + priority resolve         |
+| T5   | Waifu Scholar | 15 000 | **-30% sur Pro** + custom avatar border + Curator Picks hebdo          |
+| T6   | Hentai Sage   | 50 000 | Badge SAGE animé + VIP Discord + vote sur features + nom dans credits  |
 
 **Pourquoi T5 donne un discount et pas Pro gratuit** : après 15 000 points (semaines d'activité), l'attachement émotionnel est max. Un discount réduit la friction de paiement sans dévaloriser Pro. Mécanique testée par Duolingo Super.
 
@@ -207,6 +217,7 @@ CREATE TABLE user_discord_links (
 ### Cron horaire : `scripts/discord-sync-roles.mjs`
 
 Pour chaque user linké :
+
 1. Recalcule le tier (Wanderer → Hentai Sage) depuis user_stats
 2. Recalcule le top 100 weekly (rolling 7 jours)
 3. Recalcule le streak current
@@ -217,6 +228,7 @@ Pour chaque user linké :
    - Role 🏆 Top Fan (top 100 weekly)
 
 ### Retire aussi les roles
+
 Le Top Fan bascule d'un user à l'autre chaque semaine → rotation permanente = compétition.
 
 ---
@@ -226,6 +238,7 @@ Le Top Fan bascule d'un user à l'autre chaque semaine → rotation permanente =
 ### Daily Drop bot (scheduled)
 
 Bot Discord qui tourne chaque matin :
+
 1. Pick le top clip nouveau des dernières 24h
 2. Poste dans `#daily-drop` avec embed riche (thumbnail, titre, link, score)
 3. Ping `@Daily Drop` role (opt-in)
@@ -239,6 +252,7 @@ Bot Discord qui tourne chaque matin :
 ### Weekly Leaderboard
 
 Lundi 9h UTC :
+
 1. Bot calcule top 10 users de la semaine (watchtime + favs + quests)
 2. Poste embed dans `#leaderboard`
 3. #1 reçoit role "Weekly King/Queen" pour 7 jours
@@ -254,52 +268,57 @@ Ping 1h avant dans `#watch-party-voice`. Bot poste un compte à rebours + timest
 
 ### Bots tiers à ajouter
 
-| Bot | Rôle | Coût |
-|---|---|---|
-| **Statbot** | Analytics serveur | Gratuit à petit volume |
-| **Simple Poll** | Polls avec images (COTW) | Gratuit |
-| **Welcomer** | Messages bienvenue visuels | Gratuit |
-| **Wick** | Modération NSFW automatique (détection contenu illégal) | Gratuit / Pro 5$/mois |
-| **YAGPDB** | Automations complexes de roles | Gratuit |
+| Bot             | Rôle                                                    | Coût                   |
+| --------------- | ------------------------------------------------------- | ---------------------- |
+| **Statbot**     | Analytics serveur                                       | Gratuit à petit volume |
+| **Simple Poll** | Polls avec images (COTW)                                | Gratuit                |
+| **Welcomer**    | Messages bienvenue visuels                              | Gratuit                |
+| **Wick**        | Modération NSFW automatique (détection contenu illégal) | Gratuit / Pro 5$/mois  |
+| **YAGPDB**      | Automations complexes de roles                          | Gratuit                |
 
 ---
 
 ## Lifecycle par persona (customer experience)
 
 ### Anonymous visitor
+
 - **Signaux** : 2+ vidéos, scroll dans un tag récurrent, retour J+1
 - **Trigger** : au 3e pageview, tooltip "Save favorites — 10s"
 - **CTA** : "Create free account to save favorites + no interruptions"
 - **Jamais** : modal plein écran au premier visit
 
 ### Registered free
+
 - **Signaux** : 3+ favoris, tag récurrent, 3 jours/7
 - **Trigger email J+1** : "Your watchlist is ready — 5 new clips of [character]"
 - **Trigger email J+3** : "You have unwatched clips"
 
 ### Engaged daily
+
 - **Signaux** : streak 5+, 10+ favs, 3+ sessions/semaine
 - **Trigger** : upgrade proposal exactement au moment de la 3e pub en session
 - **CTA** : "Remove all ads forever — 3€/mois. Cancel anytime."
 
 ### Pro convert
+
 - **Email de bienvenue 5 min** : liste concrète des perks
 - **Pas de upsell 30j**
 - **CTA** : "Join Pro channel on Discord"
 
 ### Long-term loyal (Pro 3+ mois)
+
 - **iku.gg Wrapped mensuel** (Spotify-style) : "You watched 847 minutes. Top character: X. Rarest tag: Y."
 - **+11% renouvellement** selon data Spotify
 
 ### Winback
 
-| Jour | Canal | Message |
-|---|---|---|
-| J+3 | Push notification | "🔥 12 nouveaux clips de [tag]" |
-| J+7 | Email | "[Character] a de nouveaux clips" (personnalisé) |
-| J+14 | Email offre | "1 mois Pro à 1€ — expire dimanche" |
-| J+30 | Email final | Nouveautés plateforme, pas de discount |
-| J+60 | **Archive** | Continuer = delivability Gmail cassée |
+| Jour | Canal             | Message                                          |
+| ---- | ----------------- | ------------------------------------------------ |
+| J+3  | Push notification | "🔥 12 nouveaux clips de [tag]"                  |
+| J+7  | Email             | "[Character] a de nouveaux clips" (personnalisé) |
+| J+14 | Email offre       | "1 mois Pro à 1€ — expire dimanche"              |
+| J+30 | Email final       | Nouveautés plateforme, pas de discount           |
+| J+60 | **Archive**       | Continuer = delivability Gmail cassée            |
 
 ### Conversion free → Pro — moments de vérité
 
@@ -321,6 +340,7 @@ Ping 1h avant dans `#watch-party-voice`. Bot poste un compte à rebours + timest
 ## Décisions à prendre (actionnables)
 
 ### Urgent (cette semaine)
+
 - [ ] **Contacter Stripe support** pour enable adult content
 - [ ] **Ouvrir Paxum ou Epoch account** en backup
 - [ ] Installer PostHog self-hosted sur Hetzner
@@ -328,12 +348,14 @@ Ping 1h avant dans `#watch-party-voice`. Bot poste un compte à rebours + timest
 - [ ] Choisir : **lifetime 69.99€ limité 500 spots** au lancement ou skip ?
 
 ### Important (2 semaines)
+
 - [ ] Créer le schéma `user_stats` (score, streak, longest_streak, last_active, tier, freezes)
 - [ ] Branches Stripe webhooks
 - [ ] Page `/pricing` + checkout flow
 - [ ] Page `/pro` pour showcase les features
 
 ### Mois 2
+
 - [ ] Daily quests system
 - [ ] Scoring engine + tier progression
 - [ ] Discord role sync bot

@@ -29,11 +29,11 @@ export interface VerifyStatus {
  * when the user can bypass the gate (verified, or Discord-synthetic email).
  */
 export async function getVerifyStatus(
-  userId: number | string
+  userId: number | string,
 ): Promise<VerifyStatus> {
   const { rows } = await pool.query(
     `SELECT email, username, email_verified FROM users WHERE id = $1`,
-    [userId]
+    [userId],
   );
   const row = rows[0];
   if (!row) {

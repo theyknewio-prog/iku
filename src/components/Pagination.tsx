@@ -8,9 +8,13 @@ interface PaginationProps {
   totalPages?: number; /* optional — if you know total */
 }
 
-export function Pagination({ currentPage, hasNextPage, totalPages }: PaginationProps) {
-  const router     = useRouter();
-  const pathname   = usePathname();
+export function Pagination({
+  currentPage,
+  hasNextPage,
+  totalPages,
+}: PaginationProps) {
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const goTo = (page: number) => {
@@ -28,7 +32,7 @@ export function Pagination({ currentPage, hasNextPage, totalPages }: PaginationP
     pages.push(1);
     if (currentPage > 3) pages.push("dots");
     const start = Math.max(2, currentPage - 1);
-    const end   = Math.min(totalPages - 1, currentPage + 1);
+    const end = Math.min(totalPages - 1, currentPage + 1);
     for (let i = start; i <= end; i++) pages.push(i);
     if (currentPage < totalPages - 2) pages.push("dots");
     pages.push(totalPages);
@@ -48,7 +52,15 @@ export function Pagination({ currentPage, hasNextPage, totalPages }: PaginationP
         data-disabled={currentPage <= 1 ? "" : undefined}
         aria-label="Previous page"
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        >
           <path d="M15 18l-6-6 6-6" />
         </svg>
       </button>
@@ -69,7 +81,7 @@ export function Pagination({ currentPage, hasNextPage, totalPages }: PaginationP
           >
             {page}
           </button>
-        )
+        ),
       )}
 
       {/* Next */}
@@ -79,7 +91,15 @@ export function Pagination({ currentPage, hasNextPage, totalPages }: PaginationP
         data-disabled={!hasNextPage ? "" : undefined}
         aria-label="Next page"
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        >
           <path d="M9 18l6-6-6-6" />
         </svg>
       </button>

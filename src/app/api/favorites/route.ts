@@ -24,7 +24,7 @@ export async function GET() {
      WHERE user_id = $1
      ORDER BY created_at DESC
      LIMIT 500`,
-    [session.user.id]
+    [session.user.id],
   );
 
   return NextResponse.json({ favorites: rows });
@@ -51,8 +51,11 @@ export async function POST(request: NextRequest) {
     const vStatus = await getVerifyStatus(session.user.id);
     if (!vStatus.passed) {
       return NextResponse.json(
-        { error: "email_not_verified", message: "Verify your email to sync favorites." },
-        { status: 403 }
+        {
+          error: "email_not_verified",
+          message: "Verify your email to sync favorites.",
+        },
+        { status: 403 },
       );
     }
 
@@ -66,7 +69,7 @@ export async function POST(request: NextRequest) {
     await pool.query(
       `INSERT INTO user_favorites (user_id, video_slug) VALUES ${values}
        ON CONFLICT DO NOTHING`,
-      [session.user.id, ...slugs]
+      [session.user.id, ...slugs],
     );
     return NextResponse.json({ ok: true, added: slugs.length });
   }
@@ -78,7 +81,7 @@ export async function POST(request: NextRequest) {
   await pool.query(
     `INSERT INTO user_favorites (user_id, video_slug) VALUES ($1, $2)
      ON CONFLICT DO NOTHING`,
-    [session.user.id, slug]
+    [session.user.id, slug],
   );
 
   return NextResponse.json({ ok: true });
@@ -97,10 +100,9 @@ export async function DELETE(request: NextRequest) {
   if (all === "1") {
     // Bulk clear — replaces the old client pattern of firing N concurrent
     // DELETE requests that risked 429 and left partial state.
-    await pool.query(
-      `DELETE FROM user_favorites WHERE user_id = $1`,
-      [session.user.id]
-    );
+    await pool.query(`DELETE FROM user_favorites WHERE user_id = $1`, [
+      session.user.id,
+    ]);
     return NextResponse.json({ ok: true, cleared: true });
   }
 
@@ -110,7 +112,7 @@ export async function DELETE(request: NextRequest) {
 
   await pool.query(
     `DELETE FROM user_favorites WHERE user_id = $1 AND video_slug = $2`,
-    [session.user.id, slug]
+    [session.user.id, slug],
   );
 
   return NextResponse.json({ ok: true });

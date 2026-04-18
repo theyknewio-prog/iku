@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
   if (!newPassword || newPassword.length < 8) {
     return NextResponse.json(
       { error: "Password must be at least 8 characters" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -42,10 +42,13 @@ export async function POST(request: NextRequest) {
      SET used_at = NOW()
      WHERE token = $1 AND used_at IS NULL AND expires_at > NOW()
      RETURNING user_id`,
-    [token]
+    [token],
   );
   if (rows.length === 0) {
-    return NextResponse.json({ error: "Invalid or expired token" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid or expired token" },
+      { status: 400 },
+    );
   }
 
   const userId = Number(rows[0].user_id);
@@ -53,7 +56,7 @@ export async function POST(request: NextRequest) {
 
   await pool.query(
     `UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2`,
-    [hash, userId]
+    [hash, userId],
   );
 
   return NextResponse.json({ ok: true });

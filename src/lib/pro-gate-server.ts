@@ -9,11 +9,13 @@ import pool from "@/lib/db";
  * pg import never reaches client bundles. Turbopack would otherwise try
  * to resolve `dns` and fail.
  */
-export async function isUserPro(userId: string | undefined | null): Promise<boolean> {
+export async function isUserPro(
+  userId: string | undefined | null,
+): Promise<boolean> {
   if (!userId) return false;
   const { rows } = await pool.query<{ pro_status: string | null }>(
     `SELECT pro_status FROM users WHERE id = $1 LIMIT 1`,
-    [userId]
+    [userId],
   );
   const status = rows[0]?.pro_status;
   return status === "active" || status === "lifetime";

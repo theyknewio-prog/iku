@@ -47,31 +47,43 @@ async function api(method, path, body) {
 
 const ALIASES = [
   // ─── General ───
-  { name: "hello",         description: "General inbound — public address on website" },
-  { name: "contact",       description: "Contact form + business inquiries" },
-  { name: "info",          description: "Generic info queries" },
+  { name: "hello", description: "General inbound — public address on website" },
+  { name: "contact", description: "Contact form + business inquiries" },
+  { name: "info", description: "Generic info queries" },
 
   // ─── Support ───
-  { name: "support",       description: "User support — technical issues, account help" },
-  { name: "help",          description: "User help inbox" },
-  { name: "feedback",      description: "User feedback, feature requests" },
+  {
+    name: "support",
+    description: "User support — technical issues, account help",
+  },
+  { name: "help", description: "User help inbox" },
+  { name: "feedback", description: "User feedback, feature requests" },
 
   // ─── Legal / compliance ───
-  { name: "dmca",          description: "DMCA takedown requests (legal requirement)" },
-  { name: "abuse",         description: "Report illegal content or abuse" },
-  { name: "legal",         description: "Legal inquiries from authorities, lawyers" },
-  { name: "privacy",       description: "GDPR + privacy questions (data deletion, etc.)" },
-  { name: "2257",          description: "2257 compliance + record keeping inquiries" },
+  { name: "dmca", description: "DMCA takedown requests (legal requirement)" },
+  { name: "abuse", description: "Report illegal content or abuse" },
+  { name: "legal", description: "Legal inquiries from authorities, lawyers" },
+  {
+    name: "privacy",
+    description: "GDPR + privacy questions (data deletion, etc.)",
+  },
+  { name: "2257", description: "2257 compliance + record keeping inquiries" },
 
   // ─── Business ───
-  { name: "press",         description: "Press inquiries, media kit requests" },
-  { name: "partnerships",  description: "Business partnerships, ad deals" },
-  { name: "jobs",          description: "Career inquiries (future)" },
-  { name: "founder",       description: "Direct line to the founder" },
+  { name: "press", description: "Press inquiries, media kit requests" },
+  { name: "partnerships", description: "Business partnerships, ad deals" },
+  { name: "jobs", description: "Career inquiries (future)" },
+  { name: "founder", description: "Direct line to the founder" },
 
   // ─── System ───
-  { name: "dmarc",         description: "DMARC reports aggregation (matches DMARC record)" },
-  { name: "noreply",       description: "Reserve — to block replies to automated emails" },
+  {
+    name: "dmarc",
+    description: "DMARC reports aggregation (matches DMARC record)",
+  },
+  {
+    name: "noreply",
+    description: "Reserve — to block replies to automated emails",
+  },
 ];
 
 async function createRule(alias) {
@@ -84,7 +96,11 @@ async function createRule(alias) {
   };
 
   try {
-    const result = await api("POST", `/zones/${ZONE}/email/routing/rules`, ruleBody);
+    const result = await api(
+      "POST",
+      `/zones/${ZONE}/email/routing/rules`,
+      ruleBody,
+    );
     console.log(`  ✓ ${alias.name}@iku.gg → ${DESTINATION}`);
     return result;
   } catch (err) {
@@ -110,4 +126,7 @@ async function run() {
   console.log("\n✨ Done");
 }
 
-run().catch((err) => { console.error("❌", err); process.exit(1); });
+run().catch((err) => {
+  console.error("❌", err);
+  process.exit(1);
+});

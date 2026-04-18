@@ -13,7 +13,8 @@
 import { hasBannedTagString } from "./banned-tags";
 import { pool, upsertVideos } from "./db";
 
-const API_KEY = "f230feb40110c4e896f9cb32fd4d8c08c13c476f4bf83d64036ad23887e482510b1a391cefab9dacdde28b51cd64c9695ed1fd06ad327753074c494d528f1790";
+const API_KEY =
+  "f230feb40110c4e896f9cb32fd4d8c08c13c476f4bf83d64036ad23887e482510b1a391cefab9dacdde28b51cd64c9695ed1fd06ad327753074c494d528f1790";
 const USER_ID = "6053223";
 const BASE_URL = "https://api.rule34.xxx/index.php";
 const DELAY = 500; // 500ms between requests
@@ -47,17 +48,22 @@ interface VideoEntry {
 
 function sanitize(raw: string): string {
   if (!raw || !raw.trim()) return "";
-  return raw.trim().split(/\s+/)[0]
-    ?.toLowerCase()
-    .replace(/_/g, "-")
-    .replace(/[^a-z0-9-]/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "") ?? "";
+  return (
+    raw
+      .trim()
+      .split(/\s+/)[0]
+      ?.toLowerCase()
+      .replace(/_/g, "-")
+      .replace(/[^a-z0-9-]/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "") ?? ""
+  );
 }
 
 function mapPost(post: R34Post): VideoEntry | null {
   if (!post.file_url) return null;
-  if (!post.file_url.endsWith(".mp4") && !post.file_url.endsWith(".webm")) return null;
+  if (!post.file_url.endsWith(".mp4") && !post.file_url.endsWith(".webm"))
+    return null;
 
   // Skip banned content
   if (post.tags && hasBannedTagString(post.tags)) return null;
@@ -79,12 +85,18 @@ function mapPost(post: R34Post): VideoEntry | null {
   };
 }
 
-async function fetchPage(tags: string, pid: number, retries = 2): Promise<R34Post[]> {
+async function fetchPage(
+  tags: string,
+  pid: number,
+  retries = 2,
+): Promise<R34Post[]> {
   const url = `${BASE_URL}?page=dapi&s=post&q=index&json=1&api_key=${API_KEY}&user_id=${USER_ID}&tags=${encodeURIComponent(tags)}&limit=${LIMIT}&pid=${pid}`;
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      const res = await fetch(url, { headers: { "User-Agent": "IkuScraper/1.0" } });
+      const res = await fetch(url, {
+        headers: { "User-Agent": "IkuScraper/1.0" },
+      });
 
       if (res.status === 429) {
         console.warn(`  429 on pid ${pid}, waiting 5s...`);
@@ -94,7 +106,10 @@ async function fetchPage(tags: string, pid: number, retries = 2): Promise<R34Pos
 
       if (!res.ok) {
         console.error(`  HTTP ${res.status} on pid ${pid}`);
-        if (attempt < retries) { await new Promise((r) => setTimeout(r, 2000)); continue; }
+        if (attempt < retries) {
+          await new Promise((r) => setTimeout(r, 2000));
+          continue;
+        }
         return [];
       }
 
@@ -105,7 +120,10 @@ async function fetchPage(tags: string, pid: number, retries = 2): Promise<R34Pos
       if (!json || !Array.isArray(json)) return [];
       return json;
     } catch (err) {
-      if (attempt < retries) { await new Promise((r) => setTimeout(r, 2000)); continue; }
+      if (attempt < retries) {
+        await new Promise((r) => setTimeout(r, 2000));
+        continue;
+      }
       return [];
     }
   }
@@ -134,10 +152,15 @@ async function scrapeQuery(tags: string, label: string): Promise<VideoEntry[]> {
     let added = 0;
     for (const post of posts) {
       const entry = mapPost(post);
-      if (entry) { results.push(entry); added++; }
+      if (entry) {
+        results.push(entry);
+        added++;
+      }
     }
 
-    process.stdout.write(`    pid ${pid}: ${posts.length} posts, ${added} videos (total: ${results.length})\r`);
+    process.stdout.write(
+      `    pid ${pid}: ${posts.length} posts, ${added} videos (total: ${results.length})\r`,
+    );
 
     if (posts.length < LIMIT) break;
     pid++;
@@ -189,13 +212,22 @@ async function main() {
   let upserted = 0;
   for (let i = 0; i < unique.length; i += BATCH) {
     const batch = unique.slice(i, i + BATCH).map((v) => ({
-      source: "rule34", source_id: v.id, slug: v.slug, url: v.url,
-      thumbnail: v.thumbnail, preview: v.preview, score: v.score,
-      tags: v.tags, width: v.width, height: v.height,
+      source: "rule34",
+      source_id: v.id,
+      slug: v.slug,
+      url: v.url,
+      thumbnail: v.thumbnail,
+      preview: v.preview,
+      score: v.score,
+      tags: v.tags,
+      width: v.width,
+      height: v.height,
       created_at: v.createdAt,
     }));
     upserted += await upsertVideos(batch);
-    process.stdout.write(`  ${Math.min(i + BATCH, unique.length)}/${unique.length} upserted\r`);
+    process.stdout.write(
+      `  ${Math.min(i + BATCH, unique.length)}/${unique.length} upserted\r`,
+    );
   }
   console.log(`\n  ${upserted} videos upserted`);
   await pool.end();

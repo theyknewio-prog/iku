@@ -30,7 +30,11 @@ async function api(method, path, body) {
   if (res.status === 204) return {};
   const text = await res.text();
   let data;
-  try { data = JSON.parse(text); } catch { data = text; }
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = text;
+  }
   if (!res.ok) throw new Error(`${method} ${path}: ${JSON.stringify(data)}`);
   return data;
 }
@@ -94,7 +98,9 @@ async function run() {
 
   // Post new message
   console.log("Posting new message…");
-  await api("POST", `/channels/${target.id}/messages`, { content: NEW_MESSAGE });
+  await api("POST", `/channels/${target.id}/messages`, {
+    content: NEW_MESSAGE,
+  });
   console.log("✅ done");
 }
 

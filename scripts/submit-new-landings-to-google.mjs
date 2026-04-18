@@ -107,7 +107,8 @@ async function main() {
       const res = await indexing.urlNotifications.publish({
         requestBody: { url, type: "URL_UPDATED" },
       });
-      const latest = res.data?.urlNotificationMetadata?.latestUpdate?.notifyTime;
+      const latest =
+        res.data?.urlNotificationMetadata?.latestUpdate?.notifyTime;
       console.log(`  ✓ ${url}${latest ? ` (${latest})` : ""}`);
       ok++;
     } catch (err) {

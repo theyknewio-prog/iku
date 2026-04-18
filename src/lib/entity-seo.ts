@@ -18,7 +18,10 @@ export interface EntitySeo {
   generatedAt: Date;
 }
 
-async function _getEntitySeo(type: EntityType, slug: string): Promise<EntitySeo | null> {
+async function _getEntitySeo(
+  type: EntityType,
+  slug: string,
+): Promise<EntitySeo | null> {
   const { rows } = await pool.query<{
     intro: string;
     faq: Array<{ q: string; a: string }>;
@@ -29,7 +32,7 @@ async function _getEntitySeo(type: EntityType, slug: string): Promise<EntitySeo 
      FROM entity_seo
      WHERE entity_type = $1 AND slug = $2
      LIMIT 1`,
-    [type, slug.toLowerCase()]
+    [type, slug.toLowerCase()],
   );
   if (!rows[0]) return null;
   return {
@@ -42,7 +45,10 @@ async function _getEntitySeo(type: EntityType, slug: string): Promise<EntitySeo 
 
 const _memo = memoize("entity-seo", _getEntitySeo, 60 * 60 * 1000);
 
-export async function getEntitySeo(type: EntityType, slug: string): Promise<EntitySeo | null> {
+export async function getEntitySeo(
+  type: EntityType,
+  slug: string,
+): Promise<EntitySeo | null> {
   try {
     return await _memo(type, slug);
   } catch (err) {

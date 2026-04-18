@@ -16,7 +16,8 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
   {
     slug: "best-hentai-streaming-sites-2026",
     title: "Best Hentai Streaming Sites in 2026 — Where to Watch Free",
-    excerpt: "The definitive guide to hentai streaming in 2026. Which sites actually work, which are safe, and where to find the best free content.",
+    excerpt:
+      "The definitive guide to hentai streaming in 2026. Which sites actually work, which are safe, and where to find the best free content.",
     content: `<h2>The State of Hentai Streaming in 2026</h2>
 <p>Finding a reliable place to <strong>hentai stream</strong> has never been more confusing. Sites appear and disappear, video quality varies wildly, and half the results on Google are either dead links or redirect malware farms. This guide cuts through the noise and tells you exactly where to watch hentai in 2026, what each site does well, and what to watch out for.</p>
 <p>The short answer: there are five platforms worth your time. Everything else is either a clone of one of these five or not worth the bandwidth.</p>
@@ -73,14 +74,16 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
     readingTime: 7,
     glossaryLinks: ["hentai", "doujinshi", "3d-hentai", "vanilla", "isekai"],
     seoTitle: "Best Hentai Streaming Sites in 2026 — Watch Free | iku.gg",
-    seoDescription: "The best hentai stream sites in 2026 — hanime.tv, hstream.moe, iku.gg and more. What to watch, where to find it, and how to stay safe.",
+    seoDescription:
+      "The best hentai stream sites in 2026 — hanime.tv, hstream.moe, iku.gg and more. What to watch, where to find it, and how to stay safe.",
   },
 
   // 2. manhwa hentai
   {
     slug: "manhwa-hentai-guide",
     title: "Manhwa Hentai: The Complete Guide to Korean Adult Comics",
-    excerpt: "Manhwa hentai has exploded in popularity, giving Japanese manga serious competition. Here's everything you need to know about Korean adult comics.",
+    excerpt:
+      "Manhwa hentai has exploded in popularity, giving Japanese manga serious competition. Here's everything you need to know about Korean adult comics.",
     content: `<h2>What is Manhwa Hentai?</h2>
 <p><strong>Manhwa hentai</strong> refers to adult comics from South Korea. While hentai traditionally describes Japanese content, the global community now uses the term loosely to include Korean manhwa and Chinese manhua when the content is explicit. Manhwa has a distinct visual style, a vertical scroll format optimized for mobile reading, and storytelling sensibilities that differ meaningfully from Japanese manga.</p>
 <p>The rise of manhwa hentai is one of the biggest stories in adult content over the past five years. Series like <em>My Wife is a Gangster</em> spinoffs, <em>Touch to Unlock</em>, and countless originals on platforms like Lezhin Comics have built audiences that rival traditional hentai manga sites.</p>
@@ -133,14 +136,16 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
     readingTime: 8,
     glossaryLinks: ["doujinshi", "hentai", "isekai", "vanilla"],
     seoTitle: "Manhwa Hentai: Complete Guide to Korean Adult Comics | iku.gg",
-    seoDescription: "Everything about manhwa hentai — Korean adult comics vs Japanese manga, best series, where to read, art style differences. Updated 2026.",
+    seoDescription:
+      "Everything about manhwa hentai — Korean adult comics vs Japanese manga, best series, where to read, art style differences. Updated 2026.",
   },
 
   // 3. lesbian hentai / yuri
   {
     slug: "yuri-lesbian-hentai-guide",
     title: "Yuri & Lesbian Hentai: The Girl-Love Genre Explained",
-    excerpt: "Yuri is one of hentai's most beloved genres. From sweet romance to explicit content — here's the complete guide to girl-love anime and manga.",
+    excerpt:
+      "Yuri is one of hentai's most beloved genres. From sweet romance to explicit content — here's the complete guide to girl-love anime and manga.",
     content: `<h2>What is Yuri?</h2>
 <p><strong>Yuri</strong> (百合, "lily") is the genre of anime and manga focusing on romantic and sexual relationships between female characters. In hentai specifically, yuri and <strong>lesbian hentai</strong> are used interchangeably — yuri is the Japanese term, lesbian is the Western descriptor, but they point to the same genre. The lily symbolism comes from the Takarazuka theater tradition, where female performers play male roles, establishing a cultural shorthand for female-female romance in Japan.</p>
 <p><a href="/glossary/yuri">Yuri</a> is consistently one of the top five most popular tags on every major hentai platform. It's also one of the most broad — the genre ranges from completely non-explicit romantic yuri (sometimes called "pure yuri" or "shoujo-ai") to full explicit hentai content. This guide focuses on the explicit side.</p>
@@ -190,14 +195,17 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
     readingTime: 7,
     glossaryLinks: ["yuri", "vanilla", "futanari", "ntr", "doujinshi"],
     seoTitle: "Yuri & Lesbian Hentai: The Girl-Love Genre Explained | iku.gg",
-    seoDescription: "Complete guide to yuri and lesbian hentai — what it is, subgenres, best OVAs, doujinshi, and why it has such a massive fanbase.",
+    seoDescription:
+      "Complete guide to yuri and lesbian hentai — what it is, subgenres, best OVAs, doujinshi, and why it has such a massive fanbase.",
   },
 
   // 4. monster hentai
   {
     slug: "monster-hentai-guide",
-    title: "Monster Hentai: Tentacles, Orcs, and Fantasy Creatures in Adult Anime",
-    excerpt: "Monster hentai is one of hentai's oldest and most enduring genres. A deep dive into tentacles, orcs, demons, and why fantasy creatures dominate adult anime.",
+    title:
+      "Monster Hentai: Tentacles, Orcs, and Fantasy Creatures in Adult Anime",
+    excerpt:
+      "Monster hentai is one of hentai's oldest and most enduring genres. A deep dive into tentacles, orcs, demons, and why fantasy creatures dominate adult anime.",
     content: `<h2>What is Monster Hentai?</h2>
 <p><strong>Monster hentai</strong> is exactly what it sounds like: adult anime content featuring non-human creatures. The category is enormous — it encompasses tentacled beings, orcs, goblins, demons, dragons, slimes, insect creatures, undead, and more. If it's not human and it's in a sexual scenario, it falls somewhere under the monster hentai umbrella.</p>
 <p>This is one of the oldest genres in hentai history. The roots go back to Katsushika Hokusai's 1814 woodblock print "The Dream of the Fisherman's Wife" — a fully explicit depiction of a woman with two octopuses that's considered the ancestor of the <a href="/glossary/tentacle">tentacle</a> genre. When Urotsukidoji (1987) brought tentacle monsters to animated form, it became the first hentai many Westerners ever encountered, making monster content synonymous with hentai in mainstream cultural awareness for years.</p>
@@ -248,14 +256,16 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
     readingTime: 8,
     glossaryLinks: ["tentacle", "isekai", "doujinshi", "hentai"],
     seoTitle: "Monster Hentai: Tentacles, Orcs & Fantasy Creatures | iku.gg",
-    seoDescription: "Complete guide to monster hentai — tentacles, orcs, demons, and fantasy creatures in adult anime. History, top studios, and psychology explained.",
+    seoDescription:
+      "Complete guide to monster hentai — tentacles, orcs, demons, and fantasy creatures in adult anime. History, top studios, and psychology explained.",
   },
 
   // 5. animation porn
   {
     slug: "animated-porn-hentai-3d-adult-animation",
     title: "Animated Porn: Hentai, 3D, and the Rise of Adult Animation",
-    excerpt: "From Japanese hentai to Western 3D animation — animated porn has become the dominant category in adult content. Here's the complete breakdown.",
+    excerpt:
+      "From Japanese hentai to Western 3D animation — animated porn has become the dominant category in adult content. Here's the complete breakdown.",
     content: `<h2>Why Animated Porn is Taking Over</h2>
 <p><strong>Animated porn</strong> — including <a href="/glossary/hentai">hentai</a>, 3D CGI, SFM animations, and Western adult cartoons — has gone from niche fetish content to the most-searched adult content category globally. Hentai topped Pornhub's annual search rankings for five consecutive years. The "animated" category outpaces nearly every live-action category on major platforms. Something structural has shifted.</p>
 <p>This isn't a passing trend. It reflects fundamental changes in how adult content is produced, what audiences want, and what animation can do that live-action fundamentally cannot.</p>
@@ -304,15 +314,18 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
     publishedAt: "2026-04-01",
     readingTime: 8,
     glossaryLinks: ["hentai", "3d-hentai", "sfm", "ecchi"],
-    seoTitle: "Animated Porn: Hentai, 3D & the Rise of Adult Animation | iku.gg",
-    seoDescription: "Why animated porn is the fastest growing adult content category. Japanese hentai, 3D SFM animation, AI-generated content — the complete breakdown.",
+    seoTitle:
+      "Animated Porn: Hentai, 3D & the Rise of Adult Animation | iku.gg",
+    seoDescription:
+      "Why animated porn is the fastest growing adult content category. Japanese hentai, 3D SFM animation, AI-generated content — the complete breakdown.",
   },
 
   // 6. hentai harem
   {
     slug: "harem-hentai-guide",
     title: "Harem Hentai: The Ultimate Multi-Partner Fantasy Genre",
-    excerpt: "Harem hentai puts one protagonist at the center of multiple interested partners. Here's why it works, the best series, and the genre's evolution.",
+    excerpt:
+      "Harem hentai puts one protagonist at the center of multiple interested partners. Here's why it works, the best series, and the genre's evolution.",
     content: `<h2>What is Harem Hentai?</h2>
 <p><strong>Harem hentai</strong> features a central protagonist — almost always male — surrounded by multiple female characters who are all romantically or sexually interested in them. Unlike standard hentai which typically focuses on a single pairing or scenario, harem content builds a cast of distinct characters across multiple episodes, each getting their moment with the protagonist.</p>
 <p>The harem genre originated in mainstream anime (Love Hina, Tenchi Muyo) before hentai developed its own dedicated harem productions. The explicit hentai harem takes the premise of the mainstream genre and removes the narrative hesitance — the protagonist actually acts on the multiple attraction scenarios rather than spending 26 episodes not choosing.</p>
@@ -358,14 +371,16 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
     readingTime: 7,
     glossaryLinks: ["isekai", "tsundere", "milf", "doujinshi"],
     seoTitle: "Harem Hentai: The Ultimate Multi-Partner Fantasy Genre | iku.gg",
-    seoDescription: "Complete guide to harem hentai — isekai harem, character archetypes, best series, and the appeal of the multi-partner genre.",
+    seoDescription:
+      "Complete guide to harem hentai — isekai harem, character archetypes, best series, and the appeal of the multi-partner genre.",
   },
 
   // 7. overwatch hentai
   {
     slug: "overwatch-hentai-dva-widowmaker-sfm",
     title: "Overwatch Hentai: D.Va, Widowmaker, and the SFM Community",
-    excerpt: "Overwatch has generated more adult fan content than almost any game in history. D.Va, Widowmaker, Tracer — the characters, the community, and where to find it.",
+    excerpt:
+      "Overwatch has generated more adult fan content than almost any game in history. D.Va, Widowmaker, Tracer — the characters, the community, and where to find it.",
     content: `<h2>Why Overwatch Became the King of Game Hentai</h2>
 <p><strong>Overwatch hentai</strong> exploded from the moment the game launched in 2016. Blizzard had, intentionally or not, created a roster of characters tailor-made for adult fan content: diverse, visually distinctive, with personality archetypes that mapped perfectly onto hentai character tropes. The combination of high-quality game models (perfect for <a href="/glossary/sfm">SFM</a> and Blender), a massive player base, and characters who became genuine cultural icons made Overwatch the dominant source of game-based hentai for years.</p>
 <p>At peak popularity, Overwatch-related terms occupied multiple top-10 spots on Pornhub's search rankings simultaneously. D.Va, Widowmaker, and Tracer became arguably the three most prolific hentai subjects from any single game release.</p>
@@ -406,14 +421,16 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
     readingTime: 7,
     glossaryLinks: ["sfm", "3d-hentai", "doujinshi", "vanilla"],
     seoTitle: "Overwatch Hentai: D.Va, Widowmaker & the SFM Community | iku.gg",
-    seoDescription: "Overwatch hentai explained — D.Va, Widowmaker, Tracer, the SFM animation community, and where to find the best content. Updated 2026.",
+    seoDescription:
+      "Overwatch hentai explained — D.Va, Widowmaker, Tracer, the SFM animation community, and where to find the best content. Updated 2026.",
   },
 
   // 8. genshin hentai / r34
   {
     slug: "genshin-impact-hentai-raiden-mona-fan-art",
     title: "Genshin Impact Hentai: Raiden, Mona, and the Fan Art Explosion",
-    excerpt: "Genshin Impact has generated more hentai fan content than any gacha game in history. The characters, the artists, and why this game took over adult content.",
+    excerpt:
+      "Genshin Impact has generated more hentai fan content than any gacha game in history. The characters, the artists, and why this game took over adult content.",
     content: `<h2>Why Genshin Impact Dominates Hentai</h2>
 <p><strong>Genshin Impact hentai</strong> is one of the defining phenomena in adult fan content of the 2020s. Since the game's 2020 launch, Genshin has flooded every major hentai platform with fan art, <a href="/glossary/doujinshi">doujinshi</a>, and <a href="/glossary/3d-hentai">3D animations</a> at a scale that no game had achieved this quickly before.</p>
 <p>The reasons are structural. Genshin releases multiple new characters every six weeks, each with deliberate design choices — distinct silhouettes, detailed outfits, voiced personalities, backstories that create fan investment. The game is free-to-play with global reach, meaning its fanbase is enormous. And critically: HoYoverse designs characters who are, to put it plainly, extremely attractive. The design team clearly understands what their audience finds appealing.</p>
@@ -455,15 +472,18 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
     publishedAt: "2026-04-01",
     readingTime: 7,
     glossaryLinks: ["doujinshi", "3d-hentai", "rule34", "waifu"],
-    seoTitle: "Genshin Impact Hentai: Raiden, Mona & the Fan Art Explosion | iku.gg",
-    seoDescription: "Why Genshin Impact hentai dominates adult content. Raiden Shogun, Mona, Ganyu, and the full character tier list. Genshin R34 explained.",
+    seoTitle:
+      "Genshin Impact Hentai: Raiden, Mona & the Fan Art Explosion | iku.gg",
+    seoDescription:
+      "Why Genshin Impact hentai dominates adult content. Raiden Shogun, Mona, Ganyu, and the full character tier list. Genshin R34 explained.",
   },
 
   // 9. best free hentai games
   {
     slug: "best-free-hentai-games-2026",
     title: "Best Free Hentai Games in 2026 — Browser, Mobile, and PC",
-    excerpt: "You don't need to spend money to play quality hentai games. The best free options across browser, Android, and PC — ranked and reviewed.",
+    excerpt:
+      "You don't need to spend money to play quality hentai games. The best free options across browser, Android, and PC — ranked and reviewed.",
     content: `<h2>Free Hentai Games Actually Worth Playing</h2>
 <p>The <strong>hentai games</strong> market has a free tier that's genuinely worth exploring. Between browser-based HTML5 games, free-to-play gacha titles, and freemium PC visual novels, there's hundreds of hours of content available without spending a cent. This guide cuts through the noise and tells you what's actually good.</p>
 
@@ -517,14 +537,17 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
     readingTime: 8,
     glossaryLinks: ["hentai", "3d-hentai", "doujinshi"],
     seoTitle: "Best Free Hentai Games in 2026 — Browser, Mobile & PC | iku.gg",
-    seoDescription: "The best free hentai games in 2026 — browser games on Nutaku, free PC visual novels, Android APKs, and what's actually worth playing.",
+    seoDescription:
+      "The best free hentai games in 2026 — browser games on Nutaku, free PC visual novels, Android APKs, and what's actually worth playing.",
   },
 
   // 10. ai hentai
   {
     slug: "ai-generated-hentai",
-    title: "AI-Generated Hentai: How Stable Diffusion Changed Adult Anime Forever",
-    excerpt: "Stable Diffusion and NovelAI transformed who can create hentai. The technology, the controversy, and where AI-generated content fits in the hentai ecosystem.",
+    title:
+      "AI-Generated Hentai: How Stable Diffusion Changed Adult Anime Forever",
+    excerpt:
+      "Stable Diffusion and NovelAI transformed who can create hentai. The technology, the controversy, and where AI-generated content fits in the hentai ecosystem.",
     content: `<h2>The AI Hentai Revolution</h2>
 <p><strong>AI-generated hentai</strong> is not a future development — it's already one of the largest content categories on major adult platforms. Stable Diffusion's public release in August 2022 gave anyone with a decent GPU the ability to generate anime-style adult images on demand. NovelAI's release months later specifically targeted the anime art aesthetic and trained on a massive dataset of tagged Danbooru images. The floodgates opened.</p>
 <p>The volume of AI hentai content generated since 2022 is genuinely staggering. Platforms like civitai.com host hundreds of thousands of AI-generated adult images. Custom models fine-tuned on specific art styles or characters have made it possible to generate content featuring almost any fictional character with increasingly high accuracy.</p>
@@ -580,15 +603,18 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
     publishedAt: "2026-04-01",
     readingTime: 8,
     glossaryLinks: ["hentai", "3d-hentai", "rule34"],
-    seoTitle: "AI-Generated Hentai: How Stable Diffusion Changed Adult Anime | iku.gg",
-    seoDescription: "How AI changed hentai forever — Stable Diffusion, NovelAI, LoRA models, quality comparison, and the ethics of AI-generated adult anime.",
+    seoTitle:
+      "AI-Generated Hentai: How Stable Diffusion Changed Adult Anime | iku.gg",
+    seoDescription:
+      "How AI changed hentai forever — Stable Diffusion, NovelAI, LoRA models, quality comparison, and the ethics of AI-generated adult anime.",
   },
 
   // 11. femboy hentai
   {
     slug: "femboy-trap-hentai-guide",
     title: "Femboy & Trap Hentai: Understanding the Gender-Bending Genre",
-    excerpt: "Femboy and trap hentai occupy a unique space in adult anime. What defines the genre, why it's popular, and the difference between 'trap' and 'femboy' in hentai culture.",
+    excerpt:
+      "Femboy and trap hentai occupy a unique space in adult anime. What defines the genre, why it's popular, and the difference between 'trap' and 'femboy' in hentai culture.",
     content: `<h2>Defining the Genre</h2>
 <p><strong>Femboy hentai</strong> features male characters who present in a feminine manner — feminine clothing, delicate features, and physical characteristics that challenge conventional male presentation. The "trap" term refers specifically to a character whose gender presentation is ambiguous or misleading to other characters within the story. Both terms describe overlapping but distinct territory.</p>
 <p>This is one of hentai's more misunderstood genres because it touches on questions of gender identity that have become culturally charged outside of its original context. Within the hentai community, the genre has always existed as fantasy exploration rather than political statement — though that framing is also being renegotiated as the community's demographics and cultural context shift.</p>
@@ -641,15 +667,18 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
     publishedAt: "2026-04-01",
     readingTime: 7,
     glossaryLinks: ["futanari", "yuri", "doujinshi", "hentai"],
-    seoTitle: "Femboy & Trap Hentai: The Gender-Bending Genre Explained | iku.gg",
-    seoDescription: "Complete guide to femboy and trap hentai — definitions, popular characters like Astolfo and Felix, the otokonoko genre, and the community around it.",
+    seoTitle:
+      "Femboy & Trap Hentai: The Gender-Bending Genre Explained | iku.gg",
+    seoDescription:
+      "Complete guide to femboy and trap hentai — definitions, popular characters like Astolfo and Felix, the otokonoko genre, and the community around it.",
   },
 
   // 12. futanari / futa
   {
     slug: "what-is-futanari-futa-hentai-guide",
     title: "What is Futanari? The Complete Guide to Futa Hentai",
-    excerpt: "Futanari is one of hentai's most popular and misunderstood genres. Here's what it actually is, why it exists in hentai culture, and the community around it.",
+    excerpt:
+      "Futanari is one of hentai's most popular and misunderstood genres. Here's what it actually is, why it exists in hentai culture, and the community around it.",
     content: `<h2>Futanari Meaning: The Basics</h2>
 <p><strong>Futanari</strong> (ふたなり) literally means "dual form" or "two-form" in Japanese. In hentai, it refers to characters who have both male and female sexual characteristics — typically a female-presenting character with male anatomy added. The short form "futa" is used interchangeably.</p>
 <p><a href="/glossary/futanari">Futanari</a> is consistently one of the top 10 most searched terms in hentai globally. Despite being a purely fictional category that requires animation or illustration to portray (rather than live-action), it has a fanbase comparable in size to major mainstream hentai categories. Understanding why requires understanding what the genre actually offers.</p>
@@ -710,14 +739,16 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
     readingTime: 7,
     glossaryLinks: ["futanari", "yuri", "uncensored", "doujinshi"],
     seoTitle: "What is Futanari? Complete Guide to Futa Hentai | iku.gg",
-    seoDescription: "Futanari meaning explained — what futa hentai is, why it's uniquely popular in animation, subgenres, popular characters, and cultural context.",
+    seoDescription:
+      "Futanari meaning explained — what futa hentai is, why it's uniquely popular in animation, subgenres, popular characters, and cultural context.",
   },
 
   // 13. elf hentai
   {
     slug: "elf-hentai-fantasy-races-adult-anime",
     title: "Elf Hentai: Why Fantasy Races Dominate Adult Anime",
-    excerpt: "Elves are everywhere in hentai. Pointy ears, otherworldly beauty, and centuries of fantasy heritage — here's why fantasy races dominate adult anime.",
+    excerpt:
+      "Elves are everywhere in hentai. Pointy ears, otherworldly beauty, and centuries of fantasy heritage — here's why fantasy races dominate adult anime.",
     content: `<h2>The Elf Fantasy in Adult Anime</h2>
 <p><strong>Elf hentai</strong> is one of the most consistent performers in fantasy adult anime, and elves as a category are the dominant non-human race in the genre. Type "elf" into any major hentai platform and you'll find thousands of results spanning OVAs, <a href="/glossary/doujinshi">doujinshi</a>, and <a href="/glossary/3d-hentai">3D animations</a>. The appeal of the elf specifically, and fantasy races broadly, tells you something interesting about what hentai audiences are actually seeking.</p>
 
@@ -773,14 +804,16 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
     readingTime: 7,
     glossaryLinks: ["isekai", "doujinshi", "3d-hentai", "waifu"],
     seoTitle: "Elf Hentai: Why Fantasy Races Dominate Adult Anime | iku.gg",
-    seoDescription: "Why elf hentai is so popular — the appeal of fantasy races, dark elves, top OVA series, doujinshi, and the full elf hentai guide.",
+    seoDescription:
+      "Why elf hentai is so popular — the appeal of fantasy races, dark elves, top OVA series, doujinshi, and the full elf hentai guide.",
   },
 
   // 14. mind control hentai
   {
     slug: "mind-control-hypnosis-hentai-guide",
     title: "Mind Control & Hypnosis Hentai: The Dark Fantasy Genre",
-    excerpt: "Mind control and hypnosis hentai is one of the genre's most debated subgenres. Here's what it is, why it exists, and the distinction between fantasy and reality.",
+    excerpt:
+      "Mind control and hypnosis hentai is one of the genre's most debated subgenres. Here's what it is, why it exists, and the distinction between fantasy and reality.",
     content: `<h2>What is Mind Control Hentai?</h2>
 <p><strong>Mind control hentai</strong> features scenarios where a character's will, behavior, or consent is overridden by external force — hypnosis, magical compulsion, drugs, alien influence, parasitic entities, or supernatural powers. The character acts against their normal personality or judgment because of this external control. It is one of hentai's oldest and most consistently popular dark fantasy subgenres.</p>
 <p>Like other dark fantasy genres (monster content, <a href="/glossary/ntr">NTR</a>), mind control hentai exists in significant tension with mainstream values while remaining a large-volume hentai category. Understanding it requires the same framework as understanding any dark fantasy: fictional exploration of scenarios that would be harmful in reality, within a clearly fictional animated context.</p>
@@ -832,14 +865,16 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
     readingTime: 7,
     glossaryLinks: ["ntr", "isekai", "hentai"],
     seoTitle: "Mind Control & Hypnosis Hentai: The Dark Fantasy Genre | iku.gg",
-    seoDescription: "Complete guide to mind control and hypnosis hentai — key series, subgenres, the psychology of dark fantasy, and why this is one of hentai's most discussed genres.",
+    seoDescription:
+      "Complete guide to mind control and hypnosis hentai — key series, subgenres, the psychology of dark fantasy, and why this is one of hentai's most discussed genres.",
   },
 
   // 16. best animated hentai 2026
   {
     slug: "best-animated-hentai-2026",
     title: "Best Animated Hentai 2026 — The Top 15 Titles to Watch Right Now",
-    excerpt: "Our definitive ranking of the best animated hentai in 2026. From studio OVAs to indie 3D masterpieces — every entry is worth your time.",
+    excerpt:
+      "Our definitive ranking of the best animated hentai in 2026. From studio OVAs to indie 3D masterpieces — every entry is worth your time.",
     content: `<h2>How We Built This List</h2>
 <p>The <strong>best animated hentai 2026</strong> list is built on three sources: community vote scores aggregated from iku.gg and major hentai platforms, viewer retention data (titles people finish and rewatch), and production quality assessment across animation fluidity, character design, and art consistency. We update this list quarterly as new releases come out.</p>
 <p>This covers both new 2026 releases and titles that remain must-watches regardless of release year. Hentai has a rich back catalog — limiting a "best of" list to new releases only would shortchange readers looking for genuine quality.</p>
@@ -907,14 +942,16 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
     readingTime: 9,
     glossaryLinks: ["vanilla", "milf", "isekai", "harem", "mind-control"],
     seoTitle: "Best Animated Hentai 2026 — Top 15 Titles Ranked | iku.gg",
-    seoDescription: "The best animated hentai to watch in 2026 — 15 top-rated titles ranked by community score, animation quality, and replay value. Updated quarterly.",
+    seoDescription:
+      "The best animated hentai to watch in 2026 — 15 top-rated titles ranked by community score, animation quality, and replay value. Updated quarterly.",
   },
 
   // 17. hentai vs anime difference
   {
     slug: "hentai-vs-anime-difference",
     title: "Hentai vs Anime: What's the Actual Difference?",
-    excerpt: "Many people use hentai and anime interchangeably — but they're distinct things. Here's the real difference between hentai, anime, and ecchi, with clear examples.",
+    excerpt:
+      "Many people use hentai and anime interchangeably — but they're distinct things. Here's the real difference between hentai, anime, and ecchi, with clear examples.",
     content: `<h2>The Confusion is Understandable</h2>
 <p>The question <strong>"what's the difference between hentai and anime?"</strong> appears millions of times per year in search engines, which tells you how common the confusion is. The answer is straightforward once you have the right definitions — and understanding it changes how you search for and describe content.</p>
 
@@ -974,14 +1011,16 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
     readingTime: 7,
     glossaryLinks: ["hentai", "ecchi", "vanilla"],
     seoTitle: "Hentai vs Anime: What's the Actual Difference? | iku.gg",
-    seoDescription: "Clear explanation of the difference between hentai and anime — what each term means, what ecchi is, and where they overlap. Plain English, no jargon.",
+    seoDescription:
+      "Clear explanation of the difference between hentai and anime — what each term means, what ecchi is, and where they overlap. Plain English, no jargon.",
   },
 
   // 18. most popular hentai characters
   {
     slug: "most-popular-hentai-characters-2026",
     title: "Most Popular Hentai Characters in 2026 — The Definitive Tier List",
-    excerpt: "Who are the most searched, most drawn, and most animated hentai characters in 2026? Data-backed rankings from Danbooru, Gelbooru, and search volume analysis.",
+    excerpt:
+      "Who are the most searched, most drawn, and most animated hentai characters in 2026? Data-backed rankings from Danbooru, Gelbooru, and search volume analysis.",
     content: `<h2>How These Rankings Work</h2>
 <p>This ranking of the <strong>most popular hentai characters</strong> is based on measurable data: post counts on Danbooru and Gelbooru (the two largest tagging platforms), search volume data, and creator output tracking. A character's position reflects actual fan content production and search demand, not editorial preference.</p>
 <p>Rankings are updated annually. The 2026 list reflects content production through early 2026.</p>
@@ -1043,14 +1082,16 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
     readingTime: 8,
     glossaryLinks: ["hentai", "tsundere", "yuri", "3d-hentai"],
     seoTitle: "Most Popular Hentai Characters 2026 — Full Tier List | iku.gg",
-    seoDescription: "Data-backed ranking of the most popular hentai characters in 2026 — Raiden Shogun, D.Va, 2B, Tifa and more. Post counts, search volume, and creator output.",
+    seoDescription:
+      "Data-backed ranking of the most popular hentai characters in 2026 — Raiden Shogun, D.Va, 2B, Tifa and more. Post counts, search volume, and creator output.",
   },
 
   // 19. what is uncensored hentai
   {
     slug: "what-is-uncensored-hentai-explained",
     title: "What is Uncensored Hentai? Japanese Censorship Law Explained",
-    excerpt: "Why is Japanese hentai censored? What does uncensored mean, how do uncensored versions get made, and where do you find them? Complete guide.",
+    excerpt:
+      "Why is Japanese hentai censored? What does uncensored mean, how do uncensored versions get made, and where do you find them? Complete guide.",
     content: `<h2>Why Does Hentai Have Censorship?</h2>
 <p>If you've watched Japanese hentai, you've seen it: blurry mosaic blocks or white bars over explicit content. This <strong>censorship in hentai</strong> is not a content warning — it's a legal requirement. Understanding why it exists and what "uncensored" means changes how you search for and evaluate hentai.</p>
 
@@ -1102,15 +1143,18 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
     publishedAt: "2026-01-05",
     readingTime: 7,
     glossaryLinks: ["uncensored", "hentai", "3d-hentai"],
-    seoTitle: "What is Uncensored Hentai? Japanese Censorship Law Explained | iku.gg",
-    seoDescription: "Why is hentai censored in Japan? Article 175 explained, how uncensored hentai versions are made, and where to find uncensored content on iku.gg.",
+    seoTitle:
+      "What is Uncensored Hentai? Japanese Censorship Law Explained | iku.gg",
+    seoDescription:
+      "Why is hentai censored in Japan? Article 175 explained, how uncensored hentai versions are made, and where to find uncensored content on iku.gg.",
   },
 
   // 20. hentai art styles explained
   {
     slug: "hentai-art-styles-explained",
     title: "Hentai Art Styles Explained: 2D, 3D, Pixel, and Beyond",
-    excerpt: "Hentai comes in more visual styles than most fans realize. This guide explains every major art style — 2D anime, 3D CGI, pixel art, watercolor doujinshi, and more.",
+    excerpt:
+      "Hentai comes in more visual styles than most fans realize. This guide explains every major art style — 2D anime, 3D CGI, pixel art, watercolor doujinshi, and more.",
     content: `<h2>Why Art Style Matters in Hentai</h2>
 <p>Hentai is not a single visual format — it's a category of content that spans wildly different <strong>art styles</strong>. Understanding the major hentai art styles helps you search more effectively, appreciate what goes into production, and discover content you might be missing entirely. The art style is often as important to viewer preference as the genre or scenario.</p>
 
@@ -1179,14 +1223,17 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
     readingTime: 9,
     glossaryLinks: ["3d-hentai", "sfm", "doujinshi", "manhwa", "hentai"],
     seoTitle: "Hentai Art Styles Explained: 2D, 3D, Pixel & More | iku.gg",
-    seoDescription: "Complete guide to hentai art styles — traditional 2D anime, 3D Blender, SFM, Koikatsu, doujinshi, pixel art, AI-generated. What each looks like and where to find it.",
+    seoDescription:
+      "Complete guide to hentai art styles — traditional 2D anime, 3D Blender, SFM, Koikatsu, doujinshi, pixel art, AI-generated. What each looks like and where to find it.",
   },
 
   // 15. hentai for beginners
   {
     slug: "hentai-for-beginners-guide",
-    title: "Hentai for Beginners: Your First-Timer's Guide to Animated Adult Content",
-    excerpt: "New to hentai? This is the guide we wish existed when we started. What it is, where to watch, how to find what you like, and how to avoid what you don't.",
+    title:
+      "Hentai for Beginners: Your First-Timer's Guide to Animated Adult Content",
+    excerpt:
+      "New to hentai? This is the guide we wish existed when we started. What it is, where to watch, how to find what you like, and how to avoid what you don't.",
     content: `<h2>Starting Point: What You Actually Need to Know</h2>
 <p>If you're new to <strong>hentai</strong>, the amount of information and the variety of content is genuinely overwhelming at first. This guide gives you the practical foundation: what hentai actually is, where to watch it safely, how to find content that matches your taste, and how to filter out everything that doesn't. No judgment, no gatekeeping — just the information you need.</p>
 
@@ -1268,8 +1315,20 @@ export const NEW_BLOG_ARTICLES: BlogArticle[] = [
     tags: ["beginners", "guide", "how to", "tips", "streaming"],
     publishedAt: "2026-04-01",
     readingTime: 8,
-    glossaryLinks: ["hentai", "ecchi", "vanilla", "ntr", "yuri", "uncensored", "doujinshi", "ahegao", "paizuri"],
-    seoTitle: "Hentai for Beginners: First-Timer's Guide to Adult Anime | iku.gg",
-    seoDescription: "New to hentai? Complete beginner's guide — where to watch, how tags work, how to use the blacklist, genre overview, safety tips, and what to watch first.",
+    glossaryLinks: [
+      "hentai",
+      "ecchi",
+      "vanilla",
+      "ntr",
+      "yuri",
+      "uncensored",
+      "doujinshi",
+      "ahegao",
+      "paizuri",
+    ],
+    seoTitle:
+      "Hentai for Beginners: First-Timer's Guide to Adult Anime | iku.gg",
+    seoDescription:
+      "New to hentai? Complete beginner's guide — where to watch, how tags work, how to use the blacklist, genre overview, safety tips, and what to watch first.",
   },
 ];

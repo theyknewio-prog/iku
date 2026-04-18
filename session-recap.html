@@ -1,1330 +1,1619 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>iku.gg — Récap de la session audit</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>iku.gg — Récap de la session audit</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-  :root {
-    --bg: #0a0614;
-    --bg-2: #15092a;
-    --card: rgba(255, 255, 255, 0.04);
-    --card-hover: rgba(255, 255, 255, 0.07);
-    --border: rgba(255, 255, 255, 0.08);
-    --text: #fff;
-    --text-soft: rgba(255, 255, 255, 0.72);
-    --text-dim: rgba(255, 255, 255, 0.48);
-    --pink: #ec4899;
-    --purple: #a855f7;
-    --cyan: #06b6d4;
-    --green: #4ade80;
-    --orange: #fb923c;
-    --red: #f87171;
-  }
+      :root {
+        --bg: #0a0614;
+        --bg-2: #15092a;
+        --card: rgba(255, 255, 255, 0.04);
+        --card-hover: rgba(255, 255, 255, 0.07);
+        --border: rgba(255, 255, 255, 0.08);
+        --text: #fff;
+        --text-soft: rgba(255, 255, 255, 0.72);
+        --text-dim: rgba(255, 255, 255, 0.48);
+        --pink: #ec4899;
+        --purple: #a855f7;
+        --cyan: #06b6d4;
+        --green: #4ade80;
+        --orange: #fb923c;
+        --red: #f87171;
+      }
 
-  body {
-    background: var(--bg);
-    background-image:
-      radial-gradient(circle at 20% 10%, rgba(236, 72, 153, 0.12), transparent 40%),
-      radial-gradient(circle at 80% 30%, rgba(168, 85, 247, 0.12), transparent 40%),
-      radial-gradient(circle at 50% 90%, rgba(6, 182, 212, 0.08), transparent 40%);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, sans-serif;
-    line-height: 1.6;
-    min-height: 100vh;
-    padding: 24px 16px;
-  }
+      body {
+        background: var(--bg);
+        background-image:
+          radial-gradient(
+            circle at 20% 10%,
+            rgba(236, 72, 153, 0.12),
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 80% 30%,
+            rgba(168, 85, 247, 0.12),
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 50% 90%,
+            rgba(6, 182, 212, 0.08),
+            transparent 40%
+          );
+        color: var(--text);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto,
+          sans-serif;
+        line-height: 1.6;
+        min-height: 100vh;
+        padding: 24px 16px;
+      }
 
-  .container {
-    max-width: 1100px;
-    margin: 0 auto;
-  }
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+      }
 
-  /* ── HERO ─────────────────────────────── */
-  .hero {
-    text-align: center;
-    padding: 48px 16px 32px;
-    border-radius: 24px;
-    background: linear-gradient(135deg, rgba(236, 72, 153, 0.10), rgba(168, 85, 247, 0.10));
-    border: 1px solid rgba(236, 72, 153, 0.25);
-    margin-bottom: 40px;
-    position: relative;
-    overflow: hidden;
-  }
-  .hero::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image:
-      radial-gradient(circle at 30% 50%, rgba(236, 72, 153, 0.2), transparent 50%),
-      radial-gradient(circle at 70% 50%, rgba(168, 85, 247, 0.2), transparent 50%);
-    filter: blur(40px);
-    z-index: 0;
-  }
-  .hero > * { position: relative; z-index: 1; }
+      /* ── HERO ─────────────────────────────── */
+      .hero {
+        text-align: center;
+        padding: 48px 16px 32px;
+        border-radius: 24px;
+        background: linear-gradient(
+          135deg,
+          rgba(236, 72, 153, 0.1),
+          rgba(168, 85, 247, 0.1)
+        );
+        border: 1px solid rgba(236, 72, 153, 0.25);
+        margin-bottom: 40px;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          radial-gradient(
+            circle at 30% 50%,
+            rgba(236, 72, 153, 0.2),
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 70% 50%,
+            rgba(168, 85, 247, 0.2),
+            transparent 50%
+          );
+        filter: blur(40px);
+        z-index: 0;
+      }
+      .hero > * {
+        position: relative;
+        z-index: 1;
+      }
 
-  .hero-eyebrow {
-    display: inline-block;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 6px 14px;
-    border-radius: 999px;
-    background: rgba(236, 72, 153, 0.18);
-    border: 1px solid rgba(236, 72, 153, 0.4);
-    color: #ffb3d1;
-    margin-bottom: 16px;
-  }
-  .hero h1 {
-    font-size: clamp(28px, 5vw, 44px);
-    font-weight: 800;
-    background: linear-gradient(90deg, #ec4899, #a855f7, #06b6d4);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 12px;
-    line-height: 1.2;
-  }
-  .hero p {
-    color: var(--text-soft);
-    font-size: 16px;
-    max-width: 680px;
-    margin: 0 auto 32px;
-  }
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 16px;
-    max-width: 900px;
-    margin: 0 auto;
-  }
-  .stat {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 16px 12px;
-  }
-  .stat-num {
-    font-size: 28px;
-    font-weight: 800;
-    background: linear-gradient(90deg, #ec4899, #a855f7);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    line-height: 1;
-  }
-  .stat-label {
-    font-size: 11px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-top: 8px;
-    font-weight: 600;
-  }
+      .hero-eyebrow {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 6px 14px;
+        border-radius: 999px;
+        background: rgba(236, 72, 153, 0.18);
+        border: 1px solid rgba(236, 72, 153, 0.4);
+        color: #ffb3d1;
+        margin-bottom: 16px;
+      }
+      .hero h1 {
+        font-size: clamp(28px, 5vw, 44px);
+        font-weight: 800;
+        background: linear-gradient(90deg, #ec4899, #a855f7, #06b6d4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 12px;
+        line-height: 1.2;
+      }
+      .hero p {
+        color: var(--text-soft);
+        font-size: 16px;
+        max-width: 680px;
+        margin: 0 auto 32px;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 16px;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      .stat {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px 12px;
+      }
+      .stat-num {
+        font-size: 28px;
+        font-weight: 800;
+        background: linear-gradient(90deg, #ec4899, #a855f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+      }
+      .stat-label {
+        font-size: 11px;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 8px;
+        font-weight: 600;
+      }
 
-  /* ── SECTIONS ─────────────────────────── */
-  section { margin-bottom: 48px; }
+      /* ── SECTIONS ─────────────────────────── */
+      section {
+        margin-bottom: 48px;
+      }
 
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 20px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--border);
-  }
-  .section-emoji {
-    font-size: 36px;
-    line-height: 1;
-  }
-  .section-title {
-    font-size: 24px;
-    font-weight: 800;
-    color: var(--text);
-  }
-  .section-count {
-    margin-left: auto;
-    font-size: 13px;
-    color: var(--text-dim);
-    background: rgba(255, 255, 255, 0.04);
-    padding: 4px 12px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    font-weight: 600;
-  }
-  .section-intro {
-    color: var(--text-soft);
-    font-size: 14px;
-    margin-bottom: 20px;
-    max-width: 720px;
-  }
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--border);
+      }
+      .section-emoji {
+        font-size: 36px;
+        line-height: 1;
+      }
+      .section-title {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--text);
+      }
+      .section-count {
+        margin-left: auto;
+        font-size: 13px;
+        color: var(--text-dim);
+        background: rgba(255, 255, 255, 0.04);
+        padding: 4px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        font-weight: 600;
+      }
+      .section-intro {
+        color: var(--text-soft);
+        font-size: 14px;
+        margin-bottom: 20px;
+        max-width: 720px;
+      }
 
-  /* ── CARDS ────────────────────────────── */
-  .cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 14px;
-  }
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 18px;
-    transition: all 0.2s ease;
-  }
-  .card:hover {
-    background: var(--card-hover);
-    transform: translateY(-2px);
-    border-color: rgba(236, 72, 153, 0.3);
-  }
+      /* ── CARDS ────────────────────────────── */
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 14px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 18px;
+        transition: all 0.2s ease;
+      }
+      .card:hover {
+        background: var(--card-hover);
+        transform: translateY(-2px);
+        border-color: rgba(236, 72, 153, 0.3);
+      }
 
-  .card-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 10px;
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    line-height: 1.35;
-  }
-  .card-icon { flex-shrink: 0; font-size: 18px; }
+      .card-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        line-height: 1.35;
+      }
+      .card-icon {
+        flex-shrink: 0;
+        font-size: 18px;
+      }
 
-  .card-row {
-    display: grid;
-    grid-template-columns: 18px 1fr;
-    gap: 10px;
-    margin-top: 10px;
-    font-size: 13px;
-    line-height: 1.5;
-  }
-  .card-row-label {
-    font-size: 16px;
-    line-height: 1.2;
-    padding-top: 1px;
-  }
-  .card-row-text {
-    color: var(--text-soft);
-  }
-  .card-row-text strong {
-    color: var(--text);
-    font-weight: 600;
-  }
+      .card-row {
+        display: grid;
+        grid-template-columns: 18px 1fr;
+        gap: 10px;
+        margin-top: 10px;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .card-row-label {
+        font-size: 16px;
+        line-height: 1.2;
+        padding-top: 1px;
+      }
+      .card-row-text {
+        color: var(--text-soft);
+      }
+      .card-row-text strong {
+        color: var(--text);
+        font-weight: 600;
+      }
 
-  /* Severity badges */
-  .badge {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 999px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 10px;
-  }
-  .badge.critical { background: rgba(248, 113, 113, 0.15); color: #fca5a5; border: 1px solid rgba(248, 113, 113, 0.3); }
-  .badge.money { background: rgba(251, 146, 60, 0.15); color: #fdba74; border: 1px solid rgba(251, 146, 60, 0.3); }
-  .badge.ux { background: rgba(74, 222, 128, 0.15); color: #86efac; border: 1px solid rgba(74, 222, 128, 0.3); }
-  .badge.perf { background: rgba(6, 182, 212, 0.15); color: #67e8f9; border: 1px solid rgba(6, 182, 212, 0.3); }
-  .badge.sec { background: rgba(168, 85, 247, 0.15); color: #d8b4fe; border: 1px solid rgba(168, 85, 247, 0.3); }
-  .badge.code { background: rgba(236, 72, 153, 0.15); color: #fbcfe8; border: 1px solid rgba(236, 72, 153, 0.3); }
+      /* Severity badges */
+      .badge {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 999px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 10px;
+      }
+      .badge.critical {
+        background: rgba(248, 113, 113, 0.15);
+        color: #fca5a5;
+        border: 1px solid rgba(248, 113, 113, 0.3);
+      }
+      .badge.money {
+        background: rgba(251, 146, 60, 0.15);
+        color: #fdba74;
+        border: 1px solid rgba(251, 146, 60, 0.3);
+      }
+      .badge.ux {
+        background: rgba(74, 222, 128, 0.15);
+        color: #86efac;
+        border: 1px solid rgba(74, 222, 128, 0.3);
+      }
+      .badge.perf {
+        background: rgba(6, 182, 212, 0.15);
+        color: #67e8f9;
+        border: 1px solid rgba(6, 182, 212, 0.3);
+      }
+      .badge.sec {
+        background: rgba(168, 85, 247, 0.15);
+        color: #d8b4fe;
+        border: 1px solid rgba(168, 85, 247, 0.3);
+      }
+      .badge.code {
+        background: rgba(236, 72, 153, 0.15);
+        color: #fbcfe8;
+        border: 1px solid rgba(236, 72, 153, 0.3);
+      }
 
-  /* ── FOOTER ───────────────────────────── */
-  footer {
-    text-align: center;
-    padding: 32px 16px;
-    color: var(--text-dim);
-    font-size: 13px;
-    border-top: 1px solid var(--border);
-    margin-top: 40px;
-  }
-  footer strong { color: var(--text-soft); }
+      /* ── FOOTER ───────────────────────────── */
+      footer {
+        text-align: center;
+        padding: 32px 16px;
+        color: var(--text-dim);
+        font-size: 13px;
+        border-top: 1px solid var(--border);
+        margin-top: 40px;
+      }
+      footer strong {
+        color: var(--text-soft);
+      }
 
-  /* Mobile */
-  @media (max-width: 640px) {
-    .hero { padding: 32px 16px 24px; }
-    .stat-num { font-size: 22px; }
-    .section-header { flex-wrap: wrap; }
-    .cards { grid-template-columns: 1fr; }
-  }
-</style>
-</head>
-<body>
-<div class="container">
+      /* Mobile */
+      @media (max-width: 640px) {
+        .hero {
+          padding: 32px 16px 24px;
+        }
+        .stat-num {
+          font-size: 22px;
+        }
+        .section-header {
+          flex-wrap: wrap;
+        }
+        .cards {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- ═══════════════════════ HERO ═══════════════════════ -->
+      <div class="hero">
+        <div class="hero-eyebrow">Audit profond + 4 sessions de fixes</div>
+        <h1>Récap — ce qu'on a réglé sur iku.gg</h1>
+        <p>
+          On a fait un audit complet du site avec 7 experts en parallèle. Ils
+          ont trouvé
+          <strong>130+ problèmes</strong> dont 37 critiques qui pouvaient te
+          mettre en galère (légal, paiements, utilisateurs). J'ai tout réglé.
+          Voici ce que c'était, en langage simple.
+        </p>
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-num">37</div>
+            <div class="stat-label">Blockers critiques</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">51</div>
+            <div class="stat-label">Bugs sérieux</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">21</div>
+            <div class="stat-label">Tests ajoutés</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">124 Mo</div>
+            <div class="stat-label">Code mort supprimé</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">6</div>
+            <div class="stat-label">Déploiements prod</div>
+          </div>
+        </div>
+      </div>
 
-<!-- ═══════════════════════ HERO ═══════════════════════ -->
-<div class="hero">
-  <div class="hero-eyebrow">Audit profond + 4 sessions de fixes</div>
-  <h1>Récap — ce qu'on a réglé sur iku.gg</h1>
-  <p>
-    On a fait un audit complet du site avec 7 experts en parallèle. Ils ont trouvé
-    <strong>130+ problèmes</strong> dont 37 critiques qui pouvaient te mettre en galère
-    (légal, paiements, utilisateurs). J'ai tout réglé. Voici ce que c'était, en langage simple.
-  </p>
-  <div class="stats">
-    <div class="stat">
-      <div class="stat-num">37</div>
-      <div class="stat-label">Blockers critiques</div>
+      <!-- ═══════════════════════ LÉGAL ═══════════════════════ -->
+      <section>
+        <div class="section-header">
+          <span class="section-emoji">🚨</span>
+          <h2 class="section-title">Légal — Contenu interdit</h2>
+          <span class="section-count">5 fixes</span>
+        </div>
+        <p class="section-intro">
+          Les filtres de contenu interdit (mineurs) avaient des trous. Pas
+          évident à voir, mais fatal pour un site adulte si on se fait choper.
+          Maintenant bétonné à 5 niveaux.
+        </p>
+        <div class="cards">
+          <div class="card">
+            <span class="badge critical">Risque légal</span>
+            <div class="card-title">
+              <span class="card-icon">🛡️</span>Le filtre ne regardait que 1/4
+              des champs
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Le filtre vérifiait seulement les <strong>tags</strong> d'une
+                vidéo. Mais les sources mettent aussi les noms des personnages,
+                les séries, et le titre dans d'autres champs. Un contenu banni
+                pouvait passer si le mot interdit était dans le titre et pas
+                dans les tags.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Maintenant le filtre vérifie
+                <strong>tags + personnages + séries + titre + slug</strong>. Un
+                mot banni n'importe où = la vidéo est bloquée.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge critical">Risque légal</span>
+            <div class="card-title">
+              <span class="card-icon">📺</span>Les vidéos "Up Next" étaient pas
+              filtrées
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Sur les pages vidéo, la section "More like this" et "Up Next"
+                appelait une autre API qui ne passait pas par le filtre. 78% des
+                pages vidéo étaient concernées.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Remplacé par une nouvelle fonction qui cherche dans ta base avec
+                le filtre actif. Bonus : les suggestions sont maintenant
+                vraiment liées au personnage de la vidéo.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge critical">Risque légal</span>
+            <div class="card-title">
+              <span class="card-icon">🕳️</span>2 sources queryaient la DB sans
+              filtre
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Les fichiers qui gèrent Rule34Video (277K vidéos) et les sites
+                WordPress lisaient directement la base sans appliquer aucun
+                filtre anti-contenu-banni.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Filtre ajouté au niveau SQL sur toutes les requêtes. Plus de
+                contournement possible.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge critical">Risque légal</span>
+            <div class="card-title">
+              <span class="card-icon">🔒</span>Le safety net du scraper avait le
+              même trou
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Le dernier rempart qui vérifie avant d'écrire en base ne
+                checkait qu'1 colonne sur 3. Si le premier filtre rate, ce
+                dernier rempart laissait aussi passer.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Le safety net vérifie maintenant les 3 colonnes d'arrays + le
+                slug + le titre.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge critical">Risque légal</span>
+            <div class="card-title">
+              <span class="card-icon">🧹</span>Les appels "live" à Danbooru
+              passaient à travers
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Certaines fonctions appelaient directement l'API Danbooru en
+                live (contournant ta base et son filtre). Les résultats
+                arrivaient bruts côté utilisateur.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Tous les appels live passent maintenant par le filtre JavaScript
+                avant d'être renvoyés. Ceinture + bretelles.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════ ARGENT ═══════════════════════ -->
+      <section>
+        <div class="section-header">
+          <span class="section-emoji">💰</span>
+          <h2 class="section-title">Argent — Paiements Stripe</h2>
+          <span class="section-count">10 fixes</span>
+        </div>
+        <p class="section-intro">
+          Le tunnel de paiement avait <strong>6 blockers</strong> qui
+          empêchaient les gens de payer ou qui causaient des pertes d'argent
+          silencieuses. Les plus graves corrigés maintenant.
+        </p>
+        <div class="cards">
+          <div class="card">
+            <span class="badge money">Bug argent</span>
+            <div class="card-title">
+              <span class="card-icon">💸</span>Tes meilleurs users ne pouvaient
+              pas payer
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Le coupon <strong>"-30% Waifu Scholar"</strong> (offert aux
+                users tier 5) crashait le checkout. Stripe refusait la
+                combinaison d'options que j'avais demandée. Les 100% des users
+                visés par la promo ne pouvaient PAS acheter Pro.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Changé pour envoyer le coupon tout seul, sans l'autre option qui
+                entrait en conflit. Checkout fonctionne maintenant pour les
+                Waifu Scholar.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge money">Bug argent</span>
+            <div class="card-title">
+              <span class="card-icon">♾️</span>Les lifetime pouvaient perdre
+              leur statut
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Un user achète Lifetime (70€). Dans les heures qui suivent, un
+                ancien webhook mensuel arrive en retard et
+                <strong
+                  >écrase silencieusement le statut lifetime en mensuel</strong
+                >. L'user avait payé 70€ pour à vie et voyait "plan mensuel —
+                expire dans 30 jours".
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Ajout d'une garde : si pro_status = lifetime, aucun webhook ne
+                peut downgrade. Plus on annule automatiquement tout ancien
+                abonnement au moment de l'achat lifetime.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge money">Bug argent</span>
+            <div class="card-title">
+              <span class="card-icon">📅</span>Les annuels étaient classés
+              mensuels
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Le code qui reconnaît quel plan a été acheté cherchait le mot
+                "year" dans l'ID de prix Stripe. Problème : les IDs Stripe sont
+                des chaînes aléatoires qui ne contiennent jamais "year".
+                <strong
+                  >Tous les abonnements annuels étaient donc classés
+                  mensuels.</strong
+                >
+                Facturation OK mais l'UI disait mensuel.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Remplacé par une comparaison exacte avec les IDs configurés dans
+                les variables d'environnement.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge money">Bug argent</span>
+            <div class="card-title">
+              <span class="card-icon">🕳️</span>Paiements perdus dans les erreurs
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Si la base de données avait un hoquet de 3 secondes au moment
+                d'un webhook Stripe, le code log l'erreur mais renvoyait OK à
+                Stripe. Résultat :
+                <strong
+                  >paiement reçu, Pro pas activé, Stripe ne retry jamais</strong
+                >. Perte totale du paiement.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Maintenant on retourne une erreur 500 en cas de problème. Stripe
+                retry automatiquement pendant 3 jours. Plus de paiements
+                silencieusement perdus.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge money">Bug argent</span>
+            <div class="card-title">
+              <span class="card-icon">👻</span>"J'ai payé mais rien ne change"
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Après un paiement réussi, l'user atterrissait sur /profile mais
+                la page ne montrait aucun changement.
+                <strong>Zéro indication qu'il est maintenant Pro.</strong>
+                Support ticket garanti : "Est-ce que mon paiement est passé ?"
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Nouveau banner "Welcome to Pro ✨" avec le plan acheté et la
+                date de renouvellement. Plus un badge permanent "iku.gg Pro"
+                visible en haut de la page profil.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge money">Bug argent</span>
+            <div class="card-title">
+              <span class="card-icon">💳</span>Pas d'email quand la carte est
+              refusée
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Quand la carte d'un user Pro est déclinée à la prochaine
+                facturation,
+                <strong>il ne reçoit aucune notification</strong>. Son Pro finit
+                par être coupé et il blâme le site.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Email automatique qui lui explique qu'il y a un souci avec sa
+                carte et lui donne un lien pour la mettre à jour. Envoyé 1 fois
+                max par semaine (pas de spam).
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge money">Bug argent</span>
+            <div class="card-title">
+              <span class="card-icon">🎯</span>Double-clic = 2 paiements
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Un user qui double-clique rapidement sur "Get Pro" créait
+                <strong>2 sessions Stripe en parallèle</strong>. Risque
+                théorique de se faire facturer 2 fois.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Ajout d'une clé d'unicité : dans une fenêtre d'1 minute, les
+                clics multiples retournent la même session. Stripe refuse les
+                doublons.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge money">Bug argent</span>
+            <div class="card-title">
+              <span class="card-icon">🚫</span>Un déjà-Pro pouvait racheter un
+              plan
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Un user lifetime pouvait par erreur acheter un plan mensuel en
+                plus. Résultat : facturation double + bug de statut mélangé dans
+                la base.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Le serveur refuse maintenant le checkout (erreur claire) si
+                l'user a déjà lifetime ou déjà le même plan actif.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge money">Bug argent</span>
+            <div class="card-title">
+              <span class="card-icon">🏃</span>Paiement via portail Stripe
+              oublié
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Si un user changeait de plan via le portail Stripe (pas via
+                notre checkout), le webhook arrivait sans les infos utilisateur.
+                On ne savait pas à qui appliquer le changement,
+                <strong>on le droppait silencieusement</strong>. User payé mais
+                Pro pas synchro.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                On retrouve maintenant l'user via son Stripe customer ID en
+                fallback. Plus de webhooks orphelins.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge money">Bug argent</span>
+            <div class="card-title">
+              <span class="card-icon">⚡</span>past_due en retard = UI menteuse
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Quand un paiement échouait, le flip vers "past_due" attendait un
+                autre webhook de Stripe qui pouvait arriver des minutes après.
+                Entre-temps l'UI continuait à dire "Actif".
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                On flippe immédiatement le statut à past_due sur l'échec de
+                paiement. UI toujours synchro.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════ UX ═══════════════════════ -->
+      <section>
+        <div class="section-header">
+          <span class="section-emoji">🎯</span>
+          <h2 class="section-title">Expérience utilisateur — gros bugs</h2>
+          <span class="section-count">14 fixes</span>
+        </div>
+        <p class="section-intro">
+          Les bugs UX les plus critiques. Le premier est énorme : la majorité de
+          ton catalogue était invisible pour les visiteurs.
+        </p>
+        <div class="cards">
+          <div class="card">
+            <span class="badge ux">Bug UX</span>
+            <div class="card-title">
+              <span class="card-icon">📚</span>96% du catalogue était invisible
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Les pages /trending, /new, /tag, /character, /series
+                n'affichaient que les 17K vidéos Danbooru. Les
+                <strong>336K autres vidéos</strong> (Rule34Video, Gelbooru, WP)
+                étaient totalement invisibles. Un visiteur clique sur un tag,
+                voit presque rien, et se barre.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Les 5 pages interrogent maintenant ta base PostgreSQL complète.
+                Le visiteur voit TOUT ton catalogue, soit
+                <strong>20x plus de contenu</strong> qu'avant.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge ux">Bug UX</span>
+            <div class="card-title">
+              <span class="card-icon">🔊</span>Son de la watch page cassé
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Cliquer sur "Unmute" ne faisait rien. Seule la molette marchait
+                sur desktop, rien sur mobile.
+                <strong>3 bugs différents en cascade</strong> : React qui
+                réappliquait l'état, un overlay invisible qui bouffait les
+                clics, et un bouton qui ouvrait un popup au lieu de toggle le
+                son.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Les 3 bugs réglés en cascade et vérifiés en prod avec un test
+                automatisé (Playwright) : clic = son activé, vidéo continue à
+                jouer.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge ux">Bug UX</span>
+            <div class="card-title">
+              <span class="card-icon">♾️</span>Shorts scroll bloqué après 10
+              vidéos
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Le feed Shorts chargeait 20 vidéos, le filtre serveur en gardait
+                3-5, et l'infini scroll n'avançait jamais au lot suivant. L'user
+                tapait un mur après ~10 swipes.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Lot plus large (60 vidéos), avancement toujours, et nouveau
+                filet de sécurité qui déclenche un fetch automatique quand le
+                buffer devient bas. Testé : 954 vidéos en 20 rounds de scroll
+                sans blocage.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge ux">Bug UX</span>
+            <div class="card-title">
+              <span class="card-icon">❤️</span>Like/Save des Shorts = fake
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Les boutons Like, Save, et le heart-burst (double-tap) sur les
+                Shorts étaient
+                <strong>100% frontend</strong>. L'user tappe Save → rien ne part
+                sur le serveur → rien dans ses favoris quand il revient. Core
+                feature TikTok-style = mensonge UI.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Les 3 actions appellent maintenant ton API favoris,
+                synchronisent localStorage ET la base. Plus un score event pour
+                la gamification. Hydratation de l'état initial pour que les
+                déjà-likés apparaissent en rouge dès le chargement.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge ux">Bug UX</span>
+            <div class="card-title">
+              <span class="card-icon">🔄</span>Supprimer un favori le réajoutait
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                User connecté sur un nouveau device, page favoris, clic sur le
+                cœur pour retirer. Le code faisait un DELETE serveur → puis
+                appelait toggleFavorite sur localStorage (vide sur ce device) →
+                qui AJOUTAIT le favori localement et faisait un POST.
+                <strong>Fantôme qui revient au refresh.</strong>
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Nouvelle fonction "removeFavorite" qui ne fait que retirer,
+                jamais ajouter. Plus de race condition.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge ux">Bug UX</span>
+            <div class="card-title">
+              <span class="card-icon">🔍</span>Bouton Search mobile allait sur
+              /explore
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Sur mobile, taper l'icône loupe de la bottom nav redirigeait
+                vers /explore (une page de browse) au lieu d'ouvrir un champ de
+                recherche. L'input n'existait que dans le drawer hamburger
+                caché. <strong>Quasi impossible de search sur mobile.</strong>
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Nouvelle page /search dédiée avec le champ autofocusé au
+                chargement. Clavier pop automatiquement sur mobile.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge ux">Bug UX</span>
+            <div class="card-title">
+              <span class="card-icon">⌨️</span>Touche Espace bloquait les
+              boutons
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Sur la page watch, si l'user tabulait pour sélectionner un
+                bouton au clavier et appuyait Espace pour l'activer, le
+                raccourci vidéo globale volait la touche et mettait la vidéo en
+                pause à la place.
+                <strong>Accessibilité clavier complètement cassée.</strong>
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Le raccourci ignore maintenant Espace et Entrée quand un bouton
+                ou un lien a le focus.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge ux">Bug UX</span>
+            <div class="card-title">
+              <span class="card-icon">🖼️</span>19,640 thumbnails cassées
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                11% des images sur /explore et /character étaient cassées. Cause
+                : 19,640 lignes en base pointaient vers
+                <strong>gelbooru.com/thumbnails/…</strong> qui retourne 404. La
+                bonne URL était <strong>img3.gelbooru.com/thumbnails/…</strong>.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Migration SQL one-shot qui a réécrit les 19,640 URLs d'un coup.
+                Plus les patterns remotePatterns de Next.js mis à jour pour
+                éviter qu'une nouvelle image casse.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge ux">Bug UX</span>
+            <div class="card-title">
+              <span class="card-icon">📐</span>Topbar recouvrait le contenu
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Sur toutes les pages hors homepage, la topbar fixe écrasait le
+                haut du contenu. Seulement 4 pages avaient le padding-top
+                correct, les autres étaient cassées.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Padding déplacé au niveau global. Toutes les pages respectent
+                maintenant la topbar.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge ux">Bug UX</span>
+            <div class="card-title">
+              <span class="card-icon">📱</span>Nav mobile incomplète
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Sur mobile, pas de hamburger dans la topbar. L'accès au drawer
+                de nav passait uniquement par le bouton "More" de la bottom nav.
+                Les liens Blog/Pricing/Glossary étaient introuvables.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Hamburger ajouté dans la topbar mobile. Nouveau drawer complet
+                en 5 sections (Discover, Library, Browse, More, Quick Tags).
+                Body scroll lock pendant l'ouverture.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge ux">Bug UX</span>
+            <div class="card-title">
+              <span class="card-icon">🎨</span>Pages vides sans images
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                /character, /series, /history, /explore affichaient des
+                placeholders tristes (gradients gris, emojis initiales) au lieu
+                de vraies images. Le site avait l'air vide alors que tu as 353K
+                vidéos.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Vraies thumbnails partout, fetch par batch via
+                getThumbnailsForTags (mémoïsé 1h donc zero coût réseau sur cache
+                chaud).
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge ux">Bug UX</span>
+            <div class="card-title">
+              <span class="card-icon">✉️</span>Double counter "online now" sur
+              mobile
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Sur mobile on voyait "1,247 online" en dur au-dessus du hero,
+                puis un OnlineCounter live en dessous. Deux compteurs qui se
+                contredisaient.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Le compteur statique a été remplacé par le live, le doublon
+                supprimé.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge ux">Bug UX</span>
+            <div class="card-title">
+              <span class="card-icon">🔎</span>Search sans résultats = page
+              morte
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Quand l'autocomplétion renvoyait 0 résultats, le dropdown se
+                fermait silencieusement. L'user pensait que la barre était
+                cassée.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Dropdown reste ouvert avec un message "Aucun résultat — appuie
+                sur Entrée pour chercher quand même".
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge ux">Bug UX</span>
+            <div class="card-title">
+              <span class="card-icon">💬</span>Messages d'erreur cryptiques
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Les toasts sur la page profile utilisaient du pattern matching
+                sur le texte pour décider de la couleur. "Username already
+                taken" était affiché en vert comme si c'était un succès.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Refactor pour passer un type explicite (success/error) au lieu
+                de deviner.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════ SÉCURITÉ ═══════════════════════ -->
+      <section>
+        <div class="section-header">
+          <span class="section-emoji">🔒</span>
+          <h2 class="section-title">Sécurité</h2>
+          <span class="section-count">9 fixes</span>
+        </div>
+        <p class="section-intro">
+          Failles de sécurité identifiées par l'audit. Certaines étaient
+          théoriques (attaques sophistiquées), d'autres exploitables tout de
+          suite.
+        </p>
+        <div class="cards">
+          <div class="card">
+            <span class="badge sec">Sécurité</span>
+            <div class="card-title">
+              <span class="card-icon">🎭</span>Vol de compte via Discord
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Un attaquant pouvait : (1) créer un compte iku avec ton email,
+                (2) ne jamais vérifier l'email, (3) puis OAuth Discord avec un
+                compte Discord qui a le même email. Le code liait
+                automatiquement sans rien vérifier —
+                <strong>accès complet au compte cible</strong>
+                (favoris, Pro, Stripe customer).
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                L'auto-link Discord refuse maintenant de lier à un compte non
+                vérifié. Plus, Discord lui-même doit avoir vérifié l'email côté
+                Discord (profile.verified = true).
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge sec">Sécurité</span>
+            <div class="card-title">
+              <span class="card-icon">📧</span>Majuscules = 2 comptes
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                La contrainte unique sur l'email était sensible à la casse.
+                <strong
+                  >Alice@x.com et alice@x.com créaient 2 comptes
+                  différents.</strong
+                >
+                Le login utilisait LOWER(...) donc retournait un des deux au
+                hasard. Pollution + squatting trivial.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Nouvelle contrainte unique case-insensitive (LOWER(email)) via
+                migration SQL one-shot. 0 doublon trouvé en prod au moment de la
+                migration.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge sec">Sécurité</span>
+            <div class="card-title">
+              <span class="card-icon">🏁</span>Race sur token reset password
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Si un attaquant interceptait le token de reset password, il
+                pouvait faire une course avec le user légitime. Les 2 requêtes
+                en parallèle passaient le check "not used", les 2 faisaient le
+                hash, les 2 updateaient.
+                <strong>Last-write-wins = attaquant gagne.</strong>
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Transition atomique : UPDATE ... RETURNING qui marque used_at et
+                retourne user_id en une seule opération. 2e requête se fait
+                jeter.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge sec">Sécurité</span>
+            <div class="card-title">
+              <span class="card-icon">🎯</span>Phishing via Stripe checkout
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Le code de checkout utilisait le header "Origin" envoyé par le
+                browser pour construire les URLs de retour Stripe. Un attaquant
+                pouvait forcer "Origin: evil.gg" et faire en sorte que
+                <strong
+                  >Stripe redirige la victime vers un site de phishing après un
+                  vrai paiement</strong
+                >.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                URLs construites à partir de NEXT_PUBLIC_SITE_URL (constante
+                serveur non-modifiable).
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge sec">Sécurité</span>
+            <div class="card-title">
+              <span class="card-icon">🧱</span>Protection XSS renforcée
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Le Content-Security-Policy laissait passer 'unsafe-eval' et
+                'unsafe-inline'. Si jamais un bug introduit une faille XSS
+                (injection de HTML), l'attaquant peut exécuter n'importe quel
+                JavaScript et voler la session.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                'unsafe-eval' supprimé. Nouveau middleware qui génère un nonce
+                (128 bits aléatoires) par requête, et chaque script inline doit
+                avoir ce nonce pour s'exécuter. Défense active contre XSS.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge sec">Sécurité</span>
+            <div class="card-title">
+              <span class="card-icon">📊</span>Rate limiter infini
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                /api/resolve avait un rate limiter avec une map qui pouvait
+                grossir à l'infini. Un botnet avec plein d'IPs différentes
+                pouvait faire consommer toute la RAM du serveur.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Plafond dur à 10K entrées avec éviction FIFO. Plus,
+                factorisation de tous les rate limiters du site (9 duplications)
+                dans un seul helper partagé et borné.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge sec">Sécurité</span>
+            <div class="card-title">
+              <span class="card-icon">🔑</span>Mots de passe plus résistants
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                bcrypt rounds = 10 (minimum 2026 pour un site adulte/paiement =
+                12).
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Upgradé à 12 rounds sur signup, change password, et reset
+                password. Coût CPU 4x plus élevé pour l'attaquant qui tente un
+                brute force.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge sec">Sécurité</span>
+            <div class="card-title">
+              <span class="card-icon">🚰</span>DoS sur /api/video-stream
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Le proxy vidéo n'avait pas de rate limit et pouvait saturer la
+                bande passante Hetzner (20TB/mois). Un attaquant pouvait faire
+                100 requêtes parallèles avec des vidéos lourdes = facture qui
+                explose.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Rate limit 30/min/IP ajouté + try-catch sur les erreurs upstream
+                + timeout 20s.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge sec">Sécurité</span>
+            <div class="card-title">
+              <span class="card-icon">🗝️</span>Clés API brûlées en git history
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">⚠️</span>
+              <div class="card-row-text">
+                Les clés Gelbooru et Rule34 sont dans l'historique Git public
+                (legacy). La clé Rule34 a été rotée une fois mais re-committée.
+                <strong>Les 2 sont considérées brûlées.</strong>
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">📝</span>
+              <div class="card-row-text">
+                Documenté dans l'audit. Action humaine requise : re-rotation +
+                git filter-repo pour purger l'historique, OU considérer comme
+                publiques et mettre en place un rate limiting côté API.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════ PERFORMANCE ═══════════════════════ -->
+      <section>
+        <div class="section-header">
+          <span class="section-emoji">⚡</span>
+          <h2 class="section-title">Performance</h2>
+          <span class="section-count">5 fixes</span>
+        </div>
+        <p class="section-intro">
+          Optimisations qui rendent le site plus rapide et plus tenable à
+          l'échelle.
+        </p>
+        <div class="cards">
+          <div class="card">
+            <span class="badge perf">Performance</span>
+            <div class="card-title">
+              <span class="card-icon">🐢</span>Watch page lente à cause d'API
+              externes
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Chaque affichage d'une page /watch faisait
+                <strong>3 à 5 appels en live à l'API Danbooru</strong>
+                (limité à 5 req/sec par leur rate limit). Cold render = 600ms à
+                1,5 seconde de latence pour récupérer les infos + les vidéos
+                liées.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Nouvelle fonction getDanbooruVideo qui lit d'abord dans ta base
+                PostgreSQL (~5ms) et ne fallback sur Danbooru live que pour les
+                posts pas encore scrapés. Sur 99% des requests :
+                <strong>200-1500ms → 5ms</strong>.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge perf">Performance</span>
+            <div class="card-title">
+              <span class="card-icon">📄</span>Pagination feed lourde à scale
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                /api/feed utilisait LIMIT/OFFSET pour la pagination. Sur 351K
+                rows, un OFFSET 300000 = le serveur doit skipper 300K lignes à
+                chaque requête. Catastrophe à scale.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Remplacé par keyset pagination (curseur composite). Le serveur
+                saute directement à la bonne position via l'index, O(log n) au
+                lieu de O(n). Validé en prod : page 1 → curseur → page 2 →
+                nouveau curseur, 60 vidéos à chaque fois.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge perf">Performance</span>
+            <div class="card-title">
+              <span class="card-icon">🗑️</span>124 MB de code mort
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                5 fichiers JSON legacy de l'ancienne archi (pré-migration
+                PostgreSQL) traînaient dans le repo : videos.json (12M),
+                gelbooru (10M), rule34 (11M), rule34video (84M), wp-hentai (4M).
+                <strong
+                  >Total 124 Mo cloné à chaque git clone, chaque deploy
+                  Docker.</strong
+                >
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Les 5 fichiers supprimés. Le script de migration marqué
+                historique. Déploiements Docker plus légers.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge perf">Performance</span>
+            <div class="card-title">
+              <span class="card-icon">🔄</span>Routes dynamiques vs statiques
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Next.js 16 a un piège : une route /watch/[slug] sans
+                generateStaticParams est traitée comme 100% dynamique. Chaque
+                hit = full render + query DB. L'optimisation ISR ne marchait
+                pas.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Couche de cache applicative (memoize 5 min) + cache L2
+                PostgreSQL (1h) pour les URLs résolues. Warmup loop interne qui
+                précharge les 500 top vidéos toutes les 30 min.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge perf">Performance</span>
+            <div class="card-title">
+              <span class="card-icon">📚</span>Fichiers monstres organisés
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                WatchPlayer.tsx = 1715 lignes, globals.css = 9463 lignes.
+                Difficile à naviguer, facile de casser par accident.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                WatchPlayer → icônes et helpers extraits dans un fichier séparé
+                (1715 → 1549 lignes). globals.css → table des matières de 48
+                sections avec numéros de ligne en tête de fichier (split
+                physique trop risqué à cause de la cascade CSS).
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════ QUALITÉ CODE ═══════════════════════ -->
+      <section>
+        <div class="section-header">
+          <span class="section-emoji">🧪</span>
+          <h2 class="section-title">Qualité du code</h2>
+          <span class="section-count">4 fixes</span>
+        </div>
+        <p class="section-intro">
+          Fondations qui facilitent les futurs développements et évitent les
+          régressions.
+        </p>
+        <div class="cards">
+          <div class="card">
+            <span class="badge code">Code quality</span>
+            <div class="card-title">
+              <span class="card-icon">✅</span>Premier framework de tests du
+              repo
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Zero test dans le projet avant. Chaque changement de code
+                critique (Stripe, auth, DB) était un saut dans le vide.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                vitest installé + <strong>21 tests unitaires</strong> sur le
+                webhook Stripe (201ms pour tout faire passer). Couverture des 10
+                blockers argent : reconnaissance de plan, garde lifetime,
+                fallback customer ID, past_due mapping, annulation de prior sub,
+                tolérance aux erreurs Stripe.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge code">Code quality</span>
+            <div class="card-title">
+              <span class="card-icon">🔧</span>Rate limiter factoré
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                9 routes différentes dupliquaient le même code de rate limiting
+                avec des variations subtiles. Certaines avaient des caps,
+                d'autres non. Chaque nouvelle route = copie-coller avec risque
+                de bug.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Extraction dans src/lib/rate-limit.ts — un seul helper partagé
+                avec API simple (createRateLimiter + consume). Les 9 routes
+                migrées. Impossible d'introduire un bug variant par inadvertance
+                maintenant.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge code">Code quality</span>
+            <div class="card-title">
+              <span class="card-icon">🔕</span>15 erreurs silencieuses exposées
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                15 endroits dans le code avec <code>.catch(() => {})</code>.
+                C'est-à-dire que si une opération plante, on swallow l'erreur et
+                personne ne voit rien.
+                <strong>Un était un vrai bug</strong> (clearHistory serveur qui
+                ne clearait pas vraiment).
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Le vrai bug corrigé (log d'erreur). Les 14 autres (rejections
+                normales de l'API browser comme play() quand autoplay est
+                bloqué) ont maintenant un commentaire explicite qui explique
+                pourquoi c'est intentionnellement silencieux.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="badge code">Code quality</span>
+            <div class="card-title">
+              <span class="card-icon">📝</span>Documentation inline massive
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">❌</span>
+              <div class="card-row-text">
+                Beaucoup de code sans commentaire. Revenir dessus dans 6 mois =
+                devoir re-raisonner le pourquoi.
+              </div>
+            </div>
+            <div class="card-row">
+              <span class="card-row-label">✅</span>
+              <div class="card-row-text">
+                Chaque fix commente le <strong>pourquoi</strong> (bug qu'on
+                évite, audit qui l'a trouvé, contrainte qui le motive). Plus une
+                grosse section "Silent bugs" dans CLAUDE.md qui documente les
+                pièges à ne pas reproduire (React muted quirk, autoplay race,
+                Next.js 16 ISR gotchas, etc.).
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+      <footer>
+        <p>
+          <strong>Session complète :</strong> audit profond (7 rapports
+          parallèles + 130+ findings) → 6 commits → 6 déploiements Coolify → 2
+          migrations SQL prod.
+        </p>
+        <p style="margin-top: 12px">
+          <strong>Avant :</strong> 37 blockers existentiels (légal + argent +
+          UX) empêchaient le lancement des abonnements Pro.
+        </p>
+        <p style="margin-top: 6px">
+          <strong>Maintenant :</strong> site dans son meilleur état pré-launch,
+          prêt pour l'intégration ExoClick et l'ouverture complète des
+          subscriptions.
+        </p>
+        <p style="margin-top: 24px; font-size: 11px; opacity: 0.5">
+          iku.gg · récap généré le 2026-04-06
+        </p>
+      </footer>
     </div>
-    <div class="stat">
-      <div class="stat-num">51</div>
-      <div class="stat-label">Bugs sérieux</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">21</div>
-      <div class="stat-label">Tests ajoutés</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">124 Mo</div>
-      <div class="stat-label">Code mort supprimé</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">6</div>
-      <div class="stat-label">Déploiements prod</div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════ LÉGAL ═══════════════════════ -->
-<section>
-  <div class="section-header">
-    <span class="section-emoji">🚨</span>
-    <h2 class="section-title">Légal — Contenu interdit</h2>
-    <span class="section-count">5 fixes</span>
-  </div>
-  <p class="section-intro">
-    Les filtres de contenu interdit (mineurs) avaient des trous. Pas évident à voir,
-    mais fatal pour un site adulte si on se fait choper. Maintenant bétonné à 5 niveaux.
-  </p>
-  <div class="cards">
-
-    <div class="card">
-      <span class="badge critical">Risque légal</span>
-      <div class="card-title"><span class="card-icon">🛡️</span>Le filtre ne regardait que 1/4 des champs</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Le filtre vérifiait seulement les <strong>tags</strong> d'une vidéo. Mais les sources
-          mettent aussi les noms des personnages, les séries, et le titre dans d'autres champs.
-          Un contenu banni pouvait passer si le mot interdit était dans le titre et pas dans les tags.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Maintenant le filtre vérifie <strong>tags + personnages + séries + titre + slug</strong>.
-          Un mot banni n'importe où = la vidéo est bloquée.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge critical">Risque légal</span>
-      <div class="card-title"><span class="card-icon">📺</span>Les vidéos "Up Next" étaient pas filtrées</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Sur les pages vidéo, la section "More like this" et "Up Next" appelait une autre API
-          qui ne passait pas par le filtre. 78% des pages vidéo étaient concernées.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Remplacé par une nouvelle fonction qui cherche dans ta base avec le filtre actif.
-          Bonus : les suggestions sont maintenant vraiment liées au personnage de la vidéo.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge critical">Risque légal</span>
-      <div class="card-title"><span class="card-icon">🕳️</span>2 sources queryaient la DB sans filtre</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Les fichiers qui gèrent Rule34Video (277K vidéos) et les sites WordPress
-          lisaient directement la base sans appliquer aucun filtre anti-contenu-banni.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Filtre ajouté au niveau SQL sur toutes les requêtes. Plus de contournement possible.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge critical">Risque légal</span>
-      <div class="card-title"><span class="card-icon">🔒</span>Le safety net du scraper avait le même trou</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Le dernier rempart qui vérifie avant d'écrire en base ne checkait qu'1 colonne sur 3.
-          Si le premier filtre rate, ce dernier rempart laissait aussi passer.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Le safety net vérifie maintenant les 3 colonnes d'arrays + le slug + le titre.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge critical">Risque légal</span>
-      <div class="card-title"><span class="card-icon">🧹</span>Les appels "live" à Danbooru passaient à travers</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Certaines fonctions appelaient directement l'API Danbooru en live (contournant
-          ta base et son filtre). Les résultats arrivaient bruts côté utilisateur.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Tous les appels live passent maintenant par le filtre JavaScript avant d'être renvoyés.
-          Ceinture + bretelles.
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ═══════════════════════ ARGENT ═══════════════════════ -->
-<section>
-  <div class="section-header">
-    <span class="section-emoji">💰</span>
-    <h2 class="section-title">Argent — Paiements Stripe</h2>
-    <span class="section-count">10 fixes</span>
-  </div>
-  <p class="section-intro">
-    Le tunnel de paiement avait <strong>6 blockers</strong> qui empêchaient les gens de payer
-    ou qui causaient des pertes d'argent silencieuses. Les plus graves corrigés maintenant.
-  </p>
-  <div class="cards">
-
-    <div class="card">
-      <span class="badge money">Bug argent</span>
-      <div class="card-title"><span class="card-icon">💸</span>Tes meilleurs users ne pouvaient pas payer</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Le coupon <strong>"-30% Waifu Scholar"</strong> (offert aux users tier 5) crashait le checkout.
-          Stripe refusait la combinaison d'options que j'avais demandée. Les 100% des users
-          visés par la promo ne pouvaient PAS acheter Pro.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Changé pour envoyer le coupon tout seul, sans l'autre option qui entrait en conflit.
-          Checkout fonctionne maintenant pour les Waifu Scholar.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge money">Bug argent</span>
-      <div class="card-title"><span class="card-icon">♾️</span>Les lifetime pouvaient perdre leur statut</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Un user achète Lifetime (70€). Dans les heures qui suivent, un ancien webhook mensuel
-          arrive en retard et <strong>écrase silencieusement le statut lifetime en mensuel</strong>.
-          L'user avait payé 70€ pour à vie et voyait "plan mensuel — expire dans 30 jours".
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Ajout d'une garde : si pro_status = lifetime, aucun webhook ne peut downgrade.
-          Plus on annule automatiquement tout ancien abonnement au moment de l'achat lifetime.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge money">Bug argent</span>
-      <div class="card-title"><span class="card-icon">📅</span>Les annuels étaient classés mensuels</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Le code qui reconnaît quel plan a été acheté cherchait le mot "year" dans l'ID de prix
-          Stripe. Problème : les IDs Stripe sont des chaînes aléatoires qui ne contiennent
-          jamais "year". <strong>Tous les abonnements annuels étaient donc classés mensuels.</strong>
-          Facturation OK mais l'UI disait mensuel.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Remplacé par une comparaison exacte avec les IDs configurés dans les variables d'environnement.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge money">Bug argent</span>
-      <div class="card-title"><span class="card-icon">🕳️</span>Paiements perdus dans les erreurs</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Si la base de données avait un hoquet de 3 secondes au moment d'un webhook Stripe,
-          le code log l'erreur mais renvoyait OK à Stripe. Résultat : <strong>paiement reçu,
-          Pro pas activé, Stripe ne retry jamais</strong>. Perte totale du paiement.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Maintenant on retourne une erreur 500 en cas de problème. Stripe retry automatiquement
-          pendant 3 jours. Plus de paiements silencieusement perdus.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge money">Bug argent</span>
-      <div class="card-title"><span class="card-icon">👻</span>"J'ai payé mais rien ne change"</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Après un paiement réussi, l'user atterrissait sur /profile mais la page ne montrait
-          aucun changement. <strong>Zéro indication qu'il est maintenant Pro.</strong>
-          Support ticket garanti : "Est-ce que mon paiement est passé ?"
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Nouveau banner "Welcome to Pro ✨" avec le plan acheté et la date de renouvellement.
-          Plus un badge permanent "iku.gg Pro" visible en haut de la page profil.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge money">Bug argent</span>
-      <div class="card-title"><span class="card-icon">💳</span>Pas d'email quand la carte est refusée</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Quand la carte d'un user Pro est déclinée à la prochaine facturation,
-          <strong>il ne reçoit aucune notification</strong>. Son Pro finit par être coupé et
-          il blâme le site.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Email automatique qui lui explique qu'il y a un souci avec sa carte et lui donne
-          un lien pour la mettre à jour. Envoyé 1 fois max par semaine (pas de spam).
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge money">Bug argent</span>
-      <div class="card-title"><span class="card-icon">🎯</span>Double-clic = 2 paiements</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Un user qui double-clique rapidement sur "Get Pro" créait <strong>2 sessions Stripe
-          en parallèle</strong>. Risque théorique de se faire facturer 2 fois.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Ajout d'une clé d'unicité : dans une fenêtre d'1 minute, les clics multiples retournent
-          la même session. Stripe refuse les doublons.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge money">Bug argent</span>
-      <div class="card-title"><span class="card-icon">🚫</span>Un déjà-Pro pouvait racheter un plan</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Un user lifetime pouvait par erreur acheter un plan mensuel en plus.
-          Résultat : facturation double + bug de statut mélangé dans la base.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Le serveur refuse maintenant le checkout (erreur claire) si l'user a déjà lifetime
-          ou déjà le même plan actif.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge money">Bug argent</span>
-      <div class="card-title"><span class="card-icon">🏃</span>Paiement via portail Stripe oublié</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Si un user changeait de plan via le portail Stripe (pas via notre checkout), le webhook
-          arrivait sans les infos utilisateur. On ne savait pas à qui appliquer le changement,
-          <strong>on le droppait silencieusement</strong>. User payé mais Pro pas synchro.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          On retrouve maintenant l'user via son Stripe customer ID en fallback.
-          Plus de webhooks orphelins.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge money">Bug argent</span>
-      <div class="card-title"><span class="card-icon">⚡</span>past_due en retard = UI menteuse</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Quand un paiement échouait, le flip vers "past_due" attendait un autre webhook de Stripe
-          qui pouvait arriver des minutes après. Entre-temps l'UI continuait à dire "Actif".
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          On flippe immédiatement le statut à past_due sur l'échec de paiement. UI toujours synchro.
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ═══════════════════════ UX ═══════════════════════ -->
-<section>
-  <div class="section-header">
-    <span class="section-emoji">🎯</span>
-    <h2 class="section-title">Expérience utilisateur — gros bugs</h2>
-    <span class="section-count">14 fixes</span>
-  </div>
-  <p class="section-intro">
-    Les bugs UX les plus critiques. Le premier est énorme : la majorité de ton catalogue était
-    invisible pour les visiteurs.
-  </p>
-  <div class="cards">
-
-    <div class="card">
-      <span class="badge ux">Bug UX</span>
-      <div class="card-title"><span class="card-icon">📚</span>96% du catalogue était invisible</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Les pages /trending, /new, /tag, /character, /series n'affichaient que les 17K vidéos Danbooru.
-          Les <strong>336K autres vidéos</strong> (Rule34Video, Gelbooru, WP) étaient totalement invisibles.
-          Un visiteur clique sur un tag, voit presque rien, et se barre.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Les 5 pages interrogent maintenant ta base PostgreSQL complète. Le visiteur voit
-          TOUT ton catalogue, soit <strong>20x plus de contenu</strong> qu'avant.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge ux">Bug UX</span>
-      <div class="card-title"><span class="card-icon">🔊</span>Son de la watch page cassé</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Cliquer sur "Unmute" ne faisait rien. Seule la molette marchait sur desktop, rien sur mobile.
-          <strong>3 bugs différents en cascade</strong> : React qui réappliquait l'état, un overlay
-          invisible qui bouffait les clics, et un bouton qui ouvrait un popup au lieu de toggle le son.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Les 3 bugs réglés en cascade et vérifiés en prod avec un test automatisé
-          (Playwright) : clic = son activé, vidéo continue à jouer.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge ux">Bug UX</span>
-      <div class="card-title"><span class="card-icon">♾️</span>Shorts scroll bloqué après 10 vidéos</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Le feed Shorts chargeait 20 vidéos, le filtre serveur en gardait 3-5, et l'infini
-          scroll n'avançait jamais au lot suivant. L'user tapait un mur après ~10 swipes.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Lot plus large (60 vidéos), avancement toujours, et nouveau filet de sécurité qui
-          déclenche un fetch automatique quand le buffer devient bas. Testé : 954 vidéos
-          en 20 rounds de scroll sans blocage.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge ux">Bug UX</span>
-      <div class="card-title"><span class="card-icon">❤️</span>Like/Save des Shorts = fake</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Les boutons Like, Save, et le heart-burst (double-tap) sur les Shorts étaient
-          <strong>100% frontend</strong>. L'user tappe Save → rien ne part sur le serveur →
-          rien dans ses favoris quand il revient. Core feature TikTok-style = mensonge UI.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Les 3 actions appellent maintenant ton API favoris, synchronisent localStorage
-          ET la base. Plus un score event pour la gamification. Hydratation de l'état
-          initial pour que les déjà-likés apparaissent en rouge dès le chargement.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge ux">Bug UX</span>
-      <div class="card-title"><span class="card-icon">🔄</span>Supprimer un favori le réajoutait</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          User connecté sur un nouveau device, page favoris, clic sur le cœur pour retirer.
-          Le code faisait un DELETE serveur → puis appelait toggleFavorite sur localStorage
-          (vide sur ce device) → qui AJOUTAIT le favori localement et faisait un POST.
-          <strong>Fantôme qui revient au refresh.</strong>
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Nouvelle fonction "removeFavorite" qui ne fait que retirer, jamais ajouter.
-          Plus de race condition.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge ux">Bug UX</span>
-      <div class="card-title"><span class="card-icon">🔍</span>Bouton Search mobile allait sur /explore</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Sur mobile, taper l'icône loupe de la bottom nav redirigeait vers /explore (une page
-          de browse) au lieu d'ouvrir un champ de recherche. L'input n'existait que dans le drawer
-          hamburger caché. <strong>Quasi impossible de search sur mobile.</strong>
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Nouvelle page /search dédiée avec le champ autofocusé au chargement. Clavier pop
-          automatiquement sur mobile.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge ux">Bug UX</span>
-      <div class="card-title"><span class="card-icon">⌨️</span>Touche Espace bloquait les boutons</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Sur la page watch, si l'user tabulait pour sélectionner un bouton au clavier et appuyait
-          Espace pour l'activer, le raccourci vidéo globale volait la touche et mettait la vidéo
-          en pause à la place. <strong>Accessibilité clavier complètement cassée.</strong>
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Le raccourci ignore maintenant Espace et Entrée quand un bouton ou un lien a le focus.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge ux">Bug UX</span>
-      <div class="card-title"><span class="card-icon">🖼️</span>19,640 thumbnails cassées</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          11% des images sur /explore et /character étaient cassées. Cause : 19,640 lignes en base
-          pointaient vers <strong>gelbooru.com/thumbnails/…</strong> qui retourne 404.
-          La bonne URL était <strong>img3.gelbooru.com/thumbnails/…</strong>.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Migration SQL one-shot qui a réécrit les 19,640 URLs d'un coup. Plus les patterns
-          remotePatterns de Next.js mis à jour pour éviter qu'une nouvelle image casse.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge ux">Bug UX</span>
-      <div class="card-title"><span class="card-icon">📐</span>Topbar recouvrait le contenu</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Sur toutes les pages hors homepage, la topbar fixe écrasait le haut du contenu.
-          Seulement 4 pages avaient le padding-top correct, les autres étaient cassées.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Padding déplacé au niveau global. Toutes les pages respectent maintenant la topbar.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge ux">Bug UX</span>
-      <div class="card-title"><span class="card-icon">📱</span>Nav mobile incomplète</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Sur mobile, pas de hamburger dans la topbar. L'accès au drawer de nav passait
-          uniquement par le bouton "More" de la bottom nav. Les liens Blog/Pricing/Glossary
-          étaient introuvables.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Hamburger ajouté dans la topbar mobile. Nouveau drawer complet en 5 sections
-          (Discover, Library, Browse, More, Quick Tags). Body scroll lock pendant l'ouverture.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge ux">Bug UX</span>
-      <div class="card-title"><span class="card-icon">🎨</span>Pages vides sans images</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          /character, /series, /history, /explore affichaient des placeholders tristes
-          (gradients gris, emojis initiales) au lieu de vraies images. Le site avait l'air
-          vide alors que tu as 353K vidéos.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Vraies thumbnails partout, fetch par batch via getThumbnailsForTags (mémoïsé 1h
-          donc zero coût réseau sur cache chaud).
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge ux">Bug UX</span>
-      <div class="card-title"><span class="card-icon">✉️</span>Double counter "online now" sur mobile</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Sur mobile on voyait "1,247 online" en dur au-dessus du hero, puis un OnlineCounter
-          live en dessous. Deux compteurs qui se contredisaient.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Le compteur statique a été remplacé par le live, le doublon supprimé.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge ux">Bug UX</span>
-      <div class="card-title"><span class="card-icon">🔎</span>Search sans résultats = page morte</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Quand l'autocomplétion renvoyait 0 résultats, le dropdown se fermait silencieusement.
-          L'user pensait que la barre était cassée.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Dropdown reste ouvert avec un message "Aucun résultat — appuie sur Entrée pour chercher quand même".
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge ux">Bug UX</span>
-      <div class="card-title"><span class="card-icon">💬</span>Messages d'erreur cryptiques</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Les toasts sur la page profile utilisaient du pattern matching sur le texte pour
-          décider de la couleur. "Username already taken" était affiché en vert comme si
-          c'était un succès.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Refactor pour passer un type explicite (success/error) au lieu de deviner.
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ═══════════════════════ SÉCURITÉ ═══════════════════════ -->
-<section>
-  <div class="section-header">
-    <span class="section-emoji">🔒</span>
-    <h2 class="section-title">Sécurité</h2>
-    <span class="section-count">9 fixes</span>
-  </div>
-  <p class="section-intro">
-    Failles de sécurité identifiées par l'audit. Certaines étaient théoriques (attaques sophistiquées),
-    d'autres exploitables tout de suite.
-  </p>
-  <div class="cards">
-
-    <div class="card">
-      <span class="badge sec">Sécurité</span>
-      <div class="card-title"><span class="card-icon">🎭</span>Vol de compte via Discord</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Un attaquant pouvait : (1) créer un compte iku avec ton email, (2) ne jamais vérifier l'email,
-          (3) puis OAuth Discord avec un compte Discord qui a le même email. Le code liait
-          automatiquement sans rien vérifier — <strong>accès complet au compte cible</strong>
-          (favoris, Pro, Stripe customer).
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          L'auto-link Discord refuse maintenant de lier à un compte non vérifié. Plus, Discord
-          lui-même doit avoir vérifié l'email côté Discord (profile.verified = true).
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge sec">Sécurité</span>
-      <div class="card-title"><span class="card-icon">📧</span>Majuscules = 2 comptes</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          La contrainte unique sur l'email était sensible à la casse. <strong>Alice@x.com et alice@x.com
-          créaient 2 comptes différents.</strong> Le login utilisait LOWER(...) donc retournait
-          un des deux au hasard. Pollution + squatting trivial.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Nouvelle contrainte unique case-insensitive (LOWER(email)) via migration SQL one-shot.
-          0 doublon trouvé en prod au moment de la migration.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge sec">Sécurité</span>
-      <div class="card-title"><span class="card-icon">🏁</span>Race sur token reset password</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Si un attaquant interceptait le token de reset password, il pouvait faire une course
-          avec le user légitime. Les 2 requêtes en parallèle passaient le check "not used",
-          les 2 faisaient le hash, les 2 updateaient. <strong>Last-write-wins = attaquant gagne.</strong>
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Transition atomique : UPDATE ... RETURNING qui marque used_at et retourne user_id
-          en une seule opération. 2e requête se fait jeter.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge sec">Sécurité</span>
-      <div class="card-title"><span class="card-icon">🎯</span>Phishing via Stripe checkout</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Le code de checkout utilisait le header "Origin" envoyé par le browser pour construire
-          les URLs de retour Stripe. Un attaquant pouvait forcer "Origin: evil.gg" et faire en
-          sorte que <strong>Stripe redirige la victime vers un site de phishing après un vrai paiement</strong>.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          URLs construites à partir de NEXT_PUBLIC_SITE_URL (constante serveur non-modifiable).
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge sec">Sécurité</span>
-      <div class="card-title"><span class="card-icon">🧱</span>Protection XSS renforcée</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Le Content-Security-Policy laissait passer 'unsafe-eval' et 'unsafe-inline'. Si jamais
-          un bug introduit une faille XSS (injection de HTML), l'attaquant peut exécuter n'importe
-          quel JavaScript et voler la session.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          'unsafe-eval' supprimé. Nouveau middleware qui génère un nonce (128 bits aléatoires)
-          par requête, et chaque script inline doit avoir ce nonce pour s'exécuter.
-          Défense active contre XSS.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge sec">Sécurité</span>
-      <div class="card-title"><span class="card-icon">📊</span>Rate limiter infini</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          /api/resolve avait un rate limiter avec une map qui pouvait grossir à l'infini.
-          Un botnet avec plein d'IPs différentes pouvait faire consommer toute la RAM du serveur.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Plafond dur à 10K entrées avec éviction FIFO. Plus, factorisation de tous les rate
-          limiters du site (9 duplications) dans un seul helper partagé et borné.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge sec">Sécurité</span>
-      <div class="card-title"><span class="card-icon">🔑</span>Mots de passe plus résistants</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          bcrypt rounds = 10 (minimum 2026 pour un site adulte/paiement = 12).
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Upgradé à 12 rounds sur signup, change password, et reset password. Coût CPU 4x plus
-          élevé pour l'attaquant qui tente un brute force.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge sec">Sécurité</span>
-      <div class="card-title"><span class="card-icon">🚰</span>DoS sur /api/video-stream</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Le proxy vidéo n'avait pas de rate limit et pouvait saturer la bande passante Hetzner
-          (20TB/mois). Un attaquant pouvait faire 100 requêtes parallèles avec des vidéos lourdes
-          = facture qui explose.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Rate limit 30/min/IP ajouté + try-catch sur les erreurs upstream + timeout 20s.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge sec">Sécurité</span>
-      <div class="card-title"><span class="card-icon">🗝️</span>Clés API brûlées en git history</div>
-      <div class="card-row">
-        <span class="card-row-label">⚠️</span>
-        <div class="card-row-text">
-          Les clés Gelbooru et Rule34 sont dans l'historique Git public (legacy). La clé Rule34
-          a été rotée une fois mais re-committée. <strong>Les 2 sont considérées brûlées.</strong>
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">📝</span>
-        <div class="card-row-text">
-          Documenté dans l'audit. Action humaine requise : re-rotation + git filter-repo pour purger
-          l'historique, OU considérer comme publiques et mettre en place un rate limiting côté API.
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ═══════════════════════ PERFORMANCE ═══════════════════════ -->
-<section>
-  <div class="section-header">
-    <span class="section-emoji">⚡</span>
-    <h2 class="section-title">Performance</h2>
-    <span class="section-count">5 fixes</span>
-  </div>
-  <p class="section-intro">
-    Optimisations qui rendent le site plus rapide et plus tenable à l'échelle.
-  </p>
-  <div class="cards">
-
-    <div class="card">
-      <span class="badge perf">Performance</span>
-      <div class="card-title"><span class="card-icon">🐢</span>Watch page lente à cause d'API externes</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Chaque affichage d'une page /watch faisait <strong>3 à 5 appels en live à l'API Danbooru</strong>
-          (limité à 5 req/sec par leur rate limit). Cold render = 600ms à 1,5 seconde de
-          latence pour récupérer les infos + les vidéos liées.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Nouvelle fonction getDanbooruVideo qui lit d'abord dans ta base PostgreSQL (~5ms) et
-          ne fallback sur Danbooru live que pour les posts pas encore scrapés. Sur 99% des
-          requests : <strong>200-1500ms → 5ms</strong>.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge perf">Performance</span>
-      <div class="card-title"><span class="card-icon">📄</span>Pagination feed lourde à scale</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          /api/feed utilisait LIMIT/OFFSET pour la pagination. Sur 351K rows, un OFFSET 300000
-          = le serveur doit skipper 300K lignes à chaque requête. Catastrophe à scale.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Remplacé par keyset pagination (curseur composite). Le serveur saute directement à la
-          bonne position via l'index, O(log n) au lieu de O(n). Validé en prod :
-          page 1 → curseur → page 2 → nouveau curseur, 60 vidéos à chaque fois.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge perf">Performance</span>
-      <div class="card-title"><span class="card-icon">🗑️</span>124 MB de code mort</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          5 fichiers JSON legacy de l'ancienne archi (pré-migration PostgreSQL) traînaient
-          dans le repo : videos.json (12M), gelbooru (10M), rule34 (11M), rule34video (84M),
-          wp-hentai (4M). <strong>Total 124 Mo cloné à chaque git clone, chaque deploy Docker.</strong>
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Les 5 fichiers supprimés. Le script de migration marqué historique.
-          Déploiements Docker plus légers.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge perf">Performance</span>
-      <div class="card-title"><span class="card-icon">🔄</span>Routes dynamiques vs statiques</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Next.js 16 a un piège : une route /watch/[slug] sans generateStaticParams est
-          traitée comme 100% dynamique. Chaque hit = full render + query DB. L'optimisation
-          ISR ne marchait pas.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Couche de cache applicative (memoize 5 min) + cache L2 PostgreSQL (1h) pour les
-          URLs résolues. Warmup loop interne qui précharge les 500 top vidéos toutes les 30 min.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge perf">Performance</span>
-      <div class="card-title"><span class="card-icon">📚</span>Fichiers monstres organisés</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          WatchPlayer.tsx = 1715 lignes, globals.css = 9463 lignes. Difficile à naviguer,
-          facile de casser par accident.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          WatchPlayer → icônes et helpers extraits dans un fichier séparé (1715 → 1549 lignes).
-          globals.css → table des matières de 48 sections avec numéros de ligne en tête de fichier
-          (split physique trop risqué à cause de la cascade CSS).
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ═══════════════════════ QUALITÉ CODE ═══════════════════════ -->
-<section>
-  <div class="section-header">
-    <span class="section-emoji">🧪</span>
-    <h2 class="section-title">Qualité du code</h2>
-    <span class="section-count">4 fixes</span>
-  </div>
-  <p class="section-intro">
-    Fondations qui facilitent les futurs développements et évitent les régressions.
-  </p>
-  <div class="cards">
-
-    <div class="card">
-      <span class="badge code">Code quality</span>
-      <div class="card-title"><span class="card-icon">✅</span>Premier framework de tests du repo</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Zero test dans le projet avant. Chaque changement de code critique (Stripe, auth, DB)
-          était un saut dans le vide.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          vitest installé + <strong>21 tests unitaires</strong> sur le webhook Stripe (201ms pour
-          tout faire passer). Couverture des 10 blockers argent : reconnaissance de plan,
-          garde lifetime, fallback customer ID, past_due mapping, annulation de prior sub,
-          tolérance aux erreurs Stripe.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge code">Code quality</span>
-      <div class="card-title"><span class="card-icon">🔧</span>Rate limiter factoré</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          9 routes différentes dupliquaient le même code de rate limiting avec des variations
-          subtiles. Certaines avaient des caps, d'autres non. Chaque nouvelle route = copie-coller
-          avec risque de bug.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Extraction dans src/lib/rate-limit.ts — un seul helper partagé avec API simple
-          (createRateLimiter + consume). Les 9 routes migrées. Impossible d'introduire
-          un bug variant par inadvertance maintenant.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge code">Code quality</span>
-      <div class="card-title"><span class="card-icon">🔕</span>15 erreurs silencieuses exposées</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          15 endroits dans le code avec <code>.catch(() => {})</code>. C'est-à-dire que si une
-          opération plante, on swallow l'erreur et personne ne voit rien. <strong>Un était un
-          vrai bug</strong> (clearHistory serveur qui ne clearait pas vraiment).
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Le vrai bug corrigé (log d'erreur). Les 14 autres (rejections normales de l'API
-          browser comme play() quand autoplay est bloqué) ont maintenant un commentaire
-          explicite qui explique pourquoi c'est intentionnellement silencieux.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <span class="badge code">Code quality</span>
-      <div class="card-title"><span class="card-icon">📝</span>Documentation inline massive</div>
-      <div class="card-row">
-        <span class="card-row-label">❌</span>
-        <div class="card-row-text">
-          Beaucoup de code sans commentaire. Revenir dessus dans 6 mois = devoir re-raisonner
-          le pourquoi.
-        </div>
-      </div>
-      <div class="card-row">
-        <span class="card-row-label">✅</span>
-        <div class="card-row-text">
-          Chaque fix commente le <strong>pourquoi</strong> (bug qu'on évite, audit qui l'a trouvé,
-          contrainte qui le motive). Plus une grosse section "Silent bugs" dans CLAUDE.md
-          qui documente les pièges à ne pas reproduire (React muted quirk, autoplay race,
-          Next.js 16 ISR gotchas, etc.).
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
-<footer>
-  <p>
-    <strong>Session complète :</strong> audit profond (7 rapports parallèles + 130+ findings)
-    → 6 commits → 6 déploiements Coolify → 2 migrations SQL prod.
-  </p>
-  <p style="margin-top: 12px;">
-    <strong>Avant :</strong> 37 blockers existentiels (légal + argent + UX) empêchaient le lancement des abonnements Pro.
-  </p>
-  <p style="margin-top: 6px;">
-    <strong>Maintenant :</strong> site dans son meilleur état pré-launch, prêt pour l'intégration ExoClick
-    et l'ouverture complète des subscriptions.
-  </p>
-  <p style="margin-top: 24px; font-size: 11px; opacity: 0.5;">
-    iku.gg · récap généré le 2026-04-06
-  </p>
-</footer>
-
-</div>
-</body>
+  </body>
 </html>

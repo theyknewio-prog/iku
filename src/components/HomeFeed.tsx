@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-} from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { filterByBlacklist } from "@/lib/blacklist";
 import { buildTitle } from "@/lib/video-display";
@@ -52,7 +47,16 @@ function fmt(s: number): string {
 
 function IconEye() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" width={20} height={20}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      width={20}
+      height={20}
+    >
       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
       <circle cx="12" cy="12" r="3" />
     </svg>
@@ -61,7 +65,16 @@ function IconEye() {
 
 function IconHeart({ filled }: { filled: boolean }) {
   return (
-    <svg viewBox="0 0 24 24" fill={filled ? "#ff2080" : "none"} stroke={filled ? "#ff2080" : "currentColor"} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" width={22} height={22}>
+    <svg
+      viewBox="0 0 24 24"
+      fill={filled ? "#ff2080" : "none"}
+      stroke={filled ? "#ff2080" : "currentColor"}
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      width={22}
+      height={22}
+    >
       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
     </svg>
   );
@@ -69,7 +82,16 @@ function IconHeart({ filled }: { filled: boolean }) {
 
 function IconShare() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" width={20} height={20}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      width={20}
+      height={20}
+    >
       <circle cx="18" cy="5" r="3" />
       <circle cx="6" cy="12" r="3" />
       <circle cx="18" cy="19" r="3" />
@@ -81,7 +103,16 @@ function IconShare() {
 
 function IconSoundOn() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" width={20} height={20}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      width={20}
+      height={20}
+    >
       <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
       <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
       <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
@@ -91,7 +122,16 @@ function IconSoundOn() {
 
 function IconSoundOff() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" width={20} height={20}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      width={20}
+      height={20}
+    >
       <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
       <line x1="23" y1="9" x2="17" y2="15" />
       <line x1="17" y1="9" x2="23" y2="15" />
@@ -101,7 +141,16 @@ function IconSoundOff() {
 
 function IconExpand() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" width={20} height={20}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      width={20}
+      height={20}
+    >
       <polyline points="15 3 21 3 21 9" />
       <polyline points="9 21 3 21 3 15" />
       <line x1="21" y1="3" x2="14" y2="10" />
@@ -115,7 +164,13 @@ function IconPlay() {
     <svg viewBox="0 0 56 56" fill="none" width={56} height={56}>
       {/* Outer circle — glassmorphism dark */}
       <circle cx="28" cy="28" r="26" fill="rgba(0,0,0,0.50)" />
-      <circle cx="28" cy="28" r="26" stroke="rgba(255,255,255,0.18)" strokeWidth="1" />
+      <circle
+        cx="28"
+        cy="28"
+        r="26"
+        stroke="rgba(255,255,255,0.18)"
+        strokeWidth="1"
+      />
       {/* Play triangle — slightly offset for optical centering */}
       <polygon points="23,18 23,38 42,28" fill="rgba(255,255,255,0.92)" />
     </svg>
@@ -168,7 +223,9 @@ function VideoPlayerCard({
     if (isActive) {
       // Silent: browser autoplay policy may reject until user gestures.
       // We don't log — it fires on every first-load before interaction.
-      el.play().catch(() => { /* autoplay policy */ });
+      el.play().catch(() => {
+        /* autoplay policy */
+      });
     } else {
       el.pause();
     }
@@ -218,7 +275,9 @@ function VideoPlayerCard({
     if (!el) return;
     if (el.paused) {
       // Click IS a user gesture — play() shouldn't reject, but guard anyway.
-      el.play().catch(() => { /* gesture already consumed */ });
+      el.play().catch(() => {
+        /* gesture already consumed */
+      });
     } else {
       el.pause();
     }
@@ -234,20 +293,17 @@ function VideoPlayerCard({
       setProgress(ratio);
       setRemaining(fmt(el.duration - el.currentTime));
     },
-    []
+    [],
   );
 
   // ── Mute toggle ──────────────────────────────
-  const toggleMute = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      const el = videoRef.current;
-      if (!el) return;
-      el.muted = !el.muted;
-      setMuted(el.muted);
-    },
-    []
-  );
+  const toggleMute = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    const el = videoRef.current;
+    if (!el) return;
+    el.muted = !el.muted;
+    setMuted(el.muted);
+  }, []);
 
   // ── Like ─────────────────────────────────────
   const handleLike = useCallback((e: React.MouseEvent) => {
@@ -262,12 +318,16 @@ function VideoPlayerCard({
       const url = `https://iku.gg/watch/${video.slug}`;
       if (navigator.share) {
         // Silent: user can cancel the share sheet. That rejection is not an error.
-        navigator.share({ title, url }).catch(() => { /* user dismissed */ });
+        navigator.share({ title, url }).catch(() => {
+          /* user dismissed */
+        });
       } else {
-        navigator.clipboard?.writeText(url).catch(() => { /* permission denied */ });
+        navigator.clipboard?.writeText(url).catch(() => {
+          /* permission denied */
+        });
       }
     },
-    [video.slug, title]
+    [video.slug, title],
   );
 
   return (
@@ -332,7 +392,9 @@ function VideoPlayerCard({
             type="button"
           >
             <IconHeart filled={liked} />
-            <span>{liked ? formatScore(video.score + 1) : formatScore(video.score)}</span>
+            <span>
+              {liked ? formatScore(video.score + 1) : formatScore(video.score)}
+            </span>
           </button>
 
           {/* Share */}
@@ -371,7 +433,10 @@ function VideoPlayerCard({
         </div>
 
         {/* ── Overlay info (bottom-left, over video) ── */}
-        <div className="gif-preview__overlay-info" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="gif-preview__overlay-info"
+          onClick={(e) => e.stopPropagation()}
+        >
           {/* Avatar + username */}
           <div className="gif-preview__user">
             <div className="gif-preview__avatar" aria-hidden="true">
@@ -393,9 +458,7 @@ function VideoPlayerCard({
           </div>
 
           {/* Description / title */}
-          {title && (
-            <p className="gif-preview__description">{title}</p>
-          )}
+          {title && <p className="gif-preview__description">{title}</p>}
 
           {/* Hashtags */}
           {video.tags.length > 0 && (
@@ -462,8 +525,11 @@ export function HomeFeed({
   initialVideos: FeedVideo[];
   mode: "trending" | "newest";
 }) {
-  const [videos, setVideos] = useState(() =>
-    filterByBlacklist(initialVideos as import("@/types/video").Video[]) as FeedVideo[]
+  const [videos, setVideos] = useState(
+    () =>
+      filterByBlacklist(
+        initialVideos as import("@/types/video").Video[],
+      ) as FeedVideo[],
   );
   const [activeIndex, setActiveIndex] = useState(0);
   const [page, setPage] = useState(1);
@@ -484,8 +550,11 @@ export function HomeFeed({
       const nextPage = page + 1;
       // Include the session offset so the server returns the right catalog slice.
       // On page 1 we have no offset yet — the server will generate one and send it back.
-      const offsetParam = sessionOffset !== null ? `&offset=${sessionOffset}` : "";
-      const res = await fetch(`/api/feed?page=${nextPage}&sort=${sort}${offsetParam}`);
+      const offsetParam =
+        sessionOffset !== null ? `&offset=${sessionOffset}` : "";
+      const res = await fetch(
+        `/api/feed?page=${nextPage}&sort=${sort}${offsetParam}`,
+      );
       if (!res.ok) return;
       const data = await res.json();
       // Capture the offset from the first response so all future pages use it.
@@ -514,7 +583,7 @@ export function HomeFeed({
       (entries) => {
         if (entries[0]?.isIntersecting) loadMore();
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
     obs.observe(sentinel);
     return () => obs.disconnect();
@@ -534,7 +603,7 @@ export function HomeFeed({
           }
         });
       },
-      { threshold: 0.6 }
+      { threshold: 0.6 },
     );
     refs.forEach((r) => obs.observe(r));
     return () => obs.disconnect();
@@ -545,18 +614,21 @@ export function HomeFeed({
       {videos.map((video, i) => (
         <div
           key={video.id}
-          ref={(el) => { cardRefs.current[i] = el; }}
+          ref={(el) => {
+            cardRefs.current[i] = el;
+          }}
           data-index={i}
         >
-          <VideoPlayerCard video={video} isActive={i === activeIndex} nearActive={Math.abs(i - activeIndex) <= 2} />
+          <VideoPlayerCard
+            video={video}
+            isActive={i === activeIndex}
+            nearActive={Math.abs(i - activeIndex) <= 2}
+          />
         </div>
       ))}
 
       {/* Sentinel + loader */}
-      <div
-        ref={sentinelRef}
-        className="home-feed__sentinel"
-      >
+      <div ref={sentinelRef} className="home-feed__sentinel">
         {loading && <div className="loader" />}
         {!hasMore && !loading && (
           <p className="home-feed__end">You've reached the end</p>

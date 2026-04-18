@@ -32,14 +32,19 @@ const log = (msg) => console.log(`[twitter] ${msg}`);
 
 // Tweet templates — rotate for variety
 const TEMPLATES = [
-  (c) => `${c.suggested_caption}\n\nFull video: ${c.watch_url}\n\n${c.suggested_hashtags}`,
-  (c) => `New on iku.gg\n\n${c.watch_url}\n\n${c.suggested_hashtags} #hentaivideo`,
-  (c) => `${c.suggested_caption} — watch free on iku.gg\n\n${c.watch_url}\n\n${c.suggested_hashtags}`,
-  (c) => `Trending on iku.gg right now\n\n${c.watch_url}\n\n${c.suggested_hashtags} #trending`,
+  (c) =>
+    `${c.suggested_caption}\n\nFull video: ${c.watch_url}\n\n${c.suggested_hashtags}`,
+  (c) =>
+    `New on iku.gg\n\n${c.watch_url}\n\n${c.suggested_hashtags} #hentaivideo`,
+  (c) =>
+    `${c.suggested_caption} — watch free on iku.gg\n\n${c.watch_url}\n\n${c.suggested_hashtags}`,
+  (c) =>
+    `Trending on iku.gg right now\n\n${c.watch_url}\n\n${c.suggested_hashtags} #trending`,
 ];
 
 function loadCreds() {
-  if (!existsSync(CREDS_PATH)) throw new Error("Twitter creds not found at " + CREDS_PATH);
+  if (!existsSync(CREDS_PATH))
+    throw new Error("Twitter creds not found at " + CREDS_PATH);
   const content = readFileSync(CREDS_PATH, "utf8");
   const creds = {};
   for (const line of content.split("\n")) {
@@ -51,7 +56,11 @@ function loadCreds() {
 
 function loadPosted() {
   if (!existsSync(POSTED_PATH)) return [];
-  try { return JSON.parse(readFileSync(POSTED_PATH, "utf8")); } catch { return []; }
+  try {
+    return JSON.parse(readFileSync(POSTED_PATH, "utf8"));
+  } catch {
+    return [];
+  }
 }
 
 function savePosted(posted) {
@@ -59,7 +68,8 @@ function savePosted(posted) {
 }
 
 function loadManifest() {
-  if (!existsSync(MANIFEST_PATH)) throw new Error("No clips manifest at " + MANIFEST_PATH);
+  if (!existsSync(MANIFEST_PATH))
+    throw new Error("No clips manifest at " + MANIFEST_PATH);
   return JSON.parse(readFileSync(MANIFEST_PATH, "utf8"));
 }
 
@@ -112,7 +122,8 @@ async function postTweet(text, creds) {
           "x-twitter-active-user": "yes",
           "x-twitter-auth-type": "OAuth2Session",
           cookie: `auth_token=${creds.AUTH_TOKEN}; ct0=${creds.CT0}`,
-          "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+          "user-agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
         },
       },
       (res) => {
@@ -122,7 +133,10 @@ async function postTweet(text, creds) {
           try {
             const json = JSON.parse(data);
             if (json.data?.create_tweet) {
-              resolve({ ok: true, tweet_id: json.data.create_tweet.tweet_results?.result?.rest_id });
+              resolve({
+                ok: true,
+                tweet_id: json.data.create_tweet.tweet_results?.result?.rest_id,
+              });
             } else {
               resolve({ ok: false, error: JSON.stringify(json).slice(0, 200) });
             }
@@ -130,7 +144,7 @@ async function postTweet(text, creds) {
             resolve({ ok: false, error: data.slice(0, 200) });
           }
         });
-      }
+      },
     );
     req.on("error", (e) => reject(e));
     req.write(body);
@@ -149,7 +163,9 @@ async function main() {
   // Find next unposted clip
   const next = manifest.find((c) => !postedSlugs.has(c.slug));
   if (!next) {
-    log("All clips already posted. Generate more with: node scripts/generate-clips.mjs");
+    log(
+      "All clips already posted. Generate more with: node scripts/generate-clips.mjs",
+    );
     return;
   }
 

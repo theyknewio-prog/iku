@@ -14,11 +14,18 @@ import pool from "@/lib/db";
 import { createRateLimiter } from "@/lib/rate-limit";
 
 // Keyed by userId — not ip — since checkout requires auth anyway.
-const limiter = createRateLimiter({ name: "checkout", max: 10, windowMs: 3600_000 });
+const limiter = createRateLimiter({
+  name: "checkout",
+  max: 10,
+  windowMs: 3600_000,
+});
 
 export async function POST(request: NextRequest) {
   if (!stripe) {
-    return NextResponse.json({ error: "stripe not configured" }, { status: 500 });
+    return NextResponse.json(
+      { error: "stripe not configured" },
+      { status: 500 },
+    );
   }
 
   const session = await auth();
@@ -31,7 +38,10 @@ export async function POST(request: NextRequest) {
   // of conversions (5/6 users never clicked the verify link).
   const userId = session.user.id;
   if (limiter.consume(userId)) {
-    return NextResponse.json({ error: "too many checkout attempts" }, { status: 429 });
+    return NextResponse.json(
+      { error: "too many checkout attempts" },
+      { status: 429 },
+    );
   }
 
   let body: unknown;
@@ -50,14 +60,14 @@ export async function POST(request: NextRequest) {
   if (!plan.priceId) {
     return NextResponse.json(
       { error: "plan not yet available — price not configured" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
   // Fetch user details (email, existing stripe_customer_id if any)
   const { rows } = await pool.query(
     `SELECT email, username, stripe_customer_id FROM users WHERE id = $1`,
-    [userId]
+    [userId],
   );
   const user = rows[0];
   if (!user) {
@@ -70,7 +80,7 @@ export async function POST(request: NextRequest) {
   if (plan.id !== "lifetime" && process.env.STRIPE_COUPON_TIER_DISCOUNT) {
     const { rows: statsRows } = await pool.query(
       `SELECT score FROM user_stats WHERE user_id = $1`,
-      [userId]
+      [userId],
     );
     if (statsRows[0]?.score >= 15000) {
       discounts = [{ coupon: process.env.STRIPE_COUPON_TIER_DISCOUNT }];
@@ -86,20 +96,26 @@ export async function POST(request: NextRequest) {
   // subscription on the same plan, return 409 (prevents webhook mangling).
   const { rows: proRows } = await pool.query(
     `SELECT pro_status, pro_plan FROM users WHERE id = $1`,
-    [userId]
+    [userId],
   );
   const proStatus = proRows[0]?.pro_status as string | null;
   const proPlan = proRows[0]?.pro_plan as string | null;
   if (proStatus === "lifetime") {
     return NextResponse.json(
-      { error: "already_lifetime", message: "You already have lifetime Pro access." },
-      { status: 409 }
+      {
+        error: "already_lifetime",
+        message: "You already have lifetime Pro access.",
+      },
+      { status: 409 },
     );
   }
   if (proStatus === "active" && proPlan === plan.id) {
     return NextResponse.json(
-      { error: "already_subscribed", message: `You are already on the ${plan.id} plan.` },
-      { status: 409 }
+      {
+        error: "already_subscribed",
+        message: `You are already on the ${plan.id} plan.`,
+      },
+      { status: 409 },
     );
   }
 
@@ -133,13 +149,16 @@ export async function POST(request: NextRequest) {
       {
         // Idempotency: dedupe double-clicks within a 1-minute window.
         idempotencyKey: `checkout-${userId}-${plan.id}-${Math.floor(Date.now() / 60_000)}`,
-      }
+      },
     );
 
     return NextResponse.json({ url: checkoutSession.url });
   } catch (err) {
     const msg = err instanceof Error ? err.message : "unknown";
     console.error("stripe checkout error:", msg);
-    return NextResponse.json({ error: "checkout failed", detail: msg }, { status: 500 });
+    return NextResponse.json(
+      { error: "checkout failed", detail: msg },
+      { status: 500 },
+    );
   }
 }

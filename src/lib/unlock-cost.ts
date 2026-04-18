@@ -19,9 +19,7 @@
 
 import type { Video } from "@/types/video";
 
-export function unlockCost(
-  video: Pick<Video, "duration" | "source">
-): number {
+export function unlockCost(video: Pick<Video, "duration" | "source">): number {
   // Sources with missing duration metadata → fixed mid-tier price.
   if (
     (video.source === "hentaicity" || video.source === "hentaigasm") &&

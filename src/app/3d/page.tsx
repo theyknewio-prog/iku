@@ -21,7 +21,14 @@ export const metadata: Metadata = {
       "Free 3D hentai, SFM animations, cartoon porn & game character compilations updated daily.",
     siteName: "iku.gg",
     type: "website",
-    images: [{ url: "https://iku.gg/og-default.png", width: 1200, height: 630, alt: "iku.gg" }],
+    images: [
+      {
+        url: "https://iku.gg/og-default.png",
+        width: 1200,
+        height: 630,
+        alt: "iku.gg",
+      },
+    ],
   },
   robots: { index: true, follow: true },
 };
@@ -49,9 +56,9 @@ const TOP_GAMES = [
 export default async function ThreeDPage({ searchParams }: Props) {
   const { page = "1", sort = "score" } = await searchParams;
   const currentPage = Math.max(1, parseInt(String(page)));
-  const sortOrder = (["score", "date", "favcount"].includes(String(sort))
-    ? sort
-    : "score") as "score" | "date" | "favcount";
+  const sortOrder = (
+    ["score", "date", "favcount"].includes(String(sort)) ? sort : "score"
+  ) as "score" | "date" | "favcount";
 
   const [{ data: videos, hasMore }, totalCount] = await Promise.all([
     getVideos({
@@ -73,7 +80,9 @@ export default async function ThreeDPage({ searchParams }: Props) {
           {/* ── Page hero ─────────────────────────────────────── */}
           <div className="tag-hero">
             <p className="tag-hero__label">3D & Cartoon Porn</p>
-            <h1 className="tag-hero__title">3D Hentai, SFM Animations & Cartoon Porn</h1>
+            <h1 className="tag-hero__title">
+              3D Hentai, SFM Animations & Cartoon Porn
+            </h1>
             <p
               style={{
                 color: "var(--color-text-secondary)",
@@ -82,14 +91,18 @@ export default async function ThreeDPage({ searchParams }: Props) {
                 maxWidth: "760px",
               }}
             >
-              The biggest free library of 3D hentai, cartoon porn, SFM (Source Filmmaker) animations
-              and HMV compilations. 300,000+ clips featuring Genshin Impact, Overwatch, Blue Archive,
-              Honkai Star Rail, Zenless Zone Zero and more. No signup required.
+              The biggest free library of 3D hentai, cartoon porn, SFM (Source
+              Filmmaker) animations and HMV compilations. 300,000+ clips
+              featuring Genshin Impact, Overwatch, Blue Archive, Honkai Star
+              Rail, Zenless Zone Zero and more. No signup required.
             </p>
           </div>
 
           {/* ── Top games strip — quick access ─────────────────── */}
-          <div className="filter-bar" style={{ marginBottom: "32px", flexWrap: "wrap" }}>
+          <div
+            className="filter-bar"
+            style={{ marginBottom: "32px", flexWrap: "wrap" }}
+          >
             {TOP_GAMES.map((g) => (
               <Link
                 key={g.slug}
@@ -98,7 +111,9 @@ export default async function ThreeDPage({ searchParams }: Props) {
                 title={`${g.label} — ${g.count} videos`}
               >
                 {g.label}
-                <span style={{ opacity: 0.55, marginLeft: "6px", fontSize: "11px" }}>
+                <span
+                  style={{ opacity: 0.55, marginLeft: "6px", fontSize: "11px" }}
+                >
                   {g.count}
                 </span>
               </Link>
@@ -143,23 +158,32 @@ export default async function ThreeDPage({ searchParams }: Props) {
             </div>
           ) : (
             <>
-            <Link href="/pricing" className="hp-premium-strip" aria-label="Get iku Premium">
-              <span className="hp-premium-strip__icon">🚫</span>
-              <span className="hp-premium-strip__text"><strong>Skip every ad</strong> · 4K when available · Early access · Unlimited favorites</span>
-              <span className="hp-premium-strip__cta">Premium 4.99€/mo →</span>
-            </Link>
-            <ListingAdBlock variant="mid" />
-            <div className="video-grid">
-              {videos.map((video: Video, i) => (
-                <ThumbnailCard
-                  key={video.id}
-                  video={video}
-                  priority={i < 4}
-                  lazy={i >= 4}
-                />
-              ))}
-            </div>
-            <ListingAdBlock variant="bottom" />
+              <Link
+                href="/pricing"
+                className="hp-premium-strip"
+                aria-label="Get iku Premium"
+              >
+                <span className="hp-premium-strip__icon">🚫</span>
+                <span className="hp-premium-strip__text">
+                  <strong>Skip every ad</strong> · 4K when available · Early
+                  access · Unlimited favorites
+                </span>
+                <span className="hp-premium-strip__cta">
+                  Premium 4.99€/mo →
+                </span>
+              </Link>
+              <ListingAdBlock variant="mid" />
+              <div className="video-grid">
+                {videos.map((video: Video, i) => (
+                  <ThumbnailCard
+                    key={video.id}
+                    video={video}
+                    priority={i < 4}
+                    lazy={i >= 4}
+                  />
+                ))}
+              </div>
+              <ListingAdBlock variant="bottom" />
             </>
           )}
 
@@ -167,7 +191,11 @@ export default async function ThreeDPage({ searchParams }: Props) {
           {videos.length > 0 && (
             <div style={{ marginTop: "40px", marginBottom: "48px" }}>
               <Suspense>
-                <Pagination currentPage={currentPage} hasNextPage={hasMore} totalPages={totalPages} />
+                <Pagination
+                  currentPage={currentPage}
+                  hasNextPage={hasMore}
+                  totalPages={totalPages}
+                />
               </Suspense>
             </div>
           )}
@@ -184,20 +212,29 @@ export default async function ThreeDPage({ searchParams }: Props) {
               lineHeight: "1.7",
             }}
           >
-            <h2 style={{ color: "var(--color-text-primary)", marginBottom: "16px" }}>
+            <h2
+              style={{
+                color: "var(--color-text-primary)",
+                marginBottom: "16px",
+              }}
+            >
               About 3D Hentai, SFM & Cartoon Porn on iku.gg
             </h2>
             <p>
-              This is iku.gg&apos;s <strong>3D catalogue</strong> — over 300,000 clips covering Source Filmmaker
-              (SFM) animations, 3D hentai, cartoon porn, HMV compilations and fan animations from the most
-              popular gaming franchises. You&apos;ll find content from Genshin Impact, Overwatch, Blue Archive,
-              Zenless Zone Zero, Honkai Star Rail, Final Fantasy, Resident Evil, Nier Automata, Fortnite,
-              Dead or Alive and many more.
+              This is iku.gg&apos;s <strong>3D catalogue</strong> — over 300,000
+              clips covering Source Filmmaker (SFM) animations, 3D hentai,
+              cartoon porn, HMV compilations and fan animations from the most
+              popular gaming franchises. You&apos;ll find content from Genshin
+              Impact, Overwatch, Blue Archive, Zenless Zone Zero, Honkai Star
+              Rail, Final Fantasy, Resident Evil, Nier Automata, Fortnite, Dead
+              or Alive and many more.
             </p>
             <p style={{ marginTop: "12px" }}>
-              Prefer classic 2D animated OAV? Check our <Link href="/hentai">Hentai 2D catalogue</Link>.
-              Want bite-sized clips instead? Try the <Link href="/feed">Shorts feed</Link>. Browse by{" "}
-              <Link href="/character">character</Link>, <Link href="/series">series/game</Link>, or{" "}
+              Prefer classic 2D animated OAV? Check our{" "}
+              <Link href="/hentai">Hentai 2D catalogue</Link>. Want bite-sized
+              clips instead? Try the <Link href="/feed">Shorts feed</Link>.
+              Browse by <Link href="/character">character</Link>,{" "}
+              <Link href="/series">series/game</Link>, or{" "}
               <Link href="/tags">tag</Link>.
             </p>
           </section>

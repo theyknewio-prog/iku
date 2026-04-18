@@ -40,7 +40,7 @@ async function findUserByEmail(email: string): Promise<UserRow | null> {
   const { rows } = await pool.query(
     `SELECT id, email, username, password_hash, avatar_emoji, email_verified
      FROM users WHERE LOWER(email) = LOWER($1) LIMIT 1`,
-    [email]
+    [email],
   );
   return rows[0] ?? null;
 }
@@ -50,7 +50,7 @@ async function findUserById(id: number | string): Promise<UserRow | null> {
   const { rows } = await pool.query(
     `SELECT id, email, username, password_hash, avatar_emoji, email_verified
      FROM users WHERE id = $1 LIMIT 1`,
-    [id]
+    [id],
   );
   return rows[0] ?? null;
 }
@@ -79,14 +79,15 @@ async function findOrCreateDiscordUser(profile: {
      FROM user_oauth_accounts o
      JOIN users u ON u.id = o.user_id
      WHERE o.provider = 'discord' AND o.provider_user_id = $1`,
-    [profile.id]
+    [profile.id],
   );
   if (existing.rows[0]) return existing.rows[0];
 
   // Harden: if Discord says the email is NOT verified, refuse to use it
   // as a lookup key. Attackers can have Discord accounts with arbitrary
   // unverified emails — we don't want to auto-link those to existing users.
-  const trustedEmail = profile.verified === true && profile.email ? profile.email : null;
+  const trustedEmail =
+    profile.verified === true && profile.email ? profile.email : null;
 
   // 2. Account by email? (link, don't duplicate) — ONLY if both sides verified.
   if (trustedEmail) {
@@ -97,14 +98,14 @@ async function findOrCreateDiscordUser(profile: {
         // creating a fresh Discord-only account. The original owner can still
         // complete email verification and own the iku.gg account.
         console.warn(
-          `[auth] refusing Discord auto-link to unverified user ${byEmail.id} (email=${trustedEmail})`
+          `[auth] refusing Discord auto-link to unverified user ${byEmail.id} (email=${trustedEmail})`,
         );
       } else {
         await pool.query(
           `INSERT INTO user_oauth_accounts (provider, provider_user_id, user_id)
            VALUES ('discord', $1, $2)
            ON CONFLICT DO NOTHING`,
-          [profile.id, byEmail.id]
+          [profile.id, byEmail.id],
         );
         return byEmail;
       }
@@ -112,11 +113,12 @@ async function findOrCreateDiscordUser(profile: {
   }
 
   // 3. Create new user. Username must be unique — suffix with discord id if clash.
-  const baseUsername = profile.username.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 20) || "user";
+  const baseUsername =
+    profile.username.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 20) || "user";
   let username = baseUsername;
   const clash = await pool.query(
     `SELECT 1 FROM users WHERE LOWER(username) = LOWER($1) LIMIT 1`,
-    [username]
+    [username],
   );
   if (clash.rows.length > 0) {
     username = `${baseUsername}_${profile.id.slice(-4)}`;
@@ -134,14 +136,14 @@ async function findOrCreateDiscordUser(profile: {
     `INSERT INTO users (email, username, avatar_emoji, email_verified, email_verified_at)
      VALUES ($1, $2, $3, $4, CASE WHEN $4 THEN NOW() ELSE NULL END)
      RETURNING id, email, username, password_hash, avatar_emoji, email_verified`,
-    [email, username, avatar, emailVerified]
+    [email, username, avatar, emailVerified],
   );
   const newUser = rows[0];
 
   await pool.query(
     `INSERT INTO user_oauth_accounts (provider, provider_user_id, user_id)
      VALUES ('discord', $1, $2)`,
-    [profile.id, newUser.id]
+    [profile.id, newUser.id],
   );
 
   return newUser;
@@ -160,7 +162,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Credentials({
       name: "Credentials",
       credentials: {
-        email:    { label: "Email",    type: "email" },
+        email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
@@ -187,7 +189,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     ...(process.env.DISCORD_CLIENT_ID && process.env.DISCORD_CLIENT_SECRET
       ? [
           Discord({
-            clientId:     process.env.DISCORD_CLIENT_ID,
+            clientId: process.env.DISCORD_CLIENT_ID,
             clientSecret: process.env.DISCORD_CLIENT_SECRET,
             authorization: { params: { scope: "identify email" } },
           }),

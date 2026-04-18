@@ -43,16 +43,23 @@ export function StreakBadge() {
 
     // Refresh every 2 min to catch streak updates after viewing videos
     const interval = window.setInterval(load, 2 * 60_000);
-    return () => { canceled = true; window.clearInterval(interval); };
+    return () => {
+      canceled = true;
+      window.clearInterval(interval);
+    };
   }, [status]);
 
-  if (status !== "authenticated" || !stats || stats.current_streak < 1) return null;
+  if (status !== "authenticated" || !stats || stats.current_streak < 1)
+    return null;
 
   const color =
-    stats.current_streak >= 100 ? "#ef4444" :
-    stats.current_streak >= 30  ? "#c084fc" :
-    stats.current_streak >= 7   ? "#f97316" :
-    "#fbbf24";
+    stats.current_streak >= 100
+      ? "#ef4444"
+      : stats.current_streak >= 30
+        ? "#c084fc"
+        : stats.current_streak >= 7
+          ? "#f97316"
+          : "#fbbf24";
 
   return (
     <Link
@@ -60,7 +67,9 @@ export function StreakBadge() {
       className="v2-streak-badge"
       title={`${stats.current_streak} day streak · ${stats.score.toLocaleString()} points`}
     >
-      <span className="v2-streak-badge__icon" style={{ color }}>🔥</span>
+      <span className="v2-streak-badge__icon" style={{ color }}>
+        🔥
+      </span>
       <span className="v2-streak-badge__count">{stats.current_streak}</span>
     </Link>
   );

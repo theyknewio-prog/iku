@@ -23,14 +23,27 @@ export const pool = new Pool({
  */
 export async function upsertVideos(
   rows: Array<{
-    source: string; source_id: number; slug: string;
-    url?: string; page_url?: string | null; site?: string | null;
-    title?: string | null; thumbnail?: string; preview?: string;
-    score?: number; favorites?: number;
-    tags?: string[]; characters?: string[]; copyrights?: string[]; artists?: string[];
-    width?: number; height?: number; file_size?: number;
-    duration?: number | null; created_at?: string;
-  }>
+    source: string;
+    source_id: number;
+    slug: string;
+    url?: string;
+    page_url?: string | null;
+    site?: string | null;
+    title?: string | null;
+    thumbnail?: string;
+    preview?: string;
+    score?: number;
+    favorites?: number;
+    tags?: string[];
+    characters?: string[];
+    copyrights?: string[];
+    artists?: string[];
+    width?: number;
+    height?: number;
+    file_size?: number;
+    duration?: number | null;
+    created_at?: string;
+  }>,
 ): Promise<number> {
   if (rows.length === 0) return 0;
 
@@ -42,7 +55,11 @@ export async function upsertVideos(
     // Check ALL array columns where sources classify subjects, not just tags.
     // Danbooru/Gelbooru put character/copyright names in dedicated columns and
     // nothing relevant in `tags`, so checking only tags was a critical hole.
-    const lists: string[][] = [r.tags ?? [], r.characters ?? [], r.copyrights ?? []];
+    const lists: string[][] = [
+      r.tags ?? [],
+      r.characters ?? [],
+      r.copyrights ?? [],
+    ];
     for (const list of lists) {
       for (const t of list) {
         if (BANNED_TAGS.has(t.toLowerCase())) return false;
@@ -54,7 +71,9 @@ export async function upsertVideos(
   });
   const rejected = rows.length - filtered.length;
   if (rejected > 0) {
-    console.warn(`[upsertVideos] rejected ${rejected}/${rows.length} rows for banned content`);
+    console.warn(
+      `[upsertVideos] rejected ${rejected}/${rows.length} rows for banned content`,
+    );
   }
   if (filtered.length === 0) return 0;
   rows = filtered;
@@ -66,15 +85,29 @@ export async function upsertVideos(
     const r = rows[i];
     const o = i * 20;
     placeholders.push(
-      `($${o+1},$${o+2},$${o+3},$${o+4},$${o+5},$${o+6},$${o+7},$${o+8},$${o+9},$${o+10},$${o+11},$${o+12},$${o+13},$${o+14},$${o+15},$${o+16},$${o+17},$${o+18},$${o+19},$${o+20})`
+      `($${o + 1},$${o + 2},$${o + 3},$${o + 4},$${o + 5},$${o + 6},$${o + 7},$${o + 8},$${o + 9},$${o + 10},$${o + 11},$${o + 12},$${o + 13},$${o + 14},$${o + 15},$${o + 16},$${o + 17},$${o + 18},$${o + 19},$${o + 20})`,
     );
     values.push(
-      r.source, r.source_id, r.slug, r.url ?? "", r.page_url ?? null,
-      r.site ?? null, r.title ?? null, r.thumbnail ?? "", r.preview ?? "",
-      r.score ?? 0, r.favorites ?? 0,
-      r.tags ?? [], r.characters ?? [], r.copyrights ?? [], r.artists ?? [],
-      r.width ?? 0, r.height ?? 0, r.file_size ?? 0, r.duration ?? null,
-      r.created_at ?? new Date().toISOString()
+      r.source,
+      r.source_id,
+      r.slug,
+      r.url ?? "",
+      r.page_url ?? null,
+      r.site ?? null,
+      r.title ?? null,
+      r.thumbnail ?? "",
+      r.preview ?? "",
+      r.score ?? 0,
+      r.favorites ?? 0,
+      r.tags ?? [],
+      r.characters ?? [],
+      r.copyrights ?? [],
+      r.artists ?? [],
+      r.width ?? 0,
+      r.height ?? 0,
+      r.file_size ?? 0,
+      r.duration ?? null,
+      r.created_at ?? new Date().toISOString(),
     );
   }
 

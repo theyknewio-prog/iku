@@ -24,7 +24,14 @@ export const metadata: Metadata = {
       "38,000+ full-length hentai episodes — 2D classics + long-form 3D. Stream the preview free, unlock everything with Premium 4.99€/mo.",
     siteName: "iku.gg",
     type: "website",
-    images: [{ url: "https://iku.gg/og-default.png", width: 1200, height: 630, alt: "iku.gg" }],
+    images: [
+      {
+        url: "https://iku.gg/og-default.png",
+        width: 1200,
+        height: 630,
+        alt: "iku.gg",
+      },
+    ],
   },
 };
 
@@ -38,9 +45,9 @@ export default async function EpisodesPage({ searchParams }: Props) {
   // videos with dead images. Date keeps fresh, working thumbs at top.
   const { page = "1", sort = "date" } = await searchParams;
   const currentPage = Math.max(1, parseInt(String(page)));
-  const sortOrder = (["score", "date", "favcount"].includes(String(sort))
-    ? sort
-    : "date") as "score" | "date" | "favcount";
+  const sortOrder = (
+    ["score", "date", "favcount"].includes(String(sort)) ? sort : "date"
+  ) as "score" | "date" | "favcount";
 
   const [{ data: videos, hasMore }, totalCount] = await Promise.all([
     getVideos({
@@ -76,10 +83,10 @@ export default async function EpisodesPage({ searchParams }: Props) {
               }}
             >
               <strong>{totalCount.toLocaleString()}</strong> full-length hentai
-              episodes catalogued on iku.gg — uncensored 2D OAVs from
-              Hentaicity &amp; Hentaigasm, plus long-form 3D animations from
-              Rule34Video and SFM creators. Every episode is over 10 minutes,
-              most are 20-40+ minutes. Free users see a preview;{" "}
+              episodes catalogued on iku.gg — uncensored 2D OAVs from Hentaicity
+              &amp; Hentaigasm, plus long-form 3D animations from Rule34Video
+              and SFM creators. Every episode is over 10 minutes, most are
+              20-40+ minutes. Free users see a preview;{" "}
               <Link href="/pricing" style={{ color: "var(--color-accent)" }}>
                 iku Premium
               </Link>{" "}
@@ -95,13 +102,16 @@ export default async function EpisodesPage({ searchParams }: Props) {
             aria-label="Unlock all full-length episodes with iku Premium"
             style={{ marginTop: "20px" }}
           >
-            <span className="hp-unlock-banner__icon" aria-hidden>✨</span>
+            <span className="hp-unlock-banner__icon" aria-hidden>
+              ✨
+            </span>
             <span className="hp-unlock-banner__text">
               <span className="hp-unlock-banner__title">
                 Unlock every full episode
               </span>
               <span className="hp-unlock-banner__sub">
-                {totalCount.toLocaleString()} episodes · 4K when available · zero ads · cancel anytime
+                {totalCount.toLocaleString()} episodes · 4K when available ·
+                zero ads · cancel anytime
               </span>
             </span>
             <span className="hp-unlock-banner__cta">4.99€/mo</span>
@@ -109,11 +119,13 @@ export default async function EpisodesPage({ searchParams }: Props) {
 
           {/* ── Sort filter bar ───────────────────────────────── */}
           <div className="filter-bar" style={{ marginTop: 24 }}>
-            {([
-              { value: "date", label: "Newest" },
-              { value: "score", label: "Top Rated" },
-              { value: "favcount", label: "Most Saved" },
-            ] as const).map((opt) => (
+            {(
+              [
+                { value: "date", label: "Newest" },
+                { value: "score", label: "Top Rated" },
+                { value: "favcount", label: "Most Saved" },
+              ] as const
+            ).map((opt) => (
               <Link
                 key={opt.value}
                 href={`/episodes?sort=${opt.value}&page=1`}
@@ -137,12 +149,19 @@ export default async function EpisodesPage({ searchParams }: Props) {
             </div>
           ) : (
             <>
-              <Link href="/pricing" className="hp-premium-strip" aria-label="Get iku Premium">
+              <Link
+                href="/pricing"
+                className="hp-premium-strip"
+                aria-label="Get iku Premium"
+              >
                 <span className="hp-premium-strip__icon">🚫</span>
                 <span className="hp-premium-strip__text">
-                  <strong>Skip every ad &amp; unlock all episodes</strong> · 4K when available · cancel anytime
+                  <strong>Skip every ad &amp; unlock all episodes</strong> · 4K
+                  when available · cancel anytime
                 </span>
-                <span className="hp-premium-strip__cta">Premium 4.99€/mo →</span>
+                <span className="hp-premium-strip__cta">
+                  Premium 4.99€/mo →
+                </span>
               </Link>
               <ListingAdBlock variant="mid" />
               <div className="video-grid">
@@ -182,34 +201,44 @@ export default async function EpisodesPage({ searchParams }: Props) {
               lineHeight: 1.7,
             }}
           >
-            <h2 style={{ color: "var(--color-text-primary)", fontSize: "20px", marginBottom: "12px" }}>
+            <h2
+              style={{
+                color: "var(--color-text-primary)",
+                fontSize: "20px",
+                marginBottom: "12px",
+              }}
+            >
               What you get with full-length hentai
             </h2>
             <p>
-              Tube clips are great for 2-minute fixes — but full hentai
-              episodes are a different format entirely. The 7,000+ episodes
-              from Hentaicity and Hentaigasm are uncensored 20-30 minute
-              OAV releases (Bible Black, La Blue Girl, Taimanin Asagi era),
-              while the 31,000+ long-form Rule34Video entries are
-              compilation- and storyline-style 3D animations from
-              independent creators using Blender, Koikatsu, Honey Select,
-              and SFM.
+              Tube clips are great for 2-minute fixes — but full hentai episodes
+              are a different format entirely. The 7,000+ episodes from
+              Hentaicity and Hentaigasm are uncensored 20-30 minute OAV releases
+              (Bible Black, La Blue Girl, Taimanin Asagi era), while the 31,000+
+              long-form Rule34Video entries are compilation- and storyline-style
+              3D animations from independent creators using Blender, Koikatsu,
+              Honey Select, and SFM.
             </p>
             <p>
               On the free tier you can preview every episode page, see the
-              metadata, related videos and FAQ. Hitting play on a locked
-              episode shows an unlock screen. iku Premium (4.99 €/month)
-              removes the unlock gate site-wide, kills every ad, and serves
-              4K when the source supports it. Yearly is 39.99 € (33% off),
-              cancel anytime.
+              metadata, related videos and FAQ. Hitting play on a locked episode
+              shows an unlock screen. iku Premium (4.99 €/month) removes the
+              unlock gate site-wide, kills every ad, and serves 4K when the
+              source supports it. Yearly is 39.99 € (33% off), cancel anytime.
             </p>
             <p>
               Don&apos;t want full episodes? The{" "}
-              <Link href="/hentai" style={{ color: "var(--color-accent)" }}>2D hentai catalogue</Link>{" "}
+              <Link href="/hentai" style={{ color: "var(--color-accent)" }}>
+                2D hentai catalogue
+              </Link>{" "}
               keeps every short and medium clip, the{" "}
-              <Link href="/3d" style={{ color: "var(--color-accent)" }}>3D vertical</Link>{" "}
+              <Link href="/3d" style={{ color: "var(--color-accent)" }}>
+                3D vertical
+              </Link>{" "}
               has the SFM and Blender library, and the{" "}
-              <Link href="/feed" style={{ color: "var(--color-accent)" }}>Shorts feed</Link>{" "}
+              <Link href="/feed" style={{ color: "var(--color-accent)" }}>
+                Shorts feed
+              </Link>{" "}
               loops 30-second clips TikTok-style.
             </p>
           </section>

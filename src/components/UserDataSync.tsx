@@ -54,11 +54,13 @@ export function UserDataSync() {
       return;
     }
     fetch("/api/user/stats")
-      .then((r) => r.ok ? r.json() : null)
+      .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
         document.body.dataset.pro = data?.isPro ? "1" : "0";
       })
-      .catch(() => { document.body.dataset.pro = "0"; });
+      .catch(() => {
+        document.body.dataset.pro = "0";
+      });
   }, [status, session?.user?.id]);
 
   useEffect(() => {

@@ -82,16 +82,28 @@ export function HistoryClient({ initialItems, isAuthenticated }: Props) {
 
   return (
     <main className="shell-content">
-      <div className="page-container" style={{ paddingTop: "48px", paddingBottom: "80px" }}>
-
+      <div
+        className="page-container"
+        style={{ paddingTop: "48px", paddingBottom: "80px" }}
+      >
         <div className="explore-header" style={{ marginBottom: "24px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: "12px",
+            }}
+          >
             <div>
               <h1 className="explore-header__title">Watch History</h1>
               <p className="explore-header__sub">
                 {items.length} video{items.length !== 1 ? "s" : ""} watched
                 {isAuthenticated && items.length > 0 && (
-                  <span style={{ marginLeft: 8, fontSize: 11, color: "#4ade80" }}>
+                  <span
+                    style={{ marginLeft: 8, fontSize: 11, color: "#4ade80" }}
+                  >
                     ✓ synced
                   </span>
                 )}
@@ -101,7 +113,10 @@ export function HistoryClient({ initialItems, isAuthenticated }: Props) {
               <button
                 onClick={handleClear}
                 className="btn btn-ghost btn-sm"
-                style={{ color: "var(--color-error)", borderColor: "rgba(239,68,68,0.3)" }}
+                style={{
+                  color: "var(--color-error)",
+                  borderColor: "rgba(239,68,68,0.3)",
+                }}
               >
                 Clear History
               </button>
@@ -110,19 +125,52 @@ export function HistoryClient({ initialItems, isAuthenticated }: Props) {
         </div>
 
         {items.length === 0 && (
-          <div style={{ textAlign: "center", padding: "80px 20px", color: "var(--color-text-tertiary)" }}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ margin: "0 auto 16px", display: "block", opacity: 0.3 }}>
+          <div
+            style={{
+              textAlign: "center",
+              padding: "80px 20px",
+              color: "var(--color-text-tertiary)",
+            }}
+          >
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ margin: "0 auto 16px", display: "block", opacity: 0.3 }}
+            >
               <circle cx="12" cy="12" r="10" />
               <polyline points="12 6 12 12 16 14" />
             </svg>
-            <p style={{ fontSize: "var(--text-base)", marginBottom: "8px" }}>No history yet</p>
-            <p style={{ fontSize: "var(--text-sm)", opacity: 0.6 }}>Videos you watch will appear here</p>
+            <p style={{ fontSize: "var(--text-base)", marginBottom: "8px" }}>
+              No history yet
+            </p>
+            <p style={{ fontSize: "var(--text-sm)", opacity: 0.6 }}>
+              Videos you watch will appear here
+            </p>
             {!isAuthenticated && (
-              <p style={{ fontSize: "var(--text-xs)", opacity: 0.5, marginTop: "8px" }}>
-                <Link href="/login" style={{ color: "#ff6b9d" }}>Sign in</Link> to sync across devices
+              <p
+                style={{
+                  fontSize: "var(--text-xs)",
+                  opacity: 0.5,
+                  marginTop: "8px",
+                }}
+              >
+                <Link href="/login" style={{ color: "#ff6b9d" }}>
+                  Sign in
+                </Link>{" "}
+                to sync across devices
               </p>
             )}
-            <Link href="/" className="btn btn-ghost btn-sm" style={{ marginTop: "20px", display: "inline-flex" }}>
+            <Link
+              href="/"
+              className="btn btn-ghost btn-sm"
+              style={{ marginTop: "20px", display: "inline-flex" }}
+            >
               Browse videos
             </Link>
           </div>
@@ -137,7 +185,9 @@ export function HistoryClient({ initialItems, isAuthenticated }: Props) {
         )}
 
         {/* Conversion CTA — anon users watching a lot are high-intent. */}
-        {!isAuthenticated && items.length > 0 && <SignupCTA placement="history" />}
+        {!isAuthenticated && items.length > 0 && (
+          <SignupCTA placement="history" />
+        )}
       </div>
     </main>
   );
@@ -162,40 +212,51 @@ function HistoryCard({ item }: { item: DisplayItem }) {
             onError={() => setImgBroken(true)}
           />
         )}
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          background: "rgba(0,0,0,0.35)",
-          zIndex: 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          pointerEvents: "none",
-        }}>
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "rgba(0,0,0,0.35)",
+            zIndex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            pointerEvents: "none",
+          }}
+        >
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="rgba(255,255,255,0.6)"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
         {item.timestamp && (
-          <span style={{
-            position: "absolute",
-            bottom: "6px",
-            right: "6px",
-            background: "rgba(0,0,0,0.75)",
-            color: "var(--color-text-secondary)",
-            fontSize: "var(--text-2xs)",
-            padding: "2px 6px",
-            borderRadius: "4px",
-            zIndex: 2,
-          }}>
+          <span
+            style={{
+              position: "absolute",
+              bottom: "6px",
+              right: "6px",
+              background: "rgba(0,0,0,0.75)",
+              color: "var(--color-text-secondary)",
+              fontSize: "var(--text-2xs)",
+              padding: "2px 6px",
+              borderRadius: "4px",
+              zIndex: 2,
+            }}
+          >
             {timeAgo(item.timestamp)}
           </span>
         )}
       </div>
       <div className="video-card__body">
-        <h3 className="video-card__title">
-          {item.title || `#${item.id}`}
-        </h3>
+        <h3 className="video-card__title">{item.title || `#${item.id}`}</h3>
       </div>
     </Link>
   );

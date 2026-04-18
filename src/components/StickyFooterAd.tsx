@@ -28,12 +28,13 @@ import { insertExoClickZone } from "@/lib/ad-utils";
 // to the narrow parent so users saw only a ~160px top-left slice of the
 // creative (Sab screenshot 2026-04-11: "your Porn squad of..." zoomed corner).
 // 300x50 is the format ExoClick actually sells for this slot size.
-const ZONE_ID       = AD_ZONES.exoclick.mobileBanner300x50 ?? AD_ZONES.exoclick.watchUnderplayer728;
-const STORAGE_KEY   = "iku_sticky_footer_dismissed";
+const ZONE_ID =
+  AD_ZONES.exoclick.mobileBanner300x50 ?? AD_ZONES.exoclick.watchUnderplayer728;
+const STORAGE_KEY = "iku_sticky_footer_dismissed";
 
 export function StickyFooterAd() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const insertedRef  = useRef(false);
+  const insertedRef = useRef(false);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {

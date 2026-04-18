@@ -2,7 +2,14 @@
 slug: what-is-animation-porn-explained
 title: "What Is Animation Porn? The Complete Explanation [2026]"
 description: "What is animation porn? Hentai, 3D CGI, cartoon adult content — all formats explained. History, tools, legality, and where to watch the best animated porn in 2026."
-keywords: ["animation porn", "porn animation", "animated porn", "what is animation porn", "animated adult content"]
+keywords:
+  [
+    "animation porn",
+    "porn animation",
+    "animated porn",
+    "what is animation porn",
+    "animated adult content",
+  ]
 category: guides
 published: "2026-04-12"
 author: "iku.gg editorial"
@@ -238,6 +245,7 @@ Yes. The [/settings](/settings) page lets you add tags to your personal blacklis
 iku.gg exists to make this catalog navigable. 360,000+ animated adult videos, tagged and scored, waiting to be discovered.
 
 Start here:
+
 - [/trending](/trending) — Highest-rated animation porn right now
 - [/explore](/explore) — Full catalog with tag and style filters
 - [/shorts](/shorts) — Short-form animated clips
@@ -249,6 +257,7 @@ Start here:
 ---
 
 **Related articles:**
+
 - [3D Hentai: The Complete Guide (2026)](/blog/3d-hentai-guide-2026)
 - [3D Porn Animation: Best SFM & Blender Videos](/blog/3d-porn-animation-best-sfm)
 - [Cartoon Porn: Top Animated Videos (2026)](/blog/cartoon-porn-top-animations)

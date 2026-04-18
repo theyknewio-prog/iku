@@ -41,9 +41,9 @@ const pool = new pg.Pool({ connectionString: DATABASE_URL });
 function tierForScore(score) {
   if (score >= 50000) return "Hentai Sage";
   if (score >= 15000) return "Waifu Scholar";
-  if (score >= 5000)  return "Otaku";
-  if (score >= 1000)  return "Senpai";
-  if (score >= 200)   return "Kouhai";
+  if (score >= 5000) return "Otaku";
+  if (score >= 1000) return "Senpai";
+  if (score >= 200) return "Kouhai";
   return "Wanderer";
 }
 
@@ -85,11 +85,15 @@ function emailShell({ title, preheader, body, ctaLabel, ctaUrl, footnote }) {
             <td style="padding:32px 32px 24px;color:#fff;">
               <h1 style="margin:0 0 16px;font-size:24px;font-weight:800;color:#fff;line-height:1.3;">${escapeHtml(title)}</h1>
               <div style="font-size:15px;line-height:1.6;color:rgba(255,255,255,0.78);">${body}</div>
-              ${ctaUrl && ctaLabel ? `
+              ${
+                ctaUrl && ctaLabel
+                  ? `
               <div style="margin:28px 0 12px;text-align:center;">
                 <a href="${escapeHtml(ctaUrl)}" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#ff6b9d,#c084fc);color:#fff !important;text-decoration:none;font-weight:800;font-size:14px;border-radius:12px;letter-spacing:0.02em;">${escapeHtml(ctaLabel)}</a>
               </div>
-              ` : ""}
+              `
+                  : ""
+              }
               ${footnote ? `<p style="margin:24px 0 0;padding-top:20px;border-top:1px solid rgba(255,255,255,0.08);font-size:12px;color:rgba(255,255,255,0.5);line-height:1.5;">${footnote}</p>` : ""}
             </td>
           </tr>
@@ -112,33 +116,40 @@ function emailShell({ title, preheader, body, ctaLabel, ctaUrl, footnote }) {
 // Build winback email for a given user + day window
 // ─────────────────────────────────────────────────────────────
 function buildEmail(user, daysInactive) {
-  const { username, score = 0, longest_streak: longestStreak = 0, current_streak: currentStreak = 0 } = user;
+  const {
+    username,
+    score = 0,
+    longest_streak: longestStreak = 0,
+    current_streak: currentStreak = 0,
+  } = user;
   const tier = tierForScore(score);
 
   const subjects = {
-    7:  `We miss you, ${username} 💔`,
+    7: `We miss you, ${username} 💔`,
     14: `${username}, your streak is getting cold ❄️`,
     30: `One last reminder, ${username} — we're still here 💖`,
   };
 
   const hooks = {
-    7:  "It's been a week since you last visited. Your spot on the leaderboard is getting hungry.",
+    7: "It's been a week since you last visited. Your spot on the leaderboard is getting hungry.",
     14: "Two weeks without watching. Your daily quests are piling up and the community is scoring past you.",
     30: "A full month. We know life gets busy — just a reminder that your account, favorites, and progress are still here waiting.",
   };
 
-  const streakLine = longestStreak > 0
-    ? `<p style="margin:0 0 16px;padding:14px 18px;background:rgba(255,107,157,0.08);border-left:3px solid #ff6b9d;border-radius:6px;font-size:14px;">
+  const streakLine =
+    longestStreak > 0
+      ? `<p style="margin:0 0 16px;padding:14px 18px;background:rgba(255,107,157,0.08);border-left:3px solid #ff6b9d;border-radius:6px;font-size:14px;">
          🔥 Your longest streak was <strong style="color:#ff6b9d;">${longestStreak} days</strong>. Think you can beat it?
        </p>`
-    : "";
+      : "";
 
-  const statLine = score > 0
-    ? `<p style="margin:0 0 20px;font-size:14px;color:rgba(255,255,255,0.65);">
+  const statLine =
+    score > 0
+      ? `<p style="margin:0 0 20px;font-size:14px;color:rgba(255,255,255,0.65);">
          Current tier: <strong style="color:#c084fc;">${escapeHtml(tier)}</strong>
          &nbsp;·&nbsp; Score: <strong style="color:#c084fc;">${Number(score).toLocaleString()}</strong>
        </p>`
-    : "";
+      : "";
 
   const html = emailShell({
     title: subjects[daysInactive],
@@ -195,7 +206,7 @@ async function findUsersInactiveExactly(daysInactive) {
     ORDER BY u.id ASC
     LIMIT 500
     `,
-    [daysInactive, `winback_j${daysInactive}`]
+    [daysInactive, `winback_j${daysInactive}`],
   );
   return rows;
 }
@@ -205,7 +216,7 @@ async function logEmail(userId, toEmail, template, status, resendId, error) {
     await pool.query(
       `INSERT INTO email_log (user_id, to_email, template, status, resend_id, error)
        VALUES ($1, $2, $3, $4, $5, $6)`,
-      [userId, toEmail, template, status, resendId, error]
+      [userId, toEmail, template, status, resendId, error],
     );
   } catch (err) {
     console.error("email_log insert failed:", err.message);
@@ -217,7 +228,9 @@ async function sendWinback(user, daysInactive) {
   const template = `winback_j${daysInactive}`;
 
   if (DRY_RUN) {
-    console.log(`[DRY RUN] would send ${template} to ${user.email} (${user.username})`);
+    console.log(
+      `[DRY RUN] would send ${template} to ${user.email} (${user.username})`,
+    );
     return { ok: true, dry: true };
   }
 
@@ -230,12 +243,26 @@ async function sendWinback(user, daysInactive) {
     });
 
     if (error) {
-      await logEmail(user.id, user.email, template, "failed", null, error.message);
+      await logEmail(
+        user.id,
+        user.email,
+        template,
+        "failed",
+        null,
+        error.message,
+      );
       console.error(`FAIL ${template} → ${user.email}: ${error.message}`);
       return { ok: false };
     }
 
-    await logEmail(user.id, user.email, template, "sent", data?.id || null, null);
+    await logEmail(
+      user.id,
+      user.email,
+      template,
+      "sent",
+      data?.id || null,
+      null,
+    );
     console.log(`SENT ${template} → ${user.email} (id=${data?.id})`);
     return { ok: true };
   } catch (err) {
@@ -249,7 +276,9 @@ async function sendWinback(user, daysInactive) {
 // Main
 // ─────────────────────────────────────────────────────────────
 async function main() {
-  console.log(`iku.gg winback cron — ${new Date().toISOString()} (dry_run=${DRY_RUN})`);
+  console.log(
+    `iku.gg winback cron — ${new Date().toISOString()} (dry_run=${DRY_RUN})`,
+  );
 
   const windows = [7, 14, 30];
   const totals = { picked: 0, sent: 0, failed: 0 };
@@ -269,7 +298,9 @@ async function main() {
     }
   }
 
-  console.log(`\n✅ done — picked=${totals.picked} sent=${totals.sent} failed=${totals.failed}`);
+  console.log(
+    `\n✅ done — picked=${totals.picked} sent=${totals.sent} failed=${totals.failed}`,
+  );
   await pool.end();
 }
 

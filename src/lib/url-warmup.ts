@@ -25,8 +25,8 @@ import pool from "@/lib/db";
 const WARMUP_LIMIT = 500;
 const CONCURRENCY = 6;
 const BATCH_DELAY_MS = 200;
-const INITIAL_DELAY_MS = 30 * 1000;       // 30 seconds after startup
-const INTERVAL_MS = 30 * 60 * 1000;       // 30 minutes
+const INITIAL_DELAY_MS = 30 * 1000; // 30 seconds after startup
+const INTERVAL_MS = 30 * 60 * 1000; // 30 minutes
 
 let warmupStarted = false;
 let warmupRunning = false;
@@ -90,7 +90,7 @@ async function runWarmup(): Promise<void> {
          AND r.page_url IS NULL
        ORDER BY v.score DESC
        LIMIT $1`,
-      [WARMUP_LIMIT]
+      [WARMUP_LIMIT],
     );
 
     if (rows.length === 0) {
@@ -114,7 +114,7 @@ async function runWarmup(): Promise<void> {
                  SET video_url = EXCLUDED.video_url,
                      expires_at = EXCLUDED.expires_at,
                      created_at = NOW()`,
-                [row.page_url, videoUrl]
+                [row.page_url, videoUrl],
               );
               ok++;
             } catch {
@@ -123,7 +123,7 @@ async function runWarmup(): Promise<void> {
           } else {
             fail++;
           }
-        })
+        }),
       );
       await sleep(BATCH_DELAY_MS);
     }

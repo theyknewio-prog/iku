@@ -39,25 +39,93 @@ const DRY_RUN = process.argv.includes("--dry-run");
 // before picking distinctive tags to feed the title generator.
 const GENERIC_TAGS = new Set([
   // people-count
-  "1boy", "1boys", "1girl", "1girls", "1futa", "1futanari",
-  "2girls", "2boys", "2futa", "3girls", "3boys", "4girls", "4boys", "5girls", "6girls", "multiple_girls", "multiple_boys",
+  "1boy",
+  "1boys",
+  "1girl",
+  "1girls",
+  "1futa",
+  "1futanari",
+  "2girls",
+  "2boys",
+  "2futa",
+  "3girls",
+  "3boys",
+  "4girls",
+  "4boys",
+  "5girls",
+  "6girls",
+  "multiple_girls",
+  "multiple_boys",
   // dim/format
-  "2d", "3d", "2d_animation", "3d_animation",
-  "animated", "animation", "animated_gif", "animated_png", "animatedgif",
-  "video", "audio", "no_sound", "sound", "with_sound", "music",
-  "loop", "looping", "long_video", "short_video", "long", "short",
-  "60fps", "30fps", "high_framerate", "vp9", "webm", "mp4", "gif",
-  "720p", "1080p", "4k", "8k", "hd", "uhd", "fullhd", "highres", "lowres", "absurdres",
+  "2d",
+  "3d",
+  "2d_animation",
+  "3d_animation",
+  "animated",
+  "animation",
+  "animated_gif",
+  "animated_png",
+  "animatedgif",
+  "video",
+  "audio",
+  "no_sound",
+  "sound",
+  "with_sound",
+  "music",
+  "loop",
+  "looping",
+  "long_video",
+  "short_video",
+  "long",
+  "short",
+  "60fps",
+  "30fps",
+  "high_framerate",
+  "vp9",
+  "webm",
+  "mp4",
+  "gif",
+  "720p",
+  "1080p",
+  "4k",
+  "8k",
+  "hd",
+  "uhd",
+  "fullhd",
+  "highres",
+  "lowres",
+  "absurdres",
   // generic anatomy / "tagme"-style noise
-  "5_fingers", "5_toes", "10_fingers", "10_toes",
-  "a_lot_of_tags", "lots_of_tags", "tagme", "tagged", "edited",
-  "asian_female", "asian", "female", "male",
+  "5_fingers",
+  "5_toes",
+  "10_fingers",
+  "10_toes",
+  "a_lot_of_tags",
+  "lots_of_tags",
+  "tagme",
+  "tagged",
+  "edited",
+  "asian_female",
+  "asian",
+  "female",
+  "male",
   // genre/site noise
-  "uncensored_video", "censored_video", "hentai", "porn",
-  "r34", "rule_34", "rule34",
+  "uncensored_video",
+  "censored_video",
+  "hentai",
+  "porn",
+  "r34",
+  "rule_34",
+  "rule34",
   // ambiguous "where" / setting tags that generate dupes across thousands of clips
-  "indoors", "outdoors", "bed", "bedroom", "wall", "against_wall",
-  "alternate_costume", "alternate_outfit",
+  "indoors",
+  "outdoors",
+  "bed",
+  "bedroom",
+  "wall",
+  "against_wall",
+  "alternate_costume",
+  "alternate_outfit",
 ]);
 
 // Year-like tags (2018, 2019, ..., 2030).
@@ -157,7 +225,7 @@ async function main() {
          WHERE (title IS NULL OR title = '' OR length(title) < 8)
          ORDER BY score DESC NULLS LAST
          LIMIT $1`,
-        [BATCH_SIZE]
+        [BATCH_SIZE],
       );
       if (rows.length === 0) {
         console.log(`  No more weak-title rows.`);
@@ -172,7 +240,9 @@ async function main() {
 
       if (DRY_RUN) {
         console.log(`  Batch ${batchNum} preview (${updates.length} rows):`);
-        updates.slice(0, 5).forEach((u) => console.log(`    pk=${u.pk} → ${u.title}`));
+        updates
+          .slice(0, 5)
+          .forEach((u) => console.log(`    pk=${u.pk} → ${u.title}`));
         break;
       }
 
@@ -184,11 +254,13 @@ async function main() {
          SET title = data.title
          FROM (SELECT * FROM UNNEST($1::int[], $2::text[]) AS t(pk, title)) AS data
          WHERE v.pk = data.pk`,
-        [pks, titles]
+        [pks, titles],
       );
 
       totalUpdated += updates.length;
-      console.log(`  Batch ${batchNum}: ${updates.length} rows updated (total: ${totalUpdated})`);
+      console.log(
+        `  Batch ${batchNum}: ${updates.length} rows updated (total: ${totalUpdated})`,
+      );
     }
   } finally {
     await pool.end();

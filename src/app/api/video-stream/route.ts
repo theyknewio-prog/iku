@@ -33,15 +33,24 @@ const CACHE_TTL_MS = 60 * 60 * 1000;
 // Rate limit: 30 video stream requests per minute per IP.
 // Higher than resolve-video (10/min) because a single video playback triggers
 // multiple range requests, but still bounded to prevent bandwidth abuse.
-const limiter = createRateLimiter({ name: "video-stream", max: 30, windowMs: 60_000 });
+const limiter = createRateLimiter({
+  name: "video-stream",
+  max: 30,
+  windowMs: 60_000,
+});
 
 // L1 cleanup — rate limiter has its own.
 if (typeof setInterval !== "undefined") {
-  const l1Timer = setInterval(() => {
-    const now = Date.now();
-    for (const [k, v] of l1Cache) if (now > v.expiresAt) l1Cache.delete(k);
-  }, 5 * 60 * 1000);
-  if (typeof (l1Timer as unknown as { unref?: () => void }).unref === "function") {
+  const l1Timer = setInterval(
+    () => {
+      const now = Date.now();
+      for (const [k, v] of l1Cache) if (now > v.expiresAt) l1Cache.delete(k);
+    },
+    5 * 60 * 1000,
+  );
+  if (
+    typeof (l1Timer as unknown as { unref?: () => void }).unref === "function"
+  ) {
     (l1Timer as unknown as { unref: () => void }).unref();
   }
 }
@@ -50,7 +59,7 @@ async function getFromPgCache(pageUrl: string): Promise<string | null> {
   try {
     const { rows } = await pool.query(
       "SELECT video_url FROM resolved_urls WHERE page_url = $1 AND expires_at > NOW() LIMIT 1",
-      [pageUrl]
+      [pageUrl],
     );
     return rows[0]?.video_url ?? null;
   } catch {
@@ -65,7 +74,7 @@ async function setInPgCache(pageUrl: string, videoUrl: string): Promise<void> {
        VALUES ($1, $2, NOW() + INTERVAL '1 hour')
        ON CONFLICT (page_url) DO UPDATE
        SET video_url = EXCLUDED.video_url, expires_at = EXCLUDED.expires_at, created_at = NOW()`,
-      [pageUrl, videoUrl]
+      [pageUrl, videoUrl],
     );
   } catch {
     // Best-effort
@@ -113,7 +122,7 @@ async function resolveViaYtDlp(pageUrl: string): Promise<string | null> {
     const { stdout } = await execFileAsync(
       "yt-dlp",
       ["-j", "--no-download", pageUrl],
-      { timeout: 15000 }
+      { timeout: 15000 },
     );
     const data = JSON.parse(stdout);
     return data.url ?? null;
@@ -132,7 +141,10 @@ async function resolveUrl(pageUrl: string): Promise<string | null> {
   // L2
   const l2 = await getFromPgCache(pageUrl);
   if (l2) {
-    l1Cache.set(pageUrl, { videoUrl: l2, expiresAt: Date.now() + CACHE_TTL_MS });
+    l1Cache.set(pageUrl, {
+      videoUrl: l2,
+      expiresAt: Date.now() + CACHE_TTL_MS,
+    });
     return l2;
   }
 
@@ -140,7 +152,10 @@ async function resolveUrl(pageUrl: string): Promise<string | null> {
   const parsedUrl = new URL(pageUrl);
   let videoUrl: string | null = null;
   try {
-    if (parsedUrl.hostname === "rule34video.com" || parsedUrl.hostname.endsWith(".rule34video.com")) {
+    if (
+      parsedUrl.hostname === "rule34video.com" ||
+      parsedUrl.hostname.endsWith(".rule34video.com")
+    ) {
       videoUrl = await resolveRule34Video(pageUrl);
     }
     if (!videoUrl) {
@@ -162,14 +177,17 @@ export async function GET(request: NextRequest) {
   const pageUrl = searchParams.get("url");
 
   if (!pageUrl) {
-    return NextResponse.json({ error: "url parameter required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "url parameter required" },
+      { status: 400 },
+    );
   }
 
   // Rate limit by IP (prevents bandwidth DoS)
   if (limiter.consume(getClientIp(request))) {
     return NextResponse.json(
       { error: "too many requests" },
-      { status: 429, headers: { "Retry-After": "60" } }
+      { status: 429, headers: { "Retry-After": "60" } },
     );
   }
 
@@ -195,7 +213,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "https required" }, { status: 400 });
   }
   const isAllowed = allowedDomains.some(
-    (domain) => parsed.hostname === domain || parsed.hostname.endsWith(`.${domain}`)
+    (domain) =>
+      parsed.hostname === domain || parsed.hostname.endsWith(`.${domain}`),
   );
   if (!isAllowed) {
     return NextResponse.json({ error: "unsupported source" }, { status: 400 });
@@ -204,7 +223,10 @@ export async function GET(request: NextRequest) {
   // Resolve the page URL to a stream URL
   const streamUrl = await resolveUrl(pageUrl);
   if (!streamUrl) {
-    return NextResponse.json({ error: "could not resolve video URL" }, { status: 502 });
+    return NextResponse.json(
+      { error: "could not resolve video URL" },
+      { status: 502 },
+    );
   }
 
   // Proxy the video, passing through Range header for seek support
@@ -220,7 +242,10 @@ export async function GET(request: NextRequest) {
   let upstream: Response;
   try {
     const upstreamController = new AbortController();
-    const upstreamTimeout = setTimeout(() => upstreamController.abort(), 20_000);
+    const upstreamTimeout = setTimeout(
+      () => upstreamController.abort(),
+      20_000,
+    );
     upstream = await fetch(streamUrl, {
       headers: upstreamHeaders,
       redirect: "follow",
@@ -231,14 +256,14 @@ export async function GET(request: NextRequest) {
     console.error("[video-stream] upstream fetch failed:", err);
     return NextResponse.json(
       { error: "upstream unreachable" },
-      { status: 502 }
+      { status: 502 },
     );
   }
 
   if (!upstream.ok && upstream.status !== 206) {
     return NextResponse.json(
       { error: `upstream returned ${upstream.status}` },
-      { status: 502 }
+      { status: 502 },
     );
   }
 
@@ -246,7 +271,7 @@ export async function GET(request: NextRequest) {
   const headers = new Headers();
   headers.set(
     "Content-Type",
-    upstream.headers.get("content-type") || "video/mp4"
+    upstream.headers.get("content-type") || "video/mp4",
   );
   const contentLength = upstream.headers.get("content-length");
   if (contentLength) headers.set("Content-Length", contentLength);

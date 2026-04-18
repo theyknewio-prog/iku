@@ -31,14 +31,17 @@ export function AdsterraPopunder() {
       pathname.startsWith("/pricing") ||
       pathname.startsWith("/checkout") ||
       pathname.startsWith("/preview")
-    ) return;
+    )
+      return;
 
     if (document.body?.dataset.pro === "1") return;
     if (document.getElementById(SCRIPT_ID)) return;
     try {
       if (sessionStorage.getItem(SESSION_KEY) === "1") return;
       sessionStorage.setItem(SESSION_KEY, "1");
-    } catch { /* quota */ }
+    } catch {
+      /* quota */
+    }
 
     const s = document.createElement("script");
     s.id = SCRIPT_ID;

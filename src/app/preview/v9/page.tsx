@@ -24,7 +24,7 @@ async function getTopTags() {
     `SELECT t AS name, COUNT(*)::int AS count
      FROM (SELECT unnest(tags) AS t FROM videos WHERE array_length(tags,1) > 0) x
      WHERE t <> ''
-     GROUP BY t ORDER BY count DESC LIMIT 10`
+     GROUP BY t ORDER BY count DESC LIMIT 10`,
   );
   return rows;
 }
@@ -34,14 +34,19 @@ async function getTopChars() {
     `SELECT ch AS name, COUNT(*)::int AS count
      FROM (SELECT unnest(characters) AS ch FROM videos WHERE array_length(characters,1) > 0) x
      WHERE ch <> ''
-     GROUP BY ch ORDER BY count DESC LIMIT 12`
+     GROUP BY ch ORDER BY count DESC LIMIT 12`,
   );
   return rows;
 }
 
 export default async function V9() {
   const [trending, tags, chars] = await Promise.all([
-    getVideos({ limit: 18, order: "score", source: "all", requireThumbnail: true }),
+    getVideos({
+      limit: 18,
+      order: "score",
+      source: "all",
+      requireThumbnail: true,
+    }),
     getTopTags(),
     getTopChars(),
   ]);

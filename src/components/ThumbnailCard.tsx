@@ -74,15 +74,19 @@ export function ThumbnailCard({
   const fresh = isNew(video.createdAt);
   const displayArtist = video.artists[0] ?? "";
   const displayScore = formatNumber(video.score);
-  const displayFavs  = formatNumber(video.favorites);
+  const displayFavs = formatNumber(video.favorites);
 
   // Quality badge — inferred from video width (2026-04-12 competitor audit
   // pattern: SpankBang/XVideos display HD/4K badges prominently on thumb).
   // 4K (≥2160px) > HD (≥720px) > none.
   const quality =
-    video.width >= 2160 ? "4K" :
-    video.width >= 1080 ? "HD" :
-    video.width >= 720 ? "SD+" : "";
+    video.width >= 2160
+      ? "4K"
+      : video.width >= 1080
+        ? "HD"
+        : video.width >= 720
+          ? "SD+"
+          : "";
 
   // Pro-gated content gets a "Premium" lock badge so free users know
   // upfront which videos are paywalled (no surprise on click).
@@ -109,7 +113,9 @@ export function ThumbnailCard({
       }
       // Silent: hover-triggered preview may be rejected (not a user gesture
       // in autoplay-restricted browsers). We just stay on the thumbnail.
-      el.play().catch(() => { /* hover preview autoplay denied */ });
+      el.play().catch(() => {
+        /* hover preview autoplay denied */
+      });
       setPreviewActive(true);
     }, 300);
   }, [video.url, video.slug, canPreview]);
@@ -210,20 +216,29 @@ export function ThumbnailCard({
               zIndex: 3,
             }}
           >
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="rgba(255,255,255,0.7)"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </span>
         )}
 
         {/* Duration badge — bottom right */}
-        {duration && (
-          <span className="video-card__duration">{duration}</span>
-        )}
+        {duration && <span className="video-card__duration">{duration}</span>}
 
         {/* Quality badge — bottom left, SpankBang-style */}
         {quality && (
-          <span className={`video-card__quality video-card__quality--${quality.toLowerCase().replace('+','p')}`}>
+          <span
+            className={`video-card__quality video-card__quality--${quality.toLowerCase().replace("+", "p")}`}
+          >
             {quality}
           </span>
         )}
@@ -246,10 +261,10 @@ export function ThumbnailCard({
               rank === 1
                 ? "rank-badge--1"
                 : rank === 2
-                ? "rank-badge--2"
-                : rank === 3
-                ? "rank-badge--3"
-                : "rank-badge--n"
+                  ? "rank-badge--2"
+                  : rank === 3
+                    ? "rank-badge--3"
+                    : "rank-badge--n"
             }`}
           >
             {rank}
@@ -335,7 +350,10 @@ export function ThumbnailCard({
         <h3 className="video-card__title">{title}</h3>
 
         <div className="video-card__meta">
-          <span className="video-card__stars" aria-label={`Rating ${(video.score >= 500 ? 5 : video.score >= 200 ? 4.5 : video.score >= 50 ? 4 : 3.5).toFixed(1)} out of 5`}>
+          <span
+            className="video-card__stars"
+            aria-label={`Rating ${(video.score >= 500 ? 5 : video.score >= 200 ? 4.5 : video.score >= 50 ? 4 : 3.5).toFixed(1)} out of 5`}
+          >
             {"★★★★★"}
           </span>
           <span className="video-card__views">{displayScore} views</span>

@@ -26,7 +26,12 @@ export function AnalyticsProvider() {
     } else if (status === "unauthenticated") {
       reset();
     }
-  }, [status, session?.user?.id, session?.user?.email, session?.user?.username]);
+  }, [
+    status,
+    session?.user?.id,
+    session?.user?.email,
+    session?.user?.username,
+  ]);
 
   // Track "app_loaded" once
   useEffect(() => {

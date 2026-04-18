@@ -9,13 +9,18 @@ interface Props {
 }
 
 const OPTIONS: { value: SortKey; label: string }[] = [
-  { value: "score",    label: "Most popular" },
-  { value: "date",     label: "Newest" },
+  { value: "score", label: "Most popular" },
+  { value: "date", label: "Newest" },
   { value: "duration", label: "Longest" },
   { value: "favcount", label: "Most liked" },
 ];
 
-function buildHref(basePath: string, s: SortKey, def: SortKey, extra?: Props["extraQuery"]): string {
+function buildHref(
+  basePath: string,
+  s: SortKey,
+  def: SortKey,
+  extra?: Props["extraQuery"],
+): string {
   const params = new URLSearchParams();
   if (s !== def) params.set("sort", s);
   if (extra) {
@@ -27,12 +32,23 @@ function buildHref(basePath: string, s: SortKey, def: SortKey, extra?: Props["ex
   return qs ? `${basePath}?${qs}` : basePath;
 }
 
-export function SortTabs({ basePath, current, extraQuery, defaultSort = "score" }: Props & { defaultSort?: SortKey }) {
+export function SortTabs({
+  basePath,
+  current,
+  extraQuery,
+  defaultSort = "score",
+}: Props & { defaultSort?: SortKey }) {
   return (
     <nav
       className="sort-tabs"
       aria-label="Sort videos"
-      style={{ display: "flex", gap: 8, flexWrap: "wrap", margin: "0 0 20px", overflowX: "auto" }}
+      style={{
+        display: "flex",
+        gap: 8,
+        flexWrap: "wrap",
+        margin: "0 0 20px",
+        overflowX: "auto",
+      }}
     >
       {OPTIONS.map((opt) => (
         <Link
@@ -48,8 +64,12 @@ export function SortTabs({ basePath, current, extraQuery, defaultSort = "score" 
   );
 }
 
-export function parseSort(raw: string | string[] | undefined, fallback: SortKey = "score"): SortKey {
+export function parseSort(
+  raw: string | string[] | undefined,
+  fallback: SortKey = "score",
+): SortKey {
   const v = Array.isArray(raw) ? raw[0] : raw;
-  if (v === "score" || v === "date" || v === "duration" || v === "favcount") return v;
+  if (v === "score" || v === "date" || v === "duration" || v === "favcount")
+    return v;
   return fallback;
 }

@@ -3,6 +3,7 @@
 ## P0 findings
 
 ### Telegram missing from mobile nav drawer
+
 - **File**: `src/components/AppShell.tsx`
 - **Desktop sidebar** (lines 437-453): has Telegram + Discord
 - **Mobile drawer "More" menu** (lines 684-698): has ONLY Discord
@@ -11,6 +12,7 @@
 ## P2 findings
 
 ### Orphaned components (defined, never imported)
+
 - `src/components/CountUp.tsx`
 - `src/components/HomePageClient.tsx`
 - `src/components/SearchBar.tsx` (SearchAutocomplete used instead)
@@ -18,9 +20,11 @@
 - `src/components/SiteHeader.tsx` (AppShell handles nav)
 
 ### `<img>` without lazy loading
+
 - `src/components/VideoCard.tsx` line 616 — missing `loading="lazy"` + `decoding="async"`
 
 ### Production `console.log` statements
+
 - `src/app/api/stripe/webhook/route.ts` lines 230, 248, 270, 312, 326
 - `src/lib/url-warmup.ts` lines 97, 101, 132
 

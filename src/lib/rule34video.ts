@@ -6,7 +6,11 @@
 
 import pool from "@/lib/db";
 import type { Video, PaginatedResult } from "@/types/video";
-import { BANNED_TAGS_ARRAY, containsBannedContent, filterBannedContent } from "@/lib/content";
+import {
+  BANNED_TAGS_ARRAY,
+  containsBannedContent,
+  filterBannedContent,
+} from "@/lib/content";
 import { memoize } from "@/lib/memo";
 
 function rowToVideo(row: Record<string, unknown>): Video {
@@ -41,7 +45,7 @@ async function _getRule34VideoPost(id: number): Promise<Video | null> {
        AND NOT (COALESCE(characters, ARRAY[]::text[]) && $2::text[])
        AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $2::text[])
      LIMIT 1`,
-    [id, BANNED_TAGS_ARRAY]
+    [id, BANNED_TAGS_ARRAY],
   );
   if (rows.length === 0) return null;
   const video = rowToVideo(rows[0]);
@@ -58,7 +62,9 @@ export const getRule34VideoPost = memoize(
 
 // Thin helper so existing call sites in the watch page keep working.
 // Pulls page_url straight from the memoized Video — zero extra PG queries.
-export async function getRule34VideoPageUrl(id: number): Promise<string | null> {
+export async function getRule34VideoPageUrl(
+  id: number,
+): Promise<string | null> {
   const v = await getRule34VideoPost(id);
   return v?.pageUrl ?? null;
 }
@@ -71,7 +77,7 @@ export interface Rule34VideoSearchOptions {
 }
 
 export async function searchRule34Video(
-  options: Rule34VideoSearchOptions = {}
+  options: Rule34VideoSearchOptions = {},
 ): Promise<PaginatedResult<Video>> {
   const { tags = "", page = 1, limit = 20, order = "date" } = options;
   const offset = (page - 1) * limit;
@@ -84,7 +90,7 @@ export async function searchRule34Video(
   conditions.push(
     `NOT (tags && $${paramIndex}::text[])
      AND NOT (COALESCE(characters, ARRAY[]::text[]) && $${paramIndex}::text[])
-     AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $${paramIndex}::text[])`
+     AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $${paramIndex}::text[])`,
   );
   params.push(BANNED_TAGS_ARRAY);
   paramIndex++;
@@ -92,13 +98,16 @@ export async function searchRule34Video(
   if (tags) {
     const searchTerms = tags.toLowerCase().split(/\s+/);
     for (const term of searchTerms) {
-      conditions.push(`(title ILIKE '%' || $${paramIndex} || '%' OR $${paramIndex} = ANY(tags))`);
+      conditions.push(
+        `(title ILIKE '%' || $${paramIndex} || '%' OR $${paramIndex} = ANY(tags))`,
+      );
       params.push(term);
       paramIndex++;
     }
   }
 
-  const orderClause = order === "date" ? "ORDER BY created_at DESC" : "ORDER BY score DESC";
+  const orderClause =
+    order === "date" ? "ORDER BY created_at DESC" : "ORDER BY score DESC";
 
   params.push(limit + 1, offset);
   const query = `SELECT * FROM videos WHERE ${conditions.join(" AND ")} ${orderClause} LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;

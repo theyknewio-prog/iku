@@ -37,17 +37,35 @@ export function ForgotPasswordForm() {
     return (
       <div style={{ textAlign: "center", padding: "20px 0" }}>
         <div style={{ fontSize: 48, marginBottom: 16 }}>📧</div>
-        <p style={{ color: "#fff", fontSize: 15, fontWeight: 700, marginBottom: 8 }}>
+        <p
+          style={{
+            color: "#fff",
+            fontSize: 15,
+            fontWeight: 700,
+            marginBottom: 8,
+          }}
+        >
           Check your inbox
         </p>
-        <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, lineHeight: 1.5 }}>
-          If an account exists for <strong>{email}</strong>, we just sent a password reset link.
-          The link expires in 1 hour.
+        <p
+          style={{
+            color: "rgba(255,255,255,0.6)",
+            fontSize: 13,
+            lineHeight: 1.5,
+          }}
+        >
+          If an account exists for <strong>{email}</strong>, we just sent a
+          password reset link. The link expires in 1 hour.
         </p>
         <Link
           href="/login"
           className="auth-submit"
-          style={{ display: "inline-block", marginTop: 20, textAlign: "center", textDecoration: "none" }}
+          style={{
+            display: "inline-block",
+            marginTop: 20,
+            textAlign: "center",
+            textDecoration: "none",
+          }}
         >
           Back to sign in
         </Link>

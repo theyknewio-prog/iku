@@ -7,14 +7,7 @@ import {
   removeFromBlacklist,
 } from "@/lib/blacklist";
 
-const QUICK_ADD_TAGS = [
-  "ugly_bastard",
-  "ntr",
-  "guro",
-  "scat",
-  "vore",
-  "furry",
-];
+const QUICK_ADD_TAGS = ["ugly_bastard", "ntr", "guro", "scat", "vore", "furry"];
 
 export default function SettingsPage() {
   const [blacklist, setBlacklist] = useState<string[]>([]);
@@ -70,32 +63,43 @@ export default function SettingsPage() {
 
         {/* ── Blocked Tags ─────────────────────────────────────── */}
         <section style={{ marginBottom: "48px" }}>
-          <h2 style={{
-            fontSize: "var(--text-md)",
-            fontWeight: 600,
-            color: "var(--color-text-primary)",
-            marginBottom: "8px",
-          }}>
+          <h2
+            style={{
+              fontSize: "var(--text-md)",
+              fontWeight: 600,
+              color: "var(--color-text-primary)",
+              marginBottom: "8px",
+            }}
+          >
             Blocked Tags
           </h2>
-          <p style={{
-            fontSize: "var(--text-sm)",
-            color: "var(--color-text-tertiary)",
-            marginBottom: "20px",
-            lineHeight: 1.6,
-          }}>
+          <p
+            style={{
+              fontSize: "var(--text-sm)",
+              color: "var(--color-text-tertiary)",
+              marginBottom: "20px",
+              lineHeight: 1.6,
+            }}
+          >
             Videos containing these tags will be hidden across the entire site.
             Changes take effect immediately on next page load.
           </p>
 
           {/* Quick-add pills */}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "20px" }}>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "8px",
+              marginBottom: "20px",
+            }}
+          >
             {QUICK_ADD_TAGS.map((tag) => {
               const blocked = blacklist.includes(tag);
               return (
                 <button
                   key={tag}
-                  onClick={() => blocked ? handleRemove(tag) : handleAdd(tag)}
+                  onClick={() => (blocked ? handleRemove(tag) : handleAdd(tag))}
                   style={{
                     padding: "5px 12px",
                     borderRadius: "20px",
@@ -122,7 +126,10 @@ export default function SettingsPage() {
           </div>
 
           {/* Custom tag input */}
-          <form onSubmit={handleSubmit} style={{ display: "flex", gap: "8px", marginBottom: "24px" }}>
+          <form
+            onSubmit={handleSubmit}
+            style={{ display: "flex", gap: "8px", marginBottom: "24px" }}
+          >
             <input
               ref={inputRef}
               type="text"
@@ -141,7 +148,8 @@ export default function SettingsPage() {
                 e.currentTarget.style.borderColor = "var(--color-accent)";
               }}
               onBlur={(e) => {
-                e.currentTarget.style.borderColor = "var(--color-border-default)";
+                e.currentTarget.style.borderColor =
+                  "var(--color-border-default)";
               }}
             />
             <button
@@ -155,11 +163,19 @@ export default function SettingsPage() {
 
           {/* Current blocked tags list */}
           {blacklist.length === 0 ? (
-            <p style={{ fontSize: "var(--text-sm)", color: "var(--color-text-tertiary)", fontStyle: "italic" }}>
+            <p
+              style={{
+                fontSize: "var(--text-sm)",
+                color: "var(--color-text-tertiary)",
+                fontStyle: "italic",
+              }}
+            >
               No tags blocked yet.
             </p>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "8px" }}
+            >
               {blacklist.map((tag) => (
                 <div
                   key={tag}
@@ -173,7 +189,12 @@ export default function SettingsPage() {
                     borderRadius: "8px",
                   }}
                 >
-                  <span style={{ fontSize: "var(--text-sm)", color: "var(--color-text-secondary)" }}>
+                  <span
+                    style={{
+                      fontSize: "var(--text-sm)",
+                      color: "var(--color-text-secondary)",
+                    }}
+                  >
                     {tag.replace(/_/g, " ")}
                   </span>
                   <button
@@ -190,8 +211,13 @@ export default function SettingsPage() {
                       lineHeight: 1,
                       transition: "color 0.15s",
                     }}
-                    onMouseEnter={(e) => { e.currentTarget.style.color = "var(--color-error)"; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.color = "var(--color-text-tertiary)"; }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = "var(--color-error)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color =
+                        "var(--color-text-tertiary)";
+                    }}
                   >
                     ×
                   </button>
@@ -210,8 +236,15 @@ export default function SettingsPage() {
             borderRadius: "10px",
           }}
         >
-          <p style={{ fontSize: "var(--text-sm)", color: "var(--color-text-tertiary)", lineHeight: 1.7 }}>
-            All preferences are stored locally in your browser. No account required. Your data never leaves your device.
+          <p
+            style={{
+              fontSize: "var(--text-sm)",
+              color: "var(--color-text-tertiary)",
+              lineHeight: 1.7,
+            }}
+          >
+            All preferences are stored locally in your browser. No account
+            required. Your data never leaves your device.
           </p>
         </section>
       </div>

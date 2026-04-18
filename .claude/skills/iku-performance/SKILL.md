@@ -9,15 +9,15 @@ Tu es un expert performance web spécialisé dans les sites Next.js à très gra
 
 ## Les contraintes de base (toujours en tête)
 
-| Ressource | Limite | Utilisation actuelle |
-|-----------|--------|---------------------|
-| RAM totale | 8GB | ~3GB Next.js + JSONs, pics à 6-7GB avec yt-dlp |
-| vCPU | 2 AMD | Partagés entre Next.js + yt-dlp (Python) |
-| Disque | 80GB SSD | ~15GB utilisés (Docker images + JSONs + build) |
-| Swap | ⚠️ AUCUN | Risque OOM kill direct |
-| Node heap | 6144MB | `--max-old-space-size=6144` dans Dockerfile |
-| Build RAM | ~6GB | Le build Next.js charge tous les JSONs |
-| Build time | ~9 min | Acceptable mais optimisable |
+| Ressource  | Limite   | Utilisation actuelle                           |
+| ---------- | -------- | ---------------------------------------------- |
+| RAM totale | 8GB      | ~3GB Next.js + JSONs, pics à 6-7GB avec yt-dlp |
+| vCPU       | 2 AMD    | Partagés entre Next.js + yt-dlp (Python)       |
+| Disque     | 80GB SSD | ~15GB utilisés (Docker images + JSONs + build) |
+| Swap       | ⚠️ AUCUN | Risque OOM kill direct                         |
+| Node heap  | 6144MB   | `--max-old-space-size=6144` dans Dockerfile    |
+| Build RAM  | ~6GB     | Le build Next.js charge tous les JSONs         |
+| Build time | ~9 min   | Acceptable mais optimisable                    |
 
 ## Architecture mémoire actuelle
 
@@ -44,6 +44,7 @@ Démarrage du serveur Next.js
 ## Core Web Vitals — État et optimisations
 
 ### LCP (Largest Contentful Paint)
+
 **Cible** : < 2.5s | **Problèmes identifiés** :
 
 Le LCP sur iku est généralement la thumbnail vidéo ou le hero carousel. Optimisations clés :
@@ -57,6 +58,7 @@ Le LCP sur iku est généralement la thumbnail vidéo ou le hero carousel. Optim
 4. **Server Components** : la majorité des pages utilisent des Server Components (React 19). Le HTML est streamé au client. S'assurer que les données critiques (titre, thumbnail) sont dans le premier chunk de streaming.
 
 ### CLS (Cumulative Layout Shift)
+
 **Cible** : < 0.1 | **Points critiques** :
 
 - Les thumbnails/vidéos doivent avoir `width` et `height` définis ou un aspect-ratio CSS pour éviter les shifts
@@ -65,6 +67,7 @@ Le LCP sur iku est généralement la thumbnail vidéo ou le hero carousel. Optim
 - Les fonts avec `display: swap` peuvent causer un léger shift — acceptable si < 0.05
 
 ### INP (Interaction to Next Paint)
+
 **Cible** : < 200ms | **Points d'attention** :
 
 - Le search autocomplete doit être debounced (300ms minimum)
@@ -74,33 +77,38 @@ Le LCP sur iku est généralement la thumbnail vidéo ou le hero carousel. Optim
 ## Optimisation Build
 
 Le build Next.js nécessite ~6GB de RAM parce que :
+
 1. Tous les JSONs sont importés au build time pour la génération statique
 2. 353K pages potentielles à pre-render (mais on ne pre-render pas tout)
 3. Le tree-shaking doit traiter des fichiers énormes
 
 **Optimisations possibles** :
+
 - Ne pre-render que les pages les plus populaires (top 1000-5000)
 - Utiliser `dynamicParams: true` pour les autres → génération à la demande
 - Lazy-import les gros JSONs avec `dynamic()` ou `import()` conditionnel
 - Splitter `rule34video-videos.json` en chunks plus petits (par lettre, par date, etc.)
 
 **Configuration actuelle** (`Dockerfile`) :
+
 ```dockerfile
 ENV NODE_OPTIONS="--max-old-space-size=6144"
 ```
+
 C'est le max raisonnable sur un serveur 8GB. Ne pas monter au-delà.
 
 ## Stratégie de cache
 
 ### Cache actuel
-| Quoi | Où | TTL | Problème |
-|------|----|-----|----------|
-| URLs yt-dlp résolues | In-memory (Map) | 1h | Perdu au redéploiement |
-| Réponses API Danbooru | Aucun cache | — | Chaque requête = appel API |
-| Réponses API Gelbooru | Aucun cache | — | Idem |
-| Réponses API Rule34 | Aucun cache | — | Idem |
-| JSONs statiques | En RAM au démarrage | ∞ (jusqu'au redéploiement) | 400MB de RAM permanents |
-| Assets Next.js | CDN Coolify | Longue durée | OK |
+
+| Quoi                  | Où                  | TTL                        | Problème                   |
+| --------------------- | ------------------- | -------------------------- | -------------------------- |
+| URLs yt-dlp résolues  | In-memory (Map)     | 1h                         | Perdu au redéploiement     |
+| Réponses API Danbooru | Aucun cache         | —                          | Chaque requête = appel API |
+| Réponses API Gelbooru | Aucun cache         | —                          | Idem                       |
+| Réponses API Rule34   | Aucun cache         | —                          | Idem                       |
+| JSONs statiques       | En RAM au démarrage | ∞ (jusqu'au redéploiement) | 400MB de RAM permanents    |
+| Assets Next.js        | CDN Coolify         | Longue durée               | OK                         |
 
 ### Améliorations recommandées (par priorité)
 
@@ -114,15 +122,16 @@ C'est le max raisonnable sur un serveur 8GB. Ne pas monter au-delà.
 
 Les images viennent de CDNs externes qu'on ne contrôle pas :
 
-| Source | CDN | Format | Taille typique |
-|--------|-----|--------|----------------|
-| Danbooru | `cdn.donmai.us` | JPG/PNG/WebP | 100KB-2MB |
-| Gelbooru | `img*.gelbooru.com`, `video-cdn*.gelbooru.com` | JPG/WebP | 50KB-500KB |
-| Rule34.xxx | `api-cdn.rule34.xxx` | JPG/PNG | 50KB-1MB |
-| Rule34Video | URLs variées | JPG | 20KB-200KB |
-| WordPress | URLs variées | JPG/PNG | 50KB-500KB |
+| Source      | CDN                                            | Format       | Taille typique |
+| ----------- | ---------------------------------------------- | ------------ | -------------- |
+| Danbooru    | `cdn.donmai.us`                                | JPG/PNG/WebP | 100KB-2MB      |
+| Gelbooru    | `img*.gelbooru.com`, `video-cdn*.gelbooru.com` | JPG/WebP     | 50KB-500KB     |
+| Rule34.xxx  | `api-cdn.rule34.xxx`                           | JPG/PNG      | 50KB-1MB       |
+| Rule34Video | URLs variées                                   | JPG          | 20KB-200KB     |
+| WordPress   | URLs variées                                   | JPG/PNG      | 50KB-500KB     |
 
 **Optimisations possibles** :
+
 - `next/image` avec `sizes` et `quality` appropriés pour le responsive
 - `loading="lazy"` sur toutes les images below-the-fold
 - `priority` sur les 4-6 premières images visibles (hero + premier row)

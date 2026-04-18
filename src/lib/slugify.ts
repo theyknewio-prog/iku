@@ -6,7 +6,7 @@
 export function generateSlug(
   id: number,
   character: string,
-  copyright: string
+  copyright: string,
 ): string {
   const parts = [String(id)];
 

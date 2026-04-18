@@ -11,7 +11,10 @@
  */
 const fs = require("fs");
 const path = process.argv[2];
-if (!path) { console.error("Usage: node patch-content-ilike.js <file>"); process.exit(2); }
+if (!path) {
+  console.error("Usage: node patch-content-ilike.js <file>");
+  process.exit(2);
+}
 let c = fs.readFileSync(path, "utf8");
 const before = c.length;
 
@@ -19,14 +22,19 @@ const before = c.length;
 // param index could be f/q/any single letter, so we match with a regex
 // and capture the variable name, then substitute it into the replacement.
 const DOLLAR = String.fromCharCode(36);
-const D2 = DOLLAR + DOLLAR;  // literal "$$" in the output string
+const D2 = DOLLAR + DOLLAR; // literal "$$" in the output string
 const OLD_RE = new RegExp(
-  "\\(" + D2.replace(/\$/g, "\\$") + "\\{(\\w+)\\} = ANY\\(tags\\) OR " +
-    D2.replace(/\$/g, "\\$") + "\\{\\1\\} = ANY\\(characters\\) OR " +
-    D2.replace(/\$/g, "\\$") + "\\{\\1\\} = ANY\\(copyrights\\) OR " +
+  "\\(" +
+    D2.replace(/\$/g, "\\$") +
+    "\\{(\\w+)\\} = ANY\\(tags\\) OR " +
+    D2.replace(/\$/g, "\\$") +
+    "\\{\\1\\} = ANY\\(characters\\) OR " +
+    D2.replace(/\$/g, "\\$") +
+    "\\{\\1\\} = ANY\\(copyrights\\) OR " +
     "\\(title IS NOT NULL AND title ILIKE '%' \\|\\| " +
-    D2.replace(/\$/g, "\\$") + "\\{\\1\\} \\|\\| '%'\\)\\)",
-  "g"
+    D2.replace(/\$/g, "\\$") +
+    "\\{\\1\\} \\|\\| '%'\\)\\)",
+  "g",
 );
 
 const m = c.match(OLD_RE);
@@ -37,9 +45,15 @@ if (!m) {
 c = c.replace(OLD_RE, (match, varName) => {
   const D = DOLLAR + DOLLAR + "{" + varName + "}";
   return (
-    "(tags && ARRAY[" + D + "]::text[] OR " +
-    "COALESCE(characters,ARRAY[]::text[]) && ARRAY[" + D + "]::text[] OR " +
-    "COALESCE(copyrights,ARRAY[]::text[]) && ARRAY[" + D + "]::text[])"
+    "(tags && ARRAY[" +
+    D +
+    "]::text[] OR " +
+    "COALESCE(characters,ARRAY[]::text[]) && ARRAY[" +
+    D +
+    "]::text[] OR " +
+    "COALESCE(copyrights,ARRAY[]::text[]) && ARRAY[" +
+    D +
+    "]::text[])"
   );
 });
 fs.writeFileSync(path, c);

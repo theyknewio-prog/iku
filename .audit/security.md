@@ -7,13 +7,16 @@ Scope: full review of banned-content integrity, Stripe, auth, rate limiters, XSS
 ## 🔴 EXPLOITABLE (real attacker can abuse this today)
 
 ### 1. BLOCKER — Banned content check is fundamentally broken: only inspects `tags`, ignores `characters`, `copyrights`, `title`, `slug`
+
 **Severity:** CRITICAL — existential / legal risk
 **Files:**
+
 - `src/lib/content.ts:33-35` — `containsBannedContent()`
 - `src/app/watch/[slug]/page.tsx:228` — sole runtime gate for direct-access protection
 - `scripts/db.ts:41-46` — `upsertVideos()` safety net
 
 **Attack scenario:**
+
 1. Danbooru/Gelbooru classify subjects as characters/copyrights, not general tags. A post can have `tag_string_character = "young_girl marie_rose"` and `tag_string_general = "animated 1girl solo"` — nothing in `general`. After `mapPostToVideo`, the returned `Video` has `tags = ["animated","1girl","solo"]` and `characters = ["young_girl","marie_rose"]`.
 2. The watch page calls `containsBannedContent(video)` which does `video.tags.some(t => BANNED_TAGS.has(t.toLowerCase()))`. `tags` does not contain `young_girl`. The check **returns false**. Page renders.
 3. Same flaw exists server-side in `getVideos()` SQL filter (`NOT (tags && $1::text[])`) — it only checks the `tags` column, not `characters`, `copyrights`, or `title`. A row can be banned by character/copyright but still be returned by carousels, explore, search, `/character/[slug]`, etc.
@@ -21,26 +24,33 @@ Scope: full review of banned-content integrity, Stripe, auth, rate limiters, XSS
 5. The live Danbooru API calls in `src/lib/danbooru.ts > getPost()` (line 124) bypass the DB filter entirely and feed straight into the watch page with only the broken `containsBannedContent` as gate.
 
 **Fix:**
+
 ```ts
 // src/lib/content.ts
 export function containsBannedContent(video: {
-  tags: string[]; characters?: string[]; copyrights?: string[];
-  slug?: string; title?: string | null;
+  tags: string[];
+  characters?: string[];
+  copyrights?: string[];
+  slug?: string;
+  title?: string | null;
 }): boolean {
   const lists = [video.tags, video.characters ?? [], video.copyrights ?? []];
   for (const list of lists) {
     for (const t of list) if (BANNED_TAGS.has(t.toLowerCase())) return true;
   }
   const hay = `${video.slug ?? ""} ${video.title ?? ""}`.toLowerCase();
-  for (const t of BANNED_TAGS) if (hay.includes(t.replace(/_/g, " ")) || hay.includes(t)) return true;
+  for (const t of BANNED_TAGS)
+    if (hay.includes(t.replace(/_/g, " ")) || hay.includes(t)) return true;
   return false;
 }
 ```
+
 Apply the same character/copyright check to the SQL in `getVideos()`, `getThumbnailForTag`, `getCuratedGenreCounts`, `getVideoOfTheDay`, `getUserFavorites`, `getUserHistory`, and to `upsertVideos()` in `scripts/db.ts`.
 
 ---
 
 ### 2. BLOCKER — `getRelatedPosts()` (Danbooru live API) serves unfiltered content into the player's autoplay-next + sidebar related grid
+
 **Severity:** CRITICAL — banned content exposure path
 **File:** `src/lib/danbooru.ts:253-306` — `getRelatedPosts`
 **Callers:** `src/app/watch/[slug]/page.tsx:235` (autoplay), `:712`, `:724` (related sidebar)
@@ -49,19 +59,23 @@ Apply the same character/copyright check to the SQL in `getVideos()`, `getThumbn
 `getRelatedPosts` calls Danbooru live, maps raw posts via `mapPostToVideo`, and returns them. No banned filter. No `containsBannedContent`. The watch page feeds these directly to `<WatchPlayer relatedVideos={...}/>` and renders the sidebar `<ThumbnailCard>` grid. A legitimate parent post's tag search (character/copyright of the current video) can pull back banned posts if Danbooru indexed any. These appear to the user, and clicking one loads `/watch/[slug]` which then fails the broken `containsBannedContent` check (finding #1) — so users can land on banned pages that slipped through both layers.
 
 **Fix:** wrap all source-module return paths with the fixed `containsBannedContent` filter:
+
 ```ts
 // danbooru.ts, gelbooru.ts, rule34.ts, rule34video.ts, wp-hentai.ts
 import { containsBannedContent } from "./content";
 // after mapping posts:
-return posts.filter(v => !containsBannedContent(v));
+return posts.filter((v) => !containsBannedContent(v));
 ```
+
 And the SQL-level filter must be added to `getRule34VideoPost`, `searchRule34Video`, `getWPHentaiPost`, `getWPHentaiPost` (currently zero banned filter — see finding #3).
 
 ---
 
 ### 3. BLOCKER — `rule34video.ts` and `wp-hentai.ts` query PG with zero banned-content filter
+
 **Severity:** CRITICAL
 **Files:**
+
 - `src/lib/rule34video.ts:32-47` (`getRule34VideoPost`, `getRule34VideoPageUrl`)
 - `src/lib/rule34video.ts:56-87` (`searchRule34Video`)
 - `src/lib/wp-hentai.ts` — same pattern (verified by grep: no `BANNED` references in file)
@@ -73,17 +87,21 @@ And the SQL-level filter must be added to `getRule34VideoPost`, `searchRule34Vid
 ---
 
 ### 4. HIGH — Stripe webhook open-redirect via user-controlled `Origin` header leaks verification/checkout links to attacker domains
+
 **Severity:** Medium-High — phishing / credential interception
 **Files:**
+
 - `src/app/api/stripe/checkout/route.ts:101` — `const origin = request.headers.get("origin") || "https://iku.gg"`
 - `src/app/api/auth/verify/route.ts:15` — same pattern
 
 **Attack scenario:**
+
 1. An attacker hosts `https://evil.com/checkout.html` which POSTs to `https://iku.gg/api/stripe/checkout` from the victim's authenticated browser with credentials (CSRF is partially mitigated by SameSite, but `Origin` header is sent by the browser regardless).
 2. Actually more direct: an attacker fetches with `Origin: https://evil.gg`. Result: `success_url = https://evil.gg/profile?upgraded=1`. Stripe redirects the user to `evil.gg` after a real payment, enabling phishing (fake "payment confirmation" page that harvests credentials).
 3. Same bug on `/api/auth/verify`: when a user clicks the link in their email, some mail clients set `Origin`/`Referer` to the webmail domain. The code would redirect to `mail.google.com/profile?verified=1` — broken UX and reveals the verification token in the Referer to the webmail host (minor).
 
 **Fix:** never trust `Origin` for building absolute redirect URLs. Use `process.env.NEXT_PUBLIC_SITE_URL` (already defined) or hardcode `https://iku.gg`:
+
 ```ts
 const origin = process.env.NEXT_PUBLIC_SITE_URL || "https://iku.gg";
 ```
@@ -91,16 +109,19 @@ const origin = process.env.NEXT_PUBLIC_SITE_URL || "https://iku.gg";
 ---
 
 ### 5. HIGH — Discord OAuth can hijack any iku.gg account that was never email-verified
+
 **Severity:** High — account takeover
 **File:** `src/auth.ts:74-86`
 
 **Attack scenario:**
+
 1. Victim signs up with `victim@gmail.com` but never clicks the verification email. Their row exists in `users` with `email_verified = false` and a `password_hash`.
 2. Attacker creates a Discord account, sets email to `victim@gmail.com`. Discord historically allows unverified emails on the Discord side (the `verified` field in the profile can be false). The code `findOrCreateDiscordUser` does not check `profile.verified`.
 3. Attacker initiates Discord OAuth on iku.gg. `findUserByEmail("victim@gmail.com")` finds the victim's row. `user_oauth_accounts` gets a row linking `discord:attacker_discord_id → victim_user_id`. The attacker is now logged in as the victim — with all favorites, history, Pro subscription, Stripe customer id, etc.
 4. Works even against verified accounts if attacker can pass Discord's email verification (which is weak — Discord only requires clicking a link, and many users have Discord accounts on various emails).
 
 **Fix:**
+
 ```ts
 // auth.ts findOrCreateDiscordUser — before line 77 (byEmail lookup)
 if (profile.email && (profile as any).verified !== true) {
@@ -109,7 +130,8 @@ if (profile.email && (profile as any).verified !== true) {
 // And when linking, require the iku.gg account was already email-verified:
 if (byEmail) {
   const { rows } = await pool.query(
-    `SELECT email_verified FROM users WHERE id = $1`, [byEmail.id]
+    `SELECT email_verified FROM users WHERE id = $1`,
+    [byEmail.id],
   );
   if (!rows[0]?.email_verified) {
     // Don't auto-link. Force explicit link flow from /profile for logged-in user.
@@ -122,6 +144,7 @@ if (byEmail) {
 ---
 
 ### 6. HIGH — Password reset token consumption is a race: single leaked token allows two concurrent password resets
+
 **Severity:** Medium-High
 **File:** `src/app/api/auth/reset-password/route.ts:37-54`
 
@@ -130,23 +153,32 @@ if (byEmail) {
 Also: `src/lib/email.ts:419-426` `consumePasswordResetToken` has a bug — `rows.length === 0 ? Number(rows[0]?.user_id) || null : Number(rows[0].user_id)` — the ternary is inverted (returns `Number(undefined)` when empty). Not exploited because the function isn't actually called (reset-password/route.ts uses its own query), but it's dead code that should be deleted or fixed.
 
 **Fix:** atomic claim-and-update:
+
 ```ts
 const { rows } = await pool.query(
   `UPDATE password_reset_tokens
    SET used_at = NOW()
    WHERE token = $1 AND used_at IS NULL AND expires_at > NOW()
    RETURNING user_id`,
-  [token]
+  [token],
 );
-if (rows.length === 0) return NextResponse.json({ error: "Invalid or expired token" }, { status: 400 });
+if (rows.length === 0)
+  return NextResponse.json(
+    { error: "Invalid or expired token" },
+    { status: 400 },
+  );
 const userId = Number(rows[0].user_id);
 const hash = await bcrypt.hash(newPassword, 10);
-await pool.query(`UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2`, [hash, userId]);
+await pool.query(
+  `UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2`,
+  [hash, userId],
+);
 ```
 
 ---
 
 ### 7. HIGH — CSP `script-src 'unsafe-inline' 'unsafe-eval'` = no XSS defense at all
+
 **Severity:** Medium-High — turns every future XSS sink into a full account-takeover vector
 **File:** `next.config.ts:14`
 
@@ -158,7 +190,7 @@ Additionally: `strict-dynamic` is not used, and nonces are not emitted, so there
 
 ```ts
 // minimal first step: drop unsafe-eval
-"script-src 'self' 'unsafe-inline' https://*.i.posthog.com"
+"script-src 'self' 'unsafe-inline' https://*.i.posthog.com";
 ```
 
 ---
@@ -166,29 +198,36 @@ Additionally: `strict-dynamic` is not used, and nonces are not emitted, so there
 ## 🟠 HIGH RISK (not directly exploitable today but one mistake away)
 
 ### 8. `/api/resolve/route.ts` rate-limit map has NO size cap
+
 **File:** `src/app/api/resolve/route.ts:6-12`
 Cleanup interval only removes expired entries; it never caps the map at 10k. A coordinated attack (or just organic IP diversity over weeks) can grow the map unboundedly → OOM. Other rate limiters in the repo have the `if (rateLimit.size > 10000)` guard — just copy it here.
 
 ### 9. `getVideos()` tag search uses unescaped `ILIKE '%' || $N || '%'` — user can brute the index with `%` wildcards
+
 **File:** `src/lib/content.ts:164`
 Not SQL injection (parameterized), but a user can send `?tag=a` (single char) and trigger a full-table ILIKE scan across 351k rows. DoS via expensive queries. The `memoize` helper dedups identical inputs but attacker can vary the char. Mitigation: escape `%` and `_` in the user input before passing to ILIKE, and/or require min 3 chars.
 
 ### 10. `/api/video-stream` proxies arbitrary bytes with NO output size cap
+
 **File:** `src/app/api/video-stream/route.ts:276`
 The 20s abort on upstream fetch caps initial latency, but once the stream is established bytes flow unbounded until the client disconnects. An attacker requesting many Range-less full videos in parallel (10 concurrent × 60MB = 600MB bandwidth per hit) can saturate the 20TB/mo Hetzner quota. The 30/min rate limit helps, but is per-IP and bypassable with a botnet. Add a hard byte ceiling (e.g. 200MB per request) and/or require Range header on videos >10MB.
 
 ### 11. `/api/favorites` and `/api/history` do NOT validate that the slug corresponds to a real video
+
 **Files:** `src/app/api/favorites/route.ts:77`, `src/app/api/history/route.ts:65`
 Any string ≤200 chars can be inserted. The tables will accumulate garbage. When `getUserFavorites()` does `JOIN videos ON v.slug = f.video_slug`, garbage rows just disappear from the result — so not directly exploitable, but enables storage bloat and tags-table poisoning. Add `WHERE EXISTS (SELECT 1 FROM videos WHERE slug = $N)` check or rely on a FK.
 
 ### 12. Session cookies persist for 30 days with no device tracking or revocation list
+
 **File:** `src/auth.ts:122` — `session: { strategy: "jwt", maxAge: 30 * 24 * 60 * 60 }`
 JWTs cannot be revoked server-side. If a user's device is stolen or a JWT leaks (XSS, malware, browser extension), the attacker has 30 days of access with no way to kick them out. Especially painful for Pro users. Consider: shorter maxAge (7 days), rotating refresh tokens, or server-side session table keyed by JTI for revocation.
 
 ### 13. Discord `profile.verified` flag not checked at all — see finding #5 but also relevant even without account linking
+
 Even when creating a fresh user via Discord, `profile.email` may be an attacker-owned unverified address. Down the line, features that email these users (Pro receipts, password reset if they ever add one) will deliver to the wrong inbox.
 
 ### 14. `is18Plus()` uses local server time (no TZ normalization)
+
 **File:** `src/app/api/signup/route.ts:38-48`
 `new Date(dobStr)` interprets `"YYYY-MM-DD"` as UTC midnight. `new Date(now.getFullYear()-18, ...)` uses local time. On a server in UTC this is consistent, but a bug prone to break if the container tz changes. Use `Date.UTC(...)` explicitly for determinism.
 

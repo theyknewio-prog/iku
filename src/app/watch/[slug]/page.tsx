@@ -487,6 +487,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
                     }
                     poster={video.thumbnail || undefined}
                     resolveUrl={resolvePageUrl || undefined}
+                    slug={video.slug}
                     relatedVideos={relatedForPlayer}
                   />
                 )}

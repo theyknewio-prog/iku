@@ -17,10 +17,16 @@ const TIMEOUT_MS = 30000;
 
 function findWatchCacheDir() {
   try {
-    const out = execSync(`find /var/lib/docker/rootfs/overlayfs -maxdepth 5 -type d -name watch -path "*/.next/server/app/watch" 2>/dev/null`).toString().trim();
+    const out = execSync(
+      `find /var/lib/docker/rootfs/overlayfs -maxdepth 5 -type d -name watch -path "*/.next/server/app/watch" 2>/dev/null`,
+    )
+      .toString()
+      .trim();
     const dirs = out.split("\n").filter(Boolean);
     return dirs[0] || null;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 async function notify(text) {
@@ -48,7 +54,9 @@ async function purgeWatchCache() {
   const dir = findWatchCacheDir();
   if (!dir) return false;
   try {
-    execSync(`find ${dir} -mindepth 1 -maxdepth 1 -exec rm -rf {} +`, { stdio: "ignore" });
+    execSync(`find ${dir} -mindepth 1 -maxdepth 1 -exec rm -rf {} +`, {
+      stdio: "ignore",
+    });
     return true;
   } catch {
     return false;
@@ -70,7 +78,14 @@ async function checkUrl(url, type, retry = 0) {
       return checkUrl(url, type, retry);
     }
     if (res.status !== 200) {
-      return { url, type, status: res.status, elapsed, error: `HTTP ${res.status}`, issues: null };
+      return {
+        url,
+        type,
+        status: res.status,
+        elapsed,
+        error: `HTTP ${res.status}`,
+        issues: null,
+      };
     }
 
     const html = await res.text();
@@ -81,18 +96,33 @@ async function checkUrl(url, type, retry = 0) {
     if (!/property=["']og:title["']/i.test(html)) issues.push("no-og-title");
     if (!/property=["']og:image["']/i.test(html)) issues.push("no-og-image");
     if (!/name=["']description["']/i.test(html)) issues.push("no-meta-desc");
-    if (!/\/watch\//.test(html) && type !== "static") issues.push("no-videos-listed");
+    if (!/\/watch\//.test(html) && type !== "static")
+      issues.push("no-videos-listed");
     if (type !== "static" && !/<h1[\s>]/i.test(html)) issues.push("no-h1");
     // Empty-page heuristic: taxonomy pages should have decent content
     if (type !== "static" && html.length < 8000) issues.push("thin-content");
 
-    return { url, type, status: 200, elapsed, error: null, issues: issues.length ? issues.join(",") : null };
+    return {
+      url,
+      type,
+      status: 200,
+      elapsed,
+      error: null,
+      issues: issues.length ? issues.join(",") : null,
+    };
   } catch (e) {
     if (retry < 1) {
       await new Promise((r) => setTimeout(r, 1500));
       return checkUrl(url, type, retry + 1);
     }
-    return { url, type, status: 0, elapsed: Date.now() - started, error: String(e.message || e).slice(0, 200), issues: null };
+    return {
+      url,
+      type,
+      status: 0,
+      elapsed: Date.now() - started,
+      error: String(e.message || e).slice(0, 200),
+      issues: null,
+    };
   }
 }
 
@@ -124,31 +154,68 @@ async function main() {
 
   const urls = [];
   const staticPages = [
-    "/", "/explore", "/trending", "/new", "/browse", "/feed",
-    "/tags", "/character", "/series", "/blog", "/glossary",
-    "/episodes", "/hentai", "/3d", "/login", "/signup",
-    "/favorites", "/history", "/settings", "/premium",
+    "/",
+    "/explore",
+    "/trending",
+    "/new",
+    "/browse",
+    "/feed",
+    "/tags",
+    "/character",
+    "/series",
+    "/blog",
+    "/glossary",
+    "/episodes",
+    "/hentai",
+    "/3d",
+    "/login",
+    "/signup",
+    "/favorites",
+    "/history",
+    "/settings",
+    "/premium",
   ];
-  for (const p of staticPages) urls.push({ url: `${BASE}${p}`, type: "static" });
+  for (const p of staticPages)
+    urls.push({ url: `${BASE}${p}`, type: "static" });
 
-  const tags = await pool.query(`SELECT DISTINCT unnest(tags) AS t FROM videos WHERE array_length(tags,1) > 0`);
+  const tags = await pool.query(
+    `SELECT DISTINCT unnest(tags) AS t FROM videos WHERE array_length(tags,1) > 0`,
+  );
   for (const r of tags.rows) {
-    if (r.t && r.t.length <= 100) urls.push({ url: `${BASE}/tag/${encodeURIComponent(r.t)}`, type: "tag" });
+    if (r.t && r.t.length <= 100)
+      urls.push({ url: `${BASE}/tag/${encodeURIComponent(r.t)}`, type: "tag" });
   }
 
-  const chars = await pool.query(`SELECT DISTINCT unnest(characters) AS c FROM videos WHERE array_length(characters,1) > 0`);
+  const chars = await pool.query(
+    `SELECT DISTINCT unnest(characters) AS c FROM videos WHERE array_length(characters,1) > 0`,
+  );
   for (const r of chars.rows) {
-    if (r.c && r.c.length <= 100) urls.push({ url: `${BASE}/character/${encodeURIComponent(r.c)}`, type: "character" });
+    if (r.c && r.c.length <= 100)
+      urls.push({
+        url: `${BASE}/character/${encodeURIComponent(r.c)}`,
+        type: "character",
+      });
   }
 
-  const series = await pool.query(`SELECT DISTINCT unnest(copyrights) AS s FROM videos WHERE array_length(copyrights,1) > 0`);
+  const series = await pool.query(
+    `SELECT DISTINCT unnest(copyrights) AS s FROM videos WHERE array_length(copyrights,1) > 0`,
+  );
   for (const r of series.rows) {
-    if (r.s && r.s.length <= 100) urls.push({ url: `${BASE}/series/${encodeURIComponent(r.s)}`, type: "series" });
+    if (r.s && r.s.length <= 100)
+      urls.push({
+        url: `${BASE}/series/${encodeURIComponent(r.s)}`,
+        type: "series",
+      });
   }
 
   console.log(`Total URLs: ${urls.length}`);
-  await pool.query("INSERT INTO audit_progress (id, total, done, fail) VALUES (1, $1, 0, 0)", [urls.length]);
-  await notify(`🔍 Taxonomy audit started\n${urls.length.toLocaleString()} URLs (tag/char/series/static)\nConcurrency: ${CONCURRENCY}\nDisk guard: purge watch cache at 75%`);
+  await pool.query(
+    "INSERT INTO audit_progress (id, total, done, fail) VALUES (1, $1, 0, 0)",
+    [urls.length],
+  );
+  await notify(
+    `🔍 Taxonomy audit started\n${urls.length.toLocaleString()} URLs (tag/char/series/static)\nConcurrency: ${CONCURRENCY}\nDisk guard: purge watch cache at 75%`,
+  );
 
   let done = 0;
   let fail = 0;
@@ -180,7 +247,14 @@ async function main() {
             `INSERT INTO audit_results (url, type, status, elapsed, error, issues)
              VALUES ($1,$2,$3,$4,$5,$6)
              ON CONFLICT (url) DO UPDATE SET status=$3, elapsed=$4, error=$5, issues=$6, checked_at=NOW()`,
-            [result.url, result.type, result.status, result.elapsed, result.error, result.issues]
+            [
+              result.url,
+              result.type,
+              result.status,
+              result.elapsed,
+              result.error,
+              result.issues,
+            ],
           );
         } catch (e) {
           console.error("PG insert err:", e.message);
@@ -190,9 +264,14 @@ async function main() {
       if (done % 1000 === 0) {
         const rate = done / ((Date.now() - startTime) / 1000);
         const eta = Math.round((urls.length - done) / rate / 60);
-        console.log(`[${done}/${urls.length}] ${((done/urls.length)*100).toFixed(1)}% — ${rate.toFixed(1)} req/s — ${fail} fails — ETA ${eta} min — disk ${diskUsagePct()}%`);
+        console.log(
+          `[${done}/${urls.length}] ${((done / urls.length) * 100).toFixed(1)}% — ${rate.toFixed(1)} req/s — ${fail} fails — ETA ${eta} min — disk ${diskUsagePct()}%`,
+        );
         try {
-          await pool.query("UPDATE audit_progress SET done=$1, fail=$2 WHERE id=1", [done, fail]);
+          await pool.query(
+            "UPDATE audit_progress SET done=$1, fail=$2 WHERE id=1",
+            [done, fail],
+          );
         } catch {}
       }
     }
@@ -202,7 +281,10 @@ async function main() {
   await Promise.all(workers);
   clearInterval(diskGuard);
 
-  await pool.query("UPDATE audit_progress SET done=$1, fail=$2, finished_at=NOW() WHERE id=1", [done, fail]);
+  await pool.query(
+    "UPDATE audit_progress SET done=$1, fail=$2, finished_at=NOW() WHERE id=1",
+    [done, fail],
+  );
 
   const summary = await pool.query(`
     SELECT type,
@@ -222,7 +304,8 @@ async function main() {
 
   const elapsedMin = Math.round((Date.now() - startTime) / 1000 / 60);
   let msg = `✅ Taxonomy audit done in ${elapsedMin} min\nTotal: ${urls.length.toLocaleString()}\nFails: ${fail.toLocaleString()}\n\nBy type:\n`;
-  for (const r of summary.rows) msg += `  ${r.type}: ${r.non200} HTTP fails, ${r.seo_issues} SEO\n`;
+  for (const r of summary.rows)
+    msg += `  ${r.type}: ${r.non200} HTTP fails, ${r.seo_issues} SEO\n`;
   msg += `\nTop errors:\n${topErrors.rows.map((r) => `  ${r.error}: ${r.cnt}`).join("\n") || "  none"}`;
   msg += `\n\nTop SEO issues:\n${topIssues.rows.map((r) => `  ${r.issue}: ${r.cnt}`).join("\n") || "  none"}`;
   await notify(msg);

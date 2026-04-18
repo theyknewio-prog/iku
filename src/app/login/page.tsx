@@ -5,7 +5,8 @@ import { LoginForm } from "./login-form";
 
 export const metadata: Metadata = {
   title: "Sign in — iku.gg",
-  description: "Sign in to iku.gg to save your favorite hentai videos and sync your history.",
+  description:
+    "Sign in to iku.gg to save your favorite hentai videos and sync your history.",
   robots: { index: false, follow: false },
 };
 

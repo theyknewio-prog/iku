@@ -2,7 +2,14 @@
 slug: porn-animations-how-genre-evolved
 title: "Porn Animations: How the Genre Evolved [Full History]"
 description: "From Edo period shunga to Blender CGI — the complete evolution of porn animations. Every era, every format, every technology shift that built the 360K-video world of 2026."
-keywords: ["porn animations", "animated porn history", "porn animation evolution", "animated adult content history", "hentai history animation"]
+keywords:
+  [
+    "porn animations",
+    "animated porn history",
+    "porn animation evolution",
+    "animated adult content history",
+    "hentai history animation",
+  ]
 category: guides
 published: "2026-04-12"
 author: "iku.gg editorial"
@@ -191,6 +198,7 @@ The best **porn animations** produced in 2026 are technically indistinguishable 
 ### Diversity of Style
 
 The range of visual styles in **porn animations** in 2026 is wider than at any previous point:
+
 - 2D traditional Japanese hentai OVAs
 - Photorealistic Blender CGI
 - SFM game character animation
@@ -275,6 +283,7 @@ The history explains the present. And the present — the full catalog — is he
 ---
 
 **Related articles:**
+
 - [What Is Animation Porn? A Complete Explanation](/blog/what-is-animation-porn-explained)
 - [3D Hentai: The Complete Guide (2026)](/blog/3d-hentai-guide-2026)
 - [Cartoon Porn: Top Animated Videos (2026)](/blog/cartoon-porn-top-animations)

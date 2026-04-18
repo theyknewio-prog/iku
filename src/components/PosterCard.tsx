@@ -31,14 +31,13 @@ function pickGradient(id: number): string {
 
 /* ── Genre tag colors (match mockup gt-*) ──────────────────── */
 const TAG_COLORS = [
-  { cls: "gt-pink",    bg: "linear-gradient(135deg, #ff6b9d, #c084fc)" },
-  { cls: "gt-purple",  bg: "linear-gradient(135deg, #c084fc, #818cf8)" },
-  { cls: "gt-cyan",    bg: "linear-gradient(135deg, #67e8f9, #4ade80)" },
-  { cls: "gt-gold",    bg: "linear-gradient(135deg, #fbbf24, #fb923c)" },
-  { cls: "gt-red",     bg: "linear-gradient(135deg, #f87171, #ff6b9d)" },
-  { cls: "gt-green",   bg: "linear-gradient(135deg, #4ade80, #67e8f9)" },
+  { cls: "gt-pink", bg: "linear-gradient(135deg, #ff6b9d, #c084fc)" },
+  { cls: "gt-purple", bg: "linear-gradient(135deg, #c084fc, #818cf8)" },
+  { cls: "gt-cyan", bg: "linear-gradient(135deg, #67e8f9, #4ade80)" },
+  { cls: "gt-gold", bg: "linear-gradient(135deg, #fbbf24, #fb923c)" },
+  { cls: "gt-red", bg: "linear-gradient(135deg, #f87171, #ff6b9d)" },
+  { cls: "gt-green", bg: "linear-gradient(135deg, #4ade80, #67e8f9)" },
 ];
-
 
 function hashString(s: string): number {
   let h = 0;
@@ -82,7 +81,12 @@ interface PosterCardProps {
   priority?: boolean;
 }
 
-export function PosterCard({ video, rank, badge, priority = false }: PosterCardProps) {
+export function PosterCard({
+  video,
+  rank,
+  badge,
+  priority = false,
+}: PosterCardProps) {
   const [watched, setWatched] = useState(false);
 
   useEffect(() => {
@@ -171,7 +175,16 @@ export function PosterCard({ video, rank, badge, priority = false }: PosterCardP
         {/* Watched checkmark */}
         {watched && (
           <span className="poster-card__watched" aria-label="Watched">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="rgba(255,255,255,0.75)"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </span>
@@ -188,14 +201,19 @@ export function PosterCard({ video, rank, badge, priority = false }: PosterCardP
 
       {/* Info below card */}
       <div className="poster-card__info">
-        <span className={`poster-card__tag ${tagColor.cls}`} style={{ background: tagColor.bg }}>
+        <span
+          className={`poster-card__tag ${tagColor.cls}`}
+          style={{ background: tagColor.bg }}
+        >
           {genreTag}
         </span>
         <div className="poster-card__title">{title}</div>
         <div className="poster-card__meta">
           <div className="poster-card__stars">
             {"★".repeat(stars)}
-            <span className="poster-card__star-empty">{"★".repeat(5 - stars)}</span>
+            <span className="poster-card__star-empty">
+              {"★".repeat(5 - stars)}
+            </span>
           </div>
           <span className="poster-card__views">{views} views</span>
         </div>

@@ -13,6 +13,7 @@
 ## Important Context
 
 ### What changes
+
 - `src/lib/content.ts` — `getVideos()` queries PG instead of calling 4 external APIs; `getThumbnailForTag()` queries PG instead of looping through JSON arrays
 - `src/lib/rule34video.ts` — reads from PG instead of `rule34video-videos.json`
 - `src/lib/wp-hentai.ts` — reads from PG instead of `wp-hentai-videos.json`
@@ -23,6 +24,7 @@
 - `.github/workflows/daily-scrape.yml` — scrapers connect to PG on Hetzner
 
 ### What does NOT change
+
 - `src/lib/danbooru.ts` — still used for individual post lookup on watch page + related posts
 - `src/lib/gelbooru.ts` — still used for individual post lookup on watch page
 - `src/lib/rule34-search.ts` — still used for individual post lookup (via `rule34.ts`)
@@ -34,15 +36,17 @@
 - `src/data/blog.ts`, `glossary.ts`, `characters.ts`, `series.ts` — these are TS files, NOT JSON data, stay as-is
 
 ### Source type mapping
-| Source | Current `Video.source` | New `Video.source` | Slug prefix |
-|--------|----------------------|-------------------|-------------|
-| Danbooru | `"danbooru"` | `"danbooru"` | `{id}-{char}-{copy}` |
-| Gelbooru | `"gelbooru"` | `"gelbooru"` | `gel-` |
-| Rule34.xxx | `"rule34"` | `"rule34"` | `r34-` |
-| Rule34Video | `"rule34video"` | `"rule34video"` | `r34v-` |
-| WP sites | `"rule34video"` (wrong!) | `"wp"` | `hmm-`,`htv-`,`aid-`,`wh-`,`hw-`,`hg-` |
+
+| Source      | Current `Video.source`   | New `Video.source` | Slug prefix                            |
+| ----------- | ------------------------ | ------------------ | -------------------------------------- |
+| Danbooru    | `"danbooru"`             | `"danbooru"`       | `{id}-{char}-{copy}`                   |
+| Gelbooru    | `"gelbooru"`             | `"gelbooru"`       | `gel-`                                 |
+| Rule34.xxx  | `"rule34"`               | `"rule34"`         | `r34-`                                 |
+| Rule34Video | `"rule34video"`          | `"rule34video"`    | `r34v-`                                |
+| WP sites    | `"rule34video"` (wrong!) | `"wp"`             | `hmm-`,`htv-`,`aid-`,`wh-`,`hw-`,`hg-` |
 
 ### Database connection
+
 - **Dev:** `DATABASE_URL=postgresql://iku:iku@localhost:5432/iku`
 - **Prod (Docker network):** `DATABASE_URL=postgresql://iku:STRONG_PASSWORD@postgres:5432/iku`
 - **GitHub Actions (scrapers):** `DATABASE_URL=postgresql://iku:STRONG_PASSWORD@204.168.233.29:5432/iku`
@@ -52,6 +56,7 @@
 ## Task 1: Install `pg` and create connection pool
 
 **Files:**
+
 - Modify: `package.json`
 - Create: `src/lib/db.ts`
 
@@ -103,11 +108,13 @@ export default pool;
 - [ ] **Step 3: Add `DATABASE_URL` to `.env.local`**
 
 Add to `.env.local`:
+
 ```
 DATABASE_URL=postgresql://iku:iku@localhost:5432/iku
 ```
 
 Add to `.env.example`:
+
 ```
 DATABASE_URL=postgresql://iku:iku@localhost:5432/iku
 ```
@@ -124,6 +131,7 @@ git commit -m "feat: add pg connection pool for PostgreSQL migration"
 ## Task 2: Create database schema
 
 **Files:**
+
 - Create: `scripts/init-db.sql`
 
 - [ ] **Step 1: Create `scripts/init-db.sql`**
@@ -198,6 +206,7 @@ git commit -m "feat: add PostgreSQL schema for videos table"
 ## Task 3: Create JSON-to-PostgreSQL migration script
 
 **Files:**
+
 - Create: `scripts/migrate-json-to-pg.ts`
 
 - [ ] **Step 1: Create `scripts/migrate-json-to-pg.ts`**
@@ -260,7 +269,7 @@ async function insertBatch(
     file_size: number;
     duration: number | null;
     created_at: string;
-  }>
+  }>,
 ): Promise<number> {
   if (rows.length === 0) return 0;
 
@@ -271,14 +280,29 @@ async function insertBatch(
     const r = rows[i];
     const offset = i * 20;
     placeholders.push(
-      `($${offset + 1}, $${offset + 2}, $${offset + 3}, $${offset + 4}, $${offset + 5}, $${offset + 6}, $${offset + 7}, $${offset + 8}, $${offset + 9}, $${offset + 10}, $${offset + 11}, $${offset + 12}, $${offset + 13}, $${offset + 14}, $${offset + 15}, $${offset + 16}, $${offset + 17}, $${offset + 18}, $${offset + 19}, $${offset + 20})`
+      `($${offset + 1}, $${offset + 2}, $${offset + 3}, $${offset + 4}, $${offset + 5}, $${offset + 6}, $${offset + 7}, $${offset + 8}, $${offset + 9}, $${offset + 10}, $${offset + 11}, $${offset + 12}, $${offset + 13}, $${offset + 14}, $${offset + 15}, $${offset + 16}, $${offset + 17}, $${offset + 18}, $${offset + 19}, $${offset + 20})`,
     );
     values.push(
-      r.source, r.source_id, r.slug, r.url, r.page_url, r.site, r.title,
-      r.thumbnail, r.preview, r.score, r.favorites,
-      r.tags, r.characters, r.copyrights, r.artists,
-      r.width, r.height, r.file_size, r.duration,
-      r.created_at || new Date().toISOString()
+      r.source,
+      r.source_id,
+      r.slug,
+      r.url,
+      r.page_url,
+      r.site,
+      r.title,
+      r.thumbnail,
+      r.preview,
+      r.score,
+      r.favorites,
+      r.tags,
+      r.characters,
+      r.copyrights,
+      r.artists,
+      r.width,
+      r.height,
+      r.file_size,
+      r.duration,
+      r.created_at || new Date().toISOString(),
     );
   }
 
@@ -293,33 +317,67 @@ async function insertBatch(
 }
 
 interface DanbooruEntry {
-  id: number; slug: string; url: string; thumbnail: string;
-  score: number; favorites: number;
-  characters: string[]; copyrights: string[]; artists: string[]; tags: string[];
-  width: number; height: number; fileSize: number;
-  duration: number | null; createdAt: string;
+  id: number;
+  slug: string;
+  url: string;
+  thumbnail: string;
+  score: number;
+  favorites: number;
+  characters: string[];
+  copyrights: string[];
+  artists: string[];
+  tags: string[];
+  width: number;
+  height: number;
+  fileSize: number;
+  duration: number | null;
+  createdAt: string;
 }
 
 interface GelbooruEntry {
-  id: number; slug: string; url: string; thumbnail: string;
-  score: number; tags: string[];
-  width: number; height: number; fileSize: number; createdAt: string;
+  id: number;
+  slug: string;
+  url: string;
+  thumbnail: string;
+  score: number;
+  tags: string[];
+  width: number;
+  height: number;
+  fileSize: number;
+  createdAt: string;
 }
 
 interface Rule34Entry {
-  id: number; slug: string; url: string; thumbnail: string; preview: string;
-  score: number; tags: string[];
-  width: number; height: number; createdAt: string;
+  id: number;
+  slug: string;
+  url: string;
+  thumbnail: string;
+  preview: string;
+  score: number;
+  tags: string[];
+  width: number;
+  height: number;
+  createdAt: string;
 }
 
 interface R34VEntry {
-  id: number; slug: string; title: string; pageUrl: string;
-  thumbnail: string; duration: number; date: string;
+  id: number;
+  slug: string;
+  title: string;
+  pageUrl: string;
+  thumbnail: string;
+  duration: number;
+  date: string;
 }
 
 interface WPEntry {
-  id: number; slug: string; title: string; pageUrl: string;
-  site: string; date: string; thumbnail?: string;
+  id: number;
+  slug: string;
+  title: string;
+  pageUrl: string;
+  site: string;
+  date: string;
+  thumbnail?: string;
 }
 
 async function migrateDanbooru() {
@@ -336,7 +394,11 @@ async function migrateDanbooru() {
       site: null,
       title: null,
       thumbnail: v.thumbnail || "",
-      preview: v.thumbnail ? v.thumbnail.replace("/180x180/", "/720x720/").replace(/\.jpg$/, ".webp") : "",
+      preview: v.thumbnail
+        ? v.thumbnail
+            .replace("/180x180/", "/720x720/")
+            .replace(/\.jpg$/, ".webp")
+        : "",
       score: v.score || 0,
       favorites: v.favorites || 0,
       tags: v.tags || [],
@@ -350,7 +412,9 @@ async function migrateDanbooru() {
       created_at: v.createdAt || "",
     }));
     inserted += await insertBatch(batch);
-    process.stdout.write(`    ${Math.min(i + BATCH_SIZE, data.length)}/${data.length} processed (${inserted} inserted)\r`);
+    process.stdout.write(
+      `    ${Math.min(i + BATCH_SIZE, data.length)}/${data.length} processed (${inserted} inserted)\r`,
+    );
   }
   console.log(`\n    Inserted: ${inserted}`);
 }
@@ -383,7 +447,9 @@ async function migrateGelbooru() {
       created_at: v.createdAt || "",
     }));
     inserted += await insertBatch(batch);
-    process.stdout.write(`    ${Math.min(i + BATCH_SIZE, data.length)}/${data.length} processed (${inserted} inserted)\r`);
+    process.stdout.write(
+      `    ${Math.min(i + BATCH_SIZE, data.length)}/${data.length} processed (${inserted} inserted)\r`,
+    );
   }
   console.log(`\n    Inserted: ${inserted}`);
 }
@@ -416,7 +482,9 @@ async function migrateRule34() {
       created_at: v.createdAt || "",
     }));
     inserted += await insertBatch(batch);
-    process.stdout.write(`    ${Math.min(i + BATCH_SIZE, data.length)}/${data.length} processed (${inserted} inserted)\r`);
+    process.stdout.write(
+      `    ${Math.min(i + BATCH_SIZE, data.length)}/${data.length} processed (${inserted} inserted)\r`,
+    );
   }
   console.log(`\n    Inserted: ${inserted}`);
 }
@@ -438,7 +506,14 @@ async function migrateRule34Video() {
       preview: v.thumbnail || "",
       score: 0,
       favorites: 0,
-      tags: v.title ? v.title.toLowerCase().replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter((w: string) => w.length > 2).slice(0, 15) : [],
+      tags: v.title
+        ? v.title
+            .toLowerCase()
+            .replace(/[^a-z0-9\s]/g, "")
+            .split(/\s+/)
+            .filter((w: string) => w.length > 2)
+            .slice(0, 15)
+        : [],
       characters: [],
       copyrights: [],
       artists: [],
@@ -449,7 +524,9 @@ async function migrateRule34Video() {
       created_at: v.date || "",
     }));
     inserted += await insertBatch(batch);
-    process.stdout.write(`    ${Math.min(i + BATCH_SIZE, data.length)}/${data.length} processed (${inserted} inserted)\r`);
+    process.stdout.write(
+      `    ${Math.min(i + BATCH_SIZE, data.length)}/${data.length} processed (${inserted} inserted)\r`,
+    );
   }
   console.log(`\n    Inserted: ${inserted}`);
 }
@@ -471,7 +548,14 @@ async function migrateWP() {
       preview: "",
       score: 0,
       favorites: 0,
-      tags: v.title ? v.title.toLowerCase().replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter((w: string) => w.length > 2).slice(0, 15) : [],
+      tags: v.title
+        ? v.title
+            .toLowerCase()
+            .replace(/[^a-z0-9\s]/g, "")
+            .split(/\s+/)
+            .filter((w: string) => w.length > 2)
+            .slice(0, 15)
+        : [],
       characters: [],
       copyrights: [],
       artists: [],
@@ -482,7 +566,9 @@ async function migrateWP() {
       created_at: v.date || "",
     }));
     inserted += await insertBatch(batch);
-    process.stdout.write(`    ${Math.min(i + BATCH_SIZE, data.length)}/${data.length} processed (${inserted} inserted)\r`);
+    process.stdout.write(
+      `    ${Math.min(i + BATCH_SIZE, data.length)}/${data.length} processed (${inserted} inserted)\r`,
+    );
   }
   console.log(`\n    Inserted: ${inserted}`);
 }
@@ -504,7 +590,9 @@ async function main() {
   await migrateWP();
 
   // Final count
-  const { rows } = await pool.query("SELECT source, COUNT(*) as count FROM videos GROUP BY source ORDER BY count DESC");
+  const { rows } = await pool.query(
+    "SELECT source, COUNT(*) as count FROM videos GROUP BY source ORDER BY count DESC",
+  );
   console.log("\n═══════════════════════════════════════════");
   console.log("  Migration complete!");
   for (const row of rows) {
@@ -535,11 +623,13 @@ git commit -m "feat: add JSON-to-PostgreSQL migration script"
 ## Task 4: Update Video type — add `"wp"` source
 
 **Files:**
+
 - Modify: `src/types/video.ts:47`
 
 - [ ] **Step 1: Update source union type**
 
 In `src/types/video.ts`, change line 47:
+
 ```typescript
 // OLD:
 source: "danbooru" | "gelbooru" | "rule34" | "rule34video";
@@ -559,6 +649,7 @@ git commit -m "feat: add 'wp' to Video source union type"
 ## Task 5: Rewrite `content.ts` — getVideos() + thumbnails from PG
 
 **Files:**
+
 - Modify: `src/lib/content.ts` (full rewrite)
 
 This is the most critical file. `getVideos()` currently calls 4 external APIs, interleaves results, deduplicates, sorts, and filters. With PG, it becomes a single SQL query.
@@ -582,15 +673,30 @@ import type { Video, PaginatedResult } from "@/types/video";
 // ---------------------------------------------------------------------------
 
 const BANNED_TAGS = new Set([
-  "loli", "lolicon", "lolidom", "loli_focus",
-  "shota", "shotacon", "shotadom", "shota_focus",
-  "child", "children", "minor", "underage",
-  "toddler", "toddlercon", "infant",
-  "young_girl", "young_boy",
+  "loli",
+  "lolicon",
+  "lolidom",
+  "loli_focus",
+  "shota",
+  "shotacon",
+  "shotadom",
+  "shota_focus",
+  "child",
+  "children",
+  "minor",
+  "underage",
+  "toddler",
+  "toddlercon",
+  "infant",
+  "young_girl",
+  "young_boy",
   "child_on_child",
-  "cub", "baby",
-  "oppai_loli", "legal_loli",
-  "elementary_school", "kindergarten",
+  "cub",
+  "baby",
+  "oppai_loli",
+  "legal_loli",
+  "elementary_school",
+  "kindergarten",
   "randoseru",
 ]);
 
@@ -615,7 +721,7 @@ export async function getThumbnailForTag(tag: string): Promise<string> {
        AND NOT (tags && $2::text[])
      ORDER BY score DESC
      LIMIT 1`,
-    [tag.toLowerCase(), BANNED_TAGS_ARRAY]
+    [tag.toLowerCase(), BANNED_TAGS_ARRAY],
   );
 
   if (rows.length === 0 || !rows[0].thumbnail) return "";
@@ -625,13 +731,15 @@ export async function getThumbnailForTag(tag: string): Promise<string> {
 }
 
 /** Get thumbnails for multiple tags at once (batch) */
-export async function getThumbnailsForTags(tags: string[]): Promise<Record<string, string>> {
+export async function getThumbnailsForTags(
+  tags: string[],
+): Promise<Record<string, string>> {
   const result: Record<string, string> = {};
   // Use Promise.all for parallel queries
   await Promise.all(
     tags.map(async (tag) => {
       result[tag] = await getThumbnailForTag(tag);
-    })
+    }),
   );
   return result;
 }
@@ -677,7 +785,7 @@ function rowToVideo(row: Record<string, unknown>): Video {
  * Banned content is excluded at the SQL level (never leaves the database).
  */
 export async function getVideos(
-  options: GetVideosOptions = {}
+  options: GetVideosOptions = {},
 ): Promise<PaginatedResult<Video>> {
   const {
     limit = 20,
@@ -717,20 +825,23 @@ export async function getVideos(
     const searchTerms = tags.toLowerCase().split(/\s+/).filter(Boolean);
     for (const term of searchTerms) {
       conditions.push(
-        `($${paramIndex} = ANY(tags) OR $${paramIndex} = ANY(characters) OR $${paramIndex} = ANY(copyrights) OR (title IS NOT NULL AND title ILIKE '%' || $${paramIndex} || '%'))`
+        `($${paramIndex} = ANY(tags) OR $${paramIndex} = ANY(characters) OR $${paramIndex} = ANY(copyrights) OR (title IS NOT NULL AND title ILIKE '%' || $${paramIndex} || '%'))`,
       );
       params.push(term);
       paramIndex++;
     }
   }
 
-  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+  const whereClause =
+    conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
 
   // ORDER BY
   const orderClause =
-    order === "score" ? "ORDER BY score DESC, created_at DESC"
-    : order === "favcount" ? "ORDER BY favorites DESC, score DESC"
-    : "ORDER BY created_at DESC";
+    order === "score"
+      ? "ORDER BY score DESC, created_at DESC"
+      : order === "favcount"
+        ? "ORDER BY favorites DESC, score DESC"
+        : "ORDER BY created_at DESC";
 
   // Query with LIMIT + 1 to check hasMore
   const query = `
@@ -773,6 +884,7 @@ git commit -m "feat: rewrite content.ts to query PostgreSQL instead of JSON/APIs
 ## Task 6: Rewrite `rule34video.ts` and `wp-hentai.ts` for PostgreSQL
 
 **Files:**
+
 - Modify: `src/lib/rule34video.ts` (full rewrite)
 - Modify: `src/lib/wp-hentai.ts` (full rewrite)
 
@@ -813,16 +925,18 @@ function rowToVideo(row: Record<string, unknown>): Video {
 export async function getRule34VideoPost(id: number): Promise<Video | null> {
   const { rows } = await pool.query(
     "SELECT * FROM videos WHERE source = 'rule34video' AND source_id = $1 LIMIT 1",
-    [id]
+    [id],
   );
   if (rows.length === 0) return null;
   return rowToVideo(rows[0]);
 }
 
-export async function getRule34VideoPageUrl(id: number): Promise<string | null> {
+export async function getRule34VideoPageUrl(
+  id: number,
+): Promise<string | null> {
   const { rows } = await pool.query(
     "SELECT page_url FROM videos WHERE source = 'rule34video' AND source_id = $1 LIMIT 1",
-    [id]
+    [id],
   );
   return rows[0]?.page_url ?? null;
 }
@@ -835,7 +949,7 @@ export interface Rule34VideoSearchOptions {
 }
 
 export async function searchRule34Video(
-  options: Rule34VideoSearchOptions = {}
+  options: Rule34VideoSearchOptions = {},
 ): Promise<PaginatedResult<Video>> {
   const { tags = "", page = 1, limit = 20, order = "date" } = options;
   const offset = (page - 1) * limit;
@@ -847,13 +961,16 @@ export async function searchRule34Video(
   if (tags) {
     const searchTerms = tags.toLowerCase().split(/\s+/);
     for (const term of searchTerms) {
-      conditions.push(`(title ILIKE '%' || $${paramIndex} || '%' OR $${paramIndex} = ANY(tags))`);
+      conditions.push(
+        `(title ILIKE '%' || $${paramIndex} || '%' OR $${paramIndex} = ANY(tags))`,
+      );
       params.push(term);
       paramIndex++;
     }
   }
 
-  const orderClause = order === "date" ? "ORDER BY created_at DESC" : "ORDER BY score DESC";
+  const orderClause =
+    order === "date" ? "ORDER BY created_at DESC" : "ORDER BY score DESC";
 
   params.push(limit + 1, offset);
   const query = `SELECT * FROM videos WHERE ${conditions.join(" AND ")} ${orderClause} LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
@@ -916,7 +1033,7 @@ function rowToVideo(row: Record<string, unknown>): Video {
 export async function getWPHentaiPost(id: number): Promise<Video | null> {
   const { rows } = await pool.query(
     "SELECT * FROM videos WHERE source = 'wp' AND source_id = $1 LIMIT 1",
-    [id]
+    [id],
   );
   if (rows.length === 0) return null;
   return rowToVideo(rows[0]);
@@ -925,7 +1042,7 @@ export async function getWPHentaiPost(id: number): Promise<Video | null> {
 export async function getWPHentaiPageUrl(id: number): Promise<string | null> {
   const { rows } = await pool.query(
     "SELECT page_url FROM videos WHERE source = 'wp' AND source_id = $1 LIMIT 1",
-    [id]
+    [id],
   );
   return rows[0]?.page_url ?? null;
 }
@@ -938,7 +1055,7 @@ export interface WPHentaiSearchOptions {
 }
 
 export async function searchWPHentai(
-  options: WPHentaiSearchOptions = {}
+  options: WPHentaiSearchOptions = {},
 ): Promise<PaginatedResult<Video>> {
   const { tags = "", page = 1, limit = 20, order = "date" } = options;
   const offset = (page - 1) * limit;
@@ -950,13 +1067,16 @@ export async function searchWPHentai(
   if (tags) {
     const searchTerms = tags.toLowerCase().split(/\s+/);
     for (const term of searchTerms) {
-      conditions.push(`(title ILIKE '%' || $${paramIndex} || '%' OR $${paramIndex} = ANY(tags))`);
+      conditions.push(
+        `(title ILIKE '%' || $${paramIndex} || '%' OR $${paramIndex} = ANY(tags))`,
+      );
       params.push(term);
       paramIndex++;
     }
   }
 
-  const orderClause = order === "date" ? "ORDER BY created_at DESC" : "ORDER BY score DESC";
+  const orderClause =
+    order === "date" ? "ORDER BY created_at DESC" : "ORDER BY score DESC";
 
   params.push(limit + 1, offset);
   const query = `SELECT * FROM videos WHERE ${conditions.join(" AND ")} ${orderClause} LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
@@ -983,6 +1103,7 @@ git commit -m "feat: rewrite rule34video.ts and wp-hentai.ts for PostgreSQL"
 ## Task 7: Update callers — async thumbnails + await for post lookups
 
 **Files:**
+
 - Modify: `src/app/page.tsx` — `getThumbnailForTag` is now async
 - Modify: `src/app/watch/[slug]/page.tsx` — `getRule34VideoPost`, `getWPHentaiPost`, `getRule34VideoPageUrl`, `getWPHentaiPageUrl` are now async
 - Modify: `src/app/api/resolve-video/route.ts` (if it calls `getRule34VideoPageUrl` or `getWPHentaiPageUrl`)
@@ -997,6 +1118,7 @@ Find all calls to `getThumbnailForTag(tag)` and make them `await getThumbnailFor
 Also update import: if `getThumbnailsForTags` is used, it's also now async.
 
 Specific pattern to find and replace in `page.tsx`:
+
 - `getThumbnailForTag(...)` → `await getThumbnailForTag(...)`
 - `getThumbnailsForTags(...)` → `await getThumbnailsForTags(...)`
 
@@ -1006,10 +1128,10 @@ The watch page already uses `await` for Danbooru/Gelbooru/Rule34 calls. Add `awa
 
 ```typescript
 // These were sync, now async — add await:
-const rv = await getRule34VideoPost(id);     // was: getRule34VideoPost(id)
-const wv = await getWPHentaiPost(id);        // was: getWPHentaiPost(id)
-const pageUrl = await getRule34VideoPageUrl(id);   // was: getRule34VideoPageUrl(id)
-const wpUrl = await getWPHentaiPageUrl(id);        // was: getWPHentaiPageUrl(id)
+const rv = await getRule34VideoPost(id); // was: getRule34VideoPost(id)
+const wv = await getWPHentaiPost(id); // was: getWPHentaiPost(id)
+const pageUrl = await getRule34VideoPageUrl(id); // was: getRule34VideoPageUrl(id)
+const wpUrl = await getWPHentaiPageUrl(id); // was: getWPHentaiPageUrl(id)
 ```
 
 - [ ] **Step 3: Check for other callers**
@@ -1032,6 +1154,7 @@ git commit -m "feat: update callers for async PG functions (thumbnails, post loo
 ## Task 8: Rewrite sitemaps and robots.ts for PostgreSQL
 
 **Files:**
+
 - Modify: `src/app/watch/sitemap.ts` (full rewrite)
 - Modify: `src/app/robots.ts` (full rewrite)
 
@@ -1062,12 +1185,14 @@ export default async function sitemap(props: {
 
   const { rows } = await pool.query(
     "SELECT slug, created_at FROM videos ORDER BY pk LIMIT $1 OFFSET $2",
-    [MAX_PER_SITEMAP, offset]
+    [MAX_PER_SITEMAP, offset],
   );
 
   return rows.map((row) => ({
     url: `${SITE}/watch/${row.slug}`,
-    lastModified: row.created_at ? new Date(row.created_at).toISOString() : new Date().toISOString(),
+    lastModified: row.created_at
+      ? new Date(row.created_at).toISOString()
+      : new Date().toISOString(),
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));
@@ -1090,9 +1215,7 @@ async function getWatchSitemapCount(): Promise<number> {
 export default async function robots(): Promise<MetadataRoute.Robots> {
   const sitemapCount = await getWatchSitemapCount();
 
-  const sitemaps: string[] = [
-    "https://iku.gg/sitemap.xml",
-  ];
+  const sitemaps: string[] = ["https://iku.gg/sitemap.xml"];
 
   for (let i = 0; i < sitemapCount; i++) {
     sitemaps.push(`https://iku.gg/watch/sitemap/${i}.xml`);
@@ -1107,8 +1230,27 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
   return {
     rules: {
       userAgent: "*",
-      allow: ["/", "/watch/", "/tag/", "/character/", "/series/", "/trending", "/new", "/tags", "/blog/", "/glossary/"],
-      disallow: ["/api/", "/_next/", "/feed", "/v/", "/favorites", "/history", "/settings"],
+      allow: [
+        "/",
+        "/watch/",
+        "/tag/",
+        "/character/",
+        "/series/",
+        "/trending",
+        "/new",
+        "/tags",
+        "/blog/",
+        "/glossary/",
+      ],
+      disallow: [
+        "/api/",
+        "/_next/",
+        "/feed",
+        "/v/",
+        "/favorites",
+        "/history",
+        "/settings",
+      ],
     },
     sitemap: sitemaps,
   };
@@ -1127,6 +1269,7 @@ git commit -m "feat: rewrite sitemaps and robots.ts to query PostgreSQL"
 ## Task 9: Update `content.ts` getVideos() in `src/app/api/feed/route.ts`
 
 **Files:**
+
 - Modify: `src/app/api/feed/route.ts` — no changes needed if `getVideos()` kept the same signature
 
 - [ ] **Step 1: Verify feed API compatibility**
@@ -1148,6 +1291,7 @@ Already done in Task 5 — the new `content.ts` doesn't call `searchRule34Video(
 ## Task 10: Update scrapers to write to PostgreSQL
 
 **Files:**
+
 - Create: `scripts/db.ts` (shared pool for scrapers)
 - Modify: `scripts/scrape-danbooru.ts`
 - Modify: `scripts/scrape-gelbooru.ts`
@@ -1205,7 +1349,7 @@ export async function upsertVideos(
     file_size?: number;
     duration?: number | null;
     created_at?: string;
-  }>
+  }>,
 ): Promise<number> {
   if (rows.length === 0) return 0;
 
@@ -1216,15 +1360,29 @@ export async function upsertVideos(
     const r = rows[i];
     const o = i * 20;
     placeholders.push(
-      `($${o+1},$${o+2},$${o+3},$${o+4},$${o+5},$${o+6},$${o+7},$${o+8},$${o+9},$${o+10},$${o+11},$${o+12},$${o+13},$${o+14},$${o+15},$${o+16},$${o+17},$${o+18},$${o+19},$${o+20})`
+      `($${o + 1},$${o + 2},$${o + 3},$${o + 4},$${o + 5},$${o + 6},$${o + 7},$${o + 8},$${o + 9},$${o + 10},$${o + 11},$${o + 12},$${o + 13},$${o + 14},$${o + 15},$${o + 16},$${o + 17},$${o + 18},$${o + 19},$${o + 20})`,
     );
     values.push(
-      r.source, r.source_id, r.slug, r.url ?? "", r.page_url ?? null,
-      r.site ?? null, r.title ?? null, r.thumbnail ?? "", r.preview ?? "",
-      r.score ?? 0, r.favorites ?? 0,
-      r.tags ?? [], r.characters ?? [], r.copyrights ?? [], r.artists ?? [],
-      r.width ?? 0, r.height ?? 0, r.file_size ?? 0, r.duration ?? null,
-      r.created_at ?? new Date().toISOString()
+      r.source,
+      r.source_id,
+      r.slug,
+      r.url ?? "",
+      r.page_url ?? null,
+      r.site ?? null,
+      r.title ?? null,
+      r.thumbnail ?? "",
+      r.preview ?? "",
+      r.score ?? 0,
+      r.favorites ?? 0,
+      r.tags ?? [],
+      r.characters ?? [],
+      r.copyrights ?? [],
+      r.artists ?? [],
+      r.width ?? 0,
+      r.height ?? 0,
+      r.file_size ?? 0,
+      r.duration ?? null,
+      r.created_at ?? new Date().toISOString(),
     );
   }
 
@@ -1266,34 +1424,38 @@ Replace the `main()` function's file-writing section. Change the end of `main()`
 import { pool, upsertVideos } from "./db";
 
 // In main(), after dedup and sort:
-  console.log(`\n  Upserting ${all.length} videos to PostgreSQL...`);
-  const BATCH = 500;
-  let upserted = 0;
-  for (let i = 0; i < all.length; i += BATCH) {
-    const batch = all.slice(i, i + BATCH).map((v) => ({
-      source: "danbooru",
-      source_id: v.id,
-      slug: v.slug,
-      url: v.url,
-      thumbnail: v.thumbnail,
-      preview: v.thumbnail ? v.thumbnail.replace("/180x180/", "/720x720/").replace(/\.jpg$/, ".webp") : "",
-      score: v.score,
-      favorites: v.favorites,
-      tags: v.tags,
-      characters: v.characters,
-      copyrights: v.copyrights,
-      artists: v.artists,
-      width: v.width,
-      height: v.height,
-      file_size: v.fileSize,
-      duration: v.duration,
-      created_at: v.createdAt,
-    }));
-    upserted += await upsertVideos(batch);
-    process.stdout.write(`  ${Math.min(i + BATCH, all.length)}/${all.length} upserted\r`);
-  }
-  console.log(`\n  ${upserted} videos upserted to PostgreSQL`);
-  await pool.end();
+console.log(`\n  Upserting ${all.length} videos to PostgreSQL...`);
+const BATCH = 500;
+let upserted = 0;
+for (let i = 0; i < all.length; i += BATCH) {
+  const batch = all.slice(i, i + BATCH).map((v) => ({
+    source: "danbooru",
+    source_id: v.id,
+    slug: v.slug,
+    url: v.url,
+    thumbnail: v.thumbnail,
+    preview: v.thumbnail
+      ? v.thumbnail.replace("/180x180/", "/720x720/").replace(/\.jpg$/, ".webp")
+      : "",
+    score: v.score,
+    favorites: v.favorites,
+    tags: v.tags,
+    characters: v.characters,
+    copyrights: v.copyrights,
+    artists: v.artists,
+    width: v.width,
+    height: v.height,
+    file_size: v.fileSize,
+    duration: v.duration,
+    created_at: v.createdAt,
+  }));
+  upserted += await upsertVideos(batch);
+  process.stdout.write(
+    `  ${Math.min(i + BATCH, all.length)}/${all.length} upserted\r`,
+  );
+}
+console.log(`\n  ${upserted} videos upserted to PostgreSQL`);
+await pool.end();
 ```
 
 Remove the `fs` import and `OUTPUT` constant. Keep everything else (fetching, mapping, dedup) the same.
@@ -1304,28 +1466,30 @@ Same pattern: replace `fs.writeFileSync` with `upsertVideos()` calls. Add import
 
 ```typescript
 // In main(), replace file writing with:
-  console.log(`\n  Upserting ${unique.length} videos to PostgreSQL...`);
-  const BATCH = 500;
-  let upserted = 0;
-  for (let i = 0; i < unique.length; i += BATCH) {
-    const batch = unique.slice(i, i + BATCH).map((v) => ({
-      source: "gelbooru",
-      source_id: v.id,
-      slug: v.slug,
-      url: v.url,
-      thumbnail: v.thumbnail,
-      score: v.score,
-      tags: v.tags,
-      width: v.width,
-      height: v.height,
-      file_size: v.fileSize,
-      created_at: v.createdAt,
-    }));
-    upserted += await upsertVideos(batch);
-    process.stdout.write(`  ${Math.min(i + BATCH, unique.length)}/${unique.length} upserted\r`);
-  }
-  console.log(`\n  ${upserted} videos upserted to PostgreSQL`);
-  await pool.end();
+console.log(`\n  Upserting ${unique.length} videos to PostgreSQL...`);
+const BATCH = 500;
+let upserted = 0;
+for (let i = 0; i < unique.length; i += BATCH) {
+  const batch = unique.slice(i, i + BATCH).map((v) => ({
+    source: "gelbooru",
+    source_id: v.id,
+    slug: v.slug,
+    url: v.url,
+    thumbnail: v.thumbnail,
+    score: v.score,
+    tags: v.tags,
+    width: v.width,
+    height: v.height,
+    file_size: v.fileSize,
+    created_at: v.createdAt,
+  }));
+  upserted += await upsertVideos(batch);
+  process.stdout.write(
+    `  ${Math.min(i + BATCH, unique.length)}/${unique.length} upserted\r`,
+  );
+}
+console.log(`\n  ${upserted} videos upserted to PostgreSQL`);
+await pool.end();
 ```
 
 Remove `fs`, `path`, `OUTPUT` imports/constants.
@@ -1336,80 +1500,100 @@ Same pattern:
 
 ```typescript
 // In main(), replace file writing with:
-  console.log(`\n  Upserting ${unique.length} videos to PostgreSQL...`);
-  const BATCH = 500;
-  let upserted = 0;
-  for (let i = 0; i < unique.length; i += BATCH) {
-    const batch = unique.slice(i, i + BATCH).map((v) => ({
-      source: "rule34",
-      source_id: v.id,
-      slug: v.slug,
-      url: v.url,
-      thumbnail: v.thumbnail,
-      preview: v.preview,
-      score: v.score,
-      tags: v.tags,
-      width: v.width,
-      height: v.height,
-      created_at: v.createdAt,
-    }));
-    upserted += await upsertVideos(batch);
-    process.stdout.write(`  ${Math.min(i + BATCH, unique.length)}/${unique.length} upserted\r`);
-  }
-  console.log(`\n  ${upserted} videos upserted to PostgreSQL`);
-  await pool.end();
+console.log(`\n  Upserting ${unique.length} videos to PostgreSQL...`);
+const BATCH = 500;
+let upserted = 0;
+for (let i = 0; i < unique.length; i += BATCH) {
+  const batch = unique.slice(i, i + BATCH).map((v) => ({
+    source: "rule34",
+    source_id: v.id,
+    slug: v.slug,
+    url: v.url,
+    thumbnail: v.thumbnail,
+    preview: v.preview,
+    score: v.score,
+    tags: v.tags,
+    width: v.width,
+    height: v.height,
+    created_at: v.createdAt,
+  }));
+  upserted += await upsertVideos(batch);
+  process.stdout.write(
+    `  ${Math.min(i + BATCH, unique.length)}/${unique.length} upserted\r`,
+  );
+}
+console.log(`\n  ${upserted} videos upserted to PostgreSQL`);
+await pool.end();
 ```
 
 - [ ] **Step 5: Update `scripts/scrape-rule34video.ts`**
 
 ```typescript
 // In main(), replace file writing with:
-  console.log(`\n  Upserting ${allEntries.length} videos to PostgreSQL...`);
-  const BATCH = 500;
-  let upserted = 0;
-  for (let i = 0; i < allEntries.length; i += BATCH) {
-    const batch = allEntries.slice(i, i + BATCH).map((v) => ({
-      source: "rule34video",
-      source_id: v.id,
-      slug: v.slug,
-      title: v.title,
-      page_url: v.pageUrl,
-      thumbnail: v.thumbnail,
-      preview: v.thumbnail,
-      duration: v.duration || null,
-      created_at: v.date,
-      tags: v.title ? v.title.toLowerCase().replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter((w: string) => w.length > 2).slice(0, 15) : [],
-    }));
-    upserted += await upsertVideos(batch);
-    process.stdout.write(`  ${Math.min(i + BATCH, allEntries.length)}/${allEntries.length} upserted\r`);
-  }
-  console.log(`\n  ${upserted} videos upserted to PostgreSQL`);
-  await pool.end();
+console.log(`\n  Upserting ${allEntries.length} videos to PostgreSQL...`);
+const BATCH = 500;
+let upserted = 0;
+for (let i = 0; i < allEntries.length; i += BATCH) {
+  const batch = allEntries.slice(i, i + BATCH).map((v) => ({
+    source: "rule34video",
+    source_id: v.id,
+    slug: v.slug,
+    title: v.title,
+    page_url: v.pageUrl,
+    thumbnail: v.thumbnail,
+    preview: v.thumbnail,
+    duration: v.duration || null,
+    created_at: v.date,
+    tags: v.title
+      ? v.title
+          .toLowerCase()
+          .replace(/[^a-z0-9\s]/g, "")
+          .split(/\s+/)
+          .filter((w: string) => w.length > 2)
+          .slice(0, 15)
+      : [],
+  }));
+  upserted += await upsertVideos(batch);
+  process.stdout.write(
+    `  ${Math.min(i + BATCH, allEntries.length)}/${allEntries.length} upserted\r`,
+  );
+}
+console.log(`\n  ${upserted} videos upserted to PostgreSQL`);
+await pool.end();
 ```
 
 - [ ] **Step 6: Update `scripts/scrape-wp-sites.ts`**
 
 ```typescript
 // In main(), replace file writing with:
-  console.log(`\n  Upserting ${allEntries.length} videos to PostgreSQL...`);
-  const BATCH = 500;
-  let upserted = 0;
-  for (let i = 0; i < allEntries.length; i += BATCH) {
-    const batch = allEntries.slice(i, i + BATCH).map((v) => ({
-      source: "wp",
-      source_id: v.id,
-      slug: v.slug,
-      title: v.title,
-      page_url: v.pageUrl,
-      site: v.site,
-      created_at: v.date,
-      tags: v.title ? v.title.toLowerCase().replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter((w: string) => w.length > 2).slice(0, 15) : [],
-    }));
-    upserted += await upsertVideos(batch);
-    process.stdout.write(`  ${Math.min(i + BATCH, allEntries.length)}/${allEntries.length} upserted\r`);
-  }
-  console.log(`\n  ${upserted} videos upserted to PostgreSQL`);
-  await pool.end();
+console.log(`\n  Upserting ${allEntries.length} videos to PostgreSQL...`);
+const BATCH = 500;
+let upserted = 0;
+for (let i = 0; i < allEntries.length; i += BATCH) {
+  const batch = allEntries.slice(i, i + BATCH).map((v) => ({
+    source: "wp",
+    source_id: v.id,
+    slug: v.slug,
+    title: v.title,
+    page_url: v.pageUrl,
+    site: v.site,
+    created_at: v.date,
+    tags: v.title
+      ? v.title
+          .toLowerCase()
+          .replace(/[^a-z0-9\s]/g, "")
+          .split(/\s+/)
+          .filter((w: string) => w.length > 2)
+          .slice(0, 15)
+      : [],
+  }));
+  upserted += await upsertVideos(batch);
+  process.stdout.write(
+    `  ${Math.min(i + BATCH, allEntries.length)}/${allEntries.length} upserted\r`,
+  );
+}
+console.log(`\n  ${upserted} videos upserted to PostgreSQL`);
+await pool.end();
 ```
 
 - [ ] **Step 7: Update `scripts/enrich-wp-thumbnails.ts`**
@@ -1437,14 +1621,17 @@ async function fetchThumbnail(url: string): Promise<string | null> {
     if (!res.ok) return null;
     const html = await res.text();
 
-    const ogMatch = html.match(/<meta\s+(?:property|name)="og:image"\s+content="([^"]+)"/i)
-      || html.match(/content="([^"]+)"\s+(?:property|name)="og:image"/i);
+    const ogMatch =
+      html.match(/<meta\s+(?:property|name)="og:image"\s+content="([^"]+)"/i) ||
+      html.match(/content="([^"]+)"\s+(?:property|name)="og:image"/i);
     if (ogMatch) return ogMatch[1];
 
     const posterMatch = html.match(/poster="([^"]+)"/i);
     if (posterMatch) return posterMatch[1];
 
-    const imgMatch = html.match(/<img[^>]+src="(https?:\/\/[^"]+(?:poster|thumb|cover|featured)[^"]*)"/i);
+    const imgMatch = html.match(
+      /<img[^>]+src="(https?:\/\/[^"]+(?:poster|thumb|cover|featured)[^"]*)"/i,
+    );
     if (imgMatch) return imgMatch[1];
 
     return null;
@@ -1456,7 +1643,7 @@ async function fetchThumbnail(url: string): Promise<string | null> {
 async function main() {
   // Get WP entries without thumbnails
   const { rows } = await pool.query(
-    "SELECT pk, source_id, page_url FROM videos WHERE source = 'wp' AND (thumbnail = '' OR thumbnail IS NULL)"
+    "SELECT pk, source_id, page_url FROM videos WHERE source = 'wp' AND (thumbnail = '' OR thumbnail IS NULL)",
   );
 
   console.log(`Need thumbnails: ${rows.length}`);
@@ -1471,17 +1658,19 @@ async function main() {
       batch.map(async (entry) => {
         const thumb = await fetchThumbnail(entry.page_url);
         if (thumb) {
-          await pool.query(
-            "UPDATE videos SET thumbnail = $1 WHERE pk = $2",
-            [thumb, entry.pk]
-          );
+          await pool.query("UPDATE videos SET thumbnail = $1 WHERE pk = $2", [
+            thumb,
+            entry.pk,
+          ]);
           found++;
         }
         processed++;
-      })
+      }),
     );
 
-    process.stdout.write(`  ${processed}/${rows.length} processed, ${found} thumbnails found\r`);
+    process.stdout.write(
+      `  ${processed}/${rows.length} processed, ${found} thumbnails found\r`,
+    );
     await new Promise((r) => setTimeout(r, DELAY));
   }
 
@@ -1504,6 +1693,7 @@ git commit -m "feat: update all scrapers to write to PostgreSQL instead of JSON"
 ## Task 11: Update Docker infrastructure
 
 **Files:**
+
 - Create: `docker-compose.yml`
 - Modify: `Dockerfile`
 - Modify: `.github/workflows/daily-scrape.yml`
@@ -1719,6 +1909,7 @@ jobs:
 ```
 
 Key changes:
+
 - Split into two jobs: `publish-content` (git) and `scrape-videos` (PG)
 - Scrapers use `DATABASE_URL` secret to connect to PG on Hetzner
 - No more `git add src/data/*.json` — data goes to PG directly
@@ -1737,12 +1928,14 @@ git commit -m "feat: add docker-compose with PostgreSQL, update Dockerfile and C
 ## Task 12: Cleanup — remove JSON data files and update gitignore
 
 **Files:**
+
 - Modify: `.gitignore`
 - Delete: JSON data files (after migration is verified working)
 
 - [ ] **Step 1: Add JSON data files to `.gitignore`**
 
 Add to `.gitignore`:
+
 ```
 # Video data is now in PostgreSQL
 src/data/videos.json
@@ -1836,6 +2029,7 @@ Expected output should show ~353K total videos across 5 sources.
 - [ ] **Step 7: Add `DATABASE_URL` to Coolify env vars**
 
 In Coolify UI (http://204.168.233.29:8000), add:
+
 ```
 DATABASE_URL=postgresql://iku:PASSWORD@postgres:5432/iku
 ```
@@ -1843,6 +2037,7 @@ DATABASE_URL=postgresql://iku:PASSWORD@postgres:5432/iku
 - [ ] **Step 8: Add `DATABASE_URL` to GitHub Actions secrets**
 
 In GitHub repo → Settings → Secrets:
+
 ```
 DATABASE_URL=postgresql://iku:PASSWORD@204.168.233.29:5432/iku
 ```
@@ -1852,6 +2047,7 @@ Note: This requires PG port 5432 to be accessible from GitHub Actions runners. C
 - [ ] **Step 9: Deploy and verify**
 
 Deploy via Coolify and verify:
+
 - Homepage loads with video thumbnails
 - `/watch/[slug]` pages work
 - `/sitemap.xml` and `/watch/sitemap/0.xml` work

@@ -22,11 +22,24 @@ export const CHARACTERS_SEO: CharacterSEO[] = [
     name: "Mirko",
     series: "My Hero Academia",
     searchVolume: 4400,
-    seoDescription: "Mirko from My Hero Academia is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the My Hero Academia franchise, Mirko has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Mirko hentai include mirko, boku no hero academia, bunny girl, dark skin, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Mirko consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Mirko hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from My Hero Academia. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of My Hero Academia.",
+    seoDescription:
+      "Mirko from My Hero Academia is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the My Hero Academia franchise, Mirko has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Mirko hentai include mirko, boku no hero academia, bunny girl, dark skin, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Mirko consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Mirko hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from My Hero Academia. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of My Hero Academia.",
     faq: [
-    { question: "Where can I watch Mirko hentai for free?", answer: "You can watch free Mirko hentai on iku.gg. Browse the Mirko character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Mirko with other tags like uncensored, 3D, or vanilla for more specific results." },
-    { question: "What are the most popular Mirko hentai tags?", answer: "The most popular tags associated with Mirko hentai include mirko, boku no hero academia, bunny girl, dark skin. These tags reflect both the character's visual traits from My Hero Academia and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Mirko content you prefer." },
-    { question: "How much Mirko hentai content exists?", answer: "Mirko is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Mirko collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Mirko hentai is added daily as creators continue to produce content featuring this popular My Hero Academia character." }
+      {
+        question: "Where can I watch Mirko hentai for free?",
+        answer:
+          "You can watch free Mirko hentai on iku.gg. Browse the Mirko character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Mirko with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Mirko hentai tags?",
+        answer:
+          "The most popular tags associated with Mirko hentai include mirko, boku no hero academia, bunny girl, dark skin. These tags reflect both the character's visual traits from My Hero Academia and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Mirko content you prefer.",
+      },
+      {
+        question: "How much Mirko hentai content exists?",
+        answer:
+          "Mirko is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Mirko collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Mirko hentai is added daily as creators continue to produce content featuring this popular My Hero Academia character.",
+      },
     ],
     generatedAt: "2026-04-10",
   },
@@ -35,11 +48,24 @@ export const CHARACTERS_SEO: CharacterSEO[] = [
     name: "Momo Yaoyorozu",
     series: "My Hero Academia",
     searchVolume: 2900,
-    seoDescription: "Momo Yaoyorozu from My Hero Academia is one of the most searched anime characters in hentai, with approximately 2,900 monthly searches globally. As a beloved character from the My Hero Academia franchise, Momo Yaoyorozu has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Momo Yaoyorozu hentai include yaoyorozu momo, boku no hero academia, ponytail, big breasts, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Momo Yaoyorozu consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Momo Yaoyorozu hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from My Hero Academia. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of My Hero Academia.",
+    seoDescription:
+      "Momo Yaoyorozu from My Hero Academia is one of the most searched anime characters in hentai, with approximately 2,900 monthly searches globally. As a beloved character from the My Hero Academia franchise, Momo Yaoyorozu has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Momo Yaoyorozu hentai include yaoyorozu momo, boku no hero academia, ponytail, big breasts, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Momo Yaoyorozu consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Momo Yaoyorozu hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from My Hero Academia. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of My Hero Academia.",
     faq: [
-    { question: "Where can I watch Momo Yaoyorozu hentai for free?", answer: "You can watch free Momo Yaoyorozu hentai on iku.gg. Browse the Momo Yaoyorozu character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Momo Yaoyorozu with other tags like uncensored, 3D, or vanilla for more specific results." },
-    { question: "What are the most popular Momo Yaoyorozu hentai tags?", answer: "The most popular tags associated with Momo Yaoyorozu hentai include yaoyorozu momo, boku no hero academia, ponytail, big breasts. These tags reflect both the character's visual traits from My Hero Academia and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Momo Yaoyorozu content you prefer." },
-    { question: "How much Momo Yaoyorozu hentai content exists?", answer: "Momo Yaoyorozu is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Momo Yaoyorozu collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Momo Yaoyorozu hentai is added daily as creators continue to produce content featuring this popular My Hero Academia character." }
+      {
+        question: "Where can I watch Momo Yaoyorozu hentai for free?",
+        answer:
+          "You can watch free Momo Yaoyorozu hentai on iku.gg. Browse the Momo Yaoyorozu character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Momo Yaoyorozu with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Momo Yaoyorozu hentai tags?",
+        answer:
+          "The most popular tags associated with Momo Yaoyorozu hentai include yaoyorozu momo, boku no hero academia, ponytail, big breasts. These tags reflect both the character's visual traits from My Hero Academia and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Momo Yaoyorozu content you prefer.",
+      },
+      {
+        question: "How much Momo Yaoyorozu hentai content exists?",
+        answer:
+          "Momo Yaoyorozu is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Momo Yaoyorozu collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Momo Yaoyorozu hentai is added daily as creators continue to produce content featuring this popular My Hero Academia character.",
+      },
     ],
     generatedAt: "2026-04-10",
   },
@@ -48,11 +74,24 @@ export const CHARACTERS_SEO: CharacterSEO[] = [
     name: "Midnight",
     series: "My Hero Academia",
     searchVolume: 2900,
-    seoDescription: "Midnight from My Hero Academia is one of the most searched anime characters in hentai, with approximately 2,900 monthly searches globally. As a beloved character from the My Hero Academia franchise, Midnight has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Midnight hentai include midnight (boku no hero academia), boku no hero academia, milf, domme, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Midnight consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Midnight hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from My Hero Academia. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of My Hero Academia.",
+    seoDescription:
+      "Midnight from My Hero Academia is one of the most searched anime characters in hentai, with approximately 2,900 monthly searches globally. As a beloved character from the My Hero Academia franchise, Midnight has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Midnight hentai include midnight (boku no hero academia), boku no hero academia, milf, domme, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Midnight consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Midnight hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from My Hero Academia. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of My Hero Academia.",
     faq: [
-    { question: "Where can I watch Midnight hentai for free?", answer: "You can watch free Midnight hentai on iku.gg. Browse the Midnight character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Midnight with other tags like uncensored, 3D, or vanilla for more specific results." },
-    { question: "What are the most popular Midnight hentai tags?", answer: "The most popular tags associated with Midnight hentai include midnight (boku no hero academia), boku no hero academia, milf, domme. These tags reflect both the character's visual traits from My Hero Academia and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Midnight content you prefer." },
-    { question: "How much Midnight hentai content exists?", answer: "Midnight is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Midnight collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Midnight hentai is added daily as creators continue to produce content featuring this popular My Hero Academia character." }
+      {
+        question: "Where can I watch Midnight hentai for free?",
+        answer:
+          "You can watch free Midnight hentai on iku.gg. Browse the Midnight character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Midnight with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Midnight hentai tags?",
+        answer:
+          "The most popular tags associated with Midnight hentai include midnight (boku no hero academia), boku no hero academia, milf, domme. These tags reflect both the character's visual traits from My Hero Academia and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Midnight content you prefer.",
+      },
+      {
+        question: "How much Midnight hentai content exists?",
+        answer:
+          "Midnight is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Midnight collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Midnight hentai is added daily as creators continue to produce content featuring this popular My Hero Academia character.",
+      },
     ],
     generatedAt: "2026-04-10",
   },
@@ -61,11 +100,24 @@ export const CHARACTERS_SEO: CharacterSEO[] = [
     name: "Mt. Lady",
     series: "My Hero Academia",
     searchVolume: 2400,
-    seoDescription: "Mt. Lady from My Hero Academia is one of the most searched anime characters in hentai, with approximately 2,400 monthly searches globally. As a beloved character from the My Hero Academia franchise, Mt. Lady has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Mt. Lady hentai include mt lady, boku no hero academia, blonde hair, giantess, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Mt. Lady consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Mt. Lady hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from My Hero Academia. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of My Hero Academia.",
+    seoDescription:
+      "Mt. Lady from My Hero Academia is one of the most searched anime characters in hentai, with approximately 2,400 monthly searches globally. As a beloved character from the My Hero Academia franchise, Mt. Lady has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Mt. Lady hentai include mt lady, boku no hero academia, blonde hair, giantess, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Mt. Lady consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Mt. Lady hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from My Hero Academia. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of My Hero Academia.",
     faq: [
-    { question: "Where can I watch Mt. Lady hentai for free?", answer: "You can watch free Mt. Lady hentai on iku.gg. Browse the Mt. Lady character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Mt. Lady with other tags like uncensored, 3D, or vanilla for more specific results." },
-    { question: "What are the most popular Mt. Lady hentai tags?", answer: "The most popular tags associated with Mt. Lady hentai include mt lady, boku no hero academia, blonde hair, giantess. These tags reflect both the character's visual traits from My Hero Academia and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Mt. Lady content you prefer." },
-    { question: "How much Mt. Lady hentai content exists?", answer: "Mt. Lady is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Mt. Lady collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Mt. Lady hentai is added daily as creators continue to produce content featuring this popular My Hero Academia character." }
+      {
+        question: "Where can I watch Mt. Lady hentai for free?",
+        answer:
+          "You can watch free Mt. Lady hentai on iku.gg. Browse the Mt. Lady character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Mt. Lady with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Mt. Lady hentai tags?",
+        answer:
+          "The most popular tags associated with Mt. Lady hentai include mt lady, boku no hero academia, blonde hair, giantess. These tags reflect both the character's visual traits from My Hero Academia and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Mt. Lady content you prefer.",
+      },
+      {
+        question: "How much Mt. Lady hentai content exists?",
+        answer:
+          "Mt. Lady is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Mt. Lady collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Mt. Lady hentai is added daily as creators continue to produce content featuring this popular My Hero Academia character.",
+      },
     ],
     generatedAt: "2026-04-10",
   },
@@ -74,11 +126,24 @@ export const CHARACTERS_SEO: CharacterSEO[] = [
     name: "Nejire Hado",
     series: "My Hero Academia",
     searchVolume: 2400,
-    seoDescription: "Nejire Hado from My Hero Academia is one of the most searched anime characters in hentai, with approximately 2,400 monthly searches globally. As a beloved character from the My Hero Academia franchise, Nejire Hado has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Nejire Hado hentai include hado nejire, boku no hero academia, blue hair, big boss, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Nejire Hado consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Nejire Hado hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from My Hero Academia. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of My Hero Academia.",
+    seoDescription:
+      "Nejire Hado from My Hero Academia is one of the most searched anime characters in hentai, with approximately 2,400 monthly searches globally. As a beloved character from the My Hero Academia franchise, Nejire Hado has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Nejire Hado hentai include hado nejire, boku no hero academia, blue hair, big boss, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Nejire Hado consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Nejire Hado hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from My Hero Academia. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of My Hero Academia.",
     faq: [
-    { question: "Where can I watch Nejire Hado hentai for free?", answer: "You can watch free Nejire Hado hentai on iku.gg. Browse the Nejire Hado character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Nejire Hado with other tags like uncensored, 3D, or vanilla for more specific results." },
-    { question: "What are the most popular Nejire Hado hentai tags?", answer: "The most popular tags associated with Nejire Hado hentai include hado nejire, boku no hero academia, blue hair, big boss. These tags reflect both the character's visual traits from My Hero Academia and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Nejire Hado content you prefer." },
-    { question: "How much Nejire Hado hentai content exists?", answer: "Nejire Hado is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Nejire Hado collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Nejire Hado hentai is added daily as creators continue to produce content featuring this popular My Hero Academia character." }
+      {
+        question: "Where can I watch Nejire Hado hentai for free?",
+        answer:
+          "You can watch free Nejire Hado hentai on iku.gg. Browse the Nejire Hado character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Nejire Hado with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Nejire Hado hentai tags?",
+        answer:
+          "The most popular tags associated with Nejire Hado hentai include hado nejire, boku no hero academia, blue hair, big boss. These tags reflect both the character's visual traits from My Hero Academia and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Nejire Hado content you prefer.",
+      },
+      {
+        question: "How much Nejire Hado hentai content exists?",
+        answer:
+          "Nejire Hado is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Nejire Hado collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Nejire Hado hentai is added daily as creators continue to produce content featuring this popular My Hero Academia character.",
+      },
     ],
     generatedAt: "2026-04-10",
   },
@@ -87,11 +152,24 @@ export const CHARACTERS_SEO: CharacterSEO[] = [
     name: "Mina Ashido",
     series: "My Hero Academia",
     searchVolume: 2400,
-    seoDescription: "Mina Ashido from My Hero Academia is one of the most searched anime characters in hentai, with approximately 2,400 monthly searches globally. As a beloved character from the My Hero Academia franchise, Mina Ashido has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Mina Ashido hentai include ashido mina, boku no hero academia, pink skin, horns, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Mina Ashido consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Mina Ashido hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from My Hero Academia. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of My Hero Academia.",
+    seoDescription:
+      "Mina Ashido from My Hero Academia is one of the most searched anime characters in hentai, with approximately 2,400 monthly searches globally. As a beloved character from the My Hero Academia franchise, Mina Ashido has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Mina Ashido hentai include ashido mina, boku no hero academia, pink skin, horns, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Mina Ashido consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Mina Ashido hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from My Hero Academia. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of My Hero Academia.",
     faq: [
-    { question: "Where can I watch Mina Ashido hentai for free?", answer: "You can watch free Mina Ashido hentai on iku.gg. Browse the Mina Ashido character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Mina Ashido with other tags like uncensored, 3D, or vanilla for more specific results." },
-    { question: "What are the most popular Mina Ashido hentai tags?", answer: "The most popular tags associated with Mina Ashido hentai include ashido mina, boku no hero academia, pink skin, horns. These tags reflect both the character's visual traits from My Hero Academia and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Mina Ashido content you prefer." },
-    { question: "How much Mina Ashido hentai content exists?", answer: "Mina Ashido is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Mina Ashido collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Mina Ashido hentai is added daily as creators continue to produce content featuring this popular My Hero Academia character." }
+      {
+        question: "Where can I watch Mina Ashido hentai for free?",
+        answer:
+          "You can watch free Mina Ashido hentai on iku.gg. Browse the Mina Ashido character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Mina Ashido with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Mina Ashido hentai tags?",
+        answer:
+          "The most popular tags associated with Mina Ashido hentai include ashido mina, boku no hero academia, pink skin, horns. These tags reflect both the character's visual traits from My Hero Academia and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Mina Ashido content you prefer.",
+      },
+      {
+        question: "How much Mina Ashido hentai content exists?",
+        answer:
+          "Mina Ashido is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Mina Ashido collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Mina Ashido hentai is added daily as creators continue to produce content featuring this popular My Hero Academia character.",
+      },
     ],
     generatedAt: "2026-04-10",
   },
@@ -100,11 +178,24 @@ export const CHARACTERS_SEO: CharacterSEO[] = [
     name: "Raiden Shogun",
     series: "Genshin Impact",
     searchVolume: 9900,
-    seoDescription: "Raiden Shogun from Genshin Impact is one of the most searched anime characters in hentai, with approximately 9,900 monthly searches globally. As a beloved character from the Genshin Impact franchise, Raiden Shogun has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Raiden Shogun hentai include raiden shogun, genshin impact, purple hair, electro, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Raiden Shogun consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Raiden Shogun hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Genshin Impact. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Genshin Impact.",
+    seoDescription:
+      "Raiden Shogun from Genshin Impact is one of the most searched anime characters in hentai, with approximately 9,900 monthly searches globally. As a beloved character from the Genshin Impact franchise, Raiden Shogun has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Raiden Shogun hentai include raiden shogun, genshin impact, purple hair, electro, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Raiden Shogun consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Raiden Shogun hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Genshin Impact. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Genshin Impact.",
     faq: [
-    { question: "Where can I watch Raiden Shogun hentai for free?", answer: "You can watch free Raiden Shogun hentai on iku.gg. Browse the Raiden Shogun character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Raiden Shogun with other tags like uncensored, 3D, or vanilla for more specific results." },
-    { question: "What are the most popular Raiden Shogun hentai tags?", answer: "The most popular tags associated with Raiden Shogun hentai include raiden shogun, genshin impact, purple hair, electro. These tags reflect both the character's visual traits from Genshin Impact and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Raiden Shogun content you prefer." },
-    { question: "How much Raiden Shogun hentai content exists?", answer: "Raiden Shogun is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Raiden Shogun collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Raiden Shogun hentai is added daily as creators continue to produce content featuring this popular Genshin Impact character." }
+      {
+        question: "Where can I watch Raiden Shogun hentai for free?",
+        answer:
+          "You can watch free Raiden Shogun hentai on iku.gg. Browse the Raiden Shogun character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Raiden Shogun with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Raiden Shogun hentai tags?",
+        answer:
+          "The most popular tags associated with Raiden Shogun hentai include raiden shogun, genshin impact, purple hair, electro. These tags reflect both the character's visual traits from Genshin Impact and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Raiden Shogun content you prefer.",
+      },
+      {
+        question: "How much Raiden Shogun hentai content exists?",
+        answer:
+          "Raiden Shogun is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Raiden Shogun collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Raiden Shogun hentai is added daily as creators continue to produce content featuring this popular Genshin Impact character.",
+      },
     ],
     generatedAt: "2026-04-10",
   },
@@ -113,11 +204,24 @@ export const CHARACTERS_SEO: CharacterSEO[] = [
     name: "Ganyu",
     series: "Genshin Impact",
     searchVolume: 8100,
-    seoDescription: "Ganyu from Genshin Impact is one of the most searched anime characters in hentai, with approximately 8,100 monthly searches globally. As a beloved character from the Genshin Impact franchise, Ganyu has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Ganyu hentai include ganyu (genshin impact), genshin impact, horns, qilin, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Ganyu consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Ganyu hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Genshin Impact. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Genshin Impact.",
+    seoDescription:
+      "Ganyu from Genshin Impact is one of the most searched anime characters in hentai, with approximately 8,100 monthly searches globally. As a beloved character from the Genshin Impact franchise, Ganyu has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Ganyu hentai include ganyu (genshin impact), genshin impact, horns, qilin, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Ganyu consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Ganyu hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Genshin Impact. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Genshin Impact.",
     faq: [
-    { question: "Where can I watch Ganyu hentai for free?", answer: "You can watch free Ganyu hentai on iku.gg. Browse the Ganyu character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Ganyu with other tags like uncensored, 3D, or vanilla for more specific results." },
-    { question: "What are the most popular Ganyu hentai tags?", answer: "The most popular tags associated with Ganyu hentai include ganyu (genshin impact), genshin impact, horns, qilin. These tags reflect both the character's visual traits from Genshin Impact and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Ganyu content you prefer." },
-    { question: "How much Ganyu hentai content exists?", answer: "Ganyu is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Ganyu collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Ganyu hentai is added daily as creators continue to produce content featuring this popular Genshin Impact character." }
+      {
+        question: "Where can I watch Ganyu hentai for free?",
+        answer:
+          "You can watch free Ganyu hentai on iku.gg. Browse the Ganyu character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Ganyu with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Ganyu hentai tags?",
+        answer:
+          "The most popular tags associated with Ganyu hentai include ganyu (genshin impact), genshin impact, horns, qilin. These tags reflect both the character's visual traits from Genshin Impact and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Ganyu content you prefer.",
+      },
+      {
+        question: "How much Ganyu hentai content exists?",
+        answer:
+          "Ganyu is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Ganyu collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Ganyu hentai is added daily as creators continue to produce content featuring this popular Genshin Impact character.",
+      },
     ],
     generatedAt: "2026-04-10",
   },
@@ -126,11 +230,24 @@ export const CHARACTERS_SEO: CharacterSEO[] = [
     name: "Keqing",
     series: "Genshin Impact",
     searchVolume: 6600,
-    seoDescription: "Keqing from Genshin Impact is one of the most searched anime characters in hentai, with approximately 6,600 monthly searches globally. As a beloved character from the Genshin Impact franchise, Keqing has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Keqing hentai include keqing (genshin impact), genshin impact, purple hair, electro, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Keqing consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Keqing hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Genshin Impact. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Genshin Impact.",
+    seoDescription:
+      "Keqing from Genshin Impact is one of the most searched anime characters in hentai, with approximately 6,600 monthly searches globally. As a beloved character from the Genshin Impact franchise, Keqing has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Keqing hentai include keqing (genshin impact), genshin impact, purple hair, electro, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Keqing consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Keqing hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Genshin Impact. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Genshin Impact.",
     faq: [
-    { question: "Where can I watch Keqing hentai for free?", answer: "You can watch free Keqing hentai on iku.gg. Browse the Keqing character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Keqing with other tags like uncensored, 3D, or vanilla for more specific results." },
-    { question: "What are the most popular Keqing hentai tags?", answer: "The most popular tags associated with Keqing hentai include keqing (genshin impact), genshin impact, purple hair, electro. These tags reflect both the character's visual traits from Genshin Impact and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Keqing content you prefer." },
-    { question: "How much Keqing hentai content exists?", answer: "Keqing is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Keqing collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Keqing hentai is added daily as creators continue to produce content featuring this popular Genshin Impact character." }
+      {
+        question: "Where can I watch Keqing hentai for free?",
+        answer:
+          "You can watch free Keqing hentai on iku.gg. Browse the Keqing character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Keqing with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Keqing hentai tags?",
+        answer:
+          "The most popular tags associated with Keqing hentai include keqing (genshin impact), genshin impact, purple hair, electro. These tags reflect both the character's visual traits from Genshin Impact and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Keqing content you prefer.",
+      },
+      {
+        question: "How much Keqing hentai content exists?",
+        answer:
+          "Keqing is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Keqing collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Keqing hentai is added daily as creators continue to produce content featuring this popular Genshin Impact character.",
+      },
     ],
     generatedAt: "2026-04-10",
   },
@@ -139,11 +256,24 @@ export const CHARACTERS_SEO: CharacterSEO[] = [
     name: "Hu Tao",
     series: "Genshin Impact",
     searchVolume: 5400,
-    seoDescription: "Hu Tao from Genshin Impact is one of the most searched anime characters in hentai, with approximately 5,400 monthly searches globally. As a beloved character from the Genshin Impact franchise, Hu Tao has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Hu Tao hentai include hu tao (genshin impact), genshin impact, brown hair, twintails, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Hu Tao consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Hu Tao hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Genshin Impact. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Genshin Impact.",
+    seoDescription:
+      "Hu Tao from Genshin Impact is one of the most searched anime characters in hentai, with approximately 5,400 monthly searches globally. As a beloved character from the Genshin Impact franchise, Hu Tao has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Hu Tao hentai include hu tao (genshin impact), genshin impact, brown hair, twintails, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Hu Tao consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Hu Tao hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Genshin Impact. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Genshin Impact.",
     faq: [
-    { question: "Where can I watch Hu Tao hentai for free?", answer: "You can watch free Hu Tao hentai on iku.gg. Browse the Hu Tao character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Hu Tao with other tags like uncensored, 3D, or vanilla for more specific results." },
-    { question: "What are the most popular Hu Tao hentai tags?", answer: "The most popular tags associated with Hu Tao hentai include hu tao (genshin impact), genshin impact, brown hair, twintails. These tags reflect both the character's visual traits from Genshin Impact and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Hu Tao content you prefer." },
-    { question: "How much Hu Tao hentai content exists?", answer: "Hu Tao is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Hu Tao collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Hu Tao hentai is added daily as creators continue to produce content featuring this popular Genshin Impact character." }
+      {
+        question: "Where can I watch Hu Tao hentai for free?",
+        answer:
+          "You can watch free Hu Tao hentai on iku.gg. Browse the Hu Tao character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Hu Tao with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Hu Tao hentai tags?",
+        answer:
+          "The most popular tags associated with Hu Tao hentai include hu tao (genshin impact), genshin impact, brown hair, twintails. These tags reflect both the character's visual traits from Genshin Impact and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Hu Tao content you prefer.",
+      },
+      {
+        question: "How much Hu Tao hentai content exists?",
+        answer:
+          "Hu Tao is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Hu Tao collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Hu Tao hentai is added daily as creators continue to produce content featuring this popular Genshin Impact character.",
+      },
     ],
     generatedAt: "2026-04-10",
   },
@@ -152,11 +282,24 @@ export const CHARACTERS_SEO: CharacterSEO[] = [
     name: "Mona",
     series: "Genshin Impact",
     searchVolume: 4400,
-    seoDescription: "Mona from Genshin Impact is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Genshin Impact franchise, Mona has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Mona hentai include mona (genshin impact), genshin impact, purple hair, astrologer, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Mona consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Mona hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Genshin Impact. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Genshin Impact.",
+    seoDescription:
+      "Mona from Genshin Impact is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Genshin Impact franchise, Mona has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Mona hentai include mona (genshin impact), genshin impact, purple hair, astrologer, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Mona consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Mona hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Genshin Impact. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Genshin Impact.",
     faq: [
-    { question: "Where can I watch Mona hentai for free?", answer: "You can watch free Mona hentai on iku.gg. Browse the Mona character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Mona with other tags like uncensored, 3D, or vanilla for more specific results." },
-    { question: "What are the most popular Mona hentai tags?", answer: "The most popular tags associated with Mona hentai include mona (genshin impact), genshin impact, purple hair, astrologer. These tags reflect both the character's visual traits from Genshin Impact and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Mona content you prefer." },
-    { question: "How much Mona hentai content exists?", answer: "Mona is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Mona collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Mona hentai is added daily as creators continue to produce content featuring this popular Genshin Impact character." }
+      {
+        question: "Where can I watch Mona hentai for free?",
+        answer:
+          "You can watch free Mona hentai on iku.gg. Browse the Mona character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Mona with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Mona hentai tags?",
+        answer:
+          "The most popular tags associated with Mona hentai include mona (genshin impact), genshin impact, purple hair, astrologer. These tags reflect both the character's visual traits from Genshin Impact and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Mona content you prefer.",
+      },
+      {
+        question: "How much Mona hentai content exists?",
+        answer:
+          "Mona is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Mona collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Mona hentai is added daily as creators continue to produce content featuring this popular Genshin Impact character.",
+      },
     ],
     generatedAt: "2026-04-10",
   },
@@ -165,11 +308,24 @@ export const CHARACTERS_SEO: CharacterSEO[] = [
     name: "Eula",
     series: "Genshin Impact",
     searchVolume: 3600,
-    seoDescription: "Eula from Genshin Impact is one of the most searched anime characters in hentai, with approximately 3,600 monthly searches globally. As a beloved character from the Genshin Impact franchise, Eula has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Eula hentai include eula (genshin impact), genshin impact, blue hair, noble, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Eula consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Eula hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Genshin Impact. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Genshin Impact.",
+    seoDescription:
+      "Eula from Genshin Impact is one of the most searched anime characters in hentai, with approximately 3,600 monthly searches globally. As a beloved character from the Genshin Impact franchise, Eula has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Eula hentai include eula (genshin impact), genshin impact, blue hair, noble, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Eula consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Eula hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Genshin Impact. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Genshin Impact.",
     faq: [
-    { question: "Where can I watch Eula hentai for free?", answer: "You can watch free Eula hentai on iku.gg. Browse the Eula character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Eula with other tags like uncensored, 3D, or vanilla for more specific results." },
-    { question: "What are the most popular Eula hentai tags?", answer: "The most popular tags associated with Eula hentai include eula (genshin impact), genshin impact, blue hair, noble. These tags reflect both the character's visual traits from Genshin Impact and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Eula content you prefer." },
-    { question: "How much Eula hentai content exists?", answer: "Eula is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Eula collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Eula hentai is added daily as creators continue to produce content featuring this popular Genshin Impact character." }
+      {
+        question: "Where can I watch Eula hentai for free?",
+        answer:
+          "You can watch free Eula hentai on iku.gg. Browse the Eula character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Eula with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Eula hentai tags?",
+        answer:
+          "The most popular tags associated with Eula hentai include eula (genshin impact), genshin impact, blue hair, noble. These tags reflect both the character's visual traits from Genshin Impact and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Eula content you prefer.",
+      },
+      {
+        question: "How much Eula hentai content exists?",
+        answer:
+          "Eula is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Eula collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Eula hentai is added daily as creators continue to produce content featuring this popular Genshin Impact character.",
+      },
     ],
     generatedAt: "2026-04-10",
   },
@@ -178,11 +334,24 @@ export const CHARACTERS_SEO: CharacterSEO[] = [
     name: "Yae Miko",
     series: "Genshin Impact",
     searchVolume: 4400,
-    seoDescription: "Yae Miko from Genshin Impact is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Genshin Impact franchise, Yae Miko has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Yae Miko hentai include yae miko, genshin impact, pink hair, fox girl, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Yae Miko consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Yae Miko hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Genshin Impact. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Genshin Impact.",
+    seoDescription:
+      "Yae Miko from Genshin Impact is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Genshin Impact franchise, Yae Miko has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Yae Miko hentai include yae miko, genshin impact, pink hair, fox girl, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Yae Miko consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Yae Miko hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Genshin Impact. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Genshin Impact.",
     faq: [
-    { question: "Where can I watch Yae Miko hentai for free?", answer: "You can watch free Yae Miko hentai on iku.gg. Browse the Yae Miko character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Yae Miko with other tags like uncensored, 3D, or vanilla for more specific results." },
-    { question: "What are the most popular Yae Miko hentai tags?", answer: "The most popular tags associated with Yae Miko hentai include yae miko, genshin impact, pink hair, fox girl. These tags reflect both the character's visual traits from Genshin Impact and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Yae Miko content you prefer." },
-    { question: "How much Yae Miko hentai content exists?", answer: "Yae Miko is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Yae Miko collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Yae Miko hentai is added daily as creators continue to produce content featuring this popular Genshin Impact character." }
+      {
+        question: "Where can I watch Yae Miko hentai for free?",
+        answer:
+          "You can watch free Yae Miko hentai on iku.gg. Browse the Yae Miko character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Yae Miko with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Yae Miko hentai tags?",
+        answer:
+          "The most popular tags associated with Yae Miko hentai include yae miko, genshin impact, pink hair, fox girl. These tags reflect both the character's visual traits from Genshin Impact and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Yae Miko content you prefer.",
+      },
+      {
+        question: "How much Yae Miko hentai content exists?",
+        answer:
+          "Yae Miko is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Yae Miko collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Yae Miko hentai is added daily as creators continue to produce content featuring this popular Genshin Impact character.",
+      },
     ],
     generatedAt: "2026-04-10",
   },
@@ -191,11 +360,24 @@ export const CHARACTERS_SEO: CharacterSEO[] = [
     name: "Sangonomiya Kokomi",
     series: "Genshin Impact",
     searchVolume: 3600,
-    seoDescription: "Sangonomiya Kokomi from Genshin Impact is one of the most searched anime characters in hentai, with approximately 3,600 monthly searches globally. As a beloved character from the Genshin Impact franchise, Sangonomiya Kokomi has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Sangonomiya Kokomi hentai include sangonomiya kokomi, genshin impact, pink hair, priestess, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Sangonomiya Kokomi consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Sangonomiya Kokomi hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Genshin Impact. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Genshin Impact.",
+    seoDescription:
+      "Sangonomiya Kokomi from Genshin Impact is one of the most searched anime characters in hentai, with approximately 3,600 monthly searches globally. As a beloved character from the Genshin Impact franchise, Sangonomiya Kokomi has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Sangonomiya Kokomi hentai include sangonomiya kokomi, genshin impact, pink hair, priestess, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Sangonomiya Kokomi consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Sangonomiya Kokomi hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Genshin Impact. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Genshin Impact.",
     faq: [
-    { question: "Where can I watch Sangonomiya Kokomi hentai for free?", answer: "You can watch free Sangonomiya Kokomi hentai on iku.gg. Browse the Sangonomiya Kokomi character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Sangonomiya Kokomi with other tags like uncensored, 3D, or vanilla for more specific results." },
-    { question: "What are the most popular Sangonomiya Kokomi hentai tags?", answer: "The most popular tags associated with Sangonomiya Kokomi hentai include sangonomiya kokomi, genshin impact, pink hair, priestess. These tags reflect both the character's visual traits from Genshin Impact and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Sangonomiya Kokomi content you prefer." },
-    { question: "How much Sangonomiya Kokomi hentai content exists?", answer: "Sangonomiya Kokomi is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Sangonomiya Kokomi collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Sangonomiya Kokomi hentai is added daily as creators continue to produce content featuring this popular Genshin Impact character." }
+      {
+        question: "Where can I watch Sangonomiya Kokomi hentai for free?",
+        answer:
+          "You can watch free Sangonomiya Kokomi hentai on iku.gg. Browse the Sangonomiya Kokomi character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Sangonomiya Kokomi with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Sangonomiya Kokomi hentai tags?",
+        answer:
+          "The most popular tags associated with Sangonomiya Kokomi hentai include sangonomiya kokomi, genshin impact, pink hair, priestess. These tags reflect both the character's visual traits from Genshin Impact and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Sangonomiya Kokomi content you prefer.",
+      },
+      {
+        question: "How much Sangonomiya Kokomi hentai content exists?",
+        answer:
+          "Sangonomiya Kokomi is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Sangonomiya Kokomi collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Sangonomiya Kokomi hentai is added daily as creators continue to produce content featuring this popular Genshin Impact character.",
+      },
     ],
     generatedAt: "2026-04-10",
   },
@@ -204,11 +386,24 @@ export const CHARACTERS_SEO: CharacterSEO[] = [
     name: "Chi-Chi",
     series: "Dragon Ball",
     searchVolume: 3600,
-    seoDescription: "Chi-Chi from Dragon Ball is one of the most searched anime characters in hentai, with approximately 3,600 monthly searches globally. As a beloved character from the Dragon Ball franchise, Chi-Chi has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Chi-Chi hentai include chi chi, dragon ball, black hair, milf, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Chi-Chi consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Chi-Chi hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Dragon Ball. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Dragon Ball.",
+    seoDescription:
+      "Chi-Chi from Dragon Ball is one of the most searched anime characters in hentai, with approximately 3,600 monthly searches globally. As a beloved character from the Dragon Ball franchise, Chi-Chi has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Chi-Chi hentai include chi chi, dragon ball, black hair, milf, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Chi-Chi consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Chi-Chi hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Dragon Ball. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Dragon Ball.",
     faq: [
-    { question: "Where can I watch Chi-Chi hentai for free?", answer: "You can watch free Chi-Chi hentai on iku.gg. Browse the Chi-Chi character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Chi-Chi with other tags like uncensored, 3D, or vanilla for more specific results." },
-    { question: "What are the most popular Chi-Chi hentai tags?", answer: "The most popular tags associated with Chi-Chi hentai include chi chi, dragon ball, black hair, milf. These tags reflect both the character's visual traits from Dragon Ball and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Chi-Chi content you prefer." },
-    { question: "How much Chi-Chi hentai content exists?", answer: "Chi-Chi is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Chi-Chi collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Chi-Chi hentai is added daily as creators continue to produce content featuring this popular Dragon Ball character." }
+      {
+        question: "Where can I watch Chi-Chi hentai for free?",
+        answer:
+          "You can watch free Chi-Chi hentai on iku.gg. Browse the Chi-Chi character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Chi-Chi with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Chi-Chi hentai tags?",
+        answer:
+          "The most popular tags associated with Chi-Chi hentai include chi chi, dragon ball, black hair, milf. These tags reflect both the character's visual traits from Dragon Ball and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Chi-Chi content you prefer.",
+      },
+      {
+        question: "How much Chi-Chi hentai content exists?",
+        answer:
+          "Chi-Chi is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Chi-Chi collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Chi-Chi hentai is added daily as creators continue to produce content featuring this popular Dragon Ball character.",
+      },
     ],
     generatedAt: "2026-04-10",
   },
@@ -217,11 +412,24 @@ export const CHARACTERS_SEO: CharacterSEO[] = [
     name: "Videl",
     series: "Dragon Ball",
     searchVolume: 2900,
-    seoDescription: "Videl from Dragon Ball is one of the most searched anime characters in hentai, with approximately 2,900 monthly searches globally. As a beloved character from the Dragon Ball franchise, Videl has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Videl hentai include videl, dragon ball, short hair, fighter, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Videl consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Videl hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Dragon Ball. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Dragon Ball.",
+    seoDescription:
+      "Videl from Dragon Ball is one of the most searched anime characters in hentai, with approximately 2,900 monthly searches globally. As a beloved character from the Dragon Ball franchise, Videl has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Videl hentai include videl, dragon ball, short hair, fighter, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Videl consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Videl hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Dragon Ball. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Dragon Ball.",
     faq: [
-    { question: "Where can I watch Videl hentai for free?", answer: "You can watch free Videl hentai on iku.gg. Browse the Videl character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Videl with other tags like uncensored, 3D, or vanilla for more specific results." },
-    { question: "What are the most popular Videl hentai tags?", answer: "The most popular tags associated with Videl hentai include videl, dragon ball, short hair, fighter. These tags reflect both the character's visual traits from Dragon Ball and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Videl content you prefer." },
-    { question: "How much Videl hentai content exists?", answer: "Videl is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Videl collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Videl hentai is added daily as creators continue to produce content featuring this popular Dragon Ball character." }
+      {
+        question: "Where can I watch Videl hentai for free?",
+        answer:
+          "You can watch free Videl hentai on iku.gg. Browse the Videl character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Videl with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Videl hentai tags?",
+        answer:
+          "The most popular tags associated with Videl hentai include videl, dragon ball, short hair, fighter. These tags reflect both the character's visual traits from Dragon Ball and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Videl content you prefer.",
+      },
+      {
+        question: "How much Videl hentai content exists?",
+        answer:
+          "Videl is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Videl collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Videl hentai is added daily as creators continue to produce content featuring this popular Dragon Ball character.",
+      },
     ],
     generatedAt: "2026-04-10",
   },
@@ -230,11 +438,24 @@ export const CHARACTERS_SEO: CharacterSEO[] = [
     name: "Android 21",
     series: "Dragon Ball",
     searchVolume: 2900,
-    seoDescription: "Android 21 from Dragon Ball is one of the most searched anime characters in hentai, with approximately 2,900 monthly searches globally. As a beloved character from the Dragon Ball franchise, Android 21 has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Android 21 hentai include android 21, dragon ball, glasses, lab coat, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Android 21 consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Android 21 hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Dragon Ball. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Dragon Ball.",
+    seoDescription:
+      "Android 21 from Dragon Ball is one of the most searched anime characters in hentai, with approximately 2,900 monthly searches globally. As a beloved character from the Dragon Ball franchise, Android 21 has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Android 21 hentai include android 21, dragon ball, glasses, lab coat, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Android 21 consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Android 21 hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Dragon Ball. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Dragon Ball.",
     faq: [
-    { question: "Where can I watch Android 21 hentai for free?", answer: "You can watch free Android 21 hentai on iku.gg. Browse the Android 21 character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Android 21 with other tags like uncensored, 3D, or vanilla for more specific results." },
-    { question: "What are the most popular Android 21 hentai tags?", answer: "The most popular tags associated with Android 21 hentai include android 21, dragon ball, glasses, lab coat. These tags reflect both the character's visual traits from Dragon Ball and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Android 21 content you prefer." },
-    { question: "How much Android 21 hentai content exists?", answer: "Android 21 is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Android 21 collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Android 21 hentai is added daily as creators continue to produce content featuring this popular Dragon Ball character." }
+      {
+        question: "Where can I watch Android 21 hentai for free?",
+        answer:
+          "You can watch free Android 21 hentai on iku.gg. Browse the Android 21 character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Android 21 with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Android 21 hentai tags?",
+        answer:
+          "The most popular tags associated with Android 21 hentai include android 21, dragon ball, glasses, lab coat. These tags reflect both the character's visual traits from Dragon Ball and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Android 21 content you prefer.",
+      },
+      {
+        question: "How much Android 21 hentai content exists?",
+        answer:
+          "Android 21 is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Android 21 collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Android 21 hentai is added daily as creators continue to produce content featuring this popular Dragon Ball character.",
+      },
     ],
     generatedAt: "2026-04-10",
   },
@@ -243,11 +464,24 @@ export const CHARACTERS_SEO: CharacterSEO[] = [
     name: "Caulifla",
     series: "Dragon Ball",
     searchVolume: 2400,
-    seoDescription: "Caulifla from Dragon Ball is one of the most searched anime characters in hentai, with approximately 2,400 monthly searches globally. As a beloved character from the Dragon Ball franchise, Caulifla has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Caulifla hentai include caulifla, dragon ball, black hair, saiyan, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Caulifla consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Caulifla hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Dragon Ball. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Dragon Ball.",
+    seoDescription:
+      "Caulifla from Dragon Ball is one of the most searched anime characters in hentai, with approximately 2,400 monthly searches globally. As a beloved character from the Dragon Ball franchise, Caulifla has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Caulifla hentai include caulifla, dragon ball, black hair, saiyan, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Caulifla consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Caulifla hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Dragon Ball. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Dragon Ball.",
     faq: [
-    { question: "Where can I watch Caulifla hentai for free?", answer: "You can watch free Caulifla hentai on iku.gg. Browse the Caulifla character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Caulifla with other tags like uncensored, 3D, or vanilla for more specific results." },
-    { question: "What are the most popular Caulifla hentai tags?", answer: "The most popular tags associated with Caulifla hentai include caulifla, dragon ball, black hair, saiyan. These tags reflect both the character's visual traits from Dragon Ball and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Caulifla content you prefer." },
-    { question: "How much Caulifla hentai content exists?", answer: "Caulifla is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Caulifla collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Caulifla hentai is added daily as creators continue to produce content featuring this popular Dragon Ball character." }
+      {
+        question: "Where can I watch Caulifla hentai for free?",
+        answer:
+          "You can watch free Caulifla hentai on iku.gg. Browse the Caulifla character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Caulifla with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Caulifla hentai tags?",
+        answer:
+          "The most popular tags associated with Caulifla hentai include caulifla, dragon ball, black hair, saiyan. These tags reflect both the character's visual traits from Dragon Ball and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Caulifla content you prefer.",
+      },
+      {
+        question: "How much Caulifla hentai content exists?",
+        answer:
+          "Caulifla is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Caulifla collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Caulifla hentai is added daily as creators continue to produce content featuring this popular Dragon Ball character.",
+      },
     ],
     generatedAt: "2026-04-10",
   },
@@ -256,11 +490,24 @@ export const CHARACTERS_SEO: CharacterSEO[] = [
     name: "Kefla",
     series: "Dragon Ball",
     searchVolume: 2400,
-    seoDescription: "Kefla from Dragon Ball is one of the most searched anime characters in hentai, with approximately 2,400 monthly searches globally. As a beloved character from the Dragon Ball franchise, Kefla has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Kefla hentai include kefla, dragon ball, fusion, saiyan, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Kefla consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Kefla hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Dragon Ball. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Dragon Ball.",
+    seoDescription:
+      "Kefla from Dragon Ball is one of the most searched anime characters in hentai, with approximately 2,400 monthly searches globally. As a beloved character from the Dragon Ball franchise, Kefla has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Kefla hentai include kefla, dragon ball, fusion, saiyan, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Kefla consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Kefla hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Dragon Ball. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Dragon Ball.",
     faq: [
-    { question: "Where can I watch Kefla hentai for free?", answer: "You can watch free Kefla hentai on iku.gg. Browse the Kefla character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Kefla with other tags like uncensored, 3D, or vanilla for more specific results." },
-    { question: "What are the most popular Kefla hentai tags?", answer: "The most popular tags associated with Kefla hentai include kefla, dragon ball, fusion, saiyan. These tags reflect both the character's visual traits from Dragon Ball and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Kefla content you prefer." },
-    { question: "How much Kefla hentai content exists?", answer: "Kefla is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Kefla collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Kefla hentai is added daily as creators continue to produce content featuring this popular Dragon Ball character." }
+      {
+        question: "Where can I watch Kefla hentai for free?",
+        answer:
+          "You can watch free Kefla hentai on iku.gg. Browse the Kefla character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Kefla with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Kefla hentai tags?",
+        answer:
+          "The most popular tags associated with Kefla hentai include kefla, dragon ball, fusion, saiyan. These tags reflect both the character's visual traits from Dragon Ball and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Kefla content you prefer.",
+      },
+      {
+        question: "How much Kefla hentai content exists?",
+        answer:
+          "Kefla is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Kefla collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Kefla hentai is added daily as creators continue to produce content featuring this popular Dragon Ball character.",
+      },
     ],
     generatedAt: "2026-04-10",
   },
@@ -269,404 +516,807 @@ export const CHARACTERS_SEO: CharacterSEO[] = [
     name: "Power",
     series: "Chainsaw Man",
     searchVolume: 3600,
-    seoDescription: "Power from Chainsaw Man is one of the most searched anime characters in hentai, with approximately 3,600 monthly searches globally. As a beloved character from the Chainsaw Man franchise, Power has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Power hentai include power (chainsaw man), chainsaw man, horns, devil, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Power consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Power hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Chainsaw Man. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Chainsaw Man.",
+    seoDescription:
+      "Power from Chainsaw Man is one of the most searched anime characters in hentai, with approximately 3,600 monthly searches globally. As a beloved character from the Chainsaw Man franchise, Power has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Power hentai include power (chainsaw man), chainsaw man, horns, devil, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Power consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Power hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Chainsaw Man. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Chainsaw Man.",
     faq: [
-    { question: "Where can I watch Power hentai for free?", answer: "You can watch free Power hentai on iku.gg. Browse the Power character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Power with other tags like uncensored, 3D, or vanilla for more specific results." },
-    { question: "What are the most popular Power hentai tags?", answer: "The most popular tags associated with Power hentai include power (chainsaw man), chainsaw man, horns, devil. These tags reflect both the character's visual traits from Chainsaw Man and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Power content you prefer." },
-    { question: "How much Power hentai content exists?", answer: "Power is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Power collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Power hentai is added daily as creators continue to produce content featuring this popular Chainsaw Man character." }
+      {
+        question: "Where can I watch Power hentai for free?",
+        answer:
+          "You can watch free Power hentai on iku.gg. Browse the Power character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Power with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Power hentai tags?",
+        answer:
+          "The most popular tags associated with Power hentai include power (chainsaw man), chainsaw man, horns, devil. These tags reflect both the character's visual traits from Chainsaw Man and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Power content you prefer.",
+      },
+      {
+        question: "How much Power hentai content exists?",
+        answer:
+          "Power is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Power collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Power hentai is added daily as creators continue to produce content featuring this popular Chainsaw Man character.",
+      },
     ],
     generatedAt: "2026-04-10",
   },
   {
-      slug: "hinata-hyuga",
-      name: "Hinata Hyuga",
-      series: "Naruto",
-      searchVolume: 14800,
-      seoDescription: "Hinata Hyuga from Naruto is one of the most searched anime characters in hentai, with approximately 14,800 monthly searches globally. As a beloved character from the Naruto franchise, Hinata Hyuga has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Hinata Hyuga hentai include hyuuga hinata, naruto, byakugan, big breasts, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Hinata Hyuga consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Hinata Hyuga hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Naruto. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Naruto.",
-      faq: [
-      { question: "Where can I watch Hinata Hyuga hentai for free?", answer: "You can watch free Hinata Hyuga hentai on iku.gg. Browse the Hinata Hyuga character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Hinata Hyuga with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Hinata Hyuga hentai tags?", answer: "The most popular tags associated with Hinata Hyuga hentai include hyuuga hinata, naruto, byakugan, big breasts. These tags reflect both the character's visual traits from Naruto and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Hinata Hyuga content you prefer." },
-      { question: "How much Hinata Hyuga hentai content exists?", answer: "Hinata Hyuga is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Hinata Hyuga collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Hinata Hyuga hentai is added daily as creators continue to produce content featuring this popular Naruto character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "hinata-hyuga",
+    name: "Hinata Hyuga",
+    series: "Naruto",
+    searchVolume: 14800,
+    seoDescription:
+      "Hinata Hyuga from Naruto is one of the most searched anime characters in hentai, with approximately 14,800 monthly searches globally. As a beloved character from the Naruto franchise, Hinata Hyuga has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Hinata Hyuga hentai include hyuuga hinata, naruto, byakugan, big breasts, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Hinata Hyuga consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Hinata Hyuga hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Naruto. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Naruto.",
+    faq: [
+      {
+        question: "Where can I watch Hinata Hyuga hentai for free?",
+        answer:
+          "You can watch free Hinata Hyuga hentai on iku.gg. Browse the Hinata Hyuga character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Hinata Hyuga with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Hinata Hyuga hentai tags?",
+        answer:
+          "The most popular tags associated with Hinata Hyuga hentai include hyuuga hinata, naruto, byakugan, big breasts. These tags reflect both the character's visual traits from Naruto and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Hinata Hyuga content you prefer.",
+      },
+      {
+        question: "How much Hinata Hyuga hentai content exists?",
+        answer:
+          "Hinata Hyuga is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Hinata Hyuga collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Hinata Hyuga hentai is added daily as creators continue to produce content featuring this popular Naruto character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "tsunade",
-      name: "Tsunade",
-      series: "Naruto",
-      searchVolume: 14800,
-      seoDescription: "Tsunade from Naruto is one of the most searched anime characters in hentai, with approximately 14,800 monthly searches globally. As a beloved character from the Naruto franchise, Tsunade has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Tsunade hentai include tsunade (naruto), naruto, milf, big breasts, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Tsunade consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Tsunade hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Naruto. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Naruto.",
-      faq: [
-      { question: "Where can I watch Tsunade hentai for free?", answer: "You can watch free Tsunade hentai on iku.gg. Browse the Tsunade character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Tsunade with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Tsunade hentai tags?", answer: "The most popular tags associated with Tsunade hentai include tsunade (naruto), naruto, milf, big breasts. These tags reflect both the character's visual traits from Naruto and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Tsunade content you prefer." },
-      { question: "How much Tsunade hentai content exists?", answer: "Tsunade is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Tsunade collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Tsunade hentai is added daily as creators continue to produce content featuring this popular Naruto character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "tsunade",
+    name: "Tsunade",
+    series: "Naruto",
+    searchVolume: 14800,
+    seoDescription:
+      "Tsunade from Naruto is one of the most searched anime characters in hentai, with approximately 14,800 monthly searches globally. As a beloved character from the Naruto franchise, Tsunade has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Tsunade hentai include tsunade (naruto), naruto, milf, big breasts, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Tsunade consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Tsunade hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Naruto. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Naruto.",
+    faq: [
+      {
+        question: "Where can I watch Tsunade hentai for free?",
+        answer:
+          "You can watch free Tsunade hentai on iku.gg. Browse the Tsunade character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Tsunade with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Tsunade hentai tags?",
+        answer:
+          "The most popular tags associated with Tsunade hentai include tsunade (naruto), naruto, milf, big breasts. These tags reflect both the character's visual traits from Naruto and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Tsunade content you prefer.",
+      },
+      {
+        question: "How much Tsunade hentai content exists?",
+        answer:
+          "Tsunade is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Tsunade collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Tsunade hentai is added daily as creators continue to produce content featuring this popular Naruto character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "nami",
-      name: "Nami",
-      series: "One Piece",
-      searchVolume: 14800,
-      seoDescription: "Nami from One Piece is one of the most searched anime characters in hentai, with approximately 14,800 monthly searches globally. As a beloved character from the One Piece franchise, Nami has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Nami hentai include nami (one piece), one piece, orange hair, big breasts, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Nami consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Nami hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from One Piece. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of One Piece.",
-      faq: [
-      { question: "Where can I watch Nami hentai for free?", answer: "You can watch free Nami hentai on iku.gg. Browse the Nami character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Nami with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Nami hentai tags?", answer: "The most popular tags associated with Nami hentai include nami (one piece), one piece, orange hair, big breasts. These tags reflect both the character's visual traits from One Piece and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Nami content you prefer." },
-      { question: "How much Nami hentai content exists?", answer: "Nami is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Nami collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Nami hentai is added daily as creators continue to produce content featuring this popular One Piece character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "nami",
+    name: "Nami",
+    series: "One Piece",
+    searchVolume: 14800,
+    seoDescription:
+      "Nami from One Piece is one of the most searched anime characters in hentai, with approximately 14,800 monthly searches globally. As a beloved character from the One Piece franchise, Nami has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Nami hentai include nami (one piece), one piece, orange hair, big breasts, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Nami consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Nami hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from One Piece. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of One Piece.",
+    faq: [
+      {
+        question: "Where can I watch Nami hentai for free?",
+        answer:
+          "You can watch free Nami hentai on iku.gg. Browse the Nami character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Nami with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Nami hentai tags?",
+        answer:
+          "The most popular tags associated with Nami hentai include nami (one piece), one piece, orange hair, big breasts. These tags reflect both the character's visual traits from One Piece and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Nami content you prefer.",
+      },
+      {
+        question: "How much Nami hentai content exists?",
+        answer:
+          "Nami is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Nami collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Nami hentai is added daily as creators continue to produce content featuring this popular One Piece character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "tatsumaki",
-      name: "Tatsumaki",
-      series: "One Punch Man",
-      searchVolume: 14800,
-      seoDescription: "Tatsumaki from One Punch Man is one of the most searched anime characters in hentai, with approximately 14,800 monthly searches globally. As a beloved character from the One Punch Man franchise, Tatsumaki has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Tatsumaki hentai include tatsumaki, one punch man, green hair, petite, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Tatsumaki consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Tatsumaki hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from One Punch Man. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of One Punch Man.",
-      faq: [
-      { question: "Where can I watch Tatsumaki hentai for free?", answer: "You can watch free Tatsumaki hentai on iku.gg. Browse the Tatsumaki character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Tatsumaki with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Tatsumaki hentai tags?", answer: "The most popular tags associated with Tatsumaki hentai include tatsumaki, one punch man, green hair, petite. These tags reflect both the character's visual traits from One Punch Man and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Tatsumaki content you prefer." },
-      { question: "How much Tatsumaki hentai content exists?", answer: "Tatsumaki is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Tatsumaki collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Tatsumaki hentai is added daily as creators continue to produce content featuring this popular One Punch Man character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "tatsumaki",
+    name: "Tatsumaki",
+    series: "One Punch Man",
+    searchVolume: 14800,
+    seoDescription:
+      "Tatsumaki from One Punch Man is one of the most searched anime characters in hentai, with approximately 14,800 monthly searches globally. As a beloved character from the One Punch Man franchise, Tatsumaki has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Tatsumaki hentai include tatsumaki, one punch man, green hair, petite, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Tatsumaki consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Tatsumaki hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from One Punch Man. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of One Punch Man.",
+    faq: [
+      {
+        question: "Where can I watch Tatsumaki hentai for free?",
+        answer:
+          "You can watch free Tatsumaki hentai on iku.gg. Browse the Tatsumaki character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Tatsumaki with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Tatsumaki hentai tags?",
+        answer:
+          "The most popular tags associated with Tatsumaki hentai include tatsumaki, one punch man, green hair, petite. These tags reflect both the character's visual traits from One Punch Man and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Tatsumaki content you prefer.",
+      },
+      {
+        question: "How much Tatsumaki hentai content exists?",
+        answer:
+          "Tatsumaki is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Tatsumaki collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Tatsumaki hentai is added daily as creators continue to produce content featuring this popular One Punch Man character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "bulma",
-      name: "Bulma",
-      series: "Dragon Ball",
-      searchVolume: 14800,
-      seoDescription: "Bulma from Dragon Ball is one of the most searched anime characters in hentai, with approximately 14,800 monthly searches globally. As a beloved character from the Dragon Ball franchise, Bulma has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Bulma hentai include bulma, dragon ball, blue hair, milf, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Bulma consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Bulma hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Dragon Ball. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Dragon Ball.",
-      faq: [
-      { question: "Where can I watch Bulma hentai for free?", answer: "You can watch free Bulma hentai on iku.gg. Browse the Bulma character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Bulma with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Bulma hentai tags?", answer: "The most popular tags associated with Bulma hentai include bulma, dragon ball, blue hair, milf. These tags reflect both the character's visual traits from Dragon Ball and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Bulma content you prefer." },
-      { question: "How much Bulma hentai content exists?", answer: "Bulma is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Bulma collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Bulma hentai is added daily as creators continue to produce content featuring this popular Dragon Ball character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "bulma",
+    name: "Bulma",
+    series: "Dragon Ball",
+    searchVolume: 14800,
+    seoDescription:
+      "Bulma from Dragon Ball is one of the most searched anime characters in hentai, with approximately 14,800 monthly searches globally. As a beloved character from the Dragon Ball franchise, Bulma has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Bulma hentai include bulma, dragon ball, blue hair, milf, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Bulma consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Bulma hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Dragon Ball. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Dragon Ball.",
+    faq: [
+      {
+        question: "Where can I watch Bulma hentai for free?",
+        answer:
+          "You can watch free Bulma hentai on iku.gg. Browse the Bulma character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Bulma with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Bulma hentai tags?",
+        answer:
+          "The most popular tags associated with Bulma hentai include bulma, dragon ball, blue hair, milf. These tags reflect both the character's visual traits from Dragon Ball and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Bulma content you prefer.",
+      },
+      {
+        question: "How much Bulma hentai content exists?",
+        answer:
+          "Bulma is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Bulma collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Bulma hentai is added daily as creators continue to produce content featuring this popular Dragon Ball character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "boa-hancock",
-      name: "Boa Hancock",
-      series: "One Piece",
-      searchVolume: 12100,
-      seoDescription: "Boa Hancock from One Piece is one of the most searched anime characters in hentai, with approximately 12,100 monthly searches globally. As a beloved character from the One Piece franchise, Boa Hancock has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Boa Hancock hentai include boa hancock, one piece, amazon lily, big breasts, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Boa Hancock consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Boa Hancock hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from One Piece. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of One Piece.",
-      faq: [
-      { question: "Where can I watch Boa Hancock hentai for free?", answer: "You can watch free Boa Hancock hentai on iku.gg. Browse the Boa Hancock character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Boa Hancock with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Boa Hancock hentai tags?", answer: "The most popular tags associated with Boa Hancock hentai include boa hancock, one piece, amazon lily, big breasts. These tags reflect both the character's visual traits from One Piece and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Boa Hancock content you prefer." },
-      { question: "How much Boa Hancock hentai content exists?", answer: "Boa Hancock is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Boa Hancock collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Boa Hancock hentai is added daily as creators continue to produce content featuring this popular One Piece character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "boa-hancock",
+    name: "Boa Hancock",
+    series: "One Piece",
+    searchVolume: 12100,
+    seoDescription:
+      "Boa Hancock from One Piece is one of the most searched anime characters in hentai, with approximately 12,100 monthly searches globally. As a beloved character from the One Piece franchise, Boa Hancock has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Boa Hancock hentai include boa hancock, one piece, amazon lily, big breasts, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Boa Hancock consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Boa Hancock hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from One Piece. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of One Piece.",
+    faq: [
+      {
+        question: "Where can I watch Boa Hancock hentai for free?",
+        answer:
+          "You can watch free Boa Hancock hentai on iku.gg. Browse the Boa Hancock character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Boa Hancock with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Boa Hancock hentai tags?",
+        answer:
+          "The most popular tags associated with Boa Hancock hentai include boa hancock, one piece, amazon lily, big breasts. These tags reflect both the character's visual traits from One Piece and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Boa Hancock content you prefer.",
+      },
+      {
+        question: "How much Boa Hancock hentai content exists?",
+        answer:
+          "Boa Hancock is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Boa Hancock collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Boa Hancock hentai is added daily as creators continue to produce content featuring this popular One Piece character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "starfire",
-      name: "Starfire",
-      series: "Teen Titans",
-      searchVolume: 12100,
-      seoDescription: "Starfire from Teen Titans is one of the most searched anime characters in hentai, with approximately 12,100 monthly searches globally. As a beloved character from the Teen Titans franchise, Starfire has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Starfire hentai include starfire, teen titans, alien, orange skin, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Starfire consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Starfire hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Teen Titans. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Teen Titans.",
-      faq: [
-      { question: "Where can I watch Starfire hentai for free?", answer: "You can watch free Starfire hentai on iku.gg. Browse the Starfire character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Starfire with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Starfire hentai tags?", answer: "The most popular tags associated with Starfire hentai include starfire, teen titans, alien, orange skin. These tags reflect both the character's visual traits from Teen Titans and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Starfire content you prefer." },
-      { question: "How much Starfire hentai content exists?", answer: "Starfire is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Starfire collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Starfire hentai is added daily as creators continue to produce content featuring this popular Teen Titans character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "starfire",
+    name: "Starfire",
+    series: "Teen Titans",
+    searchVolume: 12100,
+    seoDescription:
+      "Starfire from Teen Titans is one of the most searched anime characters in hentai, with approximately 12,100 monthly searches globally. As a beloved character from the Teen Titans franchise, Starfire has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Starfire hentai include starfire, teen titans, alien, orange skin, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Starfire consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Starfire hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Teen Titans. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Teen Titans.",
+    faq: [
+      {
+        question: "Where can I watch Starfire hentai for free?",
+        answer:
+          "You can watch free Starfire hentai on iku.gg. Browse the Starfire character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Starfire with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Starfire hentai tags?",
+        answer:
+          "The most popular tags associated with Starfire hentai include starfire, teen titans, alien, orange skin. These tags reflect both the character's visual traits from Teen Titans and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Starfire content you prefer.",
+      },
+      {
+        question: "How much Starfire hentai content exists?",
+        answer:
+          "Starfire is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Starfire collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Starfire hentai is added daily as creators continue to produce content featuring this popular Teen Titans character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "raven",
-      name: "Raven",
-      series: "Teen Titans",
-      searchVolume: 12100,
-      seoDescription: "Raven from Teen Titans is one of the most searched anime characters in hentai, with approximately 12,100 monthly searches globally. As a beloved character from the Teen Titans franchise, Raven has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Raven hentai include raven (dc), teen titans, dark skin, magic, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Raven consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Raven hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Teen Titans. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Teen Titans.",
-      faq: [
-      { question: "Where can I watch Raven hentai for free?", answer: "You can watch free Raven hentai on iku.gg. Browse the Raven character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Raven with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Raven hentai tags?", answer: "The most popular tags associated with Raven hentai include raven (dc), teen titans, dark skin, magic. These tags reflect both the character's visual traits from Teen Titans and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Raven content you prefer." },
-      { question: "How much Raven hentai content exists?", answer: "Raven is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Raven collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Raven hentai is added daily as creators continue to produce content featuring this popular Teen Titans character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "raven",
+    name: "Raven",
+    series: "Teen Titans",
+    searchVolume: 12100,
+    seoDescription:
+      "Raven from Teen Titans is one of the most searched anime characters in hentai, with approximately 12,100 monthly searches globally. As a beloved character from the Teen Titans franchise, Raven has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Raven hentai include raven (dc), teen titans, dark skin, magic, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Raven consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Raven hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Teen Titans. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Teen Titans.",
+    faq: [
+      {
+        question: "Where can I watch Raven hentai for free?",
+        answer:
+          "You can watch free Raven hentai on iku.gg. Browse the Raven character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Raven with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Raven hentai tags?",
+        answer:
+          "The most popular tags associated with Raven hentai include raven (dc), teen titans, dark skin, magic. These tags reflect both the character's visual traits from Teen Titans and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Raven content you prefer.",
+      },
+      {
+        question: "How much Raven hentai content exists?",
+        answer:
+          "Raven is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Raven collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Raven hentai is added daily as creators continue to produce content featuring this popular Teen Titans character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "zelda",
-      name: "Princess Zelda",
-      series: "The Legend of Zelda",
-      searchVolume: 12100,
-      seoDescription: "Princess Zelda from The Legend of Zelda is one of the most searched anime characters in hentai, with approximately 12,100 monthly searches globally. As a beloved character from the The Legend of Zelda franchise, Princess Zelda has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Princess Zelda hentai include princess zelda, zelda, elf, pointy ears, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Princess Zelda consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Princess Zelda hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from The Legend of Zelda. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of The Legend of Zelda.",
-      faq: [
-      { question: "Where can I watch Princess Zelda hentai for free?", answer: "You can watch free Princess Zelda hentai on iku.gg. Browse the Princess Zelda character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Princess Zelda with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Princess Zelda hentai tags?", answer: "The most popular tags associated with Princess Zelda hentai include princess zelda, zelda, elf, pointy ears. These tags reflect both the character's visual traits from The Legend of Zelda and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Princess Zelda content you prefer." },
-      { question: "How much Princess Zelda hentai content exists?", answer: "Princess Zelda is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Princess Zelda collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Princess Zelda hentai is added daily as creators continue to produce content featuring this popular The Legend of Zelda character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "zelda",
+    name: "Princess Zelda",
+    series: "The Legend of Zelda",
+    searchVolume: 12100,
+    seoDescription:
+      "Princess Zelda from The Legend of Zelda is one of the most searched anime characters in hentai, with approximately 12,100 monthly searches globally. As a beloved character from the The Legend of Zelda franchise, Princess Zelda has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Princess Zelda hentai include princess zelda, zelda, elf, pointy ears, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Princess Zelda consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Princess Zelda hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from The Legend of Zelda. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of The Legend of Zelda.",
+    faq: [
+      {
+        question: "Where can I watch Princess Zelda hentai for free?",
+        answer:
+          "You can watch free Princess Zelda hentai on iku.gg. Browse the Princess Zelda character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Princess Zelda with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Princess Zelda hentai tags?",
+        answer:
+          "The most popular tags associated with Princess Zelda hentai include princess zelda, zelda, elf, pointy ears. These tags reflect both the character's visual traits from The Legend of Zelda and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Princess Zelda content you prefer.",
+      },
+      {
+        question: "How much Princess Zelda hentai content exists?",
+        answer:
+          "Princess Zelda is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Princess Zelda collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Princess Zelda hentai is added daily as creators continue to produce content featuring this popular The Legend of Zelda character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "android-18",
-      name: "Android 18",
-      series: "Dragon Ball",
-      searchVolume: 8100,
-      seoDescription: "Android 18 from Dragon Ball is one of the most searched anime characters in hentai, with approximately 8,100 monthly searches globally. As a beloved character from the Dragon Ball franchise, Android 18 has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Android 18 hentai include android 18, dragon ball, blonde hair, cyborg, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Android 18 consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Android 18 hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Dragon Ball. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Dragon Ball.",
-      faq: [
-      { question: "Where can I watch Android 18 hentai for free?", answer: "You can watch free Android 18 hentai on iku.gg. Browse the Android 18 character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Android 18 with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Android 18 hentai tags?", answer: "The most popular tags associated with Android 18 hentai include android 18, dragon ball, blonde hair, cyborg. These tags reflect both the character's visual traits from Dragon Ball and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Android 18 content you prefer." },
-      { question: "How much Android 18 hentai content exists?", answer: "Android 18 is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Android 18 collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Android 18 hentai is added daily as creators continue to produce content featuring this popular Dragon Ball character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "android-18",
+    name: "Android 18",
+    series: "Dragon Ball",
+    searchVolume: 8100,
+    seoDescription:
+      "Android 18 from Dragon Ball is one of the most searched anime characters in hentai, with approximately 8,100 monthly searches globally. As a beloved character from the Dragon Ball franchise, Android 18 has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Android 18 hentai include android 18, dragon ball, blonde hair, cyborg, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Android 18 consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Android 18 hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Dragon Ball. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Dragon Ball.",
+    faq: [
+      {
+        question: "Where can I watch Android 18 hentai for free?",
+        answer:
+          "You can watch free Android 18 hentai on iku.gg. Browse the Android 18 character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Android 18 with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Android 18 hentai tags?",
+        answer:
+          "The most popular tags associated with Android 18 hentai include android 18, dragon ball, blonde hair, cyborg. These tags reflect both the character's visual traits from Dragon Ball and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Android 18 content you prefer.",
+      },
+      {
+        question: "How much Android 18 hentai content exists?",
+        answer:
+          "Android 18 is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Android 18 collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Android 18 hentai is added daily as creators continue to produce content featuring this popular Dragon Ball character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "2b",
-      name: "2B",
-      series: "Nier: Automata",
-      searchVolume: 5400,
-      seoDescription: "2B from Nier: Automata is one of the most searched anime characters in hentai, with approximately 5,400 monthly searches globally. As a beloved character from the Nier: Automata franchise, 2B has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with 2B hentai include yorha no. 2 type b, nier automata, blindfold, thighhighs, reflecting the character's distinctive visual traits and the diverse scenarios fans create. 2B consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated 2B hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Nier: Automata. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Nier: Automata.",
-      faq: [
-      { question: "Where can I watch 2B hentai for free?", answer: "You can watch free 2B hentai on iku.gg. Browse the 2B character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine 2B with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular 2B hentai tags?", answer: "The most popular tags associated with 2B hentai include yorha no. 2 type b, nier automata, blindfold, thighhighs. These tags reflect both the character's visual traits from Nier: Automata and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of 2B content you prefer." },
-      { question: "How much 2B hentai content exists?", answer: "2B is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the 2B collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New 2B hentai is added daily as creators continue to produce content featuring this popular Nier: Automata character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "2b",
+    name: "2B",
+    series: "Nier: Automata",
+    searchVolume: 5400,
+    seoDescription:
+      "2B from Nier: Automata is one of the most searched anime characters in hentai, with approximately 5,400 monthly searches globally. As a beloved character from the Nier: Automata franchise, 2B has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with 2B hentai include yorha no. 2 type b, nier automata, blindfold, thighhighs, reflecting the character's distinctive visual traits and the diverse scenarios fans create. 2B consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated 2B hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Nier: Automata. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Nier: Automata.",
+    faq: [
+      {
+        question: "Where can I watch 2B hentai for free?",
+        answer:
+          "You can watch free 2B hentai on iku.gg. Browse the 2B character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine 2B with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular 2B hentai tags?",
+        answer:
+          "The most popular tags associated with 2B hentai include yorha no. 2 type b, nier automata, blindfold, thighhighs. These tags reflect both the character's visual traits from Nier: Automata and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of 2B content you prefer.",
+      },
+      {
+        question: "How much 2B hentai content exists?",
+        answer:
+          "2B is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the 2B collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New 2B hentai is added daily as creators continue to produce content featuring this popular Nier: Automata character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "mikasa-ackerman",
-      name: "Mikasa Ackerman",
-      series: "Attack on Titan",
-      searchVolume: 5400,
-      seoDescription: "Mikasa Ackerman from Attack on Titan is one of the most searched anime characters in hentai, with approximately 5,400 monthly searches globally. As a beloved character from the Attack on Titan franchise, Mikasa Ackerman has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Mikasa Ackerman hentai include mikasa ackerman, attack on titan, short hair, abs, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Mikasa Ackerman consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Mikasa Ackerman hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Attack on Titan. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Attack on Titan.",
-      faq: [
-      { question: "Where can I watch Mikasa Ackerman hentai for free?", answer: "You can watch free Mikasa Ackerman hentai on iku.gg. Browse the Mikasa Ackerman character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Mikasa Ackerman with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Mikasa Ackerman hentai tags?", answer: "The most popular tags associated with Mikasa Ackerman hentai include mikasa ackerman, attack on titan, short hair, abs. These tags reflect both the character's visual traits from Attack on Titan and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Mikasa Ackerman content you prefer." },
-      { question: "How much Mikasa Ackerman hentai content exists?", answer: "Mikasa Ackerman is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Mikasa Ackerman collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Mikasa Ackerman hentai is added daily as creators continue to produce content featuring this popular Attack on Titan character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "mikasa-ackerman",
+    name: "Mikasa Ackerman",
+    series: "Attack on Titan",
+    searchVolume: 5400,
+    seoDescription:
+      "Mikasa Ackerman from Attack on Titan is one of the most searched anime characters in hentai, with approximately 5,400 monthly searches globally. As a beloved character from the Attack on Titan franchise, Mikasa Ackerman has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Mikasa Ackerman hentai include mikasa ackerman, attack on titan, short hair, abs, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Mikasa Ackerman consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Mikasa Ackerman hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Attack on Titan. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Attack on Titan.",
+    faq: [
+      {
+        question: "Where can I watch Mikasa Ackerman hentai for free?",
+        answer:
+          "You can watch free Mikasa Ackerman hentai on iku.gg. Browse the Mikasa Ackerman character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Mikasa Ackerman with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Mikasa Ackerman hentai tags?",
+        answer:
+          "The most popular tags associated with Mikasa Ackerman hentai include mikasa ackerman, attack on titan, short hair, abs. These tags reflect both the character's visual traits from Attack on Titan and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Mikasa Ackerman content you prefer.",
+      },
+      {
+        question: "How much Mikasa Ackerman hentai content exists?",
+        answer:
+          "Mikasa Ackerman is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Mikasa Ackerman collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Mikasa Ackerman hentai is added daily as creators continue to produce content featuring this popular Attack on Titan character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "nico-robin",
-      name: "Nico Robin",
-      series: "One Piece",
-      searchVolume: 5400,
-      seoDescription: "Nico Robin from One Piece is one of the most searched anime characters in hentai, with approximately 5,400 monthly searches globally. As a beloved character from the One Piece franchise, Nico Robin has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Nico Robin hentai include nico robin, one piece, dark skin, black hair, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Nico Robin consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Nico Robin hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from One Piece. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of One Piece.",
-      faq: [
-      { question: "Where can I watch Nico Robin hentai for free?", answer: "You can watch free Nico Robin hentai on iku.gg. Browse the Nico Robin character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Nico Robin with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Nico Robin hentai tags?", answer: "The most popular tags associated with Nico Robin hentai include nico robin, one piece, dark skin, black hair. These tags reflect both the character's visual traits from One Piece and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Nico Robin content you prefer." },
-      { question: "How much Nico Robin hentai content exists?", answer: "Nico Robin is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Nico Robin collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Nico Robin hentai is added daily as creators continue to produce content featuring this popular One Piece character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "nico-robin",
+    name: "Nico Robin",
+    series: "One Piece",
+    searchVolume: 5400,
+    seoDescription:
+      "Nico Robin from One Piece is one of the most searched anime characters in hentai, with approximately 5,400 monthly searches globally. As a beloved character from the One Piece franchise, Nico Robin has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Nico Robin hentai include nico robin, one piece, dark skin, black hair, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Nico Robin consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Nico Robin hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from One Piece. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of One Piece.",
+    faq: [
+      {
+        question: "Where can I watch Nico Robin hentai for free?",
+        answer:
+          "You can watch free Nico Robin hentai on iku.gg. Browse the Nico Robin character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Nico Robin with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Nico Robin hentai tags?",
+        answer:
+          "The most popular tags associated with Nico Robin hentai include nico robin, one piece, dark skin, black hair. These tags reflect both the character's visual traits from One Piece and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Nico Robin content you prefer.",
+      },
+      {
+        question: "How much Nico Robin hentai content exists?",
+        answer:
+          "Nico Robin is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Nico Robin collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Nico Robin hentai is added daily as creators continue to produce content featuring this popular One Piece character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "robin-one-piece",
-      name: "Robin",
-      series: "One Piece",
-      searchVolume: 5400,
-      seoDescription: "Robin from One Piece is one of the most searched anime characters in hentai, with approximately 5,400 monthly searches globally. As a beloved character from the One Piece franchise, Robin has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Robin hentai include nico robin, one piece, mature, dark hair, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Robin consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Robin hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from One Piece. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of One Piece.",
-      faq: [
-      { question: "Where can I watch Robin hentai for free?", answer: "You can watch free Robin hentai on iku.gg. Browse the Robin character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Robin with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Robin hentai tags?", answer: "The most popular tags associated with Robin hentai include nico robin, one piece, mature, dark hair. These tags reflect both the character's visual traits from One Piece and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Robin content you prefer." },
-      { question: "How much Robin hentai content exists?", answer: "Robin is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Robin collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Robin hentai is added daily as creators continue to produce content featuring this popular One Piece character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "robin-one-piece",
+    name: "Robin",
+    series: "One Piece",
+    searchVolume: 5400,
+    seoDescription:
+      "Robin from One Piece is one of the most searched anime characters in hentai, with approximately 5,400 monthly searches globally. As a beloved character from the One Piece franchise, Robin has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Robin hentai include nico robin, one piece, mature, dark hair, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Robin consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Robin hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from One Piece. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of One Piece.",
+    faq: [
+      {
+        question: "Where can I watch Robin hentai for free?",
+        answer:
+          "You can watch free Robin hentai on iku.gg. Browse the Robin character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Robin with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Robin hentai tags?",
+        answer:
+          "The most popular tags associated with Robin hentai include nico robin, one piece, mature, dark hair. These tags reflect both the character's visual traits from One Piece and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Robin content you prefer.",
+      },
+      {
+        question: "How much Robin hentai content exists?",
+        answer:
+          "Robin is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Robin collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Robin hentai is added daily as creators continue to produce content featuring this popular One Piece character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "makima",
-      name: "Makima",
-      series: "Chainsaw Man",
-      searchVolume: 4400,
-      seoDescription: "Makima from Chainsaw Man is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Chainsaw Man franchise, Makima has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Makima hentai include makima (chainsaw man), chainsaw man, red hair, domination, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Makima consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Makima hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Chainsaw Man. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Chainsaw Man.",
-      faq: [
-      { question: "Where can I watch Makima hentai for free?", answer: "You can watch free Makima hentai on iku.gg. Browse the Makima character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Makima with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Makima hentai tags?", answer: "The most popular tags associated with Makima hentai include makima (chainsaw man), chainsaw man, red hair, domination. These tags reflect both the character's visual traits from Chainsaw Man and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Makima content you prefer." },
-      { question: "How much Makima hentai content exists?", answer: "Makima is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Makima collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Makima hentai is added daily as creators continue to produce content featuring this popular Chainsaw Man character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "makima",
+    name: "Makima",
+    series: "Chainsaw Man",
+    searchVolume: 4400,
+    seoDescription:
+      "Makima from Chainsaw Man is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Chainsaw Man franchise, Makima has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Makima hentai include makima (chainsaw man), chainsaw man, red hair, domination, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Makima consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Makima hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Chainsaw Man. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Chainsaw Man.",
+    faq: [
+      {
+        question: "Where can I watch Makima hentai for free?",
+        answer:
+          "You can watch free Makima hentai on iku.gg. Browse the Makima character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Makima with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Makima hentai tags?",
+        answer:
+          "The most popular tags associated with Makima hentai include makima (chainsaw man), chainsaw man, red hair, domination. These tags reflect both the character's visual traits from Chainsaw Man and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Makima content you prefer.",
+      },
+      {
+        question: "How much Makima hentai content exists?",
+        answer:
+          "Makima is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Makima collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Makima hentai is added daily as creators continue to produce content featuring this popular Chainsaw Man character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "yor-forger",
-      name: "Yor Forger",
-      series: "Spy x Family",
-      searchVolume: 4400,
-      seoDescription: "Yor Forger from Spy x Family is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Spy x Family franchise, Yor Forger has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Yor Forger hentai include yor forger, spy x family, black hair, assassin, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Yor Forger consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Yor Forger hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Spy x Family. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Spy x Family.",
-      faq: [
-      { question: "Where can I watch Yor Forger hentai for free?", answer: "You can watch free Yor Forger hentai on iku.gg. Browse the Yor Forger character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Yor Forger with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Yor Forger hentai tags?", answer: "The most popular tags associated with Yor Forger hentai include yor forger, spy x family, black hair, assassin. These tags reflect both the character's visual traits from Spy x Family and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Yor Forger content you prefer." },
-      { question: "How much Yor Forger hentai content exists?", answer: "Yor Forger is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Yor Forger collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Yor Forger hentai is added daily as creators continue to produce content featuring this popular Spy x Family character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "yor-forger",
+    name: "Yor Forger",
+    series: "Spy x Family",
+    searchVolume: 4400,
+    seoDescription:
+      "Yor Forger from Spy x Family is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Spy x Family franchise, Yor Forger has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Yor Forger hentai include yor forger, spy x family, black hair, assassin, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Yor Forger consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Yor Forger hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Spy x Family. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Spy x Family.",
+    faq: [
+      {
+        question: "Where can I watch Yor Forger hentai for free?",
+        answer:
+          "You can watch free Yor Forger hentai on iku.gg. Browse the Yor Forger character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Yor Forger with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Yor Forger hentai tags?",
+        answer:
+          "The most popular tags associated with Yor Forger hentai include yor forger, spy x family, black hair, assassin. These tags reflect both the character's visual traits from Spy x Family and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Yor Forger content you prefer.",
+      },
+      {
+        question: "How much Yor Forger hentai content exists?",
+        answer:
+          "Yor Forger is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Yor Forger collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Yor Forger hentai is added daily as creators continue to produce content featuring this popular Spy x Family character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "tifa-lockhart",
-      name: "Tifa Lockhart",
-      series: "Final Fantasy VII",
-      searchVolume: 4400,
-      seoDescription: "Tifa Lockhart from Final Fantasy VII is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Final Fantasy VII franchise, Tifa Lockhart has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Tifa Lockhart hentai include tifa lockhart, final fantasy, big breasts, brunette, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Tifa Lockhart consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Tifa Lockhart hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Final Fantasy VII. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Final Fantasy VII.",
-      faq: [
-      { question: "Where can I watch Tifa Lockhart hentai for free?", answer: "You can watch free Tifa Lockhart hentai on iku.gg. Browse the Tifa Lockhart character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Tifa Lockhart with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Tifa Lockhart hentai tags?", answer: "The most popular tags associated with Tifa Lockhart hentai include tifa lockhart, final fantasy, big breasts, brunette. These tags reflect both the character's visual traits from Final Fantasy VII and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Tifa Lockhart content you prefer." },
-      { question: "How much Tifa Lockhart hentai content exists?", answer: "Tifa Lockhart is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Tifa Lockhart collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Tifa Lockhart hentai is added daily as creators continue to produce content featuring this popular Final Fantasy VII character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "tifa-lockhart",
+    name: "Tifa Lockhart",
+    series: "Final Fantasy VII",
+    searchVolume: 4400,
+    seoDescription:
+      "Tifa Lockhart from Final Fantasy VII is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Final Fantasy VII franchise, Tifa Lockhart has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Tifa Lockhart hentai include tifa lockhart, final fantasy, big breasts, brunette, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Tifa Lockhart consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Tifa Lockhart hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Final Fantasy VII. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Final Fantasy VII.",
+    faq: [
+      {
+        question: "Where can I watch Tifa Lockhart hentai for free?",
+        answer:
+          "You can watch free Tifa Lockhart hentai on iku.gg. Browse the Tifa Lockhart character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Tifa Lockhart with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Tifa Lockhart hentai tags?",
+        answer:
+          "The most popular tags associated with Tifa Lockhart hentai include tifa lockhart, final fantasy, big breasts, brunette. These tags reflect both the character's visual traits from Final Fantasy VII and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Tifa Lockhart content you prefer.",
+      },
+      {
+        question: "How much Tifa Lockhart hentai content exists?",
+        answer:
+          "Tifa Lockhart is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Tifa Lockhart collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Tifa Lockhart hentai is added daily as creators continue to produce content featuring this popular Final Fantasy VII character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "sakura-haruno",
-      name: "Sakura Haruno",
-      series: "Naruto",
-      searchVolume: 4400,
-      seoDescription: "Sakura Haruno from Naruto is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Naruto franchise, Sakura Haruno has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Sakura Haruno hentai include haruno sakura, naruto, pink hair, medical ninja, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Sakura Haruno consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Sakura Haruno hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Naruto. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Naruto.",
-      faq: [
-      { question: "Where can I watch Sakura Haruno hentai for free?", answer: "You can watch free Sakura Haruno hentai on iku.gg. Browse the Sakura Haruno character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Sakura Haruno with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Sakura Haruno hentai tags?", answer: "The most popular tags associated with Sakura Haruno hentai include haruno sakura, naruto, pink hair, medical ninja. These tags reflect both the character's visual traits from Naruto and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Sakura Haruno content you prefer." },
-      { question: "How much Sakura Haruno hentai content exists?", answer: "Sakura Haruno is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Sakura Haruno collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Sakura Haruno hentai is added daily as creators continue to produce content featuring this popular Naruto character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "sakura-haruno",
+    name: "Sakura Haruno",
+    series: "Naruto",
+    searchVolume: 4400,
+    seoDescription:
+      "Sakura Haruno from Naruto is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Naruto franchise, Sakura Haruno has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Sakura Haruno hentai include haruno sakura, naruto, pink hair, medical ninja, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Sakura Haruno consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Sakura Haruno hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Naruto. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Naruto.",
+    faq: [
+      {
+        question: "Where can I watch Sakura Haruno hentai for free?",
+        answer:
+          "You can watch free Sakura Haruno hentai on iku.gg. Browse the Sakura Haruno character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Sakura Haruno with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Sakura Haruno hentai tags?",
+        answer:
+          "The most popular tags associated with Sakura Haruno hentai include haruno sakura, naruto, pink hair, medical ninja. These tags reflect both the character's visual traits from Naruto and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Sakura Haruno content you prefer.",
+      },
+      {
+        question: "How much Sakura Haruno hentai content exists?",
+        answer:
+          "Sakura Haruno is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Sakura Haruno collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Sakura Haruno hentai is added daily as creators continue to produce content featuring this popular Naruto character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "ochako-uraraka",
-      name: "Ochako Uraraka",
-      series: "My Hero Academia",
-      searchVolume: 4400,
-      seoDescription: "Ochako Uraraka from My Hero Academia is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the My Hero Academia franchise, Ochako Uraraka has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Ochako Uraraka hentai include uraraka ochako, boku no hero academia, brown hair, hero, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Ochako Uraraka consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Ochako Uraraka hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from My Hero Academia. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of My Hero Academia.",
-      faq: [
-      { question: "Where can I watch Ochako Uraraka hentai for free?", answer: "You can watch free Ochako Uraraka hentai on iku.gg. Browse the Ochako Uraraka character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Ochako Uraraka with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Ochako Uraraka hentai tags?", answer: "The most popular tags associated with Ochako Uraraka hentai include uraraka ochako, boku no hero academia, brown hair, hero. These tags reflect both the character's visual traits from My Hero Academia and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Ochako Uraraka content you prefer." },
-      { question: "How much Ochako Uraraka hentai content exists?", answer: "Ochako Uraraka is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Ochako Uraraka collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Ochako Uraraka hentai is added daily as creators continue to produce content featuring this popular My Hero Academia character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "ochako-uraraka",
+    name: "Ochako Uraraka",
+    series: "My Hero Academia",
+    searchVolume: 4400,
+    seoDescription:
+      "Ochako Uraraka from My Hero Academia is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the My Hero Academia franchise, Ochako Uraraka has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Ochako Uraraka hentai include uraraka ochako, boku no hero academia, brown hair, hero, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Ochako Uraraka consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Ochako Uraraka hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from My Hero Academia. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of My Hero Academia.",
+    faq: [
+      {
+        question: "Where can I watch Ochako Uraraka hentai for free?",
+        answer:
+          "You can watch free Ochako Uraraka hentai on iku.gg. Browse the Ochako Uraraka character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Ochako Uraraka with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Ochako Uraraka hentai tags?",
+        answer:
+          "The most popular tags associated with Ochako Uraraka hentai include uraraka ochako, boku no hero academia, brown hair, hero. These tags reflect both the character's visual traits from My Hero Academia and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Ochako Uraraka content you prefer.",
+      },
+      {
+        question: "How much Ochako Uraraka hentai content exists?",
+        answer:
+          "Ochako Uraraka is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Ochako Uraraka collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Ochako Uraraka hentai is added daily as creators continue to produce content featuring this popular My Hero Academia character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "megumin",
-      name: "Megumin",
-      series: "Konosuba",
-      searchVolume: 4400,
-      seoDescription: "Megumin from Konosuba is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Konosuba franchise, Megumin has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Megumin hentai include megumin, kono subarashii sekai, explosion magic, witch, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Megumin consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Megumin hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Konosuba. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Konosuba.",
-      faq: [
-      { question: "Where can I watch Megumin hentai for free?", answer: "You can watch free Megumin hentai on iku.gg. Browse the Megumin character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Megumin with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Megumin hentai tags?", answer: "The most popular tags associated with Megumin hentai include megumin, kono subarashii sekai, explosion magic, witch. These tags reflect both the character's visual traits from Konosuba and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Megumin content you prefer." },
-      { question: "How much Megumin hentai content exists?", answer: "Megumin is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Megumin collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Megumin hentai is added daily as creators continue to produce content featuring this popular Konosuba character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "megumin",
+    name: "Megumin",
+    series: "Konosuba",
+    searchVolume: 4400,
+    seoDescription:
+      "Megumin from Konosuba is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Konosuba franchise, Megumin has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Megumin hentai include megumin, kono subarashii sekai, explosion magic, witch, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Megumin consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Megumin hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Konosuba. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Konosuba.",
+    faq: [
+      {
+        question: "Where can I watch Megumin hentai for free?",
+        answer:
+          "You can watch free Megumin hentai on iku.gg. Browse the Megumin character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Megumin with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Megumin hentai tags?",
+        answer:
+          "The most popular tags associated with Megumin hentai include megumin, kono subarashii sekai, explosion magic, witch. These tags reflect both the character's visual traits from Konosuba and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Megumin content you prefer.",
+      },
+      {
+        question: "How much Megumin hentai content exists?",
+        answer:
+          "Megumin is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Megumin collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Megumin hentai is added daily as creators continue to produce content featuring this popular Konosuba character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "aqua",
-      name: "Aqua",
-      series: "Konosuba",
-      searchVolume: 4400,
-      seoDescription: "Aqua from Konosuba is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Konosuba franchise, Aqua has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Aqua hentai include aqua (konosuba), kono subarashii sekai, blue hair, goddess, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Aqua consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Aqua hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Konosuba. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Konosuba.",
-      faq: [
-      { question: "Where can I watch Aqua hentai for free?", answer: "You can watch free Aqua hentai on iku.gg. Browse the Aqua character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Aqua with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Aqua hentai tags?", answer: "The most popular tags associated with Aqua hentai include aqua (konosuba), kono subarashii sekai, blue hair, goddess. These tags reflect both the character's visual traits from Konosuba and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Aqua content you prefer." },
-      { question: "How much Aqua hentai content exists?", answer: "Aqua is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Aqua collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Aqua hentai is added daily as creators continue to produce content featuring this popular Konosuba character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "aqua",
+    name: "Aqua",
+    series: "Konosuba",
+    searchVolume: 4400,
+    seoDescription:
+      "Aqua from Konosuba is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Konosuba franchise, Aqua has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Aqua hentai include aqua (konosuba), kono subarashii sekai, blue hair, goddess, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Aqua consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Aqua hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Konosuba. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Konosuba.",
+    faq: [
+      {
+        question: "Where can I watch Aqua hentai for free?",
+        answer:
+          "You can watch free Aqua hentai on iku.gg. Browse the Aqua character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Aqua with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Aqua hentai tags?",
+        answer:
+          "The most popular tags associated with Aqua hentai include aqua (konosuba), kono subarashii sekai, blue hair, goddess. These tags reflect both the character's visual traits from Konosuba and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Aqua content you prefer.",
+      },
+      {
+        question: "How much Aqua hentai content exists?",
+        answer:
+          "Aqua is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Aqua collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Aqua hentai is added daily as creators continue to produce content featuring this popular Konosuba character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "rem",
-      name: "Rem",
-      series: "Re:Zero",
-      searchVolume: 4400,
-      seoDescription: "Rem from Re:Zero is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Re:Zero franchise, Rem has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Rem hentai include rem (re zero), re zero, blue hair, maid, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Rem consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Rem hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Re:Zero. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Re:Zero.",
-      faq: [
-      { question: "Where can I watch Rem hentai for free?", answer: "You can watch free Rem hentai on iku.gg. Browse the Rem character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Rem with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Rem hentai tags?", answer: "The most popular tags associated with Rem hentai include rem (re zero), re zero, blue hair, maid. These tags reflect both the character's visual traits from Re:Zero and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Rem content you prefer." },
-      { question: "How much Rem hentai content exists?", answer: "Rem is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Rem collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Rem hentai is added daily as creators continue to produce content featuring this popular Re:Zero character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "rem",
+    name: "Rem",
+    series: "Re:Zero",
+    searchVolume: 4400,
+    seoDescription:
+      "Rem from Re:Zero is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Re:Zero franchise, Rem has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Rem hentai include rem (re zero), re zero, blue hair, maid, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Rem consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Rem hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Re:Zero. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Re:Zero.",
+    faq: [
+      {
+        question: "Where can I watch Rem hentai for free?",
+        answer:
+          "You can watch free Rem hentai on iku.gg. Browse the Rem character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Rem with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Rem hentai tags?",
+        answer:
+          "The most popular tags associated with Rem hentai include rem (re zero), re zero, blue hair, maid. These tags reflect both the character's visual traits from Re:Zero and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Rem content you prefer.",
+      },
+      {
+        question: "How much Rem hentai content exists?",
+        answer:
+          "Rem is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Rem collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Rem hentai is added daily as creators continue to produce content featuring this popular Re:Zero character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "emilia-re-zero",
-      name: "Emilia",
-      series: "Re:Zero",
-      searchVolume: 4400,
-      seoDescription: "Emilia from Re:Zero is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Re:Zero franchise, Emilia has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Emilia hentai include emilia (re zero), re zero, silver hair, elf, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Emilia consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Emilia hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Re:Zero. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Re:Zero.",
-      faq: [
-      { question: "Where can I watch Emilia hentai for free?", answer: "You can watch free Emilia hentai on iku.gg. Browse the Emilia character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Emilia with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Emilia hentai tags?", answer: "The most popular tags associated with Emilia hentai include emilia (re zero), re zero, silver hair, elf. These tags reflect both the character's visual traits from Re:Zero and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Emilia content you prefer." },
-      { question: "How much Emilia hentai content exists?", answer: "Emilia is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Emilia collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Emilia hentai is added daily as creators continue to produce content featuring this popular Re:Zero character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "emilia-re-zero",
+    name: "Emilia",
+    series: "Re:Zero",
+    searchVolume: 4400,
+    seoDescription:
+      "Emilia from Re:Zero is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Re:Zero franchise, Emilia has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Emilia hentai include emilia (re zero), re zero, silver hair, elf, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Emilia consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Emilia hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Re:Zero. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Re:Zero.",
+    faq: [
+      {
+        question: "Where can I watch Emilia hentai for free?",
+        answer:
+          "You can watch free Emilia hentai on iku.gg. Browse the Emilia character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Emilia with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Emilia hentai tags?",
+        answer:
+          "The most popular tags associated with Emilia hentai include emilia (re zero), re zero, silver hair, elf. These tags reflect both the character's visual traits from Re:Zero and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Emilia content you prefer.",
+      },
+      {
+        question: "How much Emilia hentai content exists?",
+        answer:
+          "Emilia is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Emilia collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Emilia hentai is added daily as creators continue to produce content featuring this popular Re:Zero character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "asuka-langley",
-      name: "Asuka Langley",
-      series: "Neon Genesis Evangelion",
-      searchVolume: 4400,
-      seoDescription: "Asuka Langley from Neon Genesis Evangelion is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Neon Genesis Evangelion franchise, Asuka Langley has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Asuka Langley hentai include souryuu asuka langley, evangelion, red hair, plugsuit, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Asuka Langley consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Asuka Langley hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Neon Genesis Evangelion. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Neon Genesis Evangelion.",
-      faq: [
-      { question: "Where can I watch Asuka Langley hentai for free?", answer: "You can watch free Asuka Langley hentai on iku.gg. Browse the Asuka Langley character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Asuka Langley with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Asuka Langley hentai tags?", answer: "The most popular tags associated with Asuka Langley hentai include souryuu asuka langley, evangelion, red hair, plugsuit. These tags reflect both the character's visual traits from Neon Genesis Evangelion and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Asuka Langley content you prefer." },
-      { question: "How much Asuka Langley hentai content exists?", answer: "Asuka Langley is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Asuka Langley collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Asuka Langley hentai is added daily as creators continue to produce content featuring this popular Neon Genesis Evangelion character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "asuka-langley",
+    name: "Asuka Langley",
+    series: "Neon Genesis Evangelion",
+    searchVolume: 4400,
+    seoDescription:
+      "Asuka Langley from Neon Genesis Evangelion is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Neon Genesis Evangelion franchise, Asuka Langley has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Asuka Langley hentai include souryuu asuka langley, evangelion, red hair, plugsuit, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Asuka Langley consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Asuka Langley hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Neon Genesis Evangelion. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Neon Genesis Evangelion.",
+    faq: [
+      {
+        question: "Where can I watch Asuka Langley hentai for free?",
+        answer:
+          "You can watch free Asuka Langley hentai on iku.gg. Browse the Asuka Langley character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Asuka Langley with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Asuka Langley hentai tags?",
+        answer:
+          "The most popular tags associated with Asuka Langley hentai include souryuu asuka langley, evangelion, red hair, plugsuit. These tags reflect both the character's visual traits from Neon Genesis Evangelion and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Asuka Langley content you prefer.",
+      },
+      {
+        question: "How much Asuka Langley hentai content exists?",
+        answer:
+          "Asuka Langley is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Asuka Langley collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Asuka Langley hentai is added daily as creators continue to produce content featuring this popular Neon Genesis Evangelion character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "rei-ayanami",
-      name: "Rei Ayanami",
-      series: "Neon Genesis Evangelion",
-      searchVolume: 4400,
-      seoDescription: "Rei Ayanami from Neon Genesis Evangelion is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Neon Genesis Evangelion franchise, Rei Ayanami has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Rei Ayanami hentai include ayanami rei, evangelion, blue hair, plugsuit, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Rei Ayanami consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Rei Ayanami hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Neon Genesis Evangelion. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Neon Genesis Evangelion.",
-      faq: [
-      { question: "Where can I watch Rei Ayanami hentai for free?", answer: "You can watch free Rei Ayanami hentai on iku.gg. Browse the Rei Ayanami character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Rei Ayanami with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Rei Ayanami hentai tags?", answer: "The most popular tags associated with Rei Ayanami hentai include ayanami rei, evangelion, blue hair, plugsuit. These tags reflect both the character's visual traits from Neon Genesis Evangelion and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Rei Ayanami content you prefer." },
-      { question: "How much Rei Ayanami hentai content exists?", answer: "Rei Ayanami is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Rei Ayanami collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Rei Ayanami hentai is added daily as creators continue to produce content featuring this popular Neon Genesis Evangelion character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "rei-ayanami",
+    name: "Rei Ayanami",
+    series: "Neon Genesis Evangelion",
+    searchVolume: 4400,
+    seoDescription:
+      "Rei Ayanami from Neon Genesis Evangelion is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Neon Genesis Evangelion franchise, Rei Ayanami has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Rei Ayanami hentai include ayanami rei, evangelion, blue hair, plugsuit, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Rei Ayanami consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Rei Ayanami hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Neon Genesis Evangelion. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Neon Genesis Evangelion.",
+    faq: [
+      {
+        question: "Where can I watch Rei Ayanami hentai for free?",
+        answer:
+          "You can watch free Rei Ayanami hentai on iku.gg. Browse the Rei Ayanami character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Rei Ayanami with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Rei Ayanami hentai tags?",
+        answer:
+          "The most popular tags associated with Rei Ayanami hentai include ayanami rei, evangelion, blue hair, plugsuit. These tags reflect both the character's visual traits from Neon Genesis Evangelion and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Rei Ayanami content you prefer.",
+      },
+      {
+        question: "How much Rei Ayanami hentai content exists?",
+        answer:
+          "Rei Ayanami is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Rei Ayanami collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Rei Ayanami hentai is added daily as creators continue to produce content featuring this popular Neon Genesis Evangelion character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "erza-scarlet",
-      name: "Erza Scarlet",
-      series: "Fairy Tail",
-      searchVolume: 4400,
-      seoDescription: "Erza Scarlet from Fairy Tail is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Fairy Tail franchise, Erza Scarlet has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Erza Scarlet hentai include erza scarlet, fairy tail, red hair, armor, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Erza Scarlet consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Erza Scarlet hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Fairy Tail. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Fairy Tail.",
-      faq: [
-      { question: "Where can I watch Erza Scarlet hentai for free?", answer: "You can watch free Erza Scarlet hentai on iku.gg. Browse the Erza Scarlet character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Erza Scarlet with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Erza Scarlet hentai tags?", answer: "The most popular tags associated with Erza Scarlet hentai include erza scarlet, fairy tail, red hair, armor. These tags reflect both the character's visual traits from Fairy Tail and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Erza Scarlet content you prefer." },
-      { question: "How much Erza Scarlet hentai content exists?", answer: "Erza Scarlet is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Erza Scarlet collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Erza Scarlet hentai is added daily as creators continue to produce content featuring this popular Fairy Tail character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "erza-scarlet",
+    name: "Erza Scarlet",
+    series: "Fairy Tail",
+    searchVolume: 4400,
+    seoDescription:
+      "Erza Scarlet from Fairy Tail is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Fairy Tail franchise, Erza Scarlet has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Erza Scarlet hentai include erza scarlet, fairy tail, red hair, armor, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Erza Scarlet consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Erza Scarlet hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Fairy Tail. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Fairy Tail.",
+    faq: [
+      {
+        question: "Where can I watch Erza Scarlet hentai for free?",
+        answer:
+          "You can watch free Erza Scarlet hentai on iku.gg. Browse the Erza Scarlet character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Erza Scarlet with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Erza Scarlet hentai tags?",
+        answer:
+          "The most popular tags associated with Erza Scarlet hentai include erza scarlet, fairy tail, red hair, armor. These tags reflect both the character's visual traits from Fairy Tail and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Erza Scarlet content you prefer.",
+      },
+      {
+        question: "How much Erza Scarlet hentai content exists?",
+        answer:
+          "Erza Scarlet is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Erza Scarlet collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Erza Scarlet hentai is added daily as creators continue to produce content featuring this popular Fairy Tail character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "lucy-heartfilia",
-      name: "Lucy Heartfilia",
-      series: "Fairy Tail",
-      searchVolume: 4400,
-      seoDescription: "Lucy Heartfilia from Fairy Tail is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Fairy Tail franchise, Lucy Heartfilia has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Lucy Heartfilia hentai include lucy heartfilia, fairy tail, blonde hair, celestial, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Lucy Heartfilia consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Lucy Heartfilia hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Fairy Tail. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Fairy Tail.",
-      faq: [
-      { question: "Where can I watch Lucy Heartfilia hentai for free?", answer: "You can watch free Lucy Heartfilia hentai on iku.gg. Browse the Lucy Heartfilia character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Lucy Heartfilia with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Lucy Heartfilia hentai tags?", answer: "The most popular tags associated with Lucy Heartfilia hentai include lucy heartfilia, fairy tail, blonde hair, celestial. These tags reflect both the character's visual traits from Fairy Tail and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Lucy Heartfilia content you prefer." },
-      { question: "How much Lucy Heartfilia hentai content exists?", answer: "Lucy Heartfilia is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Lucy Heartfilia collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Lucy Heartfilia hentai is added daily as creators continue to produce content featuring this popular Fairy Tail character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "lucy-heartfilia",
+    name: "Lucy Heartfilia",
+    series: "Fairy Tail",
+    searchVolume: 4400,
+    seoDescription:
+      "Lucy Heartfilia from Fairy Tail is one of the most searched anime characters in hentai, with approximately 4,400 monthly searches globally. As a beloved character from the Fairy Tail franchise, Lucy Heartfilia has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Lucy Heartfilia hentai include lucy heartfilia, fairy tail, blonde hair, celestial, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Lucy Heartfilia consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Lucy Heartfilia hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Fairy Tail. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Fairy Tail.",
+    faq: [
+      {
+        question: "Where can I watch Lucy Heartfilia hentai for free?",
+        answer:
+          "You can watch free Lucy Heartfilia hentai on iku.gg. Browse the Lucy Heartfilia character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Lucy Heartfilia with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Lucy Heartfilia hentai tags?",
+        answer:
+          "The most popular tags associated with Lucy Heartfilia hentai include lucy heartfilia, fairy tail, blonde hair, celestial. These tags reflect both the character's visual traits from Fairy Tail and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Lucy Heartfilia content you prefer.",
+      },
+      {
+        question: "How much Lucy Heartfilia hentai content exists?",
+        answer:
+          "Lucy Heartfilia is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Lucy Heartfilia collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Lucy Heartfilia hentai is added daily as creators continue to produce content featuring this popular Fairy Tail character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "rangiku-matsumoto",
-      name: "Rangiku Matsumoto",
-      series: "Bleach",
-      searchVolume: 2900,
-      seoDescription: "Rangiku Matsumoto from Bleach is one of the most searched anime characters in hentai, with approximately 2,900 monthly searches globally. As a beloved character from the Bleach franchise, Rangiku Matsumoto has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Rangiku Matsumoto hentai include matsumoto rangiku, bleach, blonde hair, big breasts, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Rangiku Matsumoto consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Rangiku Matsumoto hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Bleach. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Bleach.",
-      faq: [
-      { question: "Where can I watch Rangiku Matsumoto hentai for free?", answer: "You can watch free Rangiku Matsumoto hentai on iku.gg. Browse the Rangiku Matsumoto character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Rangiku Matsumoto with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Rangiku Matsumoto hentai tags?", answer: "The most popular tags associated with Rangiku Matsumoto hentai include matsumoto rangiku, bleach, blonde hair, big breasts. These tags reflect both the character's visual traits from Bleach and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Rangiku Matsumoto content you prefer." },
-      { question: "How much Rangiku Matsumoto hentai content exists?", answer: "Rangiku Matsumoto is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Rangiku Matsumoto collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Rangiku Matsumoto hentai is added daily as creators continue to produce content featuring this popular Bleach character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "rangiku-matsumoto",
+    name: "Rangiku Matsumoto",
+    series: "Bleach",
+    searchVolume: 2900,
+    seoDescription:
+      "Rangiku Matsumoto from Bleach is one of the most searched anime characters in hentai, with approximately 2,900 monthly searches globally. As a beloved character from the Bleach franchise, Rangiku Matsumoto has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Rangiku Matsumoto hentai include matsumoto rangiku, bleach, blonde hair, big breasts, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Rangiku Matsumoto consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Rangiku Matsumoto hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Bleach. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Bleach.",
+    faq: [
+      {
+        question: "Where can I watch Rangiku Matsumoto hentai for free?",
+        answer:
+          "You can watch free Rangiku Matsumoto hentai on iku.gg. Browse the Rangiku Matsumoto character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Rangiku Matsumoto with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Rangiku Matsumoto hentai tags?",
+        answer:
+          "The most popular tags associated with Rangiku Matsumoto hentai include matsumoto rangiku, bleach, blonde hair, big breasts. These tags reflect both the character's visual traits from Bleach and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Rangiku Matsumoto content you prefer.",
+      },
+      {
+        question: "How much Rangiku Matsumoto hentai content exists?",
+        answer:
+          "Rangiku Matsumoto is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Rangiku Matsumoto collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Rangiku Matsumoto hentai is added daily as creators continue to produce content featuring this popular Bleach character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "yoruichi",
-      name: "Yoruichi Shihouin",
-      series: "Bleach",
-      searchVolume: 2900,
-      seoDescription: "Yoruichi Shihouin from Bleach is one of the most searched anime characters in hentai, with approximately 2,900 monthly searches globally. As a beloved character from the Bleach franchise, Yoruichi Shihouin has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Yoruichi Shihouin hentai include shihouin yoruichi, bleach, dark skin, purple hair, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Yoruichi Shihouin consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Yoruichi Shihouin hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Bleach. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Bleach.",
-      faq: [
-      { question: "Where can I watch Yoruichi Shihouin hentai for free?", answer: "You can watch free Yoruichi Shihouin hentai on iku.gg. Browse the Yoruichi Shihouin character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Yoruichi Shihouin with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Yoruichi Shihouin hentai tags?", answer: "The most popular tags associated with Yoruichi Shihouin hentai include shihouin yoruichi, bleach, dark skin, purple hair. These tags reflect both the character's visual traits from Bleach and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Yoruichi Shihouin content you prefer." },
-      { question: "How much Yoruichi Shihouin hentai content exists?", answer: "Yoruichi Shihouin is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Yoruichi Shihouin collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Yoruichi Shihouin hentai is added daily as creators continue to produce content featuring this popular Bleach character." }
-      ],
-      generatedAt: "2026-04-07",
-    },
+    slug: "yoruichi",
+    name: "Yoruichi Shihouin",
+    series: "Bleach",
+    searchVolume: 2900,
+    seoDescription:
+      "Yoruichi Shihouin from Bleach is one of the most searched anime characters in hentai, with approximately 2,900 monthly searches globally. As a beloved character from the Bleach franchise, Yoruichi Shihouin has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Yoruichi Shihouin hentai include shihouin yoruichi, bleach, dark skin, purple hair, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Yoruichi Shihouin consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Yoruichi Shihouin hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Bleach. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Bleach.",
+    faq: [
+      {
+        question: "Where can I watch Yoruichi Shihouin hentai for free?",
+        answer:
+          "You can watch free Yoruichi Shihouin hentai on iku.gg. Browse the Yoruichi Shihouin character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Yoruichi Shihouin with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Yoruichi Shihouin hentai tags?",
+        answer:
+          "The most popular tags associated with Yoruichi Shihouin hentai include shihouin yoruichi, bleach, dark skin, purple hair. These tags reflect both the character's visual traits from Bleach and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Yoruichi Shihouin content you prefer.",
+      },
+      {
+        question: "How much Yoruichi Shihouin hentai content exists?",
+        answer:
+          "Yoruichi Shihouin is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Yoruichi Shihouin collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Yoruichi Shihouin hentai is added daily as creators continue to produce content featuring this popular Bleach character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
   {
-      slug: "misato-katsuragi",
-      name: "Misato Katsuragi",
-      series: "Neon Genesis Evangelion",
-      searchVolume: 2900,
-      seoDescription: "Misato Katsuragi from Neon Genesis Evangelion is one of the most searched anime characters in hentai, with approximately 2,900 monthly searches globally. As a beloved character from the Neon Genesis Evangelion franchise, Misato Katsuragi has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Misato Katsuragi hentai include katsuragi misato, evangelion, purple hair, milf, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Misato Katsuragi consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Misato Katsuragi hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Neon Genesis Evangelion. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Neon Genesis Evangelion.",
-      faq: [
-      { question: "Where can I watch Misato Katsuragi hentai for free?", answer: "You can watch free Misato Katsuragi hentai on iku.gg. Browse the Misato Katsuragi character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Misato Katsuragi with other tags like uncensored, 3D, or vanilla for more specific results." },
-      { question: "What are the most popular Misato Katsuragi hentai tags?", answer: "The most popular tags associated with Misato Katsuragi hentai include katsuragi misato, evangelion, purple hair, milf. These tags reflect both the character's visual traits from Neon Genesis Evangelion and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Misato Katsuragi content you prefer." },
-      { question: "How much Misato Katsuragi hentai content exists?", answer: "Misato Katsuragi is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Misato Katsuragi collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Misato Katsuragi hentai is added daily as creators continue to produce content featuring this popular Neon Genesis Evangelion character." }
-      ],
-      generatedAt: "2026-04-07",
-    }
+    slug: "misato-katsuragi",
+    name: "Misato Katsuragi",
+    series: "Neon Genesis Evangelion",
+    searchVolume: 2900,
+    seoDescription:
+      "Misato Katsuragi from Neon Genesis Evangelion is one of the most searched anime characters in hentai, with approximately 2,900 monthly searches globally. As a beloved character from the Neon Genesis Evangelion franchise, Misato Katsuragi has inspired an enormous library of fan-created adult animations spanning classic 2D OVA style to modern 3D renders using Blender, Koikatsu, and Honey Select. Popular tags associated with Misato Katsuragi hentai include katsuragi misato, evangelion, purple hair, milf, reflecting the character's distinctive visual traits and the diverse scenarios fans create. Misato Katsuragi consistently ranks among the top characters on major booru platforms, with new content appearing daily. On iku.gg, browse hundreds of curated Misato Katsuragi hentai clips sorted by community score, filter by preferred style (2D, 3D, uncensored), and discover related characters from Neon Genesis Evangelion. The character's enduring popularity in adult fan content is driven by their iconic design, memorable personality, and the massive global fanbase of Neon Genesis Evangelion.",
+    faq: [
+      {
+        question: "Where can I watch Misato Katsuragi hentai for free?",
+        answer:
+          "You can watch free Misato Katsuragi hentai on iku.gg. Browse the Misato Katsuragi character page for hundreds of curated animated clips sorted by community score. No account required — stream instantly. Use the tag system to combine Misato Katsuragi with other tags like uncensored, 3D, or vanilla for more specific results.",
+      },
+      {
+        question: "What are the most popular Misato Katsuragi hentai tags?",
+        answer:
+          "The most popular tags associated with Misato Katsuragi hentai include katsuragi misato, evangelion, purple hair, milf. These tags reflect both the character's visual traits from Neon Genesis Evangelion and the most common scenarios in fan-created content. On iku.gg, you can combine these tags to find exactly the type of Misato Katsuragi content you prefer.",
+      },
+      {
+        question: "How much Misato Katsuragi hentai content exists?",
+        answer:
+          "Misato Katsuragi is one of the most depicted characters in hentai fan animation, with thousands of clips available across the web. On iku.gg, the Misato Katsuragi collection includes content from professional studios, independent 3D artists using Blender and Koikatsu, and SFM creators. New Misato Katsuragi hentai is added daily as creators continue to produce content featuring this popular Neon Genesis Evangelion character.",
+      },
+    ],
+    generatedAt: "2026-04-07",
+  },
 ];
 
 /**

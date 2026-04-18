@@ -13,7 +13,7 @@ import { useEffect, useRef } from "react";
  */
 export function useVideoShortcuts(
   videoRef: { current: HTMLVideoElement | null },
-  opts: { onMuteToggle?: () => void } = {}
+  opts: { onMuteToggle?: () => void } = {},
 ) {
   // Stable ref to the latest onMuteToggle so the effect below doesn't need
   // to tear down and re-add its keydown listener on every parent render.
@@ -26,7 +26,8 @@ export function useVideoShortcuts(
       // Ignore when typing in an input / textarea / contenteditable
       const target = e.target as HTMLElement;
       const tag = target.tagName;
-      if (tag === "INPUT" || tag === "TEXTAREA" || target.isContentEditable) return;
+      if (tag === "INPUT" || tag === "TEXTAREA" || target.isContentEditable)
+        return;
 
       // A11y: don't steal Space / Enter from focused buttons or links. The
       // useVideoShortcuts handler is global (window keydown) and was
@@ -81,9 +82,13 @@ export function useVideoShortcuts(
           // but a cross-origin iframe or permissions-policy deny will reject
           // — nothing we can do except not log on every rejection.
           if (!document.fullscreenElement) {
-            el.requestFullscreen().catch(() => { /* permission / cross-origin deny */ });
+            el.requestFullscreen().catch(() => {
+              /* permission / cross-origin deny */
+            });
           } else {
-            document.exitFullscreen().catch(() => { /* no active fullscreen */ });
+            document.exitFullscreen().catch(() => {
+              /* no active fullscreen */
+            });
           }
           break;
 

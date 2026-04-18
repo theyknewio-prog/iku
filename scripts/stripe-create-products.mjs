@@ -16,7 +16,10 @@
 import Stripe from "stripe";
 
 const KEY = process.env.STRIPE_SECRET_KEY;
-if (!KEY) { console.error("Missing STRIPE_SECRET_KEY"); process.exit(1); }
+if (!KEY) {
+  console.error("Missing STRIPE_SECRET_KEY");
+  process.exit(1);
+}
 
 const stripe = new Stripe(KEY, { apiVersion: "2025-09-30.clover" });
 
@@ -39,13 +42,10 @@ async function ensureProduct(name, description) {
 }
 
 /** Create price by lookup_key if not exists. Returns the price. */
-async function ensurePrice(productId, {
-  lookupKey,
-  unitAmount,
-  currency,
-  recurring,
-  nickname,
-}) {
+async function ensurePrice(
+  productId,
+  { lookupKey, unitAmount, currency, recurring, nickname },
+) {
   const list = await stripe.prices.list({
     product: productId,
     active: true,
@@ -74,7 +74,7 @@ async function run() {
   // ── Monthly / Yearly = same product "iku.gg Pro", different prices ──
   const proProduct = await ensureProduct(
     "iku.gg Pro",
-    "Remove ads, unlock unlimited favorites, early access, Discord Pro channel, and more."
+    "Remove ads, unlock unlimited favorites, early access, Discord Pro channel, and more.",
   );
 
   const monthly = await ensurePrice(proProduct.id, {
@@ -96,7 +96,7 @@ async function run() {
   // ── Lifetime = separate product, one-time payment ──
   const lifetimeProduct = await ensureProduct(
     "iku.gg Pro Lifetime",
-    "One-time payment for lifetime Pro access. Launch offer, limited spots."
+    "One-time payment for lifetime Pro access. Launch offer, limited spots.",
   );
 
   const lifetime = await ensurePrice(lifetimeProduct.id, {
@@ -113,4 +113,7 @@ async function run() {
   console.log(`STRIPE_PRICE_LIFETIME=${lifetime.id}`);
 }
 
-run().catch((err) => { console.error("❌", err); process.exit(1); });
+run().catch((err) => {
+  console.error("❌", err);
+  process.exit(1);
+});

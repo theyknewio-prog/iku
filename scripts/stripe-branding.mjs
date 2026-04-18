@@ -18,7 +18,10 @@ import Stripe from "stripe";
 import { writeFile } from "fs/promises";
 
 const KEY = process.env.STRIPE_SECRET_KEY;
-if (!KEY) { console.error("Missing STRIPE_SECRET_KEY"); process.exit(1); }
+if (!KEY) {
+  console.error("Missing STRIPE_SECRET_KEY");
+  process.exit(1);
+}
 
 const stripe = new Stripe(KEY, { apiVersion: "2025-09-30.clover" });
 
@@ -122,7 +125,12 @@ async function run() {
   console.log(`    primary: ${updated.settings?.branding?.primary_color}`);
   console.log(`    secondary: ${updated.settings?.branding?.secondary_color}`);
 
-  console.log("\n✨ Done — Checkout will now show the iku.gg logo + pink colors");
+  console.log(
+    "\n✨ Done — Checkout will now show the iku.gg logo + pink colors",
+  );
 }
 
-run().catch((err) => { console.error("❌", err); process.exit(1); });
+run().catch((err) => {
+  console.error("❌", err);
+  process.exit(1);
+});

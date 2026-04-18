@@ -19,15 +19,15 @@ import pool from "@/lib/db";
 
 /** Points per event type */
 export const POINTS: Record<string, number> = {
-  video_view:         2,  // watched >30s
-  video_complete:     5,  // watched >80%
-  favorite_add:       8,
-  daily_quest:       15,
-  video_of_day:      20,
-  new_character:     10,
-  share_click:        5,
-  streak_7_bonus:    50,
-  streak_30_bonus:  200,
+  video_view: 2, // watched >30s
+  video_complete: 5, // watched >80%
+  favorite_add: 8,
+  daily_quest: 15,
+  video_of_day: 20,
+  new_character: 10,
+  share_click: 5,
+  streak_7_bonus: 50,
+  streak_30_bonus: 200,
   streak_100_bonus: 500,
 };
 
@@ -46,7 +46,10 @@ export type ScoreEventType =
 /** Max points earnable per day from passive (view-based) actions.
  *  Quality actions (favorites, quests) are uncapped. */
 const DAILY_VIEW_CAP = 100;
-const PASSIVE_EVENTS = new Set<ScoreEventType>(["video_view", "video_complete"]);
+const PASSIVE_EVENTS = new Set<ScoreEventType>([
+  "video_view",
+  "video_complete",
+]);
 
 /** Tier definitions — anime-themed, 6 levels */
 export interface Tier {
@@ -59,18 +62,71 @@ export interface Tier {
 }
 
 export const TIERS: Tier[] = [
-  { index: 0, name: "Wanderer",       emoji: "🌙", threshold: 0,      color: "#64748b",
-    perks: ["Welcome aboard"] },
-  { index: 1, name: "Kouhai",         emoji: "🌸", threshold: 200,    color: "#ff6b9d",
-    perks: ["Animated profile badge", "Personal stats page"] },
-  { index: 2, name: "Senpai",         emoji: "⭐", threshold: 1000,   color: "#c084fc",
-    perks: ["Gradient profile border", "Extended history (90 days)", "+1 streak freeze"] },
-  { index: 3, name: "Otaku",          emoji: "🎮", threshold: 5000,   color: "#818cf8",
-    perks: ["Visible Discord role", "Priority video resolve", "Early access to new sources"] },
-  { index: 4, name: "Waifu Scholar",  emoji: "💎", threshold: 15000,  color: "#fbbf24",
-    perks: ["30% off Pro subscription", "Custom avatar border", "Weekly Curator Picks"] },
-  { index: 5, name: "Hentai Sage",    emoji: "🔥", threshold: 50000,  color: "#ef4444",
-    perks: ["SAGE animated badge", "VIP Discord channel", "Vote on featured characters", "Name in credits"] },
+  {
+    index: 0,
+    name: "Wanderer",
+    emoji: "🌙",
+    threshold: 0,
+    color: "#64748b",
+    perks: ["Welcome aboard"],
+  },
+  {
+    index: 1,
+    name: "Kouhai",
+    emoji: "🌸",
+    threshold: 200,
+    color: "#ff6b9d",
+    perks: ["Animated profile badge", "Personal stats page"],
+  },
+  {
+    index: 2,
+    name: "Senpai",
+    emoji: "⭐",
+    threshold: 1000,
+    color: "#c084fc",
+    perks: [
+      "Gradient profile border",
+      "Extended history (90 days)",
+      "+1 streak freeze",
+    ],
+  },
+  {
+    index: 3,
+    name: "Otaku",
+    emoji: "🎮",
+    threshold: 5000,
+    color: "#818cf8",
+    perks: [
+      "Visible Discord role",
+      "Priority video resolve",
+      "Early access to new sources",
+    ],
+  },
+  {
+    index: 4,
+    name: "Waifu Scholar",
+    emoji: "💎",
+    threshold: 15000,
+    color: "#fbbf24",
+    perks: [
+      "30% off Pro subscription",
+      "Custom avatar border",
+      "Weekly Curator Picks",
+    ],
+  },
+  {
+    index: 5,
+    name: "Hentai Sage",
+    emoji: "🔥",
+    threshold: 50000,
+    color: "#ef4444",
+    perks: [
+      "SAGE animated badge",
+      "VIP Discord channel",
+      "Vote on featured characters",
+      "Name in credits",
+    ],
+  },
 ];
 
 export function tierFromScore(score: number): Tier {
@@ -101,39 +157,83 @@ export interface Badge {
 }
 
 export const BADGES: Badge[] = [
-  { code: "first_view",    name: "First Watch",     emoji: "👀",
+  {
+    code: "first_view",
+    name: "First Watch",
+    emoji: "👀",
     description: "Watched your first clip",
-    check: (s) => s.total_views >= 1 },
-  { code: "centurion",     name: "Centurion",       emoji: "💯",
+    check: (s) => s.total_views >= 1,
+  },
+  {
+    code: "centurion",
+    name: "Centurion",
+    emoji: "💯",
     description: "Watched 100 clips",
-    check: (s) => s.total_views >= 100 },
-  { code: "first_fav",     name: "Love at First Sight", emoji: "💖",
+    check: (s) => s.total_views >= 100,
+  },
+  {
+    code: "first_fav",
+    name: "Love at First Sight",
+    emoji: "💖",
     description: "Added your first favorite",
-    check: (s) => s.total_favorites >= 1 },
-  { code: "collector",     name: "Collector",       emoji: "📚",
+    check: (s) => s.total_favorites >= 1,
+  },
+  {
+    code: "collector",
+    name: "Collector",
+    emoji: "📚",
     description: "Added 50 favorites",
-    check: (s) => s.total_favorites >= 50 },
-  { code: "hoarder",       name: "Hoarder",         emoji: "🏰",
+    check: (s) => s.total_favorites >= 50,
+  },
+  {
+    code: "hoarder",
+    name: "Hoarder",
+    emoji: "🏰",
     description: "Added 200 favorites",
-    check: (s) => s.total_favorites >= 200 },
-  { code: "streak_7",      name: "Week Devotee",    emoji: "🔥",
+    check: (s) => s.total_favorites >= 200,
+  },
+  {
+    code: "streak_7",
+    name: "Week Devotee",
+    emoji: "🔥",
     description: "7 day streak",
-    check: (s) => s.current_streak >= 7 || s.longest_streak >= 7 },
-  { code: "streak_30",     name: "Monthly Devotee", emoji: "🔥🔥",
+    check: (s) => s.current_streak >= 7 || s.longest_streak >= 7,
+  },
+  {
+    code: "streak_30",
+    name: "Monthly Devotee",
+    emoji: "🔥🔥",
     description: "30 day streak",
-    check: (s) => s.current_streak >= 30 || s.longest_streak >= 30 },
-  { code: "streak_100",    name: "Century Streak",  emoji: "💀",
+    check: (s) => s.current_streak >= 30 || s.longest_streak >= 30,
+  },
+  {
+    code: "streak_100",
+    name: "Century Streak",
+    emoji: "💀",
     description: "100 day streak — absolute devotee",
-    check: (s) => s.current_streak >= 100 || s.longest_streak >= 100 },
-  { code: "tier_senpai",   name: "Senpai",          emoji: "⭐",
+    check: (s) => s.current_streak >= 100 || s.longest_streak >= 100,
+  },
+  {
+    code: "tier_senpai",
+    name: "Senpai",
+    emoji: "⭐",
     description: "Reached Senpai tier",
-    check: (s) => s.score >= 1000 },
-  { code: "tier_otaku",    name: "Otaku",           emoji: "🎮",
+    check: (s) => s.score >= 1000,
+  },
+  {
+    code: "tier_otaku",
+    name: "Otaku",
+    emoji: "🎮",
     description: "Reached Otaku tier",
-    check: (s) => s.score >= 5000 },
-  { code: "tier_sage",     name: "Hentai Sage",     emoji: "🔥",
+    check: (s) => s.score >= 5000,
+  },
+  {
+    code: "tier_sage",
+    name: "Hentai Sage",
+    emoji: "🔥",
     description: "Reached the highest tier — legend status",
-    check: (s) => s.score >= 50000 },
+    check: (s) => s.score >= 50000,
+  },
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -155,21 +255,25 @@ export interface UserStats {
 }
 
 /** Returns the stats row for a user, creating a zero row if needed. */
-export async function getOrCreateUserStats(userId: string | number): Promise<UserStats> {
+export async function getOrCreateUserStats(
+  userId: string | number,
+): Promise<UserStats> {
   const { rows } = await pool.query(
     `INSERT INTO user_stats (user_id) VALUES ($1)
      ON CONFLICT (user_id) DO UPDATE SET user_id = EXCLUDED.user_id
      RETURNING *`,
-    [userId]
+    [userId],
   );
   return rows[0];
 }
 
 /** Read-only stats fetch. Returns null if user doesn't exist yet. */
-export async function getUserStats(userId: string | number): Promise<UserStats | null> {
+export async function getUserStats(
+  userId: string | number,
+): Promise<UserStats | null> {
   const { rows } = await pool.query(
     `SELECT * FROM user_stats WHERE user_id = $1`,
-    [userId]
+    [userId],
   );
   return rows[0] ?? null;
 }
@@ -227,7 +331,9 @@ export async function recordScore(opts: RecordScoreOptions): Promise<{
   let streakBonus = 0;
   let newStreak = stats.current_streak;
   if (lastActiveStr !== today) {
-    const yesterday = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10);
+    const yesterday = new Date(Date.now() - 86_400_000)
+      .toISOString()
+      .slice(0, 10);
     if (lastActiveStr === yesterday) {
       newStreak = stats.current_streak + 1;
     } else {
@@ -235,9 +341,12 @@ export async function recordScore(opts: RecordScoreOptions): Promise<{
     }
 
     // Milestone bonuses on hitting thresholds exactly (first time)
-    if (newStreak === 7   && stats.current_streak < 7)   streakBonus += POINTS.streak_7_bonus;
-    if (newStreak === 30  && stats.current_streak < 30)  streakBonus += POINTS.streak_30_bonus;
-    if (newStreak === 100 && stats.current_streak < 100) streakBonus += POINTS.streak_100_bonus;
+    if (newStreak === 7 && stats.current_streak < 7)
+      streakBonus += POINTS.streak_7_bonus;
+    if (newStreak === 30 && stats.current_streak < 30)
+      streakBonus += POINTS.streak_30_bonus;
+    if (newStreak === 100 && stats.current_streak < 100)
+      streakBonus += POINTS.streak_100_bonus;
   }
 
   const totalPoints = pointsToAward + streakBonus;
@@ -246,9 +355,9 @@ export async function recordScore(opts: RecordScoreOptions): Promise<{
     : stats.daily_points;
 
   // ── Update totals based on event type ──
-  const viewDelta     = event === "video_view" ? 1 : 0;
+  const viewDelta = event === "video_view" ? 1 : 0;
   const completeDelta = event === "video_complete" ? 1 : 0;
-  const favDelta      = event === "favorite_add" ? 1 : 0;
+  const favDelta = event === "favorite_add" ? 1 : 0;
 
   // ── Single UPDATE query ──
   const { rows } = await pool.query(
@@ -265,7 +374,16 @@ export async function recordScore(opts: RecordScoreOptions): Promise<{
        updated_at         = NOW()
      WHERE user_id = $1
      RETURNING *`,
-    [userId, totalPoints, viewDelta, completeDelta, favDelta, newStreak, today, newDailyPoints]
+    [
+      userId,
+      totalPoints,
+      viewDelta,
+      completeDelta,
+      favDelta,
+      newStreak,
+      today,
+      newDailyPoints,
+    ],
   );
   stats = rows[0];
 
@@ -274,7 +392,7 @@ export async function recordScore(opts: RecordScoreOptions): Promise<{
     await pool.query(
       `INSERT INTO user_score_events (user_id, event_type, points, meta)
        VALUES ($1, $2, $3, $4::jsonb)`,
-      [userId, event, totalPoints, meta ? JSON.stringify(meta) : null]
+      [userId, event, totalPoints, meta ? JSON.stringify(meta) : null],
     );
   }
 
@@ -285,7 +403,7 @@ export async function recordScore(opts: RecordScoreOptions): Promise<{
       const { rowCount } = await pool.query(
         `INSERT INTO user_badges (user_id, badge_code) VALUES ($1, $2)
          ON CONFLICT DO NOTHING`,
-        [userId, badge.code]
+        [userId, badge.code],
       );
       if (rowCount && rowCount > 0) newBadges.push(badge);
     }
@@ -319,15 +437,15 @@ export async function getLeaderboard(limit = 50): Promise<LeaderboardEntry[]> {
      WHERE s.score > 0
      ORDER BY s.score DESC
      LIMIT $1`,
-    [limit]
+    [limit],
   );
   return rows.map((r) => ({
-    user_id:        Number(r.user_id),
-    username:       r.username,
-    avatar_emoji:   r.avatar_emoji,
-    score:          r.score,
+    user_id: Number(r.user_id),
+    username: r.username,
+    avatar_emoji: r.avatar_emoji,
+    score: r.score,
     current_streak: r.current_streak,
-    tier:           tierFromScore(r.score),
+    tier: tierFromScore(r.score),
   }));
 }
 
@@ -336,13 +454,19 @@ export async function getLeaderboard(limit = 50): Promise<LeaderboardEntry[]> {
 // ─────────────────────────────────────────────────────────────
 
 export async function getUserBadges(userId: string | number): Promise<
-  Array<{ code: string; name: string; emoji: string; description: string; earned_at: Date }>
+  Array<{
+    code: string;
+    name: string;
+    emoji: string;
+    description: string;
+    earned_at: Date;
+  }>
 > {
   const { rows } = await pool.query(
     `SELECT badge_code, earned_at FROM user_badges
      WHERE user_id = $1
      ORDER BY earned_at DESC`,
-    [userId]
+    [userId],
   );
   const byCode = new Map(BADGES.map((b) => [b.code, b]));
   return rows
@@ -350,18 +474,18 @@ export async function getUserBadges(userId: string | number): Promise<
       const def = byCode.get(r.badge_code);
       if (!def) return null;
       return {
-        code:        def.code,
-        name:        def.name,
-        emoji:       def.emoji,
+        code: def.code,
+        name: def.name,
+        emoji: def.emoji,
         description: def.description,
-        earned_at:   new Date(r.earned_at),
+        earned_at: new Date(r.earned_at),
       };
     })
     .filter(Boolean) as Array<{
-      code: string;
-      name: string;
-      emoji: string;
-      description: string;
-      earned_at: Date;
-    }>;
+    code: string;
+    name: string;
+    emoji: string;
+    description: string;
+    earned_at: Date;
+  }>;
 }

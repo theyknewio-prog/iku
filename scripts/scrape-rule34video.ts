@@ -66,7 +66,9 @@ function parseSitemapPage(xml: string): R34VEntry[] {
 
     // Extract title from video:title
     let title = "";
-    const titleMatch = content.match(/<video:title><!\[CDATA\[([^\]]*)\]\]><\/video:title>/);
+    const titleMatch = content.match(
+      /<video:title><!\[CDATA\[([^\]]*)\]\]><\/video:title>/,
+    );
     if (titleMatch) {
       title = titleMatch[1].trim();
     } else {
@@ -81,7 +83,9 @@ function parseSitemapPage(xml: string): R34VEntry[] {
 
     // Extract thumbnail
     let thumbnail = "";
-    const thumbMatch = content.match(/<video:thumbnail_loc>([^<]+)<\/video:thumbnail_loc>/);
+    const thumbMatch = content.match(
+      /<video:thumbnail_loc>([^<]+)<\/video:thumbnail_loc>/,
+    );
     if (thumbMatch) thumbnail = thumbMatch[1].trim();
     if (!thumbnail) {
       const imgMatch = content.match(/<image:loc>([^<]+)<\/image:loc>/);
@@ -109,7 +113,10 @@ function parseSitemapPage(xml: string): R34VEntry[] {
   return entries;
 }
 
-async function fetchSitemapPage(pageNum: number, retries = 2): Promise<string | null> {
+async function fetchSitemapPage(
+  pageNum: number,
+  retries = 2,
+): Promise<string | null> {
   const url = `https://rule34video.com/sitemap/?type=videos&from_links_videos=${pageNum}`;
 
   for (let attempt = 0; attempt <= retries; attempt++) {
@@ -186,7 +193,7 @@ async function main() {
     }
 
     process.stdout.write(
-      `  Page ${page}/${MAX_PAGES}: +${added} (total: ${allEntries.length})    \r`
+      `  Page ${page}/${MAX_PAGES}: +${added} (total: ${allEntries.length})    \r`,
     );
 
     await new Promise((r) => setTimeout(r, DELAY));
@@ -201,14 +208,28 @@ async function main() {
   let upserted = 0;
   for (let i = 0; i < allEntries.length; i += BATCH) {
     const batch = allEntries.slice(i, i + BATCH).map((v) => ({
-      source: "rule34video", source_id: v.id, slug: v.slug,
-      title: v.title, page_url: v.pageUrl,
-      thumbnail: v.thumbnail, preview: v.thumbnail,
-      duration: v.duration || null, created_at: v.date,
-      tags: v.title ? v.title.toLowerCase().replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter((w: string) => w.length > 2).slice(0, 15) : [],
+      source: "rule34video",
+      source_id: v.id,
+      slug: v.slug,
+      title: v.title,
+      page_url: v.pageUrl,
+      thumbnail: v.thumbnail,
+      preview: v.thumbnail,
+      duration: v.duration || null,
+      created_at: v.date,
+      tags: v.title
+        ? v.title
+            .toLowerCase()
+            .replace(/[^a-z0-9\s]/g, "")
+            .split(/\s+/)
+            .filter((w: string) => w.length > 2)
+            .slice(0, 15)
+        : [],
     }));
     upserted += await upsertVideos(batch);
-    process.stdout.write(`  ${Math.min(i + BATCH, allEntries.length)}/${allEntries.length} upserted\r`);
+    process.stdout.write(
+      `  ${Math.min(i + BATCH, allEntries.length)}/${allEntries.length} upserted\r`,
+    );
   }
   console.log(`\n  ${upserted} videos upserted`);
   await pool.end();

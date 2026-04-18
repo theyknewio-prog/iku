@@ -18,7 +18,12 @@ type ScoreEvent =
 interface ScoreResponse {
   ok: boolean;
   awarded?: number;
-  newBadges?: Array<{ code: string; name: string; emoji: string; description: string }>;
+  newBadges?: Array<{
+    code: string;
+    name: string;
+    emoji: string;
+    description: string;
+  }>;
   newTier?: { name: string; emoji: string; index: number };
   completedQuests?: Array<{ code: string; title: string; emoji: string }>;
   stats?: { score: number; current_streak: number };
@@ -27,7 +32,7 @@ interface ScoreResponse {
 /** Fire a scoring event. Silent on errors (anon users, offline, etc). */
 export async function recordScoreEvent(
   event: ScoreEvent,
-  meta?: Record<string, unknown>
+  meta?: Record<string, unknown>,
 ): Promise<ScoreResponse | null> {
   if (typeof window === "undefined") return null;
   try {
@@ -54,7 +59,7 @@ export async function recordScoreEvent(
     if (data.newTier) {
       showScoreToast(
         `${data.newTier.emoji} Tier up — ${data.newTier.name}`,
-        "Check your profile for new perks"
+        "Check your profile for new perks",
       );
       // PostHog: track tier up
       import("./analytics").then(({ track, EVENTS }) => {
@@ -66,7 +71,10 @@ export async function recordScoreEvent(
     }
     if (data.completedQuests && data.completedQuests.length > 0) {
       for (const q of data.completedQuests) {
-        showScoreToast(`${q.emoji} Quest complete: ${q.title}`, "+15 points · keep going");
+        showScoreToast(
+          `${q.emoji} Quest complete: ${q.title}`,
+          "+15 points · keep going",
+        );
       }
     }
 

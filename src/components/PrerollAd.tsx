@@ -142,9 +142,7 @@ export function PrerollAd({ onComplete }: PrerollAdProps) {
       <div ref={containerRef} className="preroll-ad-container" />
 
       {/* Top-left label */}
-      <div className="preroll-label">
-        Ad {adLoaded ? "" : "loading..."}
-      </div>
+      <div className="preroll-label">Ad {adLoaded ? "" : "loading..."}</div>
 
       {/* Bottom-right countdown / skip */}
       <div className="preroll-controls">

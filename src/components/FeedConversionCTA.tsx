@@ -77,7 +77,8 @@ export function FeedConversionCTA({ variant, onClose }: Props) {
           ctaHref: "/pricing",
           secondary: "Save 33% with yearly →",
           secondaryHref: "/pricing",
-          gradient: "linear-gradient(135deg, #ff3d7a 0%, #8b38ff 60%, #ffbe0b 100%)",
+          gradient:
+            "linear-gradient(135deg, #ff3d7a 0%, #8b38ff 60%, #ffbe0b 100%)",
         };
 
   return (
@@ -124,7 +125,14 @@ export function FeedConversionCTA({ variant, onClose }: Props) {
           }}
         />
 
-        <div style={{ position: "relative", zIndex: 1, color: "#fff", textAlign: "center" }}>
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1,
+            color: "#fff",
+            textAlign: "center",
+          }}
+        >
           <div
             style={{
               display: "inline-block",
@@ -155,7 +163,14 @@ export function FeedConversionCTA({ variant, onClose }: Props) {
           >
             {config.title}
           </h2>
-          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.7)", margin: "0 0 22px", lineHeight: 1.45 }}>
+          <p
+            style={{
+              fontSize: 14,
+              color: "rgba(255,255,255,0.7)",
+              margin: "0 0 22px",
+              lineHeight: 1.45,
+            }}
+          >
             {config.sub}
           </p>
 
@@ -242,7 +257,15 @@ export function FeedConversionCTA({ variant, onClose }: Props) {
             zIndex: 10000,
           }}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          >
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />
           </svg>

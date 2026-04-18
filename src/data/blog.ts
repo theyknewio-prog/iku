@@ -7,7 +7,8 @@ export const BLOG_ARTICLES: BlogArticle[] = [
   {
     slug: "what-is-hentai",
     title: "What is Hentai? The Complete Guide to Japanese Adult Animation",
-    excerpt: "Everything you need to know about hentai — from its origins in Japanese art to the modern anime industry.",
+    excerpt:
+      "Everything you need to know about hentai — from its origins in Japanese art to the modern anime industry.",
     content: `<h2>What Does Hentai Mean?</h2>
 <p>The word <strong>hentai</strong> (変態) literally translates to "pervert," "abnormal," or "transformation" in Japanese. In everyday Japanese conversation, calling someone hentai is an insult — it means they're perverted or strange. But in the West, the word has taken on a very specific meaning: explicit adult anime and manga, produced in Japan or in the Japanese animation style.</p>
 <p>In Japan itself, the industry goes by different names. Producers and retailers use terms like <strong>ero anime</strong> (erotic anime), <strong>18-kin</strong> (18+ restricted content), or simply <strong>seijin anime</strong> (adult anime). The Western use of "hentai" as a genre label is a quirk of how the internet adopted the term in the late 1990s.</p>
@@ -90,14 +91,24 @@ export const BLOG_ARTICLES: BlogArticle[] = [
     tags: ["guide", "history", "beginners"],
     publishedAt: "2026-03-15",
     readingTime: 9,
-    glossaryLinks: ["hentai", "ecchi", "doujinshi", "vanilla", "ntr", "yuri", "tentacle"],
+    glossaryLinks: [
+      "hentai",
+      "ecchi",
+      "doujinshi",
+      "vanilla",
+      "ntr",
+      "yuri",
+      "tentacle",
+    ],
     seoTitle: "What is Hentai? Meaning, History & Complete Guide | iku.gg",
-    seoDescription: "What is hentai? Learn the hentai meaning, its history from shunga to modern anime, genres, studios, and where to stream. The definitive beginner's guide updated 2026.",
+    seoDescription:
+      "What is hentai? Learn the hentai meaning, its history from shunga to modern anime, genres, studios, and where to stream. The definitive beginner's guide updated 2026.",
   },
   {
     slug: "best-hentai-anime-2025",
     title: "Best Hentai Anime of 2025-2026 — Top 20 Series to Watch",
-    excerpt: "Our curated list of the highest-rated hentai anime released in 2025 and 2026.",
+    excerpt:
+      "Our curated list of the highest-rated hentai anime released in 2025 and 2026.",
     content: `<h2>How We Ranked the Best Hentai Anime</h2>
 <p>Finding the <strong>best hentai anime</strong> is harder than it sounds. The market produces hundreds of titles per year, ranging from masterfully animated OVAs to barely-watchable rushed productions. Our rankings are based on three criteria: <strong>animation quality</strong> (fluidity, art consistency, rendering detail), <strong>community score</strong> (upvotes and ratings from viewers), and <strong>replay value</strong> (do people return to it, or is it forgotten after one watch?).</p>
 <p>This list covers the standout titles from 2025 and early 2026, with notes on where each fits in the broader hentai landscape. Whether you're new to hentai anime or a long-time viewer looking for hidden gems, this is your starting point.</p>
@@ -173,12 +184,14 @@ export const BLOG_ARTICLES: BlogArticle[] = [
     readingTime: 10,
     glossaryLinks: ["hentai", "milf", "isekai", "vanilla"],
     seoTitle: "Best Hentai Anime 2025-2026 — Top 20 Series Ranked | iku.gg",
-    seoDescription: "The best hentai anime of 2025-2026 ranked by animation quality and community score. Overflow, Master Piece, Ane wa Yanmama, Isekai Harem Monogatari and more.",
+    seoDescription:
+      "The best hentai anime of 2025-2026 ranked by animation quality and community score. Overflow, Master Piece, Ane wa Yanmama, Isekai Harem Monogatari and more.",
   },
   {
     slug: "hentai-vs-ecchi",
     title: "Hentai vs Ecchi: What's the Difference?",
-    excerpt: "Where exactly is the line between ecchi fanservice and explicit hentai? We break it down.",
+    excerpt:
+      "Where exactly is the line between ecchi fanservice and explicit hentai? We break it down.",
     content: `<h2>The Simple Answer</h2>
 <p><strong><a href="/glossary/ecchi">Ecchi</a></strong> is suggestive. <strong>Hentai</strong> is explicit. That's the elevator pitch — but the reality is more layered, and the line between the two is genuinely contested in some cases.</p>
 <p>Understanding the <strong>ecchi meaning</strong> and how it relates to hentai matters if you want to know what you're getting into before you start watching. Searching for "ecchi anime" on a mainstream streaming site will give you very different results than searching for hentai. Both are rooted in Japanese animation and both deal with sexual content — but they operate under completely different distribution models, legal frameworks, and creative conventions.</p>
@@ -262,13 +275,16 @@ export const BLOG_ARTICLES: BlogArticle[] = [
     publishedAt: "2026-03-22",
     readingTime: 8,
     glossaryLinks: ["hentai", "ecchi"],
-    seoTitle: "Hentai vs Ecchi — Full Comparison, Examples & Key Differences | iku.gg",
-    seoDescription: "Hentai vs ecchi: what's the real difference? Understand the ecchi meaning, where the line is drawn, and examples of series in each category including the gray zone.",
+    seoTitle:
+      "Hentai vs Ecchi — Full Comparison, Examples & Key Differences | iku.gg",
+    seoDescription:
+      "Hentai vs ecchi: what's the real difference? Understand the ecchi meaning, where the line is drawn, and examples of series in each category including the gray zone.",
   },
   {
     slug: "understanding-hentai-tags",
     title: "Understanding Hentai Tags: A Complete Guide for Beginners",
-    excerpt: "How the tag system works, what the most popular tags mean, and how to use them to find exactly what you want.",
+    excerpt:
+      "How the tag system works, what the most popular tags mean, and how to use them to find exactly what you want.",
     content: `<h2>Why the Tag System Exists</h2>
 <p>Traditional genre categories work fine for mainstream content. You have action, romance, comedy, horror — broad enough buckets that most content fits somewhere. That approach breaks down completely for hentai.</p>
 <p><strong>Hentai tags</strong> exist because the content is too diverse for simple categories to capture. A single hentai video might involve a specific character from a specific game, drawn in a specific art style, by a specific artist, depicting a specific act in a specific setting. You might want all of those things at once — or you might want to filter out any one of them. Categories can't do that. Tags can.</p>
@@ -382,14 +398,23 @@ export const BLOG_ARTICLES: BlogArticle[] = [
     tags: ["guide", "tags", "beginners", "search"],
     publishedAt: "2026-03-25",
     readingTime: 9,
-    glossaryLinks: ["ahegao", "vanilla", "ntr", "milf", "futanari", "uncensored"],
+    glossaryLinks: [
+      "ahegao",
+      "vanilla",
+      "ntr",
+      "milf",
+      "futanari",
+      "uncensored",
+    ],
     seoTitle: "Understanding Hentai Tags — The Complete Search Guide | iku.gg",
-    seoDescription: "Master hentai tags: character, copyright, artist, and general tags explained with examples. How to stack tags, use the blacklist, and find exactly what you want on iku.gg.",
+    seoDescription:
+      "Master hentai tags: character, copyright, artist, and general tags explained with examples. How to stack tags, use the blacklist, and find exactly what you want on iku.gg.",
   },
   {
     slug: "popular-hentai-characters",
     title: "Top 10 Most Popular Hentai Characters of All Time",
-    excerpt: "From Raiden Shogun to D.Va — the characters that dominate hentai search rankings.",
+    excerpt:
+      "From Raiden Shogun to D.Va — the characters that dominate hentai search rankings.",
     content: `<h2>Why Some Characters Dominate Hentai Rankings</h2>
 <p>Not all fictional characters are created equal when it comes to hentai content. Thanks to <a href="/glossary/rule34">Rule 34</a> — the internet principle that pornographic content exists for every conceivable character — every major franchise character has some hentai material. But certain characters attract orders of magnitude more content than others.</p>
 <p>The factors that drive hentai character popularity are surprisingly consistent: <strong>design appeal</strong> (character designs with features that translate well to adult content), <strong>source popularity</strong> (characters from games and anime with massive global audiences), <strong>archetype fit</strong> (characters who embody archetypes with strong appeal in hentai — powerful women, rivals, teammates), and <strong>community momentum</strong> (once a character reaches critical mass, creator competition raises the quality ceiling and attracts even more viewers).</p>
@@ -459,12 +484,14 @@ export const BLOG_ARTICLES: BlogArticle[] = [
     readingTime: 10,
     glossaryLinks: ["waifu", "rule34", "hentai"],
     seoTitle: "Top 10 Most Popular Hentai Characters of All Time | iku.gg",
-    seoDescription: "The most popular hentai characters ranked — Raiden Shogun, D.Va, Tifa, 2B, and more. Why these hentai characters dominate search rankings and who's rising in 2026.",
+    seoDescription:
+      "The most popular hentai characters ranked — Raiden Shogun, D.Va, Tifa, 2B, and more. Why these hentai characters dominate search rankings and who's rising in 2026.",
   },
   {
     slug: "uncensored-vs-censored",
     title: "Uncensored vs Censored Hentai: Why Japanese Law Requires Mosaic",
-    excerpt: "Why hentai is censored in Japan, how uncensored versions exist, and the ongoing debate.",
+    excerpt:
+      "Why hentai is censored in Japan, how uncensored versions exist, and the ongoing debate.",
     content: `<h2>Why Hentai Has Censorship</h2>
 <p>If you've watched Japanese-produced hentai, you've seen it: the mosaic pixelation or bright light bars that obscure genitalia at the precise moment you'd expect to see them. First-time viewers often find this jarring — especially when the animation quality is otherwise high. The censorship isn't a production oversight or a streaming platform decision. It's a legal requirement rooted in a Japanese law that has been on the books since 1907.</p>
 <p>Understanding why <strong>uncensored hentai</strong> exists and how it differs from the censored version requires understanding the legal and cultural context that makes censorship necessary in the first place.</p>
@@ -527,13 +554,16 @@ export const BLOG_ARTICLES: BlogArticle[] = [
     publishedAt: "2026-04-01",
     readingTime: 9,
     glossaryLinks: ["uncensored", "hentai"],
-    seoTitle: "Uncensored vs Censored Hentai — Japanese Law, Mosaic & Article 175 | iku.gg",
-    seoDescription: "Why is hentai censored in Japan? Understand Article 175, how uncensored hentai versions are made, and where to find uncensored hentai content on iku.gg.",
+    seoTitle:
+      "Uncensored vs Censored Hentai — Japanese Law, Mosaic & Article 175 | iku.gg",
+    seoDescription:
+      "Why is hentai censored in Japan? Understand Article 175, how uncensored hentai versions are made, and where to find uncensored hentai content on iku.gg.",
   },
   {
     slug: "3d-vs-2d-hentai",
     title: "3D Hentai vs 2D: The Rise of SFM and Blender Animations",
-    excerpt: "How tools like Blender and SFM transformed the hentai landscape, and whether 3D will surpass traditional 2D.",
+    excerpt:
+      "How tools like Blender and SFM transformed the hentai landscape, and whether 3D will surpass traditional 2D.",
     content: `<h2>The 3D Hentai Revolution</h2>
 <p><strong>3D hentai</strong> has gone from a niche curiosity to one of the dominant categories in adult animation. A decade ago, 3D hentai meant blocky, obviously computer-generated figures with robotic movement and uncanny valley expressions. Today, the best 3D hentai productions feature cinema-quality lighting, fluid physics-based animation, and photorealistic rendering that rivals the visual quality of major game cutscenes.</p>
 <p>This transformation happened almost entirely outside the traditional studio system. The tools that made it possible — Blender, Source Filmmaker, Koikatsu, Honey Select, Daz3D — are either free or affordable, accessible to anyone with a capable computer. The result is one of the most significant democratizations in the history of adult content production.</p>
@@ -600,13 +630,16 @@ export const BLOG_ARTICLES: BlogArticle[] = [
     publishedAt: "2026-04-01",
     readingTime: 10,
     glossaryLinks: ["3d-hentai", "sfm", "hentai"],
-    seoTitle: "3D Hentai vs 2D — Blender, SFM & the Animation Revolution | iku.gg",
-    seoDescription: "3D hentai explained: Blender, SFM, Koikatsu and how independent creators are outpacing studios. Full comparison of 3D vs 2D hentai quality, tools, and top artists.",
+    seoTitle:
+      "3D Hentai vs 2D — Blender, SFM & the Animation Revolution | iku.gg",
+    seoDescription:
+      "3D hentai explained: Blender, SFM, Koikatsu and how independent creators are outpacing studios. Full comparison of 3D vs 2D hentai quality, tools, and top artists.",
   },
   {
     slug: "best-hentai-studios",
     title: "Best Hentai Studios and Artists You Should Know",
-    excerpt: "The studios and independent creators producing the highest quality hentai content today.",
+    excerpt:
+      "The studios and independent creators producing the highest quality hentai content today.",
     content: `<h2>Who Makes Hentai? The Production Landscape</h2>
 <p>Hentai is produced by two very different types of entities: <strong>traditional animation studios</strong> with professional staff, budgets, and decades of industry history, and <strong>independent creators</strong> working solo or in small teams with consumer-grade tools. Both produce content that reaches millions of viewers, but they operate in completely different ways and tend to produce recognizably different content.</p>
 <p>Understanding who makes hentai — and what each studio or artist is known for — helps you navigate the content landscape far more efficiently than browsing blind. This guide covers the top traditional studios and the most significant independent creators active in 2025-2026.</p>
@@ -681,12 +714,14 @@ export const BLOG_ARTICLES: BlogArticle[] = [
     readingTime: 10,
     glossaryLinks: ["hentai", "3d-hentai"],
     seoTitle: "Top Hentai Artists 2026 — Ranked | iku.gg",
-    seoDescription: "Top Hentai Artists 2026 guide for 2026. Find the best top hentai artists 2026 content, rankings, and expert recommendations — 353,000+ free clips stream...",
+    seoDescription:
+      "Top Hentai Artists 2026 guide for 2026. Find the best top hentai artists 2026 content, rankings, and expert recommendations — 353,000+ free clips stream...",
   },
   {
     slug: "history-of-hentai",
     title: "The History of Hentai: From Ukiyo-e to Modern Anime",
-    excerpt: "How Japanese adult art evolved from 1800s woodblock prints to today's streaming industry.",
+    excerpt:
+      "How Japanese adult art evolved from 1800s woodblock prints to today's streaming industry.",
     content: `<h2>Japan's Ancient Tradition of Erotic Art</h2>
 <p>To understand the <strong>history of hentai</strong>, you need to understand something unusual about Japanese cultural history: Japan has never had the same religious taboo around depictions of sexuality that shaped Western attitudes toward erotic art. While European religious institutions spent centuries suppressing or destroying explicit art, Japanese culture maintained a relatively open relationship with erotic imagery — treating it as a legitimate artistic form rather than something shameful.</p>
 <p>This cultural difference is not incidental to the history of hentai. It's the foundational reason why Japan, and not another country, became the world's dominant producer of animated adult content.</p>
@@ -763,13 +798,16 @@ export const BLOG_ARTICLES: BlogArticle[] = [
     publishedAt: "2026-03-18",
     readingTime: 11,
     glossaryLinks: ["hentai", "tentacle", "3d-hentai", "doujinshi"],
-    seoTitle: "The History of Hentai — From Shunga to Modern Streaming | iku.gg",
-    seoDescription: "The complete history of hentai: from Edo-period shunga art and Hokusai through Cream Lemon (1984), Urotsukidoji, the OVA golden age, to modern 3D animation and streaming.",
+    seoTitle:
+      "The History of Hentai — From Shunga to Modern Streaming | iku.gg",
+    seoDescription:
+      "The complete history of hentai: from Edo-period shunga art and Hokusai through Cream Lemon (1984), Urotsukidoji, the OVA golden age, to modern 3D animation and streaming.",
   },
   {
     slug: "how-to-find-good-hentai",
     title: "How to Find Good Hentai: Tips for Discovering Quality Content",
-    excerpt: "Tired of scrolling through low-quality content? Here's how to find the best hentai efficiently.",
+    excerpt:
+      "Tired of scrolling through low-quality content? Here's how to find the best hentai efficiently.",
     content: `<h2>The Discovery Problem in Hentai</h2>
 <p>The sheer volume of hentai available is both the genre's greatest strength and its biggest navigational challenge. Major platforms host hundreds of thousands of videos. Quality varies enormously — from cinema-grade 3D animations produced by full-time artists to low-effort rushed content padded with stock scenes. Without a strategy, you'll spend more time searching than watching.</p>
 <p>This guide covers every effective method for finding quality hentai efficiently — whether you're new to the genre or a long-time viewer looking to refine your discovery workflow. Most of these techniques apply specifically to <a href="/">iku.gg</a>, though the principles transfer to any major hentai platform.</p>
@@ -879,8 +917,10 @@ export const BLOG_ARTICLES: BlogArticle[] = [
     publishedAt: "2026-04-01",
     readingTime: 10,
     glossaryLinks: ["hentai", "waifu", "ntr", "rule34"],
-    seoTitle: "How to Find Good Hentai — Best Sites, Tags & Discovery Tips | iku.gg",
-    seoDescription: "Find quality hentai fast: master tags, sort by ratings, follow top artists, build a blacklist. The complete guide to hentai stream discovery on iku.gg.",
+    seoTitle:
+      "How to Find Good Hentai — Best Sites, Tags & Discovery Tips | iku.gg",
+    seoDescription:
+      "Find quality hentai fast: master tags, sort by ratings, follow top artists, build a blacklist. The complete guide to hentai stream discovery on iku.gg.",
   },
 ];
 
@@ -910,7 +950,8 @@ export function getArticleBySlug(slug: string): BlogArticle | undefined {
 }
 
 export function getRelatedArticles(article: BlogArticle): BlogArticle[] {
-  return BLOG_ARTICLES
-    .filter((a) => a.slug !== article.slug && a.tags.some((t) => article.tags.includes(t)))
-    .slice(0, 3);
+  return BLOG_ARTICLES.filter(
+    (a) =>
+      a.slug !== article.slug && a.tags.some((t) => article.tags.includes(t)),
+  ).slice(0, 3);
 }

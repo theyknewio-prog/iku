@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
   if (limiter.consume(getClientIp(request))) {
     return NextResponse.json(
       { error: "too many requests" },
-      { status: 429, headers: { "Retry-After": "60" } }
+      { status: 429, headers: { "Retry-After": "60" } },
     );
   }
 
@@ -78,7 +78,7 @@ export async function GET(request: NextRequest) {
     if (!upstream.ok && upstream.status !== 206) {
       return NextResponse.json(
         { error: `Upstream ${upstream.status}` },
-        { status: upstream.status }
+        { status: upstream.status },
       );
     }
 
@@ -89,7 +89,10 @@ export async function GET(request: NextRequest) {
     responseHeaders.set("Accept-Ranges", "bytes");
     responseHeaders.set("Access-Control-Allow-Origin", "https://iku.gg");
     // Cache proxied videos for 24h on client, 7d on CDN
-    responseHeaders.set("Cache-Control", "public, max-age=86400, s-maxage=604800");
+    responseHeaders.set(
+      "Cache-Control",
+      "public, max-age=86400, s-maxage=604800",
+    );
 
     const contentLength = upstream.headers.get("content-length");
     if (contentLength) responseHeaders.set("Content-Length", contentLength);

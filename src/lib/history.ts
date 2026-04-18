@@ -57,7 +57,7 @@ export function addToHistory(
   id: number,
   slug: string,
   thumbnail?: string,
-  title?: string
+  title?: string,
 ): void {
   if (typeof window === "undefined") return;
   const existing = read().filter((item) => item.id !== id);

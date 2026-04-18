@@ -2,7 +2,14 @@
 slug: genshin-impact-porn-complete-guide
 title: "Genshin Impact Porn: Complete Fan Animation Guide [2026]"
 description: "The complete guide to Genshin Impact fan animations — top characters, best 3D videos, Koikatsu vs Blender, most-animated characters, and where to watch them all."
-keywords: ["genshin impact porn", "genshin porn", "genshin impact hentai", "genshin 3d animation", "genshin rule34"]
+keywords:
+  [
+    "genshin impact porn",
+    "genshin porn",
+    "genshin impact hentai",
+    "genshin 3d animation",
+    "genshin rule34",
+  ]
 category: guides
 published: "2026-04-12"
 author: "iku.gg editorial"
@@ -209,6 +216,7 @@ By community score, Red3dx's Blender production of Raiden Shogun consistently ra
 iku.gg's Genshin Impact catalog is one of the largest collections available, updated daily as new animations are released across the community.
 
 Start here:
+
 - [/series/genshin-impact](/series/genshin-impact) — All Genshin content sorted by score
 - [/character/raiden-shogun](/character/raiden-shogun) — The most-animated character
 - [/trending](/trending) — See what is scoring highest right now including Genshin content
@@ -219,6 +227,7 @@ Every region, every character, every release cycle — it is all here.
 ---
 
 **Related articles:**
+
 - [Overwatch Porn: Best 3D Fan Animations](/blog/overwatch-porn-best-3d-animations)
 - [3D Hentai: The Complete Guide (2026)](/blog/3d-hentai-guide-2026)
 - [3D Porn Animation: Best SFM & Blender Videos](/blog/3d-porn-animation-best-sfm)

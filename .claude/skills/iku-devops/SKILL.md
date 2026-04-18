@@ -10,18 +10,20 @@ Tu es un expert DevOps/SRE spécialisé dans le déploiement de sites Next.js à
 ## Infrastructure actuelle
 
 ### Serveur
-| Spec | Détail |
-|------|--------|
-| Provider | Hetzner Cloud |
-| Plan | CX33 |
-| vCPU | 2 AMD (partagés) |
-| RAM | 8GB |
-| Disque | 80GB SSD NVMe |
-| OS | Ubuntu (via Coolify) |
-| Swap | ⚠️ AUCUN |
+
+| Spec         | Détail                       |
+| ------------ | ---------------------------- |
+| Provider     | Hetzner Cloud                |
+| Plan         | CX33                         |
+| vCPU         | 2 AMD (partagés)             |
+| RAM          | 8GB                          |
+| Disque       | 80GB SSD NVMe                |
+| OS           | Ubuntu (via Coolify)         |
+| Swap         | ⚠️ AUCUN                     |
 | Localisation | EU (Falkenstein ou Helsinki) |
 
 ### Stack de déploiement
+
 ```
 GitHub repo → push/cron → GitHub Actions → build test
                                               ↓
@@ -35,6 +37,7 @@ GitHub repo → push/cron → GitHub Actions → build test
 ```
 
 ### Dockerfile actuel
+
 ```dockerfile
 FROM node:22-slim
 
@@ -58,12 +61,14 @@ CMD ["npm", "run", "start"]
 ```
 
 **Problèmes du Dockerfile** :
+
 1. Pas de multi-stage build → image plus grosse que nécessaire
 2. Les `node_modules` de dev sont dans l'image finale
 3. Le build se fait dans la même image que le runtime
 4. Pas de health check Docker
 
 ### Dockerfile optimisé recommandé
+
 ```dockerfile
 # Stage 1: Build
 FROM node:22-slim AS builder
@@ -95,17 +100,20 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s CMD curl -f http://localhost:3000/ || exit 1
 CMD ["node", "server.js"]
 ```
-*(Nécessite `output: "standalone"` dans `next.config.ts`)*
+
+_(Nécessite `output: "standalone"` dans `next.config.ts`)_
 
 ## CI/CD — GitHub Actions
 
 ### Workflow principal : `daily-scrape.yml`
+
 - **Trigger** : cron `0 4 * * *` UTC + manual (`workflow_dispatch`)
 - **Job** : scrape les 5 sources, commit les JSONs, trigger deploy Coolify
 - **Timeout** : 30 minutes
 - **Secrets utilisés** : `GITHUB_TOKEN`, `COOLIFY_TOKEN`, `COOLIFY_HOST`, `COOLIFY_APP_ID`
 
 ### Le flow de déploiement
+
 ```
 1. GitHub Actions push les nouveaux JSONs
 2. curl POST vers l'API Coolify pour trigger un restart
@@ -121,6 +129,7 @@ CMD ["node", "server.js"]
 Actuellement **AUCUN monitoring**. C'est critique. Voici le plan :
 
 ### Phase 1 — Immédiat (gratuit)
+
 1. **UptimeRobot** ou **BetterStack (Uptime)** : ping `https://iku.gg` toutes les 5 min, alerte par email/SMS si down
 2. **Health endpoint** : créer `/api/health` qui retourne :
    ```json
@@ -135,11 +144,13 @@ Actuellement **AUCUN monitoring**. C'est critique. Voici le plan :
 3. **Google Search Console** : déjà configuré (ou à configurer) pour suivre l'indexation
 
 ### Phase 2 — Court terme
+
 4. **Logs structurés** : `pino` ou `winston` pour logger les erreurs en JSON
 5. **Alertes mémoire** : log quand `heapUsed > 80%` du max
 6. **Métriques yt-dlp** : tracker les succès/échecs de résolution
 
 ### Phase 3 — Moyen terme
+
 7. **Grafana Cloud** (gratuit tier) : dashboards mémoire, CPU, requêtes
 8. **Sentry** (gratuit tier) : error tracking frontend + backend
 9. **Core Web Vitals** : `web-vitals` library → envoyer à un endpoint
@@ -147,6 +158,7 @@ Actuellement **AUCUN monitoring**. C'est critique. Voici le plan :
 ## Actions urgentes
 
 ### 1. Ajouter du swap (PRIORITÉ ABSOLUE)
+
 ```bash
 # Sur le serveur Hetzner (via SSH)
 sudo fallocate -l 4G /swapfile
@@ -159,27 +171,34 @@ echo '/swapfile swap swap defaults 0 0' | sudo tee -a /etc/fstab
 echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
 ```
+
 **Pourquoi** : sans swap, si la RAM est pleine → OOM killer → le container Next.js est tué → site down. Avec 4GB de swap, le serveur a une marge de sécurité.
 
 ### 2. Configurer les backups
+
 Les JSONs sont régénérés quotidiennement, mais le code et la config doivent être backupés :
+
 - Le code est sur GitHub → OK
 - La config Coolify → exporter régulièrement
 - Les variables d'environnement → documenter dans un fichier chiffré
 
 ### 3. Scaling futur
+
 Quand le trafic dépassera les capacités du CX33 :
 
 **Option A — Vertical scaling** :
+
 - Upgrader vers CX42 (16GB RAM, 4 vCPU) ~$18/mois
 - Le plus simple, pas de changement d'architecture
 
 **Option B — Horizontal** :
+
 - CDN (Cloudflare) devant Coolify pour les assets statiques
 - Séparer yt-dlp sur un worker dédié
 - Redis pour le cache partagé
 
 **Option C — Serverless edge** :
+
 - Migrer vers Vercel (mais yt-dlp ne tourne pas en serverless)
 - Garder un VPS uniquement pour `/api/resolve-video` (yt-dlp)
 - Le reste sur Vercel Edge

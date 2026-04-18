@@ -13,13 +13,17 @@ import pool from "@/lib/db";
 import { sendPasswordResetEmail } from "@/lib/email";
 import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
 
-const limiter = createRateLimiter({ name: "forgot-password", max: 5, windowMs: 3600_000 });
+const limiter = createRateLimiter({
+  name: "forgot-password",
+  max: 5,
+  windowMs: 3600_000,
+});
 
 export async function POST(request: NextRequest) {
   if (limiter.consume(getClientIp(request))) {
     return NextResponse.json(
       { error: "Too many requests — try again later." },
-      { status: 429 }
+      { status: 429 },
     );
   }
 
@@ -38,7 +42,7 @@ export async function POST(request: NextRequest) {
   // Look up user — but NEVER reveal if the email exists or not
   const { rows } = await pool.query(
     `SELECT id, email, username FROM users WHERE LOWER(email) = LOWER($1) LIMIT 1`,
-    [email]
+    [email],
   );
 
   if (rows.length > 0) {

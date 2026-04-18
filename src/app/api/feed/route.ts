@@ -10,7 +10,7 @@ import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
  * ~diverse, so in practice it's ~O(n).
  */
 function diversifyFeed<T extends { character: string; copyright: string }>(
-  list: T[]
+  list: T[],
 ): T[] {
   if (list.length < 3) return list;
   const out = [...list];
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
   if (limiter.consume(getClientIp(request))) {
     return NextResponse.json(
       { error: "too many requests" },
-      { status: 429, headers: { "Retry-After": "60" } }
+      { status: 429, headers: { "Retry-After": "60" } },
     );
   }
 
@@ -79,10 +79,15 @@ export async function GET(request: NextRequest) {
   let order: "score" | "date" | "favcount" | "duration";
   if (cursor?.order) {
     order = cursor.order;
-  } else if (sortParam === "date" || sortParam === "favcount" || sortParam === "score") {
+  } else if (
+    sortParam === "date" ||
+    sortParam === "favcount" ||
+    sortParam === "score"
+  ) {
     order = sortParam;
   } else {
-    order = FIRST_PAGE_SORTS[Math.floor(Math.random() * FIRST_PAGE_SORTS.length)];
+    order =
+      FIRST_PAGE_SORTS[Math.floor(Math.random() * FIRST_PAGE_SORTS.length)];
   }
 
   try {
@@ -106,18 +111,24 @@ export async function GET(request: NextRequest) {
     // Worker. First view = fetch from source + cache in R2. Subsequent views =
     // served from Cloudflare edge (~10-30ms globally). This eliminates the
     // proxy latency for Rule34Video/WP sources and adds edge caching for all.
-    const CDN = process.env.CDN_URL || "https://iku-cdn.mejdi-sabri.workers.dev";
+    const CDN =
+      process.env.CDN_URL || "https://iku-cdn.mejdi-sabri.workers.dev";
 
     // Filter: must have a playable URL (direct or via proxy) and stay under
     // a reasonable streaming budget.
     const videos = data
-      .filter((v) => (v.url || v.pageUrl) && (v.fileSize === 0 || v.fileSize < 60_000_000))
+      .filter(
+        (v) =>
+          (v.url || v.pageUrl) && (v.fileSize === 0 || v.fileSize < 60_000_000),
+      )
       .map((v) => {
         // Route ALL videos through CDN cache for edge-cached playback.
         // Use base64url-encoded path to avoid Chrome's URL safety check
         // which rejects <video src> containing encoded URLs in query params.
         const sourceUrl = v.url || (v.pageUrl ? v.pageUrl : "");
-        const b64 = sourceUrl ? Buffer.from(sourceUrl).toString("base64url") : "";
+        const b64 = sourceUrl
+          ? Buffer.from(sourceUrl).toString("base64url")
+          : "";
         const playableUrl = b64 ? `${CDN}/v/${b64}` : "";
 
         return {
@@ -160,7 +171,7 @@ export async function GET(request: NextRequest) {
     console.error("Feed error:", error);
     return NextResponse.json(
       { videos: [], cursor: null, hasMore: false, order },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

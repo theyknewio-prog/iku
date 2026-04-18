@@ -13,7 +13,11 @@ export default function ResetPasswordPage() {
       <div className="auth-card">
         <h1 className="auth-title">Set a new password</h1>
         <p className="auth-sub">Pick something secure this time 💪</p>
-        <Suspense fallback={<div style={{ color: "rgba(255,255,255,0.5)" }}>Loading…</div>}>
+        <Suspense
+          fallback={
+            <div style={{ color: "rgba(255,255,255,0.5)" }}>Loading…</div>
+          }
+        >
           <ResetPasswordForm />
         </Suspense>
       </div>

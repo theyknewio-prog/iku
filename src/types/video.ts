@@ -48,7 +48,14 @@ export interface Video {
   fileSize: number;
   duration: number | null;
   createdAt: Date;
-  source: "danbooru" | "gelbooru" | "rule34" | "rule34video" | "wp" | "hentaicity" | "hentaigasm";
+  source:
+    | "danbooru"
+    | "gelbooru"
+    | "rule34"
+    | "rule34video"
+    | "wp"
+    | "hentaicity"
+    | "hentaigasm";
   /** Scraped title (rule34video, WP sources). Empty for booru sources. */
   title?: string;
   /** Original page URL for sources that need proxy resolution (rule34video, WP). */

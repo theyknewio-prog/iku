@@ -26,12 +26,17 @@
 
 const API_KEY = process.env.POSTHOG_PERSONAL_API_KEY;
 const PROJECT_ID = process.env.POSTHOG_PROJECT_ID || "370092";
-const HOST = (process.env.POSTHOG_HOST || "https://us.posthog.com").replace(/\/$/, "");
+const HOST = (process.env.POSTHOG_HOST || "https://us.posthog.com").replace(
+  /\/$/,
+  "",
+);
 const DRY_RUN = process.env.DRY_RUN === "1";
 
 if (!API_KEY) {
   console.error("❌ Missing POSTHOG_PERSONAL_API_KEY (phs_...)");
-  console.error("   Get one at https://us.posthog.com → Settings → Personal API keys");
+  console.error(
+    "   Get one at https://us.posthog.com → Settings → Personal API keys",
+  );
   console.error("   Scopes needed: dashboard:write, insight:write");
   process.exit(1);
 }
@@ -48,7 +53,10 @@ const base = `${HOST}/api/projects/${PROJECT_ID}`;
 // ─────────────────────────────────────────────────────────────
 async function api(method, path, body) {
   if (DRY_RUN) {
-    console.log(`[DRY] ${method} ${path}`, body ? `body.name=${body.name || "?"}` : "");
+    console.log(
+      `[DRY] ${method} ${path}`,
+      body ? `body.name=${body.name || "?"}` : "",
+    );
     // Return plausible stubs so chained calls work in dry-run:
     //   GET /dashboards/  → empty list (triggers create path)
     //   POST *            → echo with random id
@@ -64,9 +72,15 @@ async function api(method, path, body) {
   });
   const text = await res.text();
   let data;
-  try { data = JSON.parse(text); } catch { data = text; }
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = text;
+  }
   if (!res.ok) {
-    throw new Error(`${method} ${path} → ${res.status}: ${JSON.stringify(data).slice(0, 500)}`);
+    throw new Error(
+      `${method} ${path} → ${res.status}: ${JSON.stringify(data).slice(0, 500)}`,
+    );
   }
   return data;
 }
@@ -87,7 +101,13 @@ async function ensureDashboard(name, description) {
   return created;
 }
 
-async function createInsight({ name, description, dashboardId, filters, query }) {
+async function createInsight({
+  name,
+  description,
+  dashboardId,
+  filters,
+  query,
+}) {
   const body = {
     name,
     description,
@@ -145,7 +165,9 @@ function funnelFilter(events, opts = {}) {
       id: typeof e === "string" ? e : e.id,
       type: "events",
       order: i,
-      ...(typeof e === "object" && e.properties ? { properties: e.properties } : {}),
+      ...(typeof e === "object" && e.properties
+        ? { properties: e.properties }
+        : {}),
     })),
     funnel_window_interval: opts.windowInterval || 7,
     funnel_window_interval_unit: opts.windowUnit || "day",
@@ -158,7 +180,10 @@ function retentionFilter(opts = {}) {
   return {
     insight: "RETENTION",
     target_entity: { id: opts.targetEvent || "signup", type: "events" },
-    returning_entity: { id: opts.returningEvent || "$pageview", type: "events" },
+    returning_entity: {
+      id: opts.returningEvent || "$pageview",
+      type: "events",
+    },
     retention_type: "retention_first_time",
     period: opts.period || "Day",
     total_intervals: opts.totalIntervals || 11,
@@ -172,7 +197,7 @@ function retentionFilter(opts = {}) {
 async function buildAcquisitionDashboard() {
   const dash = await ensureDashboard(
     "📊 Acquisition & Engagement",
-    "Top-of-funnel: pageviews, unique visitors, landing pages, referrers, geo, device."
+    "Top-of-funnel: pageviews, unique visitors, landing pages, referrers, geo, device.",
   );
 
   const insights = [
@@ -189,22 +214,34 @@ async function buildAcquisitionDashboard() {
     {
       name: "Top landing pages",
       description: "Pageviews broken down by $pathname (top 10).",
-      filters: trendPageviews({ breakdown: "$pathname", display: "ActionsBarValue" }),
+      filters: trendPageviews({
+        breakdown: "$pathname",
+        display: "ActionsBarValue",
+      }),
     },
     {
       name: "Top referrers",
       description: "Pageviews broken down by $referring_domain.",
-      filters: trendPageviews({ breakdown: "$referring_domain", display: "ActionsBarValue" }),
+      filters: trendPageviews({
+        breakdown: "$referring_domain",
+        display: "ActionsBarValue",
+      }),
     },
     {
       name: "Traffic by country",
       description: "Pageviews broken down by $geoip_country_code (world map).",
-      filters: trendPageviews({ breakdown: "$geoip_country_code", display: "WorldMap" }),
+      filters: trendPageviews({
+        breakdown: "$geoip_country_code",
+        display: "WorldMap",
+      }),
     },
     {
       name: "Mobile vs Desktop split",
       description: "Pageviews broken down by $device_type.",
-      filters: trendPageviews({ breakdown: "$device_type", display: "ActionsPie" }),
+      filters: trendPageviews({
+        breakdown: "$device_type",
+        display: "ActionsPie",
+      }),
     },
   ];
 
@@ -217,13 +254,14 @@ async function buildAcquisitionDashboard() {
 async function buildFunnelsDashboard() {
   const dash = await ensureDashboard(
     "🎯 Conversion Funnels",
-    "Anon → signup → active, signup → Pro, video engagement, Discord join."
+    "Anon → signup → active, signup → Pro, video engagement, Discord join.",
   );
 
   const insights = [
     {
       name: "Funnel A — Anon → Signup → Active user",
-      description: "pageview → signup → login → first favorite_add. 7-day window.",
+      description:
+        "pageview → signup → login → first favorite_add. 7-day window.",
       filters: funnelFilter(["$pageview", "signup", "login", "favorite_add"], {
         windowInterval: 7,
         windowUnit: "day",
@@ -231,15 +269,20 @@ async function buildFunnelsDashboard() {
     },
     {
       name: "Funnel B — Signup → Pro Purchase",
-      description: "signup → /pricing view → pro_checkout_start → pro_purchase. 30-day window.",
-      filters: funnelFilter(["signup", "$pageview", "pro_checkout_start", "pro_purchase"], {
-        windowInterval: 30,
-        windowUnit: "day",
-      }),
+      description:
+        "signup → /pricing view → pro_checkout_start → pro_purchase. 30-day window.",
+      filters: funnelFilter(
+        ["signup", "$pageview", "pro_checkout_start", "pro_purchase"],
+        {
+          windowInterval: 30,
+          windowUnit: "day",
+        },
+      ),
     },
     {
       name: "Funnel C — Video engagement",
-      description: "watch pageview → video_view → favorite_add. 1-day window (single session).",
+      description:
+        "watch pageview → video_view → favorite_add. 1-day window (single session).",
       filters: funnelFilter(["$pageview", "video_view", "favorite_add"], {
         windowInterval: 1,
         windowUnit: "day",
@@ -247,11 +290,15 @@ async function buildFunnelsDashboard() {
     },
     {
       name: "Funnel D — Discord community join",
-      description: "pageview → discord_invite_click → discord_link (only if user completes OAuth).",
-      filters: funnelFilter(["$pageview", "discord_invite_click", "discord_link"], {
-        windowInterval: 1,
-        windowUnit: "day",
-      }),
+      description:
+        "pageview → discord_invite_click → discord_link (only if user completes OAuth).",
+      filters: funnelFilter(
+        ["$pageview", "discord_invite_click", "discord_link"],
+        {
+          windowInterval: 1,
+          windowUnit: "day",
+        },
+      ),
     },
   ];
 
@@ -264,14 +311,18 @@ async function buildFunnelsDashboard() {
 async function buildRetentionDashboard() {
   const dash = await ensureDashboard(
     "🔁 Retention & Gamification",
-    "Cohort retention, DAU/WAU/MAU, streaks, badges, top users."
+    "Cohort retention, DAU/WAU/MAU, streaks, badges, top users.",
   );
 
   const insights = [
     {
       name: "Cohort retention (signup → pageview)",
-      description: "Users who sign up, do they come back? Daily intervals, 11 days.",
-      filters: retentionFilter({ targetEvent: "signup", returningEvent: "$pageview" }),
+      description:
+        "Users who sign up, do they come back? Daily intervals, 11 days.",
+      filters: retentionFilter({
+        targetEvent: "signup",
+        returningEvent: "$pageview",
+      }),
     },
     {
       name: "DAU / WAU / MAU",
@@ -291,23 +342,30 @@ async function buildRetentionDashboard() {
     {
       name: "Tier up distribution",
       description: "tier_up events broken down by tier_name.",
-      filters: trendEvent("tier_up", { breakdown: "tier_name", display: "ActionsBarValue" }),
+      filters: trendEvent("tier_up", {
+        breakdown: "tier_name",
+        display: "ActionsBarValue",
+      }),
     },
     {
       name: "Badge earning rate",
       description: "badge_earned events broken down by badge code.",
-      filters: trendEvent("badge_earned", { breakdown: "code", display: "ActionsBarValue" }),
+      filters: trendEvent("badge_earned", {
+        breakdown: "code",
+        display: "ActionsBarValue",
+      }),
     },
     {
       name: "Gamification engagement (stacked)",
-      description: "video_view + favorite_add + badge_earned + tier_up, stacked over time.",
+      description:
+        "video_view + favorite_add + badge_earned + tier_up, stacked over time.",
       filters: {
         insight: "TRENDS",
         events: [
-          { id: "video_view",   type: "events", order: 0 },
+          { id: "video_view", type: "events", order: 0 },
           { id: "favorite_add", type: "events", order: 1 },
           { id: "badge_earned", type: "events", order: 2 },
-          { id: "tier_up",      type: "events", order: 3 },
+          { id: "tier_up", type: "events", order: 3 },
         ],
         interval: "day",
         date_from: "-30d",
@@ -317,7 +375,10 @@ async function buildRetentionDashboard() {
     {
       name: "Top users by video_view",
       description: "video_view events broken down by distinct_id (top 20).",
-      filters: trendEvent("video_view", { breakdown: "distinct_id", display: "ActionsBarValue" }),
+      filters: trendEvent("video_view", {
+        breakdown: "distinct_id",
+        display: "ActionsBarValue",
+      }),
     },
   ];
 

@@ -56,7 +56,13 @@ export function IconVolumeFull() {
 
 export function IconVolumeSmall() {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="14" height="14">
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      width="14"
+      height="14"
+    >
       <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77 0-4.28-2.99-7.86-7-8.77z" />
     </svg>
   );
@@ -182,7 +188,8 @@ export function ControlBtn({
       }}
       onMouseEnter={(e) => {
         (e.currentTarget as HTMLButtonElement).style.transform = "scale(1.1)";
-        if (!active) (e.currentTarget as HTMLButtonElement).style.color = "#e8467c";
+        if (!active)
+          (e.currentTarget as HTMLButtonElement).style.color = "#e8467c";
       }}
       onMouseLeave={(e) => {
         (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)";

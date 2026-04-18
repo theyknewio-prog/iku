@@ -19,14 +19,25 @@ if (!BOT_TOKEN || !GUILD_ID) {
 }
 
 const API = "https://discord.com/api/v10";
-const headers = { Authorization: `Bot ${BOT_TOKEN}`, "Content-Type": "application/json" };
+const headers = {
+  Authorization: `Bot ${BOT_TOKEN}`,
+  "Content-Type": "application/json",
+};
 
 async function api(method, path, body) {
-  const res = await fetch(API + path, { method, headers, body: body ? JSON.stringify(body) : undefined });
+  const res = await fetch(API + path, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
   if (res.status === 204) return {};
   const text = await res.text();
   let data;
-  try { data = JSON.parse(text); } catch { data = text; }
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = text;
+  }
   if (!res.ok) throw new Error(`${method} ${path}: ${JSON.stringify(data)}`);
   return data;
 }
@@ -240,4 +251,7 @@ async function run() {
   console.log("✅ done");
 }
 
-run().catch((err) => { console.error("❌", err); process.exit(1); });
+run().catch((err) => {
+  console.error("❌", err);
+  process.exit(1);
+});

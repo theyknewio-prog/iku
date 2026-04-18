@@ -22,11 +22,15 @@ export function RemoveAdsCTA() {
   return (
     <div className="remove-ads-cta">
       <Link href="/pricing" className="remove-ads-cta__link">
-        <span className="remove-ads-cta__emoji" aria-hidden>&#x1F624;</span>
+        <span className="remove-ads-cta__emoji" aria-hidden>
+          &#x1F624;
+        </span>
         <span className="remove-ads-cta__text">
           Tired of ads? <strong>Go Premium</strong> — ad-free experience
         </span>
-        <span className="remove-ads-cta__arrow" aria-hidden>&rsaquo;</span>
+        <span className="remove-ads-cta__arrow" aria-hidden>
+          &rsaquo;
+        </span>
       </Link>
     </div>
   );
