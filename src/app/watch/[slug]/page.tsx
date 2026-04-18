@@ -14,6 +14,7 @@ import { getRule34Post } from "@/lib/rule34";
 import { getRule34VideoPost, getRule34VideoPageUrl } from "@/lib/rule34video";
 import { getWPHentaiPost, getWPHentaiPageUrl } from "@/lib/wp-hentai";
 import { getHentaicityPost } from "@/lib/hentaicity";
+import { getSfmCompilePost } from "@/lib/sfmcompile";
 import {
   extractIdFromSlug,
   isGelbooruSlug,
@@ -21,6 +22,7 @@ import {
   isRule34VideoSlug,
   isWPHentaiSlug,
   isHentaicitySlug,
+  isSfmCompileSlug,
 } from "@/lib/slugify";
 import type { Video } from "@/types/video";
 import {
@@ -114,6 +116,11 @@ export async function generateMetadata({
       if (!hv)
         return { title: "Hentai Video | iku.gg", robots: { index: false } };
       video = hv;
+    } else if (isSfmCompileSlug(slug)) {
+      const sv = await getSfmCompilePost(id);
+      if (!sv)
+        return { title: "Hentai Video | iku.gg", robots: { index: false } };
+      video = sv;
     } else if (isWPHentaiSlug(slug)) {
       const wv = await getWPHentaiPost(id);
       if (!wv)
@@ -233,6 +240,15 @@ export default async function WatchPage({ params }: WatchPageProps) {
       // to dodge potential CORS or Referer checks and keep user IPs hidden.
       if (hv.url) {
         streamProxyUrl = `/api/video-stream?url=${encodeURIComponent(hv.url)}`;
+      }
+    } else if (isSfmCompileSlug(slug)) {
+      const sv = await getSfmCompilePost(id);
+      if (!sv) notFound();
+      video = sv;
+      // sfmcompile self-hosts MP4s on wp-content/uploads — no token, no
+      // CORS, but we still proxy so the source domain never leaks.
+      if (sv.url) {
+        streamProxyUrl = `/api/video-stream?url=${encodeURIComponent(sv.url)}`;
       }
     } else if (isWPHentaiSlug(slug)) {
       const wv = await getWPHentaiPost(id);
@@ -464,7 +480,8 @@ export default async function WatchPage({ params }: WatchPageProps) {
                     src={
                       video.source === "rule34video" ||
                       video.source === "wp" ||
-                      video.source === "hentaicity"
+                      video.source === "hentaicity" ||
+                      video.source === "sfmcompile"
                         ? streamProxyUrl || ""
                         : video.url || ""
                     }
@@ -481,7 +498,8 @@ export default async function WatchPage({ params }: WatchPageProps) {
                     src={
                       video.source === "rule34video" ||
                       video.source === "wp" ||
-                      video.source === "hentaicity"
+                      video.source === "hentaicity" ||
+                      video.source === "sfmcompile"
                         ? streamProxyUrl || ""
                         : video.url || ""
                     }
@@ -645,7 +663,9 @@ export default async function WatchPage({ params }: WatchPageProps) {
                             ? `https://rule34.xxx/index.php?page=post&s=view&id=${video.id}`
                             : video.source === "hentaicity"
                               ? video.pageUrl || `https://www.hentaicity.com`
-                              : `https://danbooru.donmai.us/posts/${video.id}`
+                              : video.source === "sfmcompile"
+                                ? video.pageUrl || "https://iku.gg"
+                                : `https://danbooru.donmai.us/posts/${video.id}`
                     }
                     target="_blank"
                     rel="noopener noreferrer"

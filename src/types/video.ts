@@ -55,7 +55,8 @@ export interface Video {
     | "rule34video"
     | "wp"
     | "hentaicity"
-    | "hentaigasm";
+    | "hentaigasm"
+    | "sfmcompile";
   /** Scraped title (rule34video, WP sources). Empty for booru sources. */
   title?: string;
   /** Original page URL for sources that need proxy resolution (rule34video, WP). */
