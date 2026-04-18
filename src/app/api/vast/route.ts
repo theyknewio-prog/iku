@@ -20,7 +20,10 @@ import { AD_ZONES, HILLTOPADS_SCRIPTS } from "@/lib/ad-config";
 export const dynamic = "force-dynamic";
 
 const MAX_WRAPPER_HOPS = 3;
-const FETCH_TIMEOUT_MS = 4000;
+// Bumped 4000 → 10000 on 2026-04-18: adult VAST endpoints (magsrv,
+// difficultblock) can take 3-6s to respond from EU origin. 4s aborts
+// meant the silent catch below fired constantly, killing all prerolls.
+const FETCH_TIMEOUT_MS = 10000;
 
 async function fetchWithTimeout(url: string): Promise<string> {
   const ctrl = new AbortController();
@@ -35,6 +38,10 @@ async function fetchWithTimeout(url: string): Promise<string> {
       },
       cache: "no-store",
     });
+    if (!res.ok) {
+      console.error(`[vast] fetch ${url} returned HTTP ${res.status}`);
+      return "";
+    }
     return await res.text();
   } finally {
     clearTimeout(t);
@@ -70,10 +77,16 @@ async function resolveVast(
   let xml: string;
   try {
     xml = await fetchWithTimeout(url);
-  } catch {
+  } catch (e) {
+    console.error(`[vast] fetch threw for ${url}:`, (e as Error)?.message);
     return null;
   }
-  if (!xml || xml.length < 50) return null;
+  if (!xml || xml.length < 50) {
+    console.error(
+      `[vast] empty/short xml (${xml?.length ?? 0} bytes) from ${url}`,
+    );
+    return null;
+  }
 
   // Wrapper = follow VASTAdTagURI and merge impressions/tracking.
   const wrapper = xml.match(/<VASTAdTagURI[^>]*>([\s\S]*?)<\/VASTAdTagURI>/i);
@@ -103,7 +116,12 @@ async function resolveVast(
       src: cdata(m[1]),
     }))
     .filter((m) => m.src.includes("http"));
-  if (mediaFiles.length === 0) return null;
+  if (mediaFiles.length === 0) {
+    console.error(
+      `[vast] no MediaFile in InLine response (xml length ${xml.length}, url ${url})`,
+    );
+    return null;
+  }
 
   // Prefer MP4 progressive over other types.
   const mp4 =
