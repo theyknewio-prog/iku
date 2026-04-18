@@ -106,14 +106,27 @@ export function SwipeFeed() {
     }
   }, [videos.length, activeIndex, exhausted, fetchVideos]);
 
-  // Detect Pro user on mount
+  // Detect Pro user. UserDataSync populates document.body.dataset.pro
+  // asynchronously after /api/profile returns, so the initial mount read
+  // is always false. Observe the attribute to stay in sync.
   useEffect(() => {
-    isPro.current = document.body.dataset.pro === "1";
+    const read = () => {
+      isPro.current = document.body.dataset.pro === "1";
+    };
+    read();
+    const observer = new MutationObserver(read);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["data-pro"],
+    });
     // Restore interstitial count from sessionStorage
     try {
       const stored = sessionStorage.getItem("iku-interstitial-count");
       if (stored) interstitialCountRef.current = parseInt(stored) || 0;
-    } catch { /* private browsing */ }
+    } catch {
+      /* private browsing */
+    }
+    return () => observer.disconnect();
   }, []);
 
   /* Broken-card handler — called by VideoCard when its <video> errors or
@@ -148,8 +161,13 @@ export function SwipeFeed() {
       setShowInterstitial(true);
       interstitialCountRef.current += 1;
       try {
-        sessionStorage.setItem("iku-interstitial-count", String(interstitialCountRef.current));
-      } catch { /* quota */ }
+        sessionStorage.setItem(
+          "iku-interstitial-count",
+          String(interstitialCountRef.current),
+        );
+      } catch {
+        /* quota */
+      }
     }
   }, [activeIndex]);
 
@@ -188,7 +206,7 @@ export function SwipeFeed() {
           }
         });
       },
-      { root: container, threshold: 0.6 }
+      { root: container, threshold: 0.6 },
     );
 
     const items = container.querySelectorAll(".feed-item");
@@ -214,7 +232,14 @@ export function SwipeFeed() {
           and login state. Anon users see signup first; logged-in non-Pro
           users always see premium. */}
       {showShortsAd && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 9998, background: "#000" }}>
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 9998,
+            background: "#000",
+          }}
+        >
           <VastPrerollAd onComplete={() => setShowShortsAd(false)} />
         </div>
       )}
