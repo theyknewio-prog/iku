@@ -37,6 +37,7 @@ export function extractIdFromSlug(slug: string): number {
   else if (cleaned.startsWith("hw-")) cleaned = cleaned.slice(3);
   else if (cleaned.startsWith("hg-")) cleaned = cleaned.slice(3);
   else if (cleaned.startsWith("hc-")) cleaned = cleaned.slice(3);
+  else if (cleaned.startsWith("sfm-")) cleaned = cleaned.slice(4);
 
   const match = cleaned.match(/^(\d+)/);
   if (!match) throw new Error(`Invalid slug: ${slug}`);
@@ -62,6 +63,10 @@ export function isWPHentaiSlug(slug: string): boolean {
 
 export function isHentaicitySlug(slug: string): boolean {
   return slug.startsWith("hc-");
+}
+
+export function isSfmCompileSlug(slug: string): boolean {
+  return slug.startsWith("sfm-");
 }
 
 /**
