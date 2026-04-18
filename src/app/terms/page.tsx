@@ -113,7 +113,7 @@ export default function TermsPage() {
               attempt to gain unauthorized access to our systems or bypass
               security measures
             </li>
-            <li>scrape, index, or mirror the Service at scale</li>
+            <li>crawl, index, or mirror the Service at scale</li>
             <li>
               redistribute, rebrand or rehost the user experience, UI, or
               branding of iku.gg
