@@ -21,6 +21,7 @@ import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
 export const dynamic = "force-dynamic";
 
 const ALLOWED_HOST_SUFFIXES = [
+  // ExoClick / magsrv creative CDNs
   "aucdn.net",
   "afcdn.net",
   "sacdnssedge.com",
@@ -35,6 +36,12 @@ const ALLOWED_HOST_SUFFIXES = [
   "bkcdn.net",
   "exdynsrv.com",
   "realsrv.com",
+  // HilltopAds creative CDNs (observed 2026-04-18)
+  "silent-basis.pro",
+  "difficultblock.com",
+  "bsnsrv.com",
+  "hmoracle.com",
+  "cdn-player.com",
 ];
 
 function hostAllowed(url: URL): boolean {
@@ -42,7 +49,11 @@ function hostAllowed(url: URL): boolean {
   return ALLOWED_HOST_SUFFIXES.some((s) => h === s || h.endsWith("." + s));
 }
 
-const limiter = createRateLimiter({ name: "vast-stream", max: 60, windowMs: 60_000 });
+const limiter = createRateLimiter({
+  name: "vast-stream",
+  max: 60,
+  windowMs: 60_000,
+});
 
 export async function GET(req: NextRequest) {
   if (limiter.consume(getClientIp(req))) {
