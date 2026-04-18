@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { headers } from "next/headers";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { Pagination } from "@/components/Pagination";
@@ -7,6 +8,7 @@ import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { getVideos, countVideos } from "@/lib/content";
 import { getEntitySeo } from "@/lib/entity-seo";
 import { getNonce } from "@/lib/csp-nonce";
+import { shouldBlockTaxonomy } from "@/lib/taxonomy-guard";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 import { ListingAdBlock } from "@/components/ListingAdBlock";
 import type { Video } from "@/types/video";
@@ -109,6 +111,20 @@ const RELATED_TAGS = [
 ];
 
 export default async function TagPage({ params, searchParams }: Props) {
+  const h = await headers();
+  const ip =
+    h.get("x-real-ip") ??
+    h.get("x-forwarded-for")?.split(",").pop()?.trim() ??
+    "unknown";
+  if (shouldBlockTaxonomy(ip)) {
+    return (
+      <main style={{ padding: "4rem 1rem", textAlign: "center" }}>
+        <h1>Too many requests</h1>
+        <p>Slow down. Try again in a minute.</p>
+      </main>
+    );
+  }
+
   const nonce = await getNonce();
   const { tag } = await params;
   const sp = await searchParams;

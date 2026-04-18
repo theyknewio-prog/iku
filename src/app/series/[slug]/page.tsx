@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { Pagination } from "@/components/Pagination";
 import { getVideos, countVideos } from "@/lib/content";
 import { getEntitySeo } from "@/lib/entity-seo";
 import { getNonce } from "@/lib/csp-nonce";
+import { shouldBlockTaxonomy } from "@/lib/taxonomy-guard";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 import { ListingAdBlock } from "@/components/ListingAdBlock";
 import { SERIES, getSeriesBySlug, type Series } from "@/data/series";
@@ -139,6 +141,20 @@ const SORT_OPTIONS = [
 ] as const;
 
 export default async function SeriesPage({ params, searchParams }: Props) {
+  const h = await headers();
+  const ip =
+    h.get("x-real-ip") ??
+    h.get("x-forwarded-for")?.split(",").pop()?.trim() ??
+    "unknown";
+  if (shouldBlockTaxonomy(ip)) {
+    return (
+      <main style={{ padding: "4rem 1rem", textAlign: "center" }}>
+        <h1>Too many requests</h1>
+        <p>Slow down. Try again in a minute.</p>
+      </main>
+    );
+  }
+
   const nonce = await getNonce();
   const { slug } = await params;
   const sp = await searchParams;
