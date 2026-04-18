@@ -14,20 +14,35 @@ import { getRule34Post } from "@/lib/rule34";
 import { getRule34VideoPost, getRule34VideoPageUrl } from "@/lib/rule34video";
 import { getWPHentaiPost, getWPHentaiPageUrl } from "@/lib/wp-hentai";
 import { getHentaicityPost } from "@/lib/hentaicity";
-import { extractIdFromSlug, isGelbooruSlug, isRule34Slug, isRule34VideoSlug, isWPHentaiSlug, isHentaicitySlug } from "@/lib/slugify";
+import {
+  extractIdFromSlug,
+  isGelbooruSlug,
+  isRule34Slug,
+  isRule34VideoSlug,
+  isWPHentaiSlug,
+  isHentaicitySlug,
+} from "@/lib/slugify";
 import type { Video } from "@/types/video";
 import {
   generateVideoDescription,
   generateVideoFAQ,
   generateBreadcrumbs,
 } from "@/lib/content-generator";
-import { containsBannedContent, getRelatedVideos, getDanbooruVideo } from "@/lib/content";
+import {
+  containsBannedContent,
+  getRelatedVideos,
+  getDanbooruVideo,
+} from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
+import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdZoneClient } from "@/components/AdZoneClient";
 import { AD_ZONES } from "@/lib/ad-config";
 import { RemoveAdsCTA } from "@/components/RemoveAdsCTA";
-import { buildSeoTitle, buildTitle as buildDisplayTitle } from "@/lib/video-display";
+import {
+  buildSeoTitle,
+  buildTitle as buildDisplayTitle,
+} from "@/lib/video-display";
 
 // ISR: pre-render zero pages at build, cache on-demand for 24h.
 // The "DYNAMIC_SERVER_USAGE" errors that rolled this back the first time
@@ -96,28 +111,34 @@ export async function generateMetadata({
     const id = extractIdFromSlug(slug);
     if (isHentaicitySlug(slug)) {
       const hv = await getHentaicityPost(id);
-      if (!hv) return { title: "Hentai Video | iku.gg", robots: { index: false } };
+      if (!hv)
+        return { title: "Hentai Video | iku.gg", robots: { index: false } };
       video = hv;
     } else if (isWPHentaiSlug(slug)) {
       const wv = await getWPHentaiPost(id);
-      if (!wv) return { title: "Hentai Video | iku.gg", robots: { index: false } };
+      if (!wv)
+        return { title: "Hentai Video | iku.gg", robots: { index: false } };
       video = wv;
     } else if (isRule34VideoSlug(slug)) {
       const rv = await getRule34VideoPost(id);
-      if (!rv) return { title: "Hentai Video | iku.gg", robots: { index: false } };
+      if (!rv)
+        return { title: "Hentai Video | iku.gg", robots: { index: false } };
       video = rv;
     } else if (isRule34Slug(slug)) {
       const rv = await getRule34Post(id);
-      if (!rv) return { title: "Hentai Video | iku.gg", robots: { index: false } };
+      if (!rv)
+        return { title: "Hentai Video | iku.gg", robots: { index: false } };
       video = rv;
     } else if (isGelbooruSlug(slug)) {
       const gv = await getGelbooruPost(id);
-      if (!gv) return { title: "Hentai Video | iku.gg", robots: { index: false } };
+      if (!gv)
+        return { title: "Hentai Video | iku.gg", robots: { index: false } };
       video = gv;
     } else {
       // PG-first lookup; no live fallback for metadata so cold renders stay fast.
       const dv = await getDanbooruVideo(id, { liveFallback: false });
-      if (!dv) return { title: "Hentai Video | iku.gg", robots: { index: false } };
+      if (!dv)
+        return { title: "Hentai Video | iku.gg", robots: { index: false } };
       video = dv;
     }
   } catch {
@@ -130,7 +151,8 @@ export async function generateMetadata({
   const title = buildTitle(video);
   const description = buildDescription(video);
   const canonicalUrl = `https://iku.gg/watch/${video.slug}`;
-  const ogImage = video.thumbnail || video.preview || "https://iku.gg/og-default.png";
+  const ogImage =
+    video.thumbnail || video.preview || "https://iku.gg/og-default.png";
   const ogVideo = video.url;
 
   return {
@@ -252,7 +274,8 @@ export default async function WatchPage({ params }: WatchPageProps) {
   }
 
   // Fetch related for autoplay-next (small set, no suspense needed)
-  let relatedForPlayer: { slug: string; thumbnail: string; title: string }[] = [];
+  let relatedForPlayer: { slug: string; thumbnail: string; title: string }[] =
+    [];
   try {
     const related = await getRelatedVideos(video, 4);
     relatedForPlayer = related.map((v) => ({
@@ -276,7 +299,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
   const videoFAQ = generateVideoFAQ(video);
   const breadcrumbs = generateBreadcrumbs(video);
   const scorePercent = Math.round(
-    (video.score / (video.score + Math.max(1, 20))) * 100
+    (video.score / (video.score + Math.max(1, 20))) * 100,
   );
 
   /* JSON-LD VideoObject */
@@ -288,9 +311,10 @@ export default async function WatchPage({ params }: WatchPageProps) {
     thumbnailUrl: video.thumbnail || video.preview,
     contentUrl: video.url,
     embedUrl: canonicalUrl,
-    uploadDate: video.createdAt instanceof Date
-      ? video.createdAt.toISOString()
-      : new Date(video.createdAt).toISOString(),
+    uploadDate:
+      video.createdAt instanceof Date
+        ? video.createdAt.toISOString()
+        : new Date(video.createdAt).toISOString(),
     ...(duration ? { duration: `PT${Math.floor(duration)}S` } : {}),
     interactionStatistic: [
       {
@@ -312,17 +336,18 @@ export default async function WatchPage({ params }: WatchPageProps) {
   };
 
   /* FAQPage JSON-LD */
-  const faqJsonLd = videoFAQ.length > 0
-    ? {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        mainEntity: videoFAQ.map((item) => ({
-          "@type": "Question",
-          name: item.question,
-          acceptedAnswer: { "@type": "Answer", text: item.answer },
-        })),
-      }
-    : null;
+  const faqJsonLd =
+    videoFAQ.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: videoFAQ.map((item) => ({
+            "@type": "Question",
+            name: item.question,
+            acceptedAnswer: { "@type": "Answer", text: item.answer },
+          })),
+        }
+      : null;
 
   /* BreadcrumbList JSON-LD */
   const breadcrumbJsonLd = {
@@ -370,12 +395,16 @@ export default async function WatchPage({ params }: WatchPageProps) {
           <div className="player-layout">
             {/* ── Main column ───────────────────────────────── */}
             <div className="player-main">
-
               {/* Breadcrumbs nav */}
               <nav className="watch-breadcrumbs" aria-label="Breadcrumb">
                 {breadcrumbs.map((crumb, i) => (
                   <span key={crumb.url}>
-                    {i > 0 && <span className="glossary-breadcrumbs__sep" aria-hidden> / </span>}
+                    {i > 0 && (
+                      <span className="glossary-breadcrumbs__sep" aria-hidden>
+                        {" "}
+                        /{" "}
+                      </span>
+                    )}
                     {i < breadcrumbs.length - 1 ? (
                       <Link
                         href={crumb.url.replace("https://iku.gg", "")}
@@ -384,7 +413,10 @@ export default async function WatchPage({ params }: WatchPageProps) {
                         {crumb.name}
                       </Link>
                     ) : (
-                      <span className="glossary-breadcrumbs__current" aria-current="page">
+                      <span
+                        className="glossary-breadcrumbs__current"
+                        aria-current="page"
+                      >
                         {crumb.name}
                       </span>
                     )}
@@ -396,11 +428,19 @@ export default async function WatchPage({ params }: WatchPageProps) {
                   Desktop = ExoClick 728x90 leaderboard (zone 5893256).
                   Mobile  = ExoClick 300x50 mobile sticky (zone 5895978).
                   AdZoneClient handles the swap via window.innerWidth. */}
-              <div style={{ display: "flex", justifyContent: "center", margin: "12px 0" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  margin: "12px 0",
+                }}
+              >
                 <AdZoneClient
                   zoneId={AD_ZONES.exoclick.watchUnderplayer728}
                   size="728x90"
-                  mobileZoneId={AD_ZONES.exoclick.mobileBanner300x50 ?? undefined}
+                  mobileZoneId={
+                    AD_ZONES.exoclick.mobileBanner300x50 ?? undefined
+                  }
                   mobileSize="300x50"
                 />
               </div>
@@ -421,7 +461,13 @@ export default async function WatchPage({ params }: WatchPageProps) {
               <div className="player-video-wrap">
                 {isProLocked(video) ? (
                   <ProGatedPlayer
-                    src={(video.source === "rule34video" || video.source === "wp" || video.source === "hentaicity") ? (streamProxyUrl || "") : (video.url || "")}
+                    src={
+                      video.source === "rule34video" ||
+                      video.source === "wp" ||
+                      video.source === "hentaicity"
+                        ? streamProxyUrl || ""
+                        : video.url || ""
+                    }
                     poster={video.thumbnail || undefined}
                     resolveUrl={resolvePageUrl || undefined}
                     relatedVideos={relatedForPlayer}
@@ -432,7 +478,13 @@ export default async function WatchPage({ params }: WatchPageProps) {
                   />
                 ) : (
                   <WatchPlayerWithPreroll
-                    src={(video.source === "rule34video" || video.source === "wp" || video.source === "hentaicity") ? (streamProxyUrl || "") : (video.url || "")}
+                    src={
+                      video.source === "rule34video" ||
+                      video.source === "wp" ||
+                      video.source === "hentaicity"
+                        ? streamProxyUrl || ""
+                        : video.url || ""
+                    }
                     poster={video.thumbnail || undefined}
                     resolveUrl={resolvePageUrl || undefined}
                     relatedVideos={relatedForPlayer}
@@ -463,10 +515,19 @@ export default async function WatchPage({ params }: WatchPageProps) {
               </h1>
 
               {/* Premium nudge under H1 — slim gradient strip pushing /pricing. */}
-              <Link href="/pricing" className="hp-premium-strip" aria-label="Get iku Premium">
+              <Link
+                href="/pricing"
+                className="hp-premium-strip"
+                aria-label="Get iku Premium"
+              >
                 <span className="hp-premium-strip__icon">🚫</span>
-                <span className="hp-premium-strip__text"><strong>Skip every preroll + ad</strong> · 4K when available · Early access · Unlimited favorites</span>
-                <span className="hp-premium-strip__cta">Premium 4.99€/mo →</span>
+                <span className="hp-premium-strip__text">
+                  <strong>Skip every preroll + ad</strong> · 4K when available ·
+                  Early access · Unlimited favorites
+                </span>
+                <span className="hp-premium-strip__cta">
+                  Premium 4.99€/mo →
+                </span>
               </Link>
 
               {/* Characters + copyrights */}
@@ -482,11 +543,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
                     </Link>
                   ))}
                   {video.copyrights.map((c) => (
-                    <Link
-                      key={c}
-                      href={`/tag/${c}`}
-                      className="copyright-pill"
-                    >
+                    <Link key={c} href={`/tag/${c}`} className="copyright-pill">
                       {fmt(c)}
                     </Link>
                   ))}
@@ -532,8 +589,8 @@ export default async function WatchPage({ params }: WatchPageProps) {
                       video.characters[0]
                         ? `${fmt(video.characters[0])}${video.copyrights[0] ? ` — ${fmt(video.copyrights[0])}` : ""}`
                         : video.copyrights[0]
-                        ? fmt(video.copyrights[0])
-                        : video.slug
+                          ? fmt(video.copyrights[0])
+                          : video.slug
                     }
                     thumbnail={video.thumbnail}
                   />
@@ -579,13 +636,14 @@ export default async function WatchPage({ params }: WatchPageProps) {
                   <a
                     href={
                       video.source === "rule34video"
-                        ? (resolvePageUrl || `https://rule34video.com/video/${video.id}/`)
+                        ? resolvePageUrl ||
+                          `https://rule34video.com/video/${video.id}/`
                         : video.source === "gelbooru"
                           ? `https://gelbooru.com/index.php?page=post&s=view&id=${video.id}`
                           : video.source === "rule34"
                             ? `https://rule34.xxx/index.php?page=post&s=view&id=${video.id}`
                             : video.source === "hentaicity"
-                              ? (video.pageUrl || `https://www.hentaicity.com`)
+                              ? video.pageUrl || `https://www.hentaicity.com`
                               : `https://danbooru.donmai.us/posts/${video.id}`
                     }
                     target="_blank"
@@ -620,10 +678,14 @@ export default async function WatchPage({ params }: WatchPageProps) {
               {/* FAQ accordion */}
               {videoFAQ.length > 0 && (
                 <div className="watch-faq">
-                  <h2 className="watch-faq__heading">Frequently Asked Questions</h2>
+                  <h2 className="watch-faq__heading">
+                    Frequently Asked Questions
+                  </h2>
                   {videoFAQ.map((item, i) => (
                     <details key={i} className="watch-faq__item">
-                      <summary className="watch-faq__question">{item.question}</summary>
+                      <summary className="watch-faq__question">
+                        {item.question}
+                      </summary>
                       <p className="watch-faq__answer">{item.answer}</p>
                     </details>
                   ))}
@@ -693,10 +755,19 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
               {/* Related — mobile grid (below player) */}
               <div style={{ marginTop: "32px" }}>
-                {/* CPM densification 2026-04-15: in-content 300x250
-                    above the related header. Visible on all viewports. */}
-                <div style={{ display: "flex", justifyContent: "center", margin: "0 0 20px" }}>
-                  <AdZoneClient zoneId={AD_ZONES.exoclick.sidebar300} size="300x250" lazy />
+                {/* A/B test 2026-04-18: HilltopAds 300x250 (zone 6969681)
+                    replacing ExoClick sidebar300 lazy in this in-content slot.
+                    Same spot, direct eCPM comparison vs Adsterra baseline
+                    ($0.36) over 48h. If HilltopAds fills and pays, scale to
+                    other surfaces; if not, revert. */}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    margin: "0 0 20px",
+                  }}
+                >
+                  <HilltopAdsBanner format="banner300x250" />
                 </div>
                 <div className="section-header">
                   <h2
@@ -737,8 +808,17 @@ export default async function WatchPage({ params }: WatchPageProps) {
               {/* CPM densification 2026-04-15: ExoClick 300x250 above
                   HentaiPros. Sidebar is display:none <768px so this is
                   a desktop-only surface. */}
-              <div style={{ marginBottom: 16, display: "flex", justifyContent: "center" }}>
-                <AdZoneClient zoneId={AD_ZONES.exoclick.sidebar300} size="300x250" />
+              <div
+                style={{
+                  marginBottom: 16,
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <AdZoneClient
+                  zoneId={AD_ZONES.exoclick.sidebar300}
+                  size="300x250"
+                />
               </div>
               {/* Wave 1b 2026-04-13: swapped generic ExoClick for
                   HentaiProsBanner 160x600 — hentai-niche rotation
@@ -850,9 +930,7 @@ async function RelatedSidebar({ video }: { video: Video }) {
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img src={v.thumbnail} alt={label} loading="lazy" />
               )}
-              {dur && (
-                <span className="related-item__duration">{dur}</span>
-              )}
+              {dur && <span className="related-item__duration">{dur}</span>}
             </div>
             <div>
               <div className="related-item__title">{label}</div>
