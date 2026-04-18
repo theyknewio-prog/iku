@@ -585,12 +585,22 @@ async function _countVideos(options: GetVideosOptions = {}): Promise<number> {
       /* already rolled back by PG on timeout */
     }
     const code = (err as { code?: string }).code;
+    const message = (err as { message?: string }).message ?? "";
     // 57014 = query canceled (statement_timeout fired). Use estimate.
-    if (code === "57014") {
+    // "Connection terminated" / ETIMEDOUT = pool saturated — PG is melting
+    // under a thundering herd of COUNT queries. Same fix: return estimate
+    // so the memoize cache gets populated and we stop hitting PG for this
+    // exact key for the next hour.
+    if (
+      code === "57014" ||
+      message.includes("Connection terminated") ||
+      message.includes("timeout")
+    ) {
       console.warn("countVideos timed out, using estimate:", {
         vertical,
         tags,
         requireThumbnail,
+        reason: code === "57014" ? "statement_timeout" : "pool_timeout",
       });
       return estimateCount(options);
     }
