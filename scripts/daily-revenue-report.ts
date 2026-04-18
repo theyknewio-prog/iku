@@ -44,6 +44,7 @@ const DATABASE_URL = process.env.DATABASE_URL;
 
 const EXOCLICK_API_KEY = process.env.EXOCLICK_API_KEY;
 const ADSTERRA_API_KEY = process.env.ADSTERRA_API_KEY;
+const HILLTOPADS_API_KEY = process.env.HILLTOPADS_API_KEY;
 const CRAKREVENUE_API_KEY = process.env.CRAKREVENUE_API_KEY;
 const CHATURBATE_API_KEY = process.env.CHATURBATE_API_KEY;
 const CHATURBATE_USERNAME = process.env.CHATURBATE_USERNAME || "ikugg";
@@ -385,6 +386,56 @@ async function fetchAdsterraData(
   }
 }
 
+// ── HilltopAds ────────────────────────────────────────────────────────────────
+// HilltopAds Publisher API.
+// Endpoint: GET https://api-pub.hilltopads.com/api/v1/stats?date_from=YYYY-MM-DD&date_to=YYYY-MM-DD
+// Header: Authorization: Bearer <API_KEY>
+// Row: { date, impressions, clicks, ctr, ecpm, revenue }
+// API key: publisher dashboard → Account → API
+
+interface HilltopAdsData {
+  revenue: number;
+  impressions: number;
+  clicks: number;
+}
+
+async function fetchHilltopAdsData(
+  dateIso: string,
+): Promise<HilltopAdsData | null> {
+  if (!HILLTOPADS_API_KEY) {
+    log("HILLTOPADS_API_KEY not set — skipping HilltopAds");
+    return null;
+  }
+
+  try {
+    const url =
+      `https://api-pub.hilltopads.com/api/v1/stats?` +
+      `date_from=${dateIso}&date_to=${dateIso}`;
+
+    const raw = await httpsGet(url, {
+      Authorization: `Bearer ${HILLTOPADS_API_KEY}`,
+      Accept: "application/json",
+    });
+
+    const json = JSON.parse(raw);
+    // HilltopAds API shape varies — try common structures
+    const rows = json?.data ?? json?.items ?? json?.result ?? [];
+    const row = Array.isArray(rows) ? (rows[0] ?? {}) : rows;
+
+    return {
+      revenue: parseFloat(row.revenue ?? row.earnings ?? "0"),
+      impressions: parseInt(
+        row.impressions ?? row.impression ?? row.views ?? "0",
+        10,
+      ),
+      clicks: parseInt(row.clicks ?? "0", 10),
+    };
+  } catch (err) {
+    log(`HilltopAds error: ${(err as Error).message}`);
+    return null;
+  }
+}
+
 // ── CrakRevenue ───────────────────────────────────────────────────────────────
 // CrakRevenue Affiliate API
 // Endpoint: GET https://api.crakrevenue.com/v1/affiliate/reports/summary
@@ -592,38 +643,122 @@ interface AllData {
   stripe: StripeData | null;
   exoclick: ExoClickData | null;
   adsterra: AdsterraData | null;
+  hilltopads: HilltopAdsData | null;
   crakrevenue: CrakRevenueData | null;
   chaturbate: ChaturbateData | null;
   pg: PgStats | null;
 }
 
+// Network row for the unified comparison table. impressions=0 means ad network
+// didn't report impression data (Stripe/affiliate nets). Sorted by revenue DESC.
+interface NetworkRow {
+  name: string;
+  revenue: number;
+  impressions: number;
+  ecpm: number | null; // null for non-impression networks
+}
+
+function buildNetworkRows(data: AllData): NetworkRow[] {
+  const rows: NetworkRow[] = [];
+  const push = (
+    name: string,
+    revenue: number,
+    impressions: number,
+    isImpressionNet: boolean,
+  ) => {
+    const ecpm =
+      isImpressionNet && impressions > 0
+        ? (revenue / impressions) * 1000
+        : null;
+    rows.push({ name, revenue, impressions, ecpm });
+  };
+
+  if (data.exoclick)
+    push("ExoClick", data.exoclick.revenue, data.exoclick.impressions, true);
+  if (data.adsterra)
+    push("Adsterra", data.adsterra.revenue, data.adsterra.impressions, true);
+  if (data.hilltopads)
+    push(
+      "HilltopAds",
+      data.hilltopads.revenue,
+      data.hilltopads.impressions,
+      true,
+    );
+  if (data.stripe) push("Stripe Pro", data.stripe.revenue, 0, false);
+  if (data.crakrevenue) push("CrakRevenue", data.crakrevenue.revenue, 0, false);
+  if (data.chaturbate) push("Chaturbate", data.chaturbate.revenue, 0, false);
+
+  return rows.sort((a, b) => b.revenue - a.revenue);
+}
+
 function buildMessage(data: AllData): string {
-  const { date, stripe, exoclick, adsterra, crakrevenue, chaturbate, pg } =
-    data;
+  const {
+    date,
+    stripe,
+    exoclick,
+    adsterra,
+    hilltopads,
+    crakrevenue,
+    chaturbate,
+    pg,
+  } = data;
 
   const lines: string[] = [];
 
   lines.push(`<b>📊 iku.gg Revenue Report — ${date.label}</b>`);
   lines.push("");
 
-  // ExoClick
-  if (exoclick) {
-    const detail = `${numK(exoclick.impressions)} impr, ${numK(exoclick.clicks)} clicks`;
-    lines.push(`💰 <b>ExoClick:</b> ${eur(exoclick.revenue)} (${detail})`);
-  } else {
-    lines.push(`💰 <b>ExoClick:</b> N/A — set EXOCLICK_API_KEY`);
+  // Build unified comparison table. eCPM + % part is what Sab actually uses
+  // to decide where to reallocate surfaces — per-line detail comes after.
+  const rows = buildNetworkRows(data);
+  const total = rows.reduce((sum, r) => sum + r.revenue, 0);
+
+  if (rows.length > 0) {
+    lines.push(`<b>🏆 Network ranking (by revenue)</b>`);
+    lines.push(`<pre>`);
+    lines.push(`Network       Revenue  Share   eCPM`);
+    lines.push(`────────────────────────────────────`);
+    for (const r of rows) {
+      const pad = (s: string, n: number) => s.padEnd(n).slice(0, n);
+      const name = pad(r.name, 13);
+      const rev = pad(eur(r.revenue), 8);
+      const share =
+        total > 0 ? `${((r.revenue / total) * 100).toFixed(0)}%` : "—";
+      const shareP = pad(share, 6);
+      const ecpm = r.ecpm !== null ? `$${r.ecpm.toFixed(2)}` : "—";
+      lines.push(`${name} ${rev} ${shareP} ${ecpm}`);
+    }
+    lines.push(`</pre>`);
+    lines.push("");
   }
 
-  // Adsterra
-  if (adsterra) {
+  // Per-network detail (impressions, clicks, sub breakdown, etc).
+  lines.push(`<b>🔎 Detail</b>`);
+
+  if (exoclick) {
     lines.push(
-      `💰 <b>Adsterra:</b> ${eur(adsterra.revenue)} (${numK(adsterra.impressions)} impr)`,
+      `• ExoClick: ${numK(exoclick.impressions)} impr, ${numK(exoclick.clicks)} clicks, CTR ${exoclick.ctr.toFixed(2)}%`,
     );
   } else {
-    lines.push(`💰 <b>Adsterra:</b> N/A — set ADSTERRA_API_KEY`);
+    lines.push(`• ExoClick: N/A — set EXOCLICK_API_KEY`);
   }
 
-  // Stripe
+  if (adsterra) {
+    lines.push(
+      `• Adsterra: ${numK(adsterra.impressions)} impr, ${numK(adsterra.clicks)} clicks`,
+    );
+  } else {
+    lines.push(`• Adsterra: N/A — set ADSTERRA_API_KEY`);
+  }
+
+  if (hilltopads) {
+    lines.push(
+      `• HilltopAds: ${numK(hilltopads.impressions)} impr, ${numK(hilltopads.clicks)} clicks`,
+    );
+  } else {
+    lines.push(`• HilltopAds: N/A — set HILLTOPADS_API_KEY`);
+  }
+
   if (stripe) {
     const parts: string[] = [];
     if (stripe.breakdown.monthly > 0)
@@ -633,50 +768,26 @@ function buildMessage(data: AllData): string {
     if (stripe.breakdown.lifetime > 0)
       parts.push(`${stripe.breakdown.lifetime}×lifetime`);
     const detail = parts.length > 0 ? ` (${parts.join(", ")})` : "";
-    lines.push(
-      `💰 <b>Stripe Pro:</b> ${stripe.newSubs} new subs${detail}, ${eur(stripe.revenue)} new revenue`,
-    );
-    lines.push(
-      `   MRR: ${eur(stripe.mrr)} | Active subs: ${stripe.activeSubs}`,
-    );
+    lines.push(`• Stripe Pro: ${stripe.newSubs} new subs${detail}`);
+    lines.push(`  MRR: ${eur(stripe.mrr)} | Active: ${stripe.activeSubs}`);
   } else {
-    lines.push(`💰 <b>Stripe Pro:</b> N/A — set STRIPE_SECRET_KEY`);
+    lines.push(`• Stripe Pro: N/A — set STRIPE_SECRET_KEY`);
   }
 
-  // CrakRevenue
   if (crakrevenue) {
-    lines.push(
-      `💰 <b>CrakRevenue:</b> ${eur(crakrevenue.revenue)} (${crakrevenue.conversions} conversions)`,
-    );
-  } else {
-    lines.push(`💰 <b>CrakRevenue:</b> N/A — set CRAKREVENUE_API_KEY`);
+    lines.push(`• CrakRevenue: ${crakrevenue.conversions} conv`);
   }
-
-  // Chaturbate
   if (chaturbate) {
-    lines.push(
-      `💰 <b>Chaturbate:</b> ${eur(chaturbate.revenue)} (${chaturbate.signups} signups)`,
-    );
-  } else {
-    lines.push(`💰 <b>Chaturbate:</b> N/A — set CHATURBATE_API_KEY`);
+    lines.push(`• Chaturbate: ${chaturbate.signups} signups`);
   }
 
   lines.push("");
-
-  // Total
-  const total =
-    (exoclick?.revenue ?? 0) +
-    (adsterra?.revenue ?? 0) +
-    (stripe?.revenue ?? 0) +
-    (crakrevenue?.revenue ?? 0) +
-    (chaturbate?.revenue ?? 0);
-
   lines.push(`📈 <b>Total: ${eur(total)}</b>`);
 
   // Trend
   const yesterday = loadYesterdaySnapshot();
   if (yesterday && yesterday.date !== date.iso) {
-    lines.push(`📊 Trend: ${trendArrow(total, yesterday.totalRevenue)}`);
+    lines.push(`📊 ${trendArrow(total, yesterday.totalRevenue)}`);
   }
 
   lines.push("");
@@ -707,11 +818,12 @@ async function main() {
 
   section("Fetching data");
 
-  const [stripe, exoclick, adsterra, crakrevenue, chaturbate, pg] =
+  const [stripe, exoclick, adsterra, hilltopads, crakrevenue, chaturbate, pg] =
     await Promise.allSettled([
       fetchStripeData(reportDate.startEpoch, reportDate.endEpoch),
       fetchExoClickData(reportDate.iso),
       fetchAdsterraData(reportDate.iso),
+      fetchHilltopAdsData(reportDate.iso),
       fetchCrakRevenueData(reportDate.iso),
       fetchChaturbateData(reportDate.iso),
       fetchPgStats(reportDate.startEpoch, reportDate.endEpoch),
@@ -722,6 +834,7 @@ async function main() {
     stripe: stripe.status === "fulfilled" ? stripe.value : null,
     exoclick: exoclick.status === "fulfilled" ? exoclick.value : null,
     adsterra: adsterra.status === "fulfilled" ? adsterra.value : null,
+    hilltopads: hilltopads.status === "fulfilled" ? hilltopads.value : null,
     crakrevenue: crakrevenue.status === "fulfilled" ? crakrevenue.value : null,
     chaturbate: chaturbate.status === "fulfilled" ? chaturbate.value : null,
     pg: pg.status === "fulfilled" ? pg.value : null,
@@ -732,6 +845,7 @@ async function main() {
   );
   log(`ExoClick: ${data.exoclick ? eur(data.exoclick.revenue) : "N/A"}`);
   log(`Adsterra: ${data.adsterra ? eur(data.adsterra.revenue) : "N/A"}`);
+  log(`HilltopAds: ${data.hilltopads ? eur(data.hilltopads.revenue) : "N/A"}`);
   log(
     `CrakRevenue: ${data.crakrevenue ? eur(data.crakrevenue.revenue) : "N/A"}`,
   );
@@ -746,6 +860,7 @@ async function main() {
   const total =
     (data.exoclick?.revenue ?? 0) +
     (data.adsterra?.revenue ?? 0) +
+    (data.hilltopads?.revenue ?? 0) +
     (data.stripe?.revenue ?? 0) +
     (data.crakrevenue?.revenue ?? 0) +
     (data.chaturbate?.revenue ?? 0);
