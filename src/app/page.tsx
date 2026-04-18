@@ -430,19 +430,11 @@ export default async function HomePage() {
           </section>
 
           {/* Ad #1 — HentaiPros 728x90 desktop / 300x250 mobile.
-              Top of fold above Trending Now, niche-matched. */}
+              Top of fold above Trending Now, niche-matched.
+              Adsterra 300x250 duplicate removed 2026-04-18 — mobile was
+              stacking two 300x250 creatives at the same fold position, both
+              autoplaying MP4 video ads. HentaiPros pays better per fill. */}
           <HentaiProsBanner format="728x90" mobileFormat="300x250" />
-
-          {/* Ad #1bis — Adsterra 300x250 (parallel network for double fill). */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              margin: "12px 0",
-            }}
-          >
-            <AdsterraBanner format="banner300x250" />
-          </div>
 
           {/* ================================================================
               TRENDING NOW -- Horizontal poster scroll

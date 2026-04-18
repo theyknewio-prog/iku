@@ -130,4 +130,47 @@ BEGIN
     ON CONFLICT (key) DO UPDATE SET count = EXCLUDED.count, computed_at = NOW();
 END$$;
 
-SELECT key, count, computed_at FROM videos_count_cache ORDER BY key;
+-- Top-100 tag counts (user /tag/<tag> pages). Without this, every user tag
+-- lookup runs a seq scan + banned-array filter that saturates the PG pool.
+-- Only requireThumbnail=1 (rt=1) is cached — that matches the page query.
+-- Key format: v=all|s=all|rt=1|lf=0|t=<tag>
+INSERT INTO videos_count_cache(key, count)
+SELECT
+  'v=all|s=all|rt=1|lf=0|t=' || tag AS key,
+  COUNT(*) AS count
+FROM (
+  SELECT unnest(tags) AS tag, pk, tags, characters, copyrights, thumbnail
+    FROM videos
+   WHERE thumbnail <> ''
+     AND NOT (tags && ARRAY[
+       'loli','lolicon','lolidom','loli_focus',
+       'shota','shotacon','shotadom','shota_focus',
+       'child','children','minor','underage',
+       'toddler','toddlercon','infant',
+       'young_girl','young_boy','child_on_child','cub','baby',
+       'oppai_loli','legal_loli','elementary_school','kindergarten','randoseru'
+     ]::text[])
+     AND NOT (COALESCE(characters, ARRAY[]::text[]) && ARRAY[
+       'loli','lolicon','shota','shotacon'
+     ]::text[])
+     AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && ARRAY[
+       'loli','lolicon','shota','shotacon'
+     ]::text[])
+) expanded
+WHERE tag NOT IN (
+  'loli','lolicon','lolidom','loli_focus',
+  'shota','shotacon','shotadom','shota_focus',
+  'child','children','minor','underage',
+  'toddler','toddlercon','infant',
+  'young_girl','young_boy','child_on_child','cub','baby',
+  'oppai_loli','legal_loli','elementary_school','kindergarten','randoseru'
+)
+GROUP BY tag
+ORDER BY count DESC
+LIMIT 100
+ON CONFLICT (key) DO UPDATE SET count = EXCLUDED.count, computed_at = NOW();
+
+SELECT key, count, computed_at FROM videos_count_cache
+ WHERE key NOT LIKE 'v=all|s=all|rt=1|lf=0|t=%'
+    OR key = 'v=all|s=all|rt=1|lf=0|t='
+ ORDER BY key;

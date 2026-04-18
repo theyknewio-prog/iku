@@ -488,12 +488,12 @@ function buildCountCacheKey(opts: GetVideosOptions): string {
 }
 
 // Read the precomputed count from videos_count_cache. Returns null if missing
-// or stale (>1h). Scoped to listing-page combos — user search (tags set) is
-// never precomputed and always falls through to the live query.
+// or stale (>2h). Base listing combos always covered; the top 100 tags are
+// also cached (with requireThumbnail=1) by the SQL cron, so /tag/<popular>
+// pages skip the 362K-row seq scan.
 async function readPrecomputedCount(
   opts: GetVideosOptions,
 ): Promise<number | null> {
-  if (opts.tags && opts.tags.trim().length > 0) return null;
   if (opts.source !== "all" && opts.source !== undefined) return null;
   const key = buildCountCacheKey(opts);
   try {

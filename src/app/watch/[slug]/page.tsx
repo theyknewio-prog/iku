@@ -807,7 +807,11 @@ export default async function WatchPage({ params }: WatchPageProps) {
             <aside className="player-sidebar">
               {/* CPM densification 2026-04-15: ExoClick 300x250 above
                   HentaiPros. Sidebar is display:none <768px so this is
-                  a desktop-only surface. */}
+                  a desktop-only surface. lazy={true} 2026-04-18 — desktop
+                  has 3 eager ad zones above fold (under-player HentaiPros
+                  iframe + this one + sidebar 160x600). IntersectionObserver
+                  pushes ExoClick script injection after first paint even
+                  though the zone is visible, cutting time-to-interactive. */}
               <div
                 style={{
                   marginBottom: 16,
@@ -818,6 +822,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 <AdZoneClient
                   zoneId={AD_ZONES.exoclick.sidebar300}
                   size="300x250"
+                  lazy
                 />
               </div>
               {/* Wave 1b 2026-04-13: swapped generic ExoClick for
