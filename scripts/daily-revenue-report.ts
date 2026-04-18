@@ -387,11 +387,11 @@ async function fetchAdsterraData(
 }
 
 // ── HilltopAds ────────────────────────────────────────────────────────────────
-// HilltopAds Publisher API.
-// Endpoint: GET https://api-pub.hilltopads.com/api/v1/stats?date_from=YYYY-MM-DD&date_to=YYYY-MM-DD
-// Header: Authorization: Bearer <API_KEY>
-// Row: { date, impressions, clicks, ctr, ecpm, revenue }
-// API key: publisher dashboard → Account → API
+// HilltopAds Publisher API (confirmed live 2026-04-18).
+// Endpoint: GET https://api.hilltopads.com/publisher/listStats?key=<key>&date=YYYY-MM-DD[&date2=YYYY-MM-DD]&group=date
+// Response: { status: "success", result: [{ date, impressions, clicks, revenue, ... }] }
+//           Result is an array (possibly empty when no revenue yet).
+// API key: https://user.hilltopads.com/account#accountAPI
 
 interface HilltopAdsData {
   revenue: number;
@@ -409,27 +409,37 @@ async function fetchHilltopAdsData(
 
   try {
     const url =
-      `https://api-pub.hilltopads.com/api/v1/stats?` +
-      `date_from=${dateIso}&date_to=${dateIso}`;
+      `https://api.hilltopads.com/publisher/listStats?` +
+      `key=${HILLTOPADS_API_KEY}&date=${dateIso}&group=date`;
 
-    const raw = await httpsGet(url, {
-      Authorization: `Bearer ${HILLTOPADS_API_KEY}`,
-      Accept: "application/json",
-    });
-
+    const raw = await httpsGet(url, { Accept: "application/json" });
     const json = JSON.parse(raw);
-    // HilltopAds API shape varies — try common structures
-    const rows = json?.data ?? json?.items ?? json?.result ?? [];
-    const row = Array.isArray(rows) ? (rows[0] ?? {}) : rows;
 
-    return {
-      revenue: parseFloat(row.revenue ?? row.earnings ?? "0"),
-      impressions: parseInt(
-        row.impressions ?? row.impression ?? row.views ?? "0",
+    if (json?.status !== "success") {
+      log(`HilltopAds non-success: ${raw.slice(0, 200)}`);
+      return { revenue: 0, impressions: 0, clicks: 0 };
+    }
+
+    const rows = Array.isArray(json.result)
+      ? json.result
+      : Object.values(json.result ?? {});
+    if (rows.length === 0) {
+      return { revenue: 0, impressions: 0, clicks: 0 };
+    }
+
+    let revenue = 0,
+      impressions = 0,
+      clicks = 0;
+    for (const r of rows as Array<Record<string, unknown>>) {
+      revenue += parseFloat(String(r.revenue ?? r.earnings ?? "0"));
+      impressions += parseInt(
+        String(r.impressions ?? r.impression ?? r.views ?? "0"),
         10,
-      ),
-      clicks: parseInt(row.clicks ?? "0", 10),
-    };
+      );
+      clicks += parseInt(String(r.clicks ?? "0"), 10);
+    }
+
+    return { revenue, impressions, clicks };
   } catch (err) {
     log(`HilltopAds error: ${(err as Error).message}`);
     return null;

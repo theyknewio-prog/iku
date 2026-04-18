@@ -217,12 +217,41 @@ export async function GET(req: NextRequest) {
       { headers: { "Cache-Control": "no-store" } },
     );
   }
-  // Rewrite mediaUrl through our /api/vast-stream proxy so the browser
-  // pulls the bytes from `iku.gg` (already in CSP) rather than a long
-  // tail of adult-ad CDNs that would each need a CSP whitelist entry.
-  const proxied = `/api/vast-stream?url=${encodeURIComponent(ad.mediaUrl)}`;
+  // Serve mediaUrl direct. Every creative CDN we see (bxcdn/afcdn/magsrv/
+  // exoclick/exdynsrv/realsrv/stripcash/xlivrdr/sacdnssedge) is already
+  // whitelisted in CSP media-src. The previous /api/vast-stream proxy
+  // created a Node-level SPOF — under PG load the stream hung and the
+  // preroll <video> timed out without firing onPlay. Zone 5893268 logged
+  // 2,645 hits / 0 views over 7 days because of this. If ExoClick rotates
+  // in a brand-new CDN host one day, the proxy still exists as a fallback
+  // (we can wrap unknown hosts via VAST_STREAM_UNKNOWN_HOSTS later).
+  let mediaUrl = ad.mediaUrl;
+  try {
+    const u = new URL(ad.mediaUrl);
+    const allowed = [
+      "bxcdn.net",
+      "afcdn.net",
+      "magsrv.com",
+      "exoclick.com",
+      "exosrv.com",
+      "bkcdn.net",
+      "exdynsrv.com",
+      "realsrv.com",
+      "stripcash.com",
+      "xlivrdr.com",
+      "sacdnssedge.com",
+    ];
+    const direct = allowed.some(
+      (s) => u.hostname === s || u.hostname.endsWith("." + s),
+    );
+    if (!direct) {
+      mediaUrl = `/api/vast-stream?url=${encodeURIComponent(ad.mediaUrl)}`;
+    }
+  } catch {
+    mediaUrl = `/api/vast-stream?url=${encodeURIComponent(ad.mediaUrl)}`;
+  }
   return NextResponse.json(
-    { ok: true, ...ad, mediaUrl: proxied },
+    { ok: true, ...ad, mediaUrl },
     { headers: { "Cache-Control": "no-store" } },
   );
 }
