@@ -29,7 +29,7 @@ const SPOTS = {
   "300x100": { spotId: 10001817, w: 300, h: 100 },
   "300x250": { spotId: 10001808, w: 300, h: 250 },
   "315x300": { spotId: 10001816, w: 315, h: 300 },
-  "728x90":  { spotId: 10001811, w: 728, h: 90  },
+  "728x90": { spotId: 10001811, w: 728, h: 90 },
   "900x250": { spotId: 10001820, w: 900, h: 250 },
 } as const;
 
@@ -56,6 +56,7 @@ function renderIframe(format: HentaiBannerFormat, ariaLabel: string) {
       src={src}
       width={spot.w}
       height={spot.h}
+      loading="lazy"
       scrolling="no"
       frameBorder={0}
       allowTransparency
@@ -82,7 +83,8 @@ export function HentaiProsBanner({
   const isFeed = pathname === "/feed" || pathname.startsWith("/feed/");
 
   if (isFeed) return null;
-  if (typeof document !== "undefined" && document.body?.dataset.pro === "1") return null;
+  if (typeof document !== "undefined" && document.body?.dataset.pro === "1")
+    return null;
 
   const desktop = SPOTS[format];
   const useDifferentMobile = mobileFormat && mobileFormat !== format;
@@ -122,13 +124,17 @@ export function HentaiProsBanner({
         @media (min-width: 768px) { .hp-iframe-wrap--mobile  { display: none !important; } }
       `}</style>
       <div
-        className={["hp-iframe-wrap", "hp-iframe-wrap--desktop", className].filter(Boolean).join(" ")}
+        className={["hp-iframe-wrap", "hp-iframe-wrap--desktop", className]
+          .filter(Boolean)
+          .join(" ")}
         style={{ ...wrapperStyle, minHeight: desktop.h }}
       >
         {renderIframe(format, `Advertisement ${format}`)}
       </div>
       <div
-        className={["hp-iframe-wrap", "hp-iframe-wrap--mobile", className].filter(Boolean).join(" ")}
+        className={["hp-iframe-wrap", "hp-iframe-wrap--mobile", className]
+          .filter(Boolean)
+          .join(" ")}
         style={{ ...wrapperStyle, minHeight: mobile.h }}
       >
         {renderIframe(mobileFormat!, `Advertisement ${mobileFormat}`)}

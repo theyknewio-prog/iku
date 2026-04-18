@@ -29,8 +29,8 @@ import { ADSTERRA_SCRIPTS } from "@/lib/ad-config";
 // Size map — must match the Get Code modal "format" values
 const FORMATS = {
   banner300x250: { w: 300, h: 250, url: ADSTERRA_SCRIPTS.banner300x250 },
-  banner728x90:  { w: 728, h: 90,  url: ADSTERRA_SCRIPTS.banner728x90 },
-  banner320x50:  { w: 320, h: 50,  url: ADSTERRA_SCRIPTS.banner320x50 },
+  banner728x90: { w: 728, h: 90, url: ADSTERRA_SCRIPTS.banner728x90 },
+  banner320x50: { w: 320, h: 50, url: ADSTERRA_SCRIPTS.banner320x50 },
   banner160x600: { w: 160, h: 600, url: ADSTERRA_SCRIPTS.banner160x600 },
 } as const;
 
@@ -98,6 +98,7 @@ function renderAdsterraIframe(
       srcDoc={srcDoc}
       width={cfg.w}
       height={cfg.h}
+      loading="lazy"
       scrolling="no"
       frameBorder={0}
       style={{
@@ -132,13 +133,15 @@ export function AdsterraBanner({
   const desktopCfg = FORMATS[format];
   const desktopKey = extractKey(desktopCfg.url);
 
-  const useSplit = resolvedMobileFormat !== null && resolvedMobileFormat !== format;
+  const useSplit =
+    resolvedMobileFormat !== null && resolvedMobileFormat !== format;
   const mobileCfg = useSplit ? FORMATS[resolvedMobileFormat!] : desktopCfg;
   const mobileKey = useSplit ? extractKey(mobileCfg.url) : desktopKey;
 
   // Don't render on /feed or for Pro users
   if (isFeed) return null;
-  if (typeof document !== "undefined" && document.body?.dataset.pro === "1") return null;
+  if (typeof document !== "undefined" && document.body?.dataset.pro === "1")
+    return null;
   if (!desktopKey) return null;
 
   const wrapperBase: React.CSSProperties = {
@@ -172,13 +175,17 @@ export function AdsterraBanner({
         @media (min-width: 768px) { .at-wrap--mobile  { display: none !important; } }
       `}</style>
       <div
-        className={["at-wrap", "at-wrap--desktop", className].filter(Boolean).join(" ")}
+        className={["at-wrap", "at-wrap--desktop", className]
+          .filter(Boolean)
+          .join(" ")}
         style={{ ...wrapperBase, minHeight: desktopCfg.h }}
       >
         {renderAdsterraIframe(format, desktopCfg, desktopKey)}
       </div>
       <div
-        className={["at-wrap", "at-wrap--mobile", className].filter(Boolean).join(" ")}
+        className={["at-wrap", "at-wrap--mobile", className]
+          .filter(Boolean)
+          .join(" ")}
         style={{ ...wrapperBase, minHeight: mobileCfg.h }}
       >
         {renderAdsterraIframe(resolvedMobileFormat!, mobileCfg, mobileKey)}

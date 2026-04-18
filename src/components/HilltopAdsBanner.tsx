@@ -74,6 +74,7 @@ export function HilltopAdsBanner({ format, className, style }: Props) {
         srcDoc={srcDoc}
         width={cfg.w || "100%"}
         height={cfg.h || "100%"}
+        loading="lazy"
         scrolling="no"
         frameBorder={0}
         style={{ display: "block", border: "none", maxWidth: "100%" }}
