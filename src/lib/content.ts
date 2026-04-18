@@ -571,7 +571,7 @@ async function _countVideos(options: GetVideosOptions = {}): Promise<number> {
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
-    await client.query(`SET LOCAL statement_timeout = '3s'`);
+    await client.query(`SET LOCAL statement_timeout = '500ms'`);
     const { rows } = await client.query<{ count: string }>(
       `SELECT COUNT(*)::bigint AS count FROM videos ${whereClause}`,
       params,
