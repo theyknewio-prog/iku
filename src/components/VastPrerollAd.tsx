@@ -32,7 +32,14 @@ type Props = {
 
 const MIN_SKIP_OFFSET = 10;
 
-const LOAD_TIMEOUT_MS = 3000;
+// How long we wait for /api/vast to return a parsed ad. If nothing
+// comes back in time we fail open and let the main video play.
+const VAST_FETCH_TIMEOUT_MS = 2500;
+
+// How long we wait for the <video> element to actually start playing
+// after we've set `ad`. If the creative buffers too long or errors we
+// fail open. Prevents the "black screen then cut" the user reported.
+const PLAYBACK_START_TIMEOUT_MS = 4000;
 
 function firePixels(urls: string[] | undefined) {
   if (!urls || urls.length === 0) return;
@@ -75,7 +82,7 @@ export function VastPrerollAd({ onComplete, provider = "exoclick" }: Props) {
       // No response in time = fail open
       setDone(true);
       completeRef.current();
-    }, LOAD_TIMEOUT_MS);
+    }, VAST_FETCH_TIMEOUT_MS);
 
     fetch(`/api/vast?provider=${provider}`, { cache: "no-store" })
       .then((r) => r.json())
@@ -137,6 +144,21 @@ export function VastPrerollAd({ onComplete, provider = "exoclick" }: Props) {
     fireOnce("start", ad.tracking.start);
   }, [ad, started, fireOnce]);
 
+  // Playback-start watchdog: once we have an `ad`, we expect the <video>
+  // to fire `onPlay` within PLAYBACK_START_TIMEOUT_MS. If it doesn't
+  // (e.g. creative stuck buffering, network blip), we fail open so the
+  // user isn't stuck on a black overlay.
+  useEffect(() => {
+    if (!ad || started || done) return;
+    const id = setTimeout(() => {
+      if (!started && !done) {
+        setDone(true);
+        completeRef.current();
+      }
+    }, PLAYBACK_START_TIMEOUT_MS);
+    return () => clearTimeout(id);
+  }, [ad, started, done]);
+
   const handleEnded = useCallback(() => {
     if (!ad) return;
     fireOnce("complete", ad.tracking.complete);
@@ -171,24 +193,22 @@ export function VastPrerollAd({ onComplete, provider = "exoclick" }: Props) {
   }, []);
 
   if (done) return null;
+  // While /api/vast is in flight OR the <video> hasn't fired onPlay yet,
+  // render an invisible overlay (no black background, no "Loading ad…"
+  // text). The main player sits behind — pausedByOverlay keeps it from
+  // playing underneath. This avoids the 1-3s of opaque black the user
+  // complained about before the creative actually starts.
   if (!ad) {
-    // Loading shim — dark placeholder matching player aspect.
     return (
       <div
         style={{
           position: "absolute",
           inset: 0,
-          background: "#000",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "rgba(255,255,255,0.45)",
-          fontSize: 13,
+          background: "transparent",
           zIndex: 10,
+          pointerEvents: "none",
         }}
-      >
-        Loading ad…
-      </div>
+      />
     );
   }
 
@@ -197,7 +217,11 @@ export function VastPrerollAd({ onComplete, provider = "exoclick" }: Props) {
       style={{
         position: "absolute",
         inset: 0,
-        background: "#000",
+        // Black background ONLY once playback has started, to avoid the
+        // user seeing opaque black while the creative buffers. Before
+        // that the overlay is transparent — the main player behind is
+        // already paused (pausedByOverlay) so there's nothing to hide.
+        background: started ? "#000" : "transparent",
         zIndex: 10,
         display: "flex",
         alignItems: "center",
@@ -211,6 +235,7 @@ export function VastPrerollAd({ onComplete, provider = "exoclick" }: Props) {
         autoPlay
         muted
         playsInline
+        preload="auto"
         onPlay={handlePlay}
         onTimeUpdate={onTimeUpdate}
         onEnded={handleEnded}
@@ -221,31 +246,36 @@ export function VastPrerollAd({ onComplete, provider = "exoclick" }: Props) {
           height: "100%",
           objectFit: "contain",
           cursor: ad.clickThrough ? "pointer" : "default",
+          // Keep <video> invisible until it's actually rolling — same
+          // reason as the wrapper bg above.
+          visibility: started ? "visible" : "hidden",
         }}
       />
 
-      {/* Top-left: "Ad" label */}
-      <div
-        style={{
-          position: "absolute",
-          left: 10,
-          top: 10,
-          background: "rgba(0,0,0,0.6)",
-          color: "#fff",
-          padding: "3px 10px",
-          borderRadius: 4,
-          fontSize: 11,
-          fontWeight: 700,
-          letterSpacing: "0.06em",
-          textTransform: "uppercase",
-          pointerEvents: "none",
-        }}
-      >
-        Ad · {remaining}s
-      </div>
+      {/* Top-left: "Ad" label — only after playback started */}
+      {started && (
+        <div
+          style={{
+            position: "absolute",
+            left: 10,
+            top: 10,
+            background: "rgba(0,0,0,0.6)",
+            color: "#fff",
+            padding: "3px 10px",
+            borderRadius: 4,
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: "0.06em",
+            textTransform: "uppercase",
+            pointerEvents: "none",
+          }}
+        >
+          Ad · {remaining}s
+        </div>
+      )}
 
       {/* Unmute hint */}
-      {muted && (
+      {started && muted && (
         <button
           onClick={handleUnmute}
           style={{
@@ -270,33 +300,36 @@ export function VastPrerollAd({ onComplete, provider = "exoclick" }: Props) {
       )}
 
       {/* Skip button — pill, high contrast when armed so mobile users don't
-          miss it over the ad creative's own CTA. */}
-      <button
-        onClick={handleSkip}
-        disabled={!skipArmed}
-        style={{
-          position: "absolute",
-          right: 12,
-          bottom: 12,
-          background: skipArmed ? "#fff" : "rgba(0,0,0,0.72)",
-          color: skipArmed ? "#000" : "#fff",
-          border: skipArmed ? "none" : "1px solid rgba(255,255,255,0.28)",
-          padding: "12px 20px",
-          borderRadius: 999,
-          fontSize: 14,
-          fontWeight: 800,
-          letterSpacing: "0.01em",
-          cursor: skipArmed ? "pointer" : "default",
-          opacity: skipArmed ? 1 : 0.9,
-          boxShadow: skipArmed ? "0 6px 18px rgba(0,0,0,0.5)" : "none",
-          minWidth: 118,
-          zIndex: 15,
-        }}
-      >
-        {skipArmed
-          ? "Skip Ad ▶"
-          : `Skip in ${Math.max(0, Math.ceil(ad.skipOffset - elapsed))}s`}
-      </button>
+          miss it over the ad creative's own CTA. Hidden until playback
+          begins so it doesn't float over a transparent overlay. */}
+      {started && (
+        <button
+          onClick={handleSkip}
+          disabled={!skipArmed}
+          style={{
+            position: "absolute",
+            right: 12,
+            bottom: 12,
+            background: skipArmed ? "#fff" : "rgba(0,0,0,0.72)",
+            color: skipArmed ? "#000" : "#fff",
+            border: skipArmed ? "none" : "1px solid rgba(255,255,255,0.28)",
+            padding: "12px 20px",
+            borderRadius: 999,
+            fontSize: 14,
+            fontWeight: 800,
+            letterSpacing: "0.01em",
+            cursor: skipArmed ? "pointer" : "default",
+            opacity: skipArmed ? 1 : 0.9,
+            boxShadow: skipArmed ? "0 6px 18px rgba(0,0,0,0.5)" : "none",
+            minWidth: 118,
+            zIndex: 15,
+          }}
+        >
+          {skipArmed
+            ? "Skip Ad ▶"
+            : `Skip in ${Math.max(0, Math.ceil(ad.skipOffset - elapsed))}s`}
+        </button>
+      )}
     </div>
   );
 }

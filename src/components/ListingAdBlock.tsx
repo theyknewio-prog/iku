@@ -1,13 +1,18 @@
 /**
- * ListingAdBlock — server component that renders a parallel cluster of ads
- * from multiple networks at once. Used between every section on listing
- * pages to maximize density without giving up if one network has a poor
- * fill rate at a given moment.
+ * ListingAdBlock — renders ONE ad unit per call site. Previously this
+ * rendered 3 networks in parallel (HP + ExoClick + Adsterra) which stacked
+ * vertically on mobile and produced 9 consecutive ad tiles per route when
+ * the page called top+mid+bottom. That wall of ads was hiding the video
+ * grid below the fold on /hentai, /3d, /new, /tag/*, /character/*, etc.
  *
- * Variants:
- *   - "top"     → 3 ads stacked (HP 300x250 + ExoClick 728/300x50 + Adsterra 300x250)
- *   - "mid"     → 3 ads in a flex row (HP 728x90 + Adsterra 728x90 + ExoClick 300x250)
- *   - "bottom"  → 3 ads stacked (HP 300x100 + Adsterra 300x250 + ExoClick 728/300x50)
+ * Now:
+ *   - "top"    → HentaiPros 300x250 (known-clean, strongest CPM for this niche)
+ *   - "mid"    → Adsterra 300x250 (mid-page diversity)
+ *   - "bottom" → ExoClick 300x250 (bottom of grid)
+ *
+ * Callers get 1 ad per invocation. A listing page that calls all three
+ * variants shows 3 ads total, not 9. Each variant renders the same 300x250
+ * footprint so CLS stays stable across mobile + desktop.
  */
 
 import { HentaiProsBanner } from "./HentaiProsBanner";
@@ -19,9 +24,7 @@ type Variant = "top" | "mid" | "bottom";
 
 const wrap: React.CSSProperties = {
   display: "flex",
-  flexWrap: "wrap",
   justifyContent: "center",
-  gap: 12,
   margin: "16px 0",
 };
 
@@ -29,15 +32,7 @@ export function ListingAdBlock({ variant }: { variant: Variant }) {
   if (variant === "top") {
     return (
       <div style={wrap}>
-        <HentaiProsBanner format="300x250" mobileFormat={null} />
-        <AdZoneClient
-          zoneId={AD_ZONES.exoclick.watchUnderplayer728}
-          size="728x90"
-          mobileZoneId={AD_ZONES.exoclick.mobileBanner300x50 ?? undefined}
-          mobileSize="300x50"
-          lazy
-        />
-        <AdsterraBanner format="banner300x250" />
+        <HentaiProsBanner format="300x250" mobileFormat="300x250" />
       </div>
     );
   }
@@ -45,13 +40,7 @@ export function ListingAdBlock({ variant }: { variant: Variant }) {
   if (variant === "mid") {
     return (
       <div style={wrap}>
-        <HentaiProsBanner format="728x90" mobileFormat="300x250" />
-        <AdsterraBanner format="banner728x90" mobileFormat="banner300x250" />
-        <AdZoneClient
-          zoneId={AD_ZONES.exoclick.sidebar300}
-          size="300x250"
-          lazy
-        />
+        <AdsterraBanner format="banner300x250" />
       </div>
     );
   }
@@ -59,15 +48,7 @@ export function ListingAdBlock({ variant }: { variant: Variant }) {
   // bottom
   return (
     <div style={wrap}>
-      <HentaiProsBanner format="300x100" mobileFormat={null} />
-      <AdsterraBanner format="banner300x250" />
-      <AdZoneClient
-        zoneId={AD_ZONES.exoclick.watchUnderplayer728}
-        size="728x90"
-        mobileZoneId={AD_ZONES.exoclick.mobileBanner300x50 ?? undefined}
-        mobileSize="300x50"
-        lazy
-      />
+      <AdZoneClient zoneId={AD_ZONES.exoclick.sidebar300} size="300x250" lazy />
     </div>
   );
 }
