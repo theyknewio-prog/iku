@@ -20,26 +20,33 @@ export default function GlossaryPage() {
     <div className="shell-content">
       <main>
         <div className="page-container">
-
           {/* Hero */}
           <div className="glossary-hero">
             <p className="tag-hero__label">Reference</p>
             <h1 className="tag-hero__title">Hentai Glossary</h1>
             <p className="glossary-hero__sub">
-              {GLOSSARY.length}+ terms explained — genres, archetypes, tags, and culture.
-              Everything you need to understand hentai.
+              {GLOSSARY.length}+ terms explained — genres, archetypes, tags, and
+              culture. Everything you need to understand hentai.
             </p>
             {/* Cocon sémantique */}
             <div className="glossary-hero__links">
-              <Link href="/blog" className="btn btn-ghost btn-sm">Blog &amp; Guides</Link>
-              <Link href="/tags" className="btn btn-ghost btn-sm">Browse Tags</Link>
+              <Link href="/blog" className="btn btn-ghost btn-sm">
+                Blog &amp; Guides
+              </Link>
+              <Link href="/tags" className="btn btn-ghost btn-sm">
+                Browse Tags
+              </Link>
             </div>
           </div>
 
           {/* Alphabet nav */}
           <nav className="glossary-alpha-nav" aria-label="Alphabet navigation">
             {letters.map((letter) => (
-              <a key={letter} href={`#letter-${letter}`} className="glossary-alpha-link">
+              <a
+                key={letter}
+                href={`#letter-${letter}`}
+                className="glossary-alpha-link"
+              >
                 {letter}
               </a>
             ))}
@@ -48,7 +55,11 @@ export default function GlossaryPage() {
           {/* Terms grouped by letter */}
           <div className="glossary-sections">
             {letters.map((letter) => (
-              <section key={letter} id={`letter-${letter}`} className="glossary-letter-section">
+              <section
+                key={letter}
+                id={`letter-${letter}`}
+                className="glossary-letter-section"
+              >
                 <h2 className="glossary-letter-heading">{letter}</h2>
                 <div className="glossary-grid">
                   {byLetter[letter].map((term) => (
@@ -57,7 +68,9 @@ export default function GlossaryPage() {
                       href={`/glossary/${term.slug}`}
                       className="glossary-card"
                     >
-                      <div className="glossary-card__category">{term.category}</div>
+                      <div className="glossary-card__category">
+                        {term.category}
+                      </div>
                       <h3 className="glossary-card__title">{term.title}</h3>
                       <p className="glossary-card__excerpt">
                         {term.definition.slice(0, 100)}…
@@ -79,10 +92,16 @@ export default function GlossaryPage() {
               </h2>
             </div>
             <div className="glossary-footer-links">
-              <Link href="/blog/what-is-hentai" className="glossary-footer-link">
+              <Link
+                href="/blog/what-is-hentai"
+                className="glossary-footer-link"
+              >
                 What is Hentai? Complete Guide
               </Link>
-              <Link href="/blog/understanding-hentai-tags" className="glossary-footer-link">
+              <Link
+                href="/blog/understanding-hentai-tags"
+                className="glossary-footer-link"
+              >
                 Understanding Hentai Tags
               </Link>
               <Link href="/tags" className="glossary-footer-link">
@@ -90,17 +109,30 @@ export default function GlossaryPage() {
               </Link>
             </div>
           </section>
-
         </div>
 
         <footer className="site-footer">
           <div className="page-container">
             <div className="site-footer__links">
-              <a href="/terms" className="site-footer__link">Terms</a>
-              <a href="/privacy" className="site-footer__link">Privacy</a>
-              <a href="/dmca" className="site-footer__link">DMCA</a>
+              <a href="/terms" className="site-footer__link">
+                Terms
+              </a>
+              <a href="/privacy" className="site-footer__link">
+                Privacy
+              </a>
+              <a href="/dmca" className="site-footer__link">
+                DMCA
+              </a>
+              <a href="/2257" className="site-footer__link">
+                18 U.S.C. § 2257
+              </a>
+              <a href="/contact" className="site-footer__link">
+                Contact
+              </a>
             </div>
-            <p className="site-footer__copy">&copy; {new Date().getFullYear()} iku.gg</p>
+            <p className="site-footer__copy">
+              &copy; {new Date().getFullYear()} iku.gg
+            </p>
           </div>
         </footer>
       </main>

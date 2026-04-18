@@ -22,7 +22,14 @@ export const metadata: Metadata = {
       "Stream the newest hentai videos freshly uploaded to iku.gg. Updated daily.",
     siteName: "iku.gg",
     type: "website",
-    images: [{ url: "https://iku.gg/og-default.png", width: 1200, height: 630, alt: "iku.gg" }],
+    images: [
+      {
+        url: "https://iku.gg/og-default.png",
+        width: 1200,
+        height: 630,
+        alt: "iku.gg",
+      },
+    ],
   },
 };
 
@@ -69,7 +76,14 @@ export default async function NewPage({ searchParams }: Props) {
             </div>
           </div>
 
-          <SortTabs basePath="/new" current={order} defaultSort="date" extraQuery={{ page: currentPage > 1 ? String(currentPage) : undefined }} />
+          <SortTabs
+            basePath="/new"
+            current={order}
+            defaultSort="date"
+            extraQuery={{
+              page: currentPage > 1 ? String(currentPage) : undefined,
+            }}
+          />
 
           {/* ── Video grid ────────────────────────────────────── */}
           {videos.length === 0 ? (
@@ -96,23 +110,32 @@ export default async function NewPage({ searchParams }: Props) {
             </div>
           ) : (
             <>
-            <Link href="/pricing" className="hp-premium-strip" aria-label="Get iku Premium">
-              <span className="hp-premium-strip__icon">🚫</span>
-              <span className="hp-premium-strip__text"><strong>Skip every ad</strong> · 4K when available · Early access · Unlimited favorites</span>
-              <span className="hp-premium-strip__cta">Premium 4.99€/mo →</span>
-            </Link>
-            <ListingAdBlock variant="mid" />
-            <div className="video-grid">
-              {videos.map((video: Video, i) => (
-                <ThumbnailCard
-                  key={video.id}
-                  video={video}
-                  priority={i < 4}
-                  lazy={i >= 4}
-                />
-              ))}
-            </div>
-            <ListingAdBlock variant="bottom" />
+              <Link
+                href="/pricing"
+                className="hp-premium-strip"
+                aria-label="Get iku Premium"
+              >
+                <span className="hp-premium-strip__icon">🚫</span>
+                <span className="hp-premium-strip__text">
+                  <strong>Skip every ad</strong> · 4K when available · Early
+                  access · Unlimited favorites
+                </span>
+                <span className="hp-premium-strip__cta">
+                  Premium 4.99€/mo →
+                </span>
+              </Link>
+              <ListingAdBlock variant="mid" />
+              <div className="video-grid">
+                {videos.map((video: Video, i) => (
+                  <ThumbnailCard
+                    key={video.id}
+                    video={video}
+                    priority={i < 4}
+                    lazy={i >= 4}
+                  />
+                ))}
+              </div>
+              <ListingAdBlock variant="bottom" />
             </>
           )}
 
@@ -120,7 +143,11 @@ export default async function NewPage({ searchParams }: Props) {
           {videos.length > 0 && (
             <div style={{ marginTop: "40px", marginBottom: "48px" }}>
               <Suspense>
-                <Pagination currentPage={currentPage} hasNextPage={hasMore} totalPages={totalPages} />
+                <Pagination
+                  currentPage={currentPage}
+                  hasNextPage={hasMore}
+                  totalPages={totalPages}
+                />
               </Suspense>
             </div>
           )}
@@ -129,11 +156,25 @@ export default async function NewPage({ searchParams }: Props) {
         <footer className="site-footer">
           <div className="page-container">
             <div className="site-footer__links">
-              <a href="/terms" className="site-footer__link">Terms</a>
-              <a href="/privacy" className="site-footer__link">Privacy</a>
-              <a href="/dmca" className="site-footer__link">DMCA</a>
+              <a href="/terms" className="site-footer__link">
+                Terms
+              </a>
+              <a href="/privacy" className="site-footer__link">
+                Privacy
+              </a>
+              <a href="/dmca" className="site-footer__link">
+                DMCA
+              </a>
+              <a href="/2257" className="site-footer__link">
+                18 U.S.C. § 2257
+              </a>
+              <a href="/contact" className="site-footer__link">
+                Contact
+              </a>
             </div>
-            <p className="site-footer__copy">&copy; {new Date().getFullYear()} iku.gg</p>
+            <p className="site-footer__copy">
+              &copy; {new Date().getFullYear()} iku.gg
+            </p>
           </div>
         </footer>
       </main>

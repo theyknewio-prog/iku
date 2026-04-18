@@ -23,7 +23,10 @@ type Props = {
 export const dynamic = "force-dynamic";
 export const revalidate = 3600;
 
-export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: Props): Promise<Metadata> {
   const { tag } = await params;
   const sp = await searchParams;
   const label = tag.replace(/_/g, " ");
@@ -39,27 +42,38 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const next = `${base}?sort=${sort}&page=${page + 1}`;
 
   return {
-    title: page > 1
-      ? `${titleCased} Hentai Videos — Page ${page} | iku.gg`
-      : `${titleCased} Hentai Videos - Best ${titleCased} Anime Porn | iku.gg`,
+    title:
+      page > 1
+        ? `${titleCased} Hentai Videos — Page ${page} | iku.gg`
+        : `${titleCased} Hentai Videos - Best ${titleCased} Anime Porn | iku.gg`,
     description: `Watch the best ${label} hentai videos on iku.gg. Stream free ${label} animated hentai clips — top rated by score, sorted by date or favorites.`,
     other: { rating: "adult" },
     alternates: {
       canonical,
-      ...(prev || next ? {
-        types: {
-          ...(prev ? { "prev": prev } : {}),
-          ...(next ? { "next": next } : {}),
-        },
-      } : {}),
+      ...(prev || next
+        ? {
+            types: {
+              ...(prev ? { prev: prev } : {}),
+              ...(next ? { next: next } : {}),
+            },
+          }
+        : {}),
     },
-    robots: page > 1 ? { index: false, follow: true } : { index: true, follow: true },
+    robots:
+      page > 1 ? { index: false, follow: true } : { index: true, follow: true },
     openGraph: {
       title: `${titleCased} Hentai Videos | iku.gg`,
       description: `Stream free ${label} hentai videos. The best ${label} animated hentai on iku.gg.`,
       siteName: "iku.gg",
       type: "website",
-      images: [{ url: "https://iku.gg/og-default.png", width: 1200, height: 630, alt: `${titleCased} Hentai on iku.gg` }],
+      images: [
+        {
+          url: "https://iku.gg/og-default.png",
+          width: 1200,
+          height: 630,
+          alt: `${titleCased} Hentai on iku.gg`,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
@@ -105,7 +119,12 @@ export default async function TagPage({ params, searchParams }: Props) {
   const label = tag.replace(/_/g, " ");
   const titleCased = label.replace(/\b\w/g, (c) => c.toUpperCase());
   const order =
-    sortParam === "date" || sortParam === "favcount" || sortParam === "score" || sortParam === "duration" ? sortParam : "score";
+    sortParam === "date" ||
+    sortParam === "favcount" ||
+    sortParam === "score" ||
+    sortParam === "duration"
+      ? sortParam
+      : "score";
 
   const [{ data: videos, hasMore }, totalCount, entitySeo] = await Promise.all([
     getVideos({
@@ -135,16 +154,43 @@ export default async function TagPage({ params, searchParams }: Props) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://iku.gg" },
-      { "@type": "ListItem", position: 2, name: "Tags", item: "https://iku.gg/tags" },
-      { "@type": "ListItem", position: 3, name: titleCased, item: `https://iku.gg/tag/${tag}` },
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://iku.gg",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Tags",
+        item: "https://iku.gg/tags",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: titleCased,
+        item: `https://iku.gg/tag/${tag}`,
+      },
     ],
   };
 
   return (
     <div className="shell-content">
-      <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(tagJsonLd).replace(/</g, "\\u003c") }} />
-      <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
+      <script
+        type="application/ld+json"
+        nonce={nonce}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(tagJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        nonce={nonce}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <main>
         <div className="page-container">
           <ListingAdBlock variant="top" />
@@ -176,59 +222,68 @@ export default async function TagPage({ params, searchParams }: Props) {
             {entitySeo ? (
               <div style={{ maxWidth: "760px", marginTop: "14px" }}>
                 {entitySeo.intro.split("\n\n").map((para, i) => (
-                  <p key={i} style={{
-                    color: "var(--color-text-secondary)",
-                    fontSize: "13px",
-                    lineHeight: "1.7",
-                    marginBottom: "12px",
-                  }}>
+                  <p
+                    key={i}
+                    style={{
+                      color: "var(--color-text-secondary)",
+                      fontSize: "13px",
+                      lineHeight: "1.7",
+                      marginBottom: "12px",
+                    }}
+                  >
                     {para}
                   </p>
                 ))}
               </div>
             ) : (
-            <p
-              style={{
-                color: "var(--color-text-secondary)",
-                fontSize: "13px",
-                lineHeight: "1.7",
-                marginTop: "14px",
-                maxWidth: "760px",
-              }}
-            >
-              Watch <strong>{titleCased.toLowerCase()} hentai</strong> videos
-              on iku.gg — the largest free collection of{" "}
-              {titleCased.toLowerCase()} animated porn, 3D hentai, SFM clips
-              and fan animations. Every {titleCased.toLowerCase()} video is
-              streamable instantly with no signup required. Browse by score,
-              newest, or most favorited, and find related{" "}
-              <Link href="/tags" style={{ color: "var(--color-accent)" }}>
-                tags
-              </Link>
-              ,{" "}
-              <Link href="/character" style={{ color: "var(--color-accent)" }}>
-                characters
-              </Link>
-              , and{" "}
-              <Link href="/series" style={{ color: "var(--color-accent)" }}>
-                series/games
-              </Link>{" "}
-              below. Prefer long-form 2D episodes? Check our{" "}
-              <Link href="/hentai" style={{ color: "var(--color-accent)" }}>
-                hentai catalogue
-              </Link>
-              , or swipe the{" "}
-              <Link href="/feed" style={{ color: "var(--color-accent)" }}>
-                Shorts feed
-              </Link>{" "}
-              for quick clips.
-            </p>
+              <p
+                style={{
+                  color: "var(--color-text-secondary)",
+                  fontSize: "13px",
+                  lineHeight: "1.7",
+                  marginTop: "14px",
+                  maxWidth: "760px",
+                }}
+              >
+                Watch <strong>{titleCased.toLowerCase()} hentai</strong> videos
+                on iku.gg — the largest free collection of{" "}
+                {titleCased.toLowerCase()} animated porn, 3D hentai, SFM clips
+                and fan animations. Every {titleCased.toLowerCase()} video is
+                streamable instantly with no signup required. Browse by score,
+                newest, or most favorited, and find related{" "}
+                <Link href="/tags" style={{ color: "var(--color-accent)" }}>
+                  tags
+                </Link>
+                ,{" "}
+                <Link
+                  href="/character"
+                  style={{ color: "var(--color-accent)" }}
+                >
+                  characters
+                </Link>
+                , and{" "}
+                <Link href="/series" style={{ color: "var(--color-accent)" }}>
+                  series/games
+                </Link>{" "}
+                below. Prefer long-form 2D episodes? Check our{" "}
+                <Link href="/hentai" style={{ color: "var(--color-accent)" }}>
+                  hentai catalogue
+                </Link>
+                , or swipe the{" "}
+                <Link href="/feed" style={{ color: "var(--color-accent)" }}>
+                  Shorts feed
+                </Link>{" "}
+                for quick clips.
+              </p>
             )}
           </div>
 
           {/* FAQ — from entity_seo (Google FAQPage rich result eligible). */}
           {entitySeo && entitySeo.faq.length > 0 && (
-            <section className="watch-faq" style={{ maxWidth: "760px", marginTop: "32px" }}>
+            <section
+              className="watch-faq"
+              style={{ maxWidth: "760px", marginTop: "32px" }}
+            >
               <h2 className="watch-faq__heading">Frequently asked questions</h2>
               {entitySeo.faq.map((item, i) => (
                 <details key={i} className="watch-faq__item">
@@ -274,14 +329,23 @@ export default async function TagPage({ params, searchParams }: Props) {
             </div>
           ) : (
             <>
-            <Link href="/pricing" className="hp-premium-strip" aria-label="Get iku Premium">
-              <span className="hp-premium-strip__icon">🚫</span>
-              <span className="hp-premium-strip__text"><strong>Skip every ad</strong> · 4K when available · Early access · Unlimited favorites</span>
-              <span className="hp-premium-strip__cta">Premium 4.99€/mo →</span>
-            </Link>
-            <ListingAdBlock variant="mid" />
-            <BlacklistFilter videos={videos} />
-            <ListingAdBlock variant="bottom" />
+              <Link
+                href="/pricing"
+                className="hp-premium-strip"
+                aria-label="Get iku Premium"
+              >
+                <span className="hp-premium-strip__icon">🚫</span>
+                <span className="hp-premium-strip__text">
+                  <strong>Skip every ad</strong> · 4K when available · Early
+                  access · Unlimited favorites
+                </span>
+                <span className="hp-premium-strip__cta">
+                  Premium 4.99€/mo →
+                </span>
+              </Link>
+              <ListingAdBlock variant="mid" />
+              <BlacklistFilter videos={videos} />
+              <ListingAdBlock variant="bottom" />
             </>
           )}
 
@@ -289,7 +353,11 @@ export default async function TagPage({ params, searchParams }: Props) {
           {videos.length > 0 && (
             <div style={{ marginTop: "40px", marginBottom: "48px" }}>
               <Suspense>
-                <Pagination currentPage={currentPage} hasNextPage={hasMore} totalPages={totalPages} />
+                <Pagination
+                  currentPage={currentPage}
+                  hasNextPage={hasMore}
+                  totalPages={totalPages}
+                />
               </Suspense>
             </div>
           )}
@@ -326,17 +394,28 @@ export default async function TagPage({ params, searchParams }: Props) {
             <div className="tag-crosslinks">
               <Link href="/glossary" className="tag-crosslink-card">
                 <span className="tag-crosslink-card__label">Glossary</span>
-                <span className="tag-crosslink-card__title">What Does {titleCased} Mean?</span>
-                <span className="tag-crosslink-card__cta">Read definition →</span>
+                <span className="tag-crosslink-card__title">
+                  What Does {titleCased} Mean?
+                </span>
+                <span className="tag-crosslink-card__cta">
+                  Read definition →
+                </span>
               </Link>
-              <Link href="/blog/understanding-hentai-tags" className="tag-crosslink-card">
+              <Link
+                href="/blog/understanding-hentai-tags"
+                className="tag-crosslink-card"
+              >
                 <span className="tag-crosslink-card__label">Guide</span>
-                <span className="tag-crosslink-card__title">Understanding Hentai Tags</span>
+                <span className="tag-crosslink-card__title">
+                  Understanding Hentai Tags
+                </span>
                 <span className="tag-crosslink-card__cta">Read guide →</span>
               </Link>
               <Link href="/blog/what-is-hentai" className="tag-crosslink-card">
                 <span className="tag-crosslink-card__label">Blog</span>
-                <span className="tag-crosslink-card__title">What is Hentai?</span>
+                <span className="tag-crosslink-card__title">
+                  What is Hentai?
+                </span>
                 <span className="tag-crosslink-card__cta">Read article →</span>
               </Link>
             </div>
@@ -346,11 +425,25 @@ export default async function TagPage({ params, searchParams }: Props) {
         <footer className="site-footer">
           <div className="page-container">
             <div className="site-footer__links">
-              <a href="/terms" className="site-footer__link">Terms</a>
-              <a href="/privacy" className="site-footer__link">Privacy</a>
-              <a href="/dmca" className="site-footer__link">DMCA</a>
+              <a href="/terms" className="site-footer__link">
+                Terms
+              </a>
+              <a href="/privacy" className="site-footer__link">
+                Privacy
+              </a>
+              <a href="/dmca" className="site-footer__link">
+                DMCA
+              </a>
+              <a href="/2257" className="site-footer__link">
+                18 U.S.C. § 2257
+              </a>
+              <a href="/contact" className="site-footer__link">
+                Contact
+              </a>
             </div>
-            <p className="site-footer__copy">&copy; {new Date().getFullYear()} iku.gg</p>
+            <p className="site-footer__copy">
+              &copy; {new Date().getFullYear()} iku.gg
+            </p>
           </div>
         </footer>
       </main>

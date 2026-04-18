@@ -865,7 +865,10 @@ export default async function WatchPage({ params }: WatchPageProps) {
                   DMCA
                 </a>
                 <a href="/2257" className="site-footer__link">
-                  18 U.S.C. 2257
+                  18 U.S.C. § 2257
+                </a>
+                <a href="/contact" className="site-footer__link">
+                  Contact
                 </a>
               </div>
               <p className="site-footer__copy">

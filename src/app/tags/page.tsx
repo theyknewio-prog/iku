@@ -14,7 +14,14 @@ export const metadata: Metadata = {
       "Explore all hentai tags and categories on iku.gg. Stream free animated hentai by tag.",
     siteName: "iku.gg",
     type: "website",
-    images: [{ url: "https://iku.gg/og-default.png", width: 1200, height: 630, alt: "iku.gg" }],
+    images: [
+      {
+        url: "https://iku.gg/og-default.png",
+        width: 1200,
+        height: 630,
+        alt: "iku.gg",
+      },
+    ],
   },
 };
 
@@ -100,11 +107,25 @@ export default async function TagsPage() {
         <footer className="site-footer">
           <div className="page-container">
             <div className="site-footer__links">
-              <a href="/terms" className="site-footer__link">Terms</a>
-              <a href="/privacy" className="site-footer__link">Privacy</a>
-              <a href="/dmca" className="site-footer__link">DMCA</a>
+              <a href="/terms" className="site-footer__link">
+                Terms
+              </a>
+              <a href="/privacy" className="site-footer__link">
+                Privacy
+              </a>
+              <a href="/dmca" className="site-footer__link">
+                DMCA
+              </a>
+              <a href="/2257" className="site-footer__link">
+                18 U.S.C. § 2257
+              </a>
+              <a href="/contact" className="site-footer__link">
+                Contact
+              </a>
             </div>
-            <p className="site-footer__copy">&copy; {new Date().getFullYear()} iku.gg</p>
+            <p className="site-footer__copy">
+              &copy; {new Date().getFullYear()} iku.gg
+            </p>
           </div>
         </footer>
       </main>

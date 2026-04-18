@@ -34,7 +34,7 @@ async function resolveSeries(slug: string): Promise<Series | null> {
   // Try the slug as a raw copyright tag (e.g. "genshin_impact", "honkai:_star_rail")
   const decoded = decodeURIComponent(slug);
   const candidates = Array.from(
-    new Set([decoded, decoded.replace(/-/g, "_"), decoded.replace(/_/g, "-")])
+    new Set([decoded, decoded.replace(/-/g, "_"), decoded.replace(/_/g, "-")]),
   );
 
   try {
@@ -45,7 +45,7 @@ async function resolveSeries(slug: string): Promise<Series | null> {
        GROUP BY copyright
        ORDER BY count DESC
        LIMIT 1`,
-      [candidates]
+      [candidates],
     );
     if (rows.length === 0 || rows[0].count < 10) return null;
 
@@ -83,31 +83,44 @@ type Props = {
 export const dynamic = "force-dynamic";
 export const revalidate = 3600;
 
-export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: Props): Promise<Metadata> {
   const { slug } = await params;
   const sp = await searchParams;
   const series = await resolveSeries(slug);
   if (!series) return { title: "Series Not Found | iku.gg" };
 
   const page = parseInt(typeof sp.page === "string" ? sp.page : "1") || 1;
-  const canonical = page > 1
-    ? `https://iku.gg/series/${slug}?page=${page}`
-    : `https://iku.gg/series/${slug}`;
+  const canonical =
+    page > 1
+      ? `https://iku.gg/series/${slug}?page=${page}`
+      : `https://iku.gg/series/${slug}`;
 
   return {
-    title: page > 1
-      ? `${series.name} Hentai — Page ${page} | iku.gg`
-      : series.seoTitle,
+    title:
+      page > 1
+        ? `${series.name} Hentai — Page ${page} | iku.gg`
+        : series.seoTitle,
     description: series.seoDescription,
     other: { rating: "adult" },
     alternates: { canonical },
-    robots: page > 1 ? { index: false, follow: true } : { index: true, follow: true },
+    robots:
+      page > 1 ? { index: false, follow: true } : { index: true, follow: true },
     openGraph: {
       title: `${series.name} Hentai Videos | iku.gg`,
       description: series.seoDescription,
       siteName: "iku.gg",
       type: "website",
-      images: [{ url: "https://iku.gg/og-default.png", width: 1200, height: 630, alt: `${series.name} Hentai on iku.gg` }],
+      images: [
+        {
+          url: "https://iku.gg/og-default.png",
+          width: 1200,
+          height: 630,
+          alt: `${series.name} Hentai on iku.gg`,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
@@ -136,7 +149,12 @@ export default async function SeriesPage({ params, searchParams }: Props) {
   const sortParam = typeof sp.sort === "string" ? sp.sort : "score";
   const currentPage = Math.max(1, parseInt(pageParam));
   const order =
-    sortParam === "date" || sortParam === "favcount" || sortParam === "score" || sortParam === "duration" ? sortParam : "score";
+    sortParam === "date" ||
+    sortParam === "favcount" ||
+    sortParam === "score" ||
+    sortParam === "duration"
+      ? sortParam
+      : "score";
 
   const [{ data: videos, hasMore }, totalCount, entitySeo] = await Promise.all([
     getVideos({
@@ -168,31 +186,75 @@ export default async function SeriesPage({ params, searchParams }: Props) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://iku.gg" },
-      { "@type": "ListItem", position: 2, name: "Series", item: "https://iku.gg/series" },
-      { "@type": "ListItem", position: 3, name: series.name, item: `https://iku.gg/series/${slug}` },
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://iku.gg",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Series",
+        item: "https://iku.gg/series",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: series.name,
+        item: `https://iku.gg/series/${slug}`,
+      },
     ],
   };
 
   return (
     <div className="shell-content">
-      <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd).replace(/</g, "\\u003c") }} />
-      <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
+      <script
+        type="application/ld+json"
+        nonce={nonce}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(collectionJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        nonce={nonce}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <main>
         <div className="page-container">
           <ListingAdBlock variant="top" />
 
           {/* ── Series hero ─────────────────────────────────────── */}
           <div className="tag-hero">
-            <nav style={{ fontSize: "var(--text-xs)", color: "var(--color-text-tertiary)", marginBottom: "8px" }}>
-              <Link href="/" style={{ color: "var(--color-text-tertiary)" }}>Home</Link>
+            <nav
+              style={{
+                fontSize: "var(--text-xs)",
+                color: "var(--color-text-tertiary)",
+                marginBottom: "8px",
+              }}
+            >
+              <Link href="/" style={{ color: "var(--color-text-tertiary)" }}>
+                Home
+              </Link>
               {" / "}
-              <Link href="/series" style={{ color: "var(--color-text-tertiary)" }}>Series</Link>
+              <Link
+                href="/series"
+                style={{ color: "var(--color-text-tertiary)" }}
+              >
+                Series
+              </Link>
               {" / "}
-              <span style={{ color: "var(--color-text-secondary)" }}>{series.name}</span>
+              <span style={{ color: "var(--color-text-secondary)" }}>
+                {series.name}
+              </span>
             </nav>
             <p className="tag-hero__label">Hentai Series</p>
-            <h1 className="tag-hero__title">{series.name} Hentai — Best Videos &amp; Fan Animation</h1>
+            <h1 className="tag-hero__title">
+              {series.name} Hentai — Best Videos &amp; Fan Animation
+            </h1>
 
             <div className="tag-hero__stats">
               <span className="tag-hero__stat">
@@ -206,7 +268,9 @@ export default async function SeriesPage({ params, searchParams }: Props) {
               </span>
               <span className="tag-hero__stat">
                 Sorted by{" "}
-                <strong>{SORT_OPTIONS.find((s) => s.value === order)?.label}</strong>
+                <strong>
+                  {SORT_OPTIONS.find((s) => s.value === order)?.label}
+                </strong>
               </span>
             </div>
           </div>
@@ -216,16 +280,23 @@ export default async function SeriesPage({ params, searchParams }: Props) {
             {entitySeo ? (
               <div style={{ maxWidth: "720px" }}>
                 {entitySeo.intro.split("\n\n").map((para, i) => (
-                  <p key={i} style={{
-                    color: "var(--color-text-secondary)",
-                    fontSize: "var(--text-sm)",
-                    lineHeight: 1.7,
-                    marginBottom: "12px",
-                  }}>{para}</p>
+                  <p
+                    key={i}
+                    style={{
+                      color: "var(--color-text-secondary)",
+                      fontSize: "var(--text-sm)",
+                      lineHeight: 1.7,
+                      marginBottom: "12px",
+                    }}
+                  >
+                    {para}
+                  </p>
                 ))}
                 {entitySeo.faq.length > 0 && (
                   <div className="watch-faq" style={{ marginTop: "24px" }}>
-                    <h2 className="watch-faq__heading">Frequently asked questions</h2>
+                    <h2 className="watch-faq__heading">
+                      Frequently asked questions
+                    </h2>
                     {entitySeo.faq.map((item, i) => (
                       <details key={i} className="watch-faq__item">
                         <summary className="watch-faq__q">{item.q}</summary>
@@ -236,12 +307,16 @@ export default async function SeriesPage({ params, searchParams }: Props) {
                 )}
               </div>
             ) : (
-              <p style={{
-                color: "var(--color-text-secondary)",
-                fontSize: "var(--text-sm)",
-                lineHeight: 1.7,
-                maxWidth: "720px",
-              }}>{series.description}</p>
+              <p
+                style={{
+                  color: "var(--color-text-secondary)",
+                  fontSize: "var(--text-sm)",
+                  lineHeight: 1.7,
+                  maxWidth: "720px",
+                }}
+              >
+                {series.description}
+              </p>
             )}
           </section>
 
@@ -255,15 +330,18 @@ export default async function SeriesPage({ params, searchParams }: Props) {
                 </h2>
               </div>
               <div className="tag-grid">
-                {seriesCharacters.map((ch) => ch && (
-                  <Link
-                    key={ch.slug}
-                    href={`/character/${ch.slug}`}
-                    className="tag-pill tag-pill--dark"
-                  >
-                    {ch.name}
-                  </Link>
-                ))}
+                {seriesCharacters.map(
+                  (ch) =>
+                    ch && (
+                      <Link
+                        key={ch.slug}
+                        href={`/character/${ch.slug}`}
+                        className="tag-pill tag-pill--dark"
+                      >
+                        {ch.name}
+                      </Link>
+                    ),
+                )}
               </div>
             </section>
           )}
@@ -283,7 +361,13 @@ export default async function SeriesPage({ params, searchParams }: Props) {
 
           {/* ── Video grid ────────────────────────────────────── */}
           {videos.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "64px 0", color: "var(--color-text-tertiary)" }}>
+            <div
+              style={{
+                textAlign: "center",
+                padding: "64px 0",
+                color: "var(--color-text-tertiary)",
+              }}
+            >
               <p style={{ fontSize: "var(--text-base)" }}>
                 No hentai videos found for {series.name}
               </p>
@@ -297,14 +381,23 @@ export default async function SeriesPage({ params, searchParams }: Props) {
             </div>
           ) : (
             <>
-            <Link href="/pricing" className="hp-premium-strip" aria-label="Get iku Premium">
-              <span className="hp-premium-strip__icon">🚫</span>
-              <span className="hp-premium-strip__text"><strong>Skip every ad</strong> · 4K when available · Early access · Unlimited favorites</span>
-              <span className="hp-premium-strip__cta">Premium 4.99€/mo →</span>
-            </Link>
-            <ListingAdBlock variant="mid" />
-            <BlacklistFilter videos={videos} />
-            <ListingAdBlock variant="bottom" />
+              <Link
+                href="/pricing"
+                className="hp-premium-strip"
+                aria-label="Get iku Premium"
+              >
+                <span className="hp-premium-strip__icon">🚫</span>
+                <span className="hp-premium-strip__text">
+                  <strong>Skip every ad</strong> · 4K when available · Early
+                  access · Unlimited favorites
+                </span>
+                <span className="hp-premium-strip__cta">
+                  Premium 4.99€/mo →
+                </span>
+              </Link>
+              <ListingAdBlock variant="mid" />
+              <BlacklistFilter videos={videos} />
+              <ListingAdBlock variant="bottom" />
             </>
           )}
 
@@ -312,7 +405,11 @@ export default async function SeriesPage({ params, searchParams }: Props) {
           {videos.length > 0 && (
             <div style={{ marginTop: "40px", marginBottom: "48px" }}>
               <Suspense>
-                <Pagination currentPage={currentPage} hasNextPage={hasMore} totalPages={totalPages} />
+                <Pagination
+                  currentPage={currentPage}
+                  hasNextPage={hasMore}
+                  totalPages={totalPages}
+                />
               </Suspense>
             </div>
           )}
@@ -328,17 +425,25 @@ export default async function SeriesPage({ params, searchParams }: Props) {
             <div className="tag-crosslinks">
               <Link href="/character" className="tag-crosslink-card">
                 <span className="tag-crosslink-card__label">Directory</span>
-                <span className="tag-crosslink-card__title">All Hentai Characters</span>
-                <span className="tag-crosslink-card__cta">Browse characters →</span>
+                <span className="tag-crosslink-card__title">
+                  All Hentai Characters
+                </span>
+                <span className="tag-crosslink-card__cta">
+                  Browse characters →
+                </span>
               </Link>
               <Link href="/series" className="tag-crosslink-card">
                 <span className="tag-crosslink-card__label">Directory</span>
-                <span className="tag-crosslink-card__title">All Hentai Series</span>
+                <span className="tag-crosslink-card__title">
+                  All Hentai Series
+                </span>
                 <span className="tag-crosslink-card__cta">Browse series →</span>
               </Link>
               <Link href="/tags" className="tag-crosslink-card">
                 <span className="tag-crosslink-card__label">Tags</span>
-                <span className="tag-crosslink-card__title">Browse All Tags</span>
+                <span className="tag-crosslink-card__title">
+                  Browse All Tags
+                </span>
                 <span className="tag-crosslink-card__cta">View tags →</span>
               </Link>
             </div>
@@ -348,11 +453,25 @@ export default async function SeriesPage({ params, searchParams }: Props) {
         <footer className="site-footer">
           <div className="page-container">
             <div className="site-footer__links">
-              <a href="/terms" className="site-footer__link">Terms</a>
-              <a href="/privacy" className="site-footer__link">Privacy</a>
-              <a href="/dmca" className="site-footer__link">DMCA</a>
+              <a href="/terms" className="site-footer__link">
+                Terms
+              </a>
+              <a href="/privacy" className="site-footer__link">
+                Privacy
+              </a>
+              <a href="/dmca" className="site-footer__link">
+                DMCA
+              </a>
+              <a href="/2257" className="site-footer__link">
+                18 U.S.C. § 2257
+              </a>
+              <a href="/contact" className="site-footer__link">
+                Contact
+              </a>
             </div>
-            <p className="site-footer__copy">&copy; {new Date().getFullYear()} iku.gg</p>
+            <p className="site-footer__copy">
+              &copy; {new Date().getFullYear()} iku.gg
+            </p>
           </div>
         </footer>
       </main>

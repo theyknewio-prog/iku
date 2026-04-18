@@ -1,11 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import {
-  GLOSSARY,
-  getTermBySlug,
-  getRelatedTerms,
-} from "@/data/glossary";
+import { GLOSSARY, getTermBySlug, getRelatedTerms } from "@/data/glossary";
 import { BLOG_ARTICLES } from "@/data/blog";
 import { getNonce } from "@/lib/csp-nonce";
 
@@ -17,7 +13,9 @@ export function generateStaticParams() {
   return GLOSSARY.map((t) => ({ term: t.slug }));
 }
 
-export async function generateMetadata({ params }: TermPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: TermPageProps): Promise<Metadata> {
   const { term: slug } = await params;
   const term = getTermBySlug(slug);
   if (!term) return { title: "Term not found | iku.gg" };
@@ -45,7 +43,7 @@ export default async function TermPage({ params }: TermPageProps) {
 
   const relatedTerms = getRelatedTerms(term);
   const relatedArticles = BLOG_ARTICLES.filter((a) =>
-    term.relatedArticles.includes(a.slug)
+    term.relatedArticles.includes(a.slug),
   );
 
   /* Breadcrumbs */
@@ -111,18 +109,28 @@ export default async function TermPage({ params }: TermPageProps) {
       <div className="shell-content">
         <main>
           <div className="page-container">
-
             {/* Breadcrumbs */}
             <nav className="glossary-breadcrumbs" aria-label="Breadcrumb">
               {breadcrumbs.map((crumb, i) => (
                 <span key={crumb.url}>
-                  {i > 0 && <span className="glossary-breadcrumbs__sep" aria-hidden> / </span>}
+                  {i > 0 && (
+                    <span className="glossary-breadcrumbs__sep" aria-hidden>
+                      {" "}
+                      /{" "}
+                    </span>
+                  )}
                   {i < breadcrumbs.length - 1 ? (
-                    <Link href={crumb.url.replace("https://iku.gg", "")} className="glossary-breadcrumbs__link">
+                    <Link
+                      href={crumb.url.replace("https://iku.gg", "")}
+                      className="glossary-breadcrumbs__link"
+                    >
                       {crumb.name}
                     </Link>
                   ) : (
-                    <span className="glossary-breadcrumbs__current" aria-current="page">
+                    <span
+                      className="glossary-breadcrumbs__current"
+                      aria-current="page"
+                    >
                       {crumb.name}
                     </span>
                   )}
@@ -144,7 +152,9 @@ export default async function TermPage({ params }: TermPageProps) {
             {/* Related tags */}
             {term.relatedTags.length > 0 && (
               <section className="glossary-related-section">
-                <h2 className="glossary-related-heading">Browse {term.title} Videos</h2>
+                <h2 className="glossary-related-heading">
+                  Browse {term.title} Videos
+                </h2>
                 <div className="glossary-tag-pills">
                   {term.relatedTags.map((tag) => (
                     <Link
@@ -170,7 +180,9 @@ export default async function TermPage({ params }: TermPageProps) {
                       href={`/glossary/${related.slug}`}
                       className="glossary-card"
                     >
-                      <div className="glossary-card__category">{related.category}</div>
+                      <div className="glossary-card__category">
+                        {related.category}
+                      </div>
                       <h3 className="glossary-card__title">{related.title}</h3>
                       <p className="glossary-card__excerpt">
                         {related.definition.slice(0, 100)}…
@@ -194,7 +206,9 @@ export default async function TermPage({ params }: TermPageProps) {
                       className="blog-card"
                     >
                       <div className="blog-card__meta">
-                        <span className="blog-card__read">{article.readingTime} min read</span>
+                        <span className="blog-card__read">
+                          {article.readingTime} min read
+                        </span>
                       </div>
                       <h3 className="blog-card__title">{article.title}</h3>
                       <p className="blog-card__excerpt">{article.excerpt}</p>
@@ -211,17 +225,30 @@ export default async function TermPage({ params }: TermPageProps) {
                 ← Back to Glossary
               </Link>
             </div>
-
           </div>
 
           <footer className="site-footer">
             <div className="page-container">
               <div className="site-footer__links">
-                <a href="/terms" className="site-footer__link">Terms</a>
-                <a href="/privacy" className="site-footer__link">Privacy</a>
-                <a href="/dmca" className="site-footer__link">DMCA</a>
+                <a href="/terms" className="site-footer__link">
+                  Terms
+                </a>
+                <a href="/privacy" className="site-footer__link">
+                  Privacy
+                </a>
+                <a href="/dmca" className="site-footer__link">
+                  DMCA
+                </a>
+                <a href="/2257" className="site-footer__link">
+                  18 U.S.C. § 2257
+                </a>
+                <a href="/contact" className="site-footer__link">
+                  Contact
+                </a>
               </div>
-              <p className="site-footer__copy">&copy; {new Date().getFullYear()} iku.gg</p>
+              <p className="site-footer__copy">
+                &copy; {new Date().getFullYear()} iku.gg
+              </p>
             </div>
           </footer>
         </main>

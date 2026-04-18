@@ -18,7 +18,14 @@ export const metadata: Metadata = {
       "Explore all hentai series on iku.gg. Stream free animated hentai by anime series.",
     siteName: "iku.gg",
     type: "website",
-    images: [{ url: "https://iku.gg/og-default.png", width: 1200, height: 630, alt: "iku.gg" }],
+    images: [
+      {
+        url: "https://iku.gg/og-default.png",
+        width: 1200,
+        height: 630,
+        alt: "iku.gg",
+      },
+    ],
   },
 };
 
@@ -36,25 +43,43 @@ export default async function SeriesIndexPage() {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://iku.gg" },
-      { "@type": "ListItem", position: 2, name: "Series", item: "https://iku.gg/series" },
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://iku.gg",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Series",
+        item: "https://iku.gg/series",
+      },
     ],
   };
 
   return (
     <div className="shell-content">
-      <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
+      <script
+        type="application/ld+json"
+        nonce={nonce}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <main>
         <div className="page-container">
           {/* ── Page hero ─────────────────────────────────────── */}
           <div className="tag-hero">
             <p className="tag-hero__label">Series Directory</p>
             <h1 className="tag-hero__title">Hentai Series</h1>
-            <p style={{
-              color: "var(--color-text-secondary)",
-              fontSize: "var(--text-sm)",
-              marginTop: "8px",
-            }}>
+            <p
+              style={{
+                color: "var(--color-text-secondary)",
+                fontSize: "var(--text-sm)",
+                marginTop: "8px",
+              }}
+            >
               {SERIES.length} anime series to explore
             </p>
           </div>
@@ -90,7 +115,8 @@ export default async function SeriesIndexPage() {
                       <span className="index-series-card__name">{s.name}</span>
                     </div>
                     <span className="index-series-card__count">
-                      {s.characters.length} {s.characters.length === 1 ? "character" : "characters"}
+                      {s.characters.length}{" "}
+                      {s.characters.length === 1 ? "character" : "characters"}
                     </span>
                   </Link>
                 );
@@ -109,17 +135,25 @@ export default async function SeriesIndexPage() {
             <div className="tag-crosslinks">
               <Link href="/character" className="tag-crosslink-card">
                 <span className="tag-crosslink-card__label">Directory</span>
-                <span className="tag-crosslink-card__title">All Hentai Characters</span>
-                <span className="tag-crosslink-card__cta">Browse characters →</span>
+                <span className="tag-crosslink-card__title">
+                  All Hentai Characters
+                </span>
+                <span className="tag-crosslink-card__cta">
+                  Browse characters →
+                </span>
               </Link>
               <Link href="/tags" className="tag-crosslink-card">
                 <span className="tag-crosslink-card__label">Tags</span>
-                <span className="tag-crosslink-card__title">Browse All Tags</span>
+                <span className="tag-crosslink-card__title">
+                  Browse All Tags
+                </span>
                 <span className="tag-crosslink-card__cta">View tags →</span>
               </Link>
               <Link href="/trending" className="tag-crosslink-card">
                 <span className="tag-crosslink-card__label">Trending</span>
-                <span className="tag-crosslink-card__title">Trending Hentai</span>
+                <span className="tag-crosslink-card__title">
+                  Trending Hentai
+                </span>
                 <span className="tag-crosslink-card__cta">View trending →</span>
               </Link>
             </div>
@@ -129,11 +163,25 @@ export default async function SeriesIndexPage() {
         <footer className="site-footer">
           <div className="page-container">
             <div className="site-footer__links">
-              <a href="/terms" className="site-footer__link">Terms</a>
-              <a href="/privacy" className="site-footer__link">Privacy</a>
-              <a href="/dmca" className="site-footer__link">DMCA</a>
+              <a href="/terms" className="site-footer__link">
+                Terms
+              </a>
+              <a href="/privacy" className="site-footer__link">
+                Privacy
+              </a>
+              <a href="/dmca" className="site-footer__link">
+                DMCA
+              </a>
+              <a href="/2257" className="site-footer__link">
+                18 U.S.C. § 2257
+              </a>
+              <a href="/contact" className="site-footer__link">
+                Contact
+              </a>
             </div>
-            <p className="site-footer__copy">&copy; {new Date().getFullYear()} iku.gg</p>
+            <p className="site-footer__copy">
+              &copy; {new Date().getFullYear()} iku.gg
+            </p>
           </div>
         </footer>
       </main>

@@ -20,7 +20,14 @@ export const metadata: Metadata = {
       "Explore all hentai characters on iku.gg. Stream free animated hentai by character.",
     siteName: "iku.gg",
     type: "website",
-    images: [{ url: "https://iku.gg/og-default.png", width: 1200, height: 630, alt: "iku.gg" }],
+    images: [
+      {
+        url: "https://iku.gg/og-default.png",
+        width: 1200,
+        height: 630,
+        alt: "iku.gg",
+      },
+    ],
   },
 };
 
@@ -30,7 +37,10 @@ export const dynamic = "force-dynamic";
 
 // Group characters by series for display
 function groupBySeries() {
-  const groups: { series: (typeof SERIES)[number]; chars: (typeof CHARACTERS)[number][] }[] = [];
+  const groups: {
+    series: (typeof SERIES)[number];
+    chars: (typeof CHARACTERS)[number][];
+  }[] = [];
   for (const s of SERIES) {
     const chars = CHARACTERS.filter((c) => c.series === s.slug);
     if (chars.length > 0) {
@@ -60,14 +70,30 @@ export default async function CharactersPage() {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://iku.gg" },
-      { "@type": "ListItem", position: 2, name: "Characters", item: "https://iku.gg/character" },
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://iku.gg",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Characters",
+        item: "https://iku.gg/character",
+      },
     ],
   };
 
   return (
     <div className="shell-content">
-      <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
+      <script
+        type="application/ld+json"
+        nonce={nonce}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <main>
         <div className="page-container">
           <ListingAdBlock variant="top" />
@@ -75,11 +101,13 @@ export default async function CharactersPage() {
           <div className="tag-hero">
             <p className="tag-hero__label">Character Directory</p>
             <h1 className="tag-hero__title">Hentai Characters</h1>
-            <p style={{
-              color: "var(--color-text-secondary)",
-              fontSize: "var(--text-sm)",
-              marginTop: "8px",
-            }}>
+            <p
+              style={{
+                color: "var(--color-text-secondary)",
+                fontSize: "var(--text-sm)",
+                marginTop: "8px",
+              }}
+            >
               {CHARACTERS.length} characters from {SERIES.length} anime series
             </p>
           </div>
@@ -90,7 +118,10 @@ export default async function CharactersPage() {
               <div className="section-header">
                 <h2 className="section-title">
                   <span className="section-title__bar" aria-hidden />
-                  <Link href={`/series/${series.slug}`} style={{ color: "inherit", textDecoration: "none" }}>
+                  <Link
+                    href={`/series/${series.slug}`}
+                    style={{ color: "inherit", textDecoration: "none" }}
+                  >
                     {series.name}
                   </Link>
                 </h2>
@@ -115,13 +146,18 @@ export default async function CharactersPage() {
                             unoptimized
                           />
                         ) : (
-                          <span className="index-char-card__fallback" aria-hidden>
+                          <span
+                            className="index-char-card__fallback"
+                            aria-hidden
+                          >
                             {fallbackEmoji(c.name)}
                           </span>
                         )}
                       </div>
                       <span className="index-char-card__name">{c.name}</span>
-                      <span className="index-char-card__series">{c.seriesName}</span>
+                      <span className="index-char-card__series">
+                        {c.seriesName}
+                      </span>
                     </Link>
                   );
                 })}
@@ -140,17 +176,23 @@ export default async function CharactersPage() {
             <div className="tag-crosslinks">
               <Link href="/series" className="tag-crosslink-card">
                 <span className="tag-crosslink-card__label">Directory</span>
-                <span className="tag-crosslink-card__title">All Hentai Series</span>
+                <span className="tag-crosslink-card__title">
+                  All Hentai Series
+                </span>
                 <span className="tag-crosslink-card__cta">Browse series →</span>
               </Link>
               <Link href="/tags" className="tag-crosslink-card">
                 <span className="tag-crosslink-card__label">Tags</span>
-                <span className="tag-crosslink-card__title">Browse All Tags</span>
+                <span className="tag-crosslink-card__title">
+                  Browse All Tags
+                </span>
                 <span className="tag-crosslink-card__cta">View tags →</span>
               </Link>
               <Link href="/trending" className="tag-crosslink-card">
                 <span className="tag-crosslink-card__label">Trending</span>
-                <span className="tag-crosslink-card__title">Trending Hentai</span>
+                <span className="tag-crosslink-card__title">
+                  Trending Hentai
+                </span>
                 <span className="tag-crosslink-card__cta">View trending →</span>
               </Link>
             </div>
@@ -160,11 +202,25 @@ export default async function CharactersPage() {
         <footer className="site-footer">
           <div className="page-container">
             <div className="site-footer__links">
-              <a href="/terms" className="site-footer__link">Terms</a>
-              <a href="/privacy" className="site-footer__link">Privacy</a>
-              <a href="/dmca" className="site-footer__link">DMCA</a>
+              <a href="/terms" className="site-footer__link">
+                Terms
+              </a>
+              <a href="/privacy" className="site-footer__link">
+                Privacy
+              </a>
+              <a href="/dmca" className="site-footer__link">
+                DMCA
+              </a>
+              <a href="/2257" className="site-footer__link">
+                18 U.S.C. § 2257
+              </a>
+              <a href="/contact" className="site-footer__link">
+                Contact
+              </a>
             </div>
-            <p className="site-footer__copy">&copy; {new Date().getFullYear()} iku.gg</p>
+            <p className="site-footer__copy">
+              &copy; {new Date().getFullYear()} iku.gg
+            </p>
           </div>
         </footer>
       </main>

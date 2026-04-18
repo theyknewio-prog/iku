@@ -6,7 +6,12 @@ import { AgeGate } from "@/components/AgeGate";
 import { PosterCard } from "@/components/PosterCard";
 import { Carousel } from "@/components/Carousel";
 import { getPopularCharacters } from "@/lib/danbooru";
-import { getVideos, getCuratedGenreCounts, getVideoOfTheDay, getThumbnailsForTags } from "@/lib/content";
+import {
+  getVideos,
+  getCuratedGenreCounts,
+  getVideoOfTheDay,
+  getThumbnailsForTags,
+} from "@/lib/content";
 import { getRule34Post } from "@/lib/rule34";
 import { buildTitle, pickGenreTag } from "@/lib/video-display";
 import { SERIES } from "@/data/series";
@@ -22,21 +27,31 @@ import { AD_ZONES } from "@/lib/ad-config";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai, 3D Hentai & Cartoon Porn | 360,000+ Videos",
-  description: "Stream 360,000+ free hentai, 3D hentai & cartoon porn animations. Genshin, Overwatch, Blue Archive, SFM & classic 2D anime. Swipe Shorts feed included. No signup.",
+  description:
+    "Stream 360,000+ free hentai, 3D hentai & cartoon porn animations. Genshin, Overwatch, Blue Archive, SFM & classic 2D anime. Swipe Shorts feed included. No signup.",
   other: { rating: "adult" },
   alternates: { canonical: "https://iku.gg" },
   openGraph: {
     title: "iku.gg — Free Hentai, 3D Cartoon Porn & Animation Tube",
-    description: "360,000+ free videos: 3D hentai, SFM, cartoon porn, 2D anime, Shorts feed. Genshin, Overwatch, Blue Archive & more.",
+    description:
+      "360,000+ free videos: 3D hentai, SFM, cartoon porn, 2D anime, Shorts feed. Genshin, Overwatch, Blue Archive & more.",
     siteName: "iku.gg",
     type: "website",
     url: "https://iku.gg",
-    images: [{ url: "https://iku.gg/og-default.png", width: 1200, height: 630, alt: "iku.gg — Free Hentai, 3D & Cartoon Porn" }],
+    images: [
+      {
+        url: "https://iku.gg/og-default.png",
+        width: 1200,
+        height: 630,
+        alt: "iku.gg — Free Hentai, 3D & Cartoon Porn",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "iku.gg — Free Hentai, 3D & Cartoon Porn",
-    description: "360,000+ free videos: 3D hentai, SFM, cartoon porn, 2D anime, Shorts feed. Genshin, Overwatch & more.",
+    description:
+      "360,000+ free videos: 3D hentai, SFM, cartoon porn, 2D anime, Shorts feed. Genshin, Overwatch & more.",
     images: ["https://iku.gg/og-default.png"],
   },
 };
@@ -57,7 +72,20 @@ const TAG_COLORS = [
 ];
 
 /* ── Character fallback emojis (when no thumbnail) ───────── */
-const CHAR_EMOJIS = ["⚔️", "🌸", "🧙", "🐉", "🏹", "😈", "👹", "🌙", "🤖", "🌿", "⚗️", "🐱"];
+const CHAR_EMOJIS = [
+  "⚔️",
+  "🌸",
+  "🧙",
+  "🐉",
+  "🏹",
+  "😈",
+  "👹",
+  "🌙",
+  "🤖",
+  "🌿",
+  "⚗️",
+  "🐱",
+];
 
 /* ── Character gradient ring classes — round-robin ─────── */
 const CHAR_RING_CLASSES = [
@@ -116,20 +144,55 @@ export default async function HomePage() {
   // getThumbnailsForTags is the only one that has a data dependency on the
   // result of getCuratedGenreCounts, so it stays in a second step but is
   // cheap anyway (memoized 1h TTL, per-tag lookup).
-  const [trending, newest, topRated, genres, characters, vod, hentaiCover, threeDCover] = await Promise.all([
-    getVideos({ limit: 20, order: "score", source: "all", requireThumbnail: true }),
-    getVideos({ limit: 10, page: newReleasesPage, order: "date", source: "all", requireThumbnail: true }),
-    getVideos({ limit: 8, order: "favcount", source: "all", requireThumbnail: true }),
+  const [
+    trending,
+    newest,
+    topRated,
+    genres,
+    characters,
+    vod,
+    hentaiCover,
+    threeDCover,
+  ] = await Promise.all([
+    getVideos({
+      limit: 20,
+      order: "score",
+      source: "all",
+      requireThumbnail: true,
+    }),
+    getVideos({
+      limit: 10,
+      page: newReleasesPage,
+      order: "date",
+      source: "all",
+      requireThumbnail: true,
+    }),
+    getVideos({
+      limit: 8,
+      order: "favcount",
+      source: "all",
+      requireThumbnail: true,
+    }),
     getCuratedGenreCounts(),
     getPopularCharacters(12),
     getVideoOfTheDay(),
     // Cover thumbs for the 3 vertical hub tiles.
-    getVideos({ limit: 1, order: "score", vertical: "hentai", requireThumbnail: true }),
-    getVideos({ limit: 1, order: "score", vertical: "3d", requireThumbnail: true }),
+    getVideos({
+      limit: 1,
+      order: "score",
+      vertical: "hentai",
+      requireThumbnail: true,
+    }),
+    getVideos({
+      limit: 1,
+      order: "score",
+      vertical: "3d",
+      requireThumbnail: true,
+    }),
   ]);
-  const hentaiTileBg  = hentaiCover.data[0]?.thumbnail || "";
-  const threeDTileBg  = threeDCover.data[0]?.thumbnail || "";
-  const shortsTileBg  = trending.data[0]?.thumbnail || "";
+  const hentaiTileBg = hentaiCover.data[0]?.thumbnail || "";
+  const threeDTileBg = threeDCover.data[0]?.thumbnail || "";
+  const shortsTileBg = trending.data[0]?.thumbnail || "";
 
   // Pinned video — surfaced as the first card in "Trending Now" only
   // (hero is picked before this so it keeps the organic top-scored video).
@@ -141,21 +204,25 @@ export default async function HomePage() {
   const hero = trending.data[0];
 
   if (pinned) {
-    trending.data = [pinned, ...trending.data.filter((v) => v.slug !== pinned.slug)];
+    trending.data = [
+      pinned,
+      ...trending.data.filter((v) => v.slug !== pinned.slug),
+    ];
   }
 
   return (
     <AgeGate>
       <main className="v2-page">
         <div className="v2-content">
-
           {/* ── Mobile stats bar — visible only when hero-right is hidden (<960px) ── */}
           <div className="hp-hero-mobile-stats" aria-label="Live stats">
             <div className="hp-hero-mobile-stats__item hp-hero-mobile-stats__item--live">
               <OnlineCounter />
             </div>
             <div className="hp-hero-mobile-stats__item">
-              <span className="hp-hero-mobile-stats__rating">&#9733; 4.8 rating</span>
+              <span className="hp-hero-mobile-stats__rating">
+                &#9733; 4.8 rating
+              </span>
             </div>
             <div className="hp-hero-mobile-stats__item">
               <span className="hp-hero-mobile-stats__new">+847 today</span>
@@ -173,14 +240,17 @@ export default async function HomePage() {
               </div>
 
               <h1 className="hp-hero-title">
-                Free <span className="hp-hero-gradient-text">Hentai</span><br />
-                &amp; <span className="hp-hero-gradient-text">3D Cartoon Porn</span><br />
+                Free <span className="hp-hero-gradient-text">Hentai</span>
+                <br />
+                &amp;{" "}
+                <span className="hp-hero-gradient-text">3D Cartoon Porn</span>
+                <br />
                 All In One Tube
               </h1>
               <p className="hp-hero-sub">
-                <strong>360,000+</strong> videos — 2D hentai episodes, 3D SFM animations,
-                Genshin &amp; Overwatch compilations, HMV, plus a TikTok-style Shorts feed.
-                No signup.
+                <strong>360,000+</strong> videos — 2D hentai episodes, 3D SFM
+                animations, Genshin &amp; Overwatch compilations, HMV, plus a
+                TikTok-style Shorts feed. No signup.
               </p>
 
               <div className="hp-hero-ctas">
@@ -241,7 +311,10 @@ export default async function HomePage() {
 
                 {/* Preview card */}
                 {hero && (
-                  <Link href={`/watch/${hero.slug}`} className="hp-hero-play-card">
+                  <Link
+                    href={`/watch/${hero.slug}`}
+                    className="hp-hero-play-card"
+                  >
                     <div className="hp-hero-play-card__thumb">
                       {hero.preview ? (
                         <Image
@@ -256,9 +329,13 @@ export default async function HomePage() {
                         <span style={{ fontSize: 36 }}>&#9654;</span>
                       )}
                     </div>
-                    <div className="hp-hero-play-card__title">Trending right now</div>
+                    <div className="hp-hero-play-card__title">
+                      Trending right now
+                    </div>
                     <div className="hp-hero-play-card__meta">
-                      <span className="hp-hero-play-card__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                      <span className="hp-hero-play-card__stars">
+                        &#9733;&#9733;&#9733;&#9733;&#9733;
+                      </span>
                       <span>{formatViews(hero.score)} views</span>
                     </div>
                   </Link>
@@ -271,11 +348,22 @@ export default async function HomePage() {
               UNLOCK BANNER — V6 pattern (OnlyFans-style subscription
               hook). Most profitable per-pixel card on the homepage.
               ════════════════════════════════════════════════════════ */}
-          <Link href="/pricing" className="hp-unlock-banner" aria-label="Unlock all creator libraries with iku Premium">
-            <span className="hp-unlock-banner__icon" aria-hidden="true">✨</span>
+          <Link
+            href="/pricing"
+            className="hp-unlock-banner"
+            aria-label="Unlock all creator libraries with iku Premium"
+          >
+            <span className="hp-unlock-banner__icon" aria-hidden="true">
+              ✨
+            </span>
             <span className="hp-unlock-banner__text">
-              <span className="hp-unlock-banner__title">Unlock every full-length episode</span>
-              <span className="hp-unlock-banner__sub">38,000+ episodes. Skip every ad. 4K when available. Cancel anytime.</span>
+              <span className="hp-unlock-banner__title">
+                Unlock every full-length episode
+              </span>
+              <span className="hp-unlock-banner__sub">
+                38,000+ episodes. Skip every ad. 4K when available. Cancel
+                anytime.
+              </span>
             </span>
             <span className="hp-unlock-banner__cta">4.99€/mo</span>
           </Link>
@@ -290,29 +378,51 @@ export default async function HomePage() {
             <Link
               href="/hentai"
               className="hp-vertical-tile hp-vertical-tile--hentai"
-              style={hentaiTileBg ? { backgroundImage: `url("${hentaiTileBg}")` } : undefined}
+              style={
+                hentaiTileBg
+                  ? { backgroundImage: `url("${hentaiTileBg}")` }
+                  : undefined
+              }
             >
-              <span className="hp-vertical-tile__emoji" aria-hidden="true">🌸</span>
+              <span className="hp-vertical-tile__emoji" aria-hidden="true">
+                🌸
+              </span>
               <span className="hp-vertical-tile__title">Hentai</span>
-              <span className="hp-vertical-tile__sub">Full 2D anime episodes</span>
+              <span className="hp-vertical-tile__sub">
+                Full 2D anime episodes
+              </span>
               <span className="hp-vertical-tile__count">7k+ OAV</span>
             </Link>
             <Link
               href="/3d"
               className="hp-vertical-tile hp-vertical-tile--3d"
-              style={threeDTileBg ? { backgroundImage: `url("${threeDTileBg}")` } : undefined}
+              style={
+                threeDTileBg
+                  ? { backgroundImage: `url("${threeDTileBg}")` }
+                  : undefined
+              }
             >
-              <span className="hp-vertical-tile__emoji" aria-hidden="true">🎮</span>
+              <span className="hp-vertical-tile__emoji" aria-hidden="true">
+                🎮
+              </span>
               <span className="hp-vertical-tile__title">3D Hentai</span>
-              <span className="hp-vertical-tile__sub">SFM, games, cartoon porn</span>
+              <span className="hp-vertical-tile__sub">
+                SFM, games, cartoon porn
+              </span>
               <span className="hp-vertical-tile__count">300k+ clips</span>
             </Link>
             <Link
               href="/feed"
               className="hp-vertical-tile hp-vertical-tile--shorts"
-              style={shortsTileBg ? { backgroundImage: `url("${shortsTileBg}")` } : undefined}
+              style={
+                shortsTileBg
+                  ? { backgroundImage: `url("${shortsTileBg}")` }
+                  : undefined
+              }
             >
-              <span className="hp-vertical-tile__emoji" aria-hidden="true">⚡</span>
+              <span className="hp-vertical-tile__emoji" aria-hidden="true">
+                ⚡
+              </span>
               <span className="hp-vertical-tile__title">Shorts</span>
               <span className="hp-vertical-tile__sub">Swipe infinite feed</span>
               <span className="hp-vertical-tile__count">Mixed</span>
@@ -324,7 +434,13 @@ export default async function HomePage() {
           <HentaiProsBanner format="728x90" mobileFormat="300x250" />
 
           {/* Ad #1bis — Adsterra 300x250 (parallel network for double fill). */}
-          <div style={{ display: "flex", justifyContent: "center", margin: "12px 0" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              margin: "12px 0",
+            }}
+          >
             <AdsterraBanner format="banner300x250" />
           </div>
 
@@ -333,12 +449,23 @@ export default async function HomePage() {
           ================================================================ */}
           <Carousel title="🔥 Trending Now" badge="HOT" seeAllHref="/trending">
             {trending.data.map((video, i) => (
-              <PosterCard key={video.id} video={video} rank={i < 8 ? i + 1 : undefined} priority={i < 5} />
+              <PosterCard
+                key={video.id}
+                video={video}
+                rank={i < 8 ? i + 1 : undefined}
+                priority={i < 5}
+              />
             ))}
           </Carousel>
 
           {/* Ad #2 — ExoClick 728x90 desktop / 300x50 mobile sticky banner. */}
-          <div style={{ display: "flex", justifyContent: "center", margin: "20px 0" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              margin: "20px 0",
+            }}
+          >
             <AdZoneClient
               zoneId={AD_ZONES.exoclick.watchUnderplayer728}
               size="728x90"
@@ -349,10 +476,15 @@ export default async function HomePage() {
           </div>
 
           {/* Premium CTA #1 — slim inline strip after Trending. */}
-          <Link href="/pricing" className="hp-premium-strip" aria-label="Get iku Premium">
+          <Link
+            href="/pricing"
+            className="hp-premium-strip"
+            aria-label="Get iku Premium"
+          >
             <span className="hp-premium-strip__icon">🚫</span>
             <span className="hp-premium-strip__text">
-              <strong>Skip every ad</strong> · 4K when available · Early access · Unlimited favorites
+              <strong>Skip every ad</strong> · 4K when available · Early access
+              · Unlimited favorites
             </span>
             <span className="hp-premium-strip__cta">Premium 4.99€/mo →</span>
           </Link>
@@ -362,7 +494,13 @@ export default async function HomePage() {
           ================================================================ */}
           {vod && (
             <section aria-label="Video of the Day" className="hp-vod">
-              <div className="hp-vod__badge">✨ Video of the Day · {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric" })}</div>
+              <div className="hp-vod__badge">
+                ✨ Video of the Day ·{" "}
+                {new Date().toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                })}
+              </div>
               <Link href={`/watch/${vod.slug}`} className="hp-vod__card">
                 <div className="hp-vod__thumb">
                   {vod.thumbnail && (
@@ -378,22 +516,35 @@ export default async function HomePage() {
                   )}
                   <div className="hp-vod__overlay" />
                   <div className="hp-vod__play">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21" /></svg>
+                    <svg
+                      width="28"
+                      height="28"
+                      viewBox="0 0 24 24"
+                      fill="white"
+                    >
+                      <polygon points="5,3 19,12 5,21" />
+                    </svg>
                   </div>
                 </div>
                 <div className="hp-vod__info">
-                  <div className="hp-vod__eyebrow">🎯 Today's hand-picked banger</div>
+                  <div className="hp-vod__eyebrow">
+                    🎯 Today's hand-picked banger
+                  </div>
                   <h2 className="hp-vod__title">
                     {vod.title
                       ? vod.title.replace(/_/g, " ")
-                      : vod.characters[0]?.replace(/_/g, " ") || "Featured clip"}
+                      : vod.characters[0]?.replace(/_/g, " ") ||
+                        "Featured clip"}
                   </h2>
                   {vod.characters[0] && (
-                    <div className="hp-vod__char">👤 {vod.characters[0].replace(/_/g, " ")}</div>
+                    <div className="hp-vod__char">
+                      👤 {vod.characters[0].replace(/_/g, " ")}
+                    </div>
                   )}
                   <p className="hp-vod__desc">
-                    Curated pick of the day. Watch before midnight UTC to earn <strong>+20 bonus points</strong>.
-                    A new pick drops every day at 00:00 UTC.
+                    Curated pick of the day. Watch before midnight UTC to earn{" "}
+                    <strong>+20 bonus points</strong>. A new pick drops every
+                    day at 00:00 UTC.
                   </p>
                   <div className="hp-vod__cta">Watch now →</div>
                 </div>
@@ -407,7 +558,9 @@ export default async function HomePage() {
           <section aria-label="Top Rated This Week">
             <div className="hp-section-header">
               <h2 className="hp-section-title">⭐ Top Rated This Week</h2>
-              <Link href="/explore" className="hp-section-link">See all &#8594;</Link>
+              <Link href="/explore" className="hp-section-link">
+                See all &#8594;
+              </Link>
             </div>
 
             <div className="hp-video-grid" role="list">
@@ -415,12 +568,15 @@ export default async function HomePage() {
                 const charName = video.characters[0]
                   ? video.characters[0].replace(/_/g, " ")
                   : null;
-                const categoryColor = GRID_CATEGORY_COLORS[i % GRID_CATEGORY_COLORS.length];
+                const categoryColor =
+                  GRID_CATEGORY_COLORS[i % GRID_CATEGORY_COLORS.length];
                 const genre = pickGenreTag(video);
                 const title = buildTitle(video);
                 const rating = scoreToRating(video.score);
                 const isHot = video.score >= 200;
-                const isNew = (Date.now() - new Date(video.createdAt).getTime()) < 72 * 60 * 60 * 1000;
+                const isNew =
+                  Date.now() - new Date(video.createdAt).getTime() <
+                  72 * 60 * 60 * 1000;
 
                 return (
                   <Link
@@ -441,17 +597,27 @@ export default async function HomePage() {
                             unoptimized
                           />
                         ) : (
-                          <div className={`hp-thumb-grad hp-thumb-grad--${(i % 12) + 1}`} />
+                          <div
+                            className={`hp-thumb-grad hp-thumb-grad--${(i % 12) + 1}`}
+                          />
                         )}
                       </div>
                       {isHot && <span className="hp-hot-badge">🔥 Hot</span>}
-                      {!isHot && isNew && <span className="hp-new-badge">New</span>}
+                      {!isHot && isNew && (
+                        <span className="hp-new-badge">New</span>
+                      )}
                       {video.duration && (
-                        <span className="hp-duration-badge">{formatDuration(video.duration)}</span>
+                        <span className="hp-duration-badge">
+                          {formatDuration(video.duration)}
+                        </span>
                       )}
                     </div>
                     <div className="hp-grid-card__info">
-                      <span className={`hp-grid-card__category ${categoryColor}`}>{genre}</span>
+                      <span
+                        className={`hp-grid-card__category ${categoryColor}`}
+                      >
+                        {genre}
+                      </span>
                       <div className="hp-grid-card__title">{title}</div>
                       {charName && (
                         <div className="hp-grid-card__char">👤 {charName}</div>
@@ -459,10 +625,14 @@ export default async function HomePage() {
                       <div className="hp-grid-card__foot">
                         <div className="hp-rating-row">
                           <span className="hp-star-filled">&#9733;</span>
-                          <span className="hp-rating-num">{rating.toFixed(1)}</span>
+                          <span className="hp-rating-num">
+                            {rating.toFixed(1)}
+                          </span>
                           <span>({formatViews(video.favorites)})</span>
                         </div>
-                        <span className="hp-views-count">{formatViews(video.score)} views</span>
+                        <span className="hp-views-count">
+                          {formatViews(video.score)} views
+                        </span>
                       </div>
                     </div>
                   </Link>
@@ -475,13 +645,32 @@ export default async function HomePage() {
           <HentaiProsBanner format="300x250" mobileFormat={null} />
 
           {/* Ad #2bis — Adsterra 728x90/300x250 mobile (parallel network). */}
-          <div style={{ display: "flex", justifyContent: "center", margin: "12px 0" }}>
-            <AdsterraBanner format="banner728x90" mobileFormat="banner300x250" />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              margin: "12px 0",
+            }}
+          >
+            <AdsterraBanner
+              format="banner728x90"
+              mobileFormat="banner300x250"
+            />
           </div>
 
           {/* Ad #2ter — ExoClick 300x250. */}
-          <div style={{ display: "flex", justifyContent: "center", margin: "12px 0" }}>
-            <AdZoneClient zoneId={AD_ZONES.exoclick.sidebar300} size="300x250" lazy />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              margin: "12px 0",
+            }}
+          >
+            <AdZoneClient
+              zoneId={AD_ZONES.exoclick.sidebar300}
+              size="300x250"
+              lazy
+            />
           </div>
 
           {/* ================================================================
@@ -489,24 +678,79 @@ export default async function HomePage() {
               to /series/[franchise] (virtual fallback covers the
               franchises not in SERIES static data).
           ================================================================ */}
-          <section aria-label="Popular Games &amp; Franchises" className="hp-games">
+          <section
+            aria-label="Popular Games &amp; Franchises"
+            className="hp-games"
+          >
             <div className="hp-section-header">
               <h2 className="hp-section-title">🎮 Popular Games</h2>
-              <Link href="/series" className="hp-section-link">See all &#8594;</Link>
+              <Link href="/series" className="hp-section-link">
+                See all &#8594;
+              </Link>
             </div>
 
             <div className="hp-games-grid">
               {[
-                { slug: "genshin_impact",     label: "Genshin Impact",  count: "3.4k", grad: "linear-gradient(135deg, #11998e 0%, #4776e6 100%)" },
-                { slug: "blue_archive",       label: "Blue Archive",    count: "2.2k", grad: "linear-gradient(135deg, #4776e6 0%, #8e54e9 100%)" },
-                { slug: "overwatch",          label: "Overwatch",       count: "2.2k", grad: "linear-gradient(135deg, #ff6b35 0%, #e8467c 100%)" },
-                { slug: "zenless_zone_zero",  label: "Zenless Zone Zero", count: "1.3k", grad: "linear-gradient(135deg, #c94b4b 0%, #4b134f 100%)" },
-                { slug: "final_fantasy",      label: "Final Fantasy",   count: "1.2k", grad: "linear-gradient(135deg, #f7971e 0%, #ffd200 100%)" },
-                { slug: "honkai:_star_rail",  label: "Honkai Star Rail", count: "848", grad: "linear-gradient(135deg, #7b2ff7 0%, #4776e6 100%)" },
-                { slug: "fortnite",           label: "Fortnite",        count: "772", grad: "linear-gradient(135deg, #e8467c 0%, #7b2ff7 100%)" },
-                { slug: "resident_evil",      label: "Resident Evil",   count: "706", grad: "linear-gradient(135deg, #0f2027 0%, #2c5364 100%)" },
-                { slug: "nier:automata",      label: "Nier Automata",   count: "613", grad: "linear-gradient(135deg, #c94b4b 0%, #2c5364 100%)" },
-                { slug: "dead_or_alive",      label: "Dead or Alive",   count: "705", grad: "linear-gradient(135deg, #ff6b35 0%, #c94b4b 100%)" },
+                {
+                  slug: "genshin_impact",
+                  label: "Genshin Impact",
+                  count: "3.4k",
+                  grad: "linear-gradient(135deg, #11998e 0%, #4776e6 100%)",
+                },
+                {
+                  slug: "blue_archive",
+                  label: "Blue Archive",
+                  count: "2.2k",
+                  grad: "linear-gradient(135deg, #4776e6 0%, #8e54e9 100%)",
+                },
+                {
+                  slug: "overwatch",
+                  label: "Overwatch",
+                  count: "2.2k",
+                  grad: "linear-gradient(135deg, #ff6b35 0%, #e8467c 100%)",
+                },
+                {
+                  slug: "zenless_zone_zero",
+                  label: "Zenless Zone Zero",
+                  count: "1.3k",
+                  grad: "linear-gradient(135deg, #c94b4b 0%, #4b134f 100%)",
+                },
+                {
+                  slug: "final_fantasy",
+                  label: "Final Fantasy",
+                  count: "1.2k",
+                  grad: "linear-gradient(135deg, #f7971e 0%, #ffd200 100%)",
+                },
+                {
+                  slug: "honkai:_star_rail",
+                  label: "Honkai Star Rail",
+                  count: "848",
+                  grad: "linear-gradient(135deg, #7b2ff7 0%, #4776e6 100%)",
+                },
+                {
+                  slug: "fortnite",
+                  label: "Fortnite",
+                  count: "772",
+                  grad: "linear-gradient(135deg, #e8467c 0%, #7b2ff7 100%)",
+                },
+                {
+                  slug: "resident_evil",
+                  label: "Resident Evil",
+                  count: "706",
+                  grad: "linear-gradient(135deg, #0f2027 0%, #2c5364 100%)",
+                },
+                {
+                  slug: "nier:automata",
+                  label: "Nier Automata",
+                  count: "613",
+                  grad: "linear-gradient(135deg, #c94b4b 0%, #2c5364 100%)",
+                },
+                {
+                  slug: "dead_or_alive",
+                  label: "Dead or Alive",
+                  count: "705",
+                  grad: "linear-gradient(135deg, #ff6b35 0%, #c94b4b 100%)",
+                },
               ].map((g) => (
                 <Link
                   key={g.slug}
@@ -527,14 +771,20 @@ export default async function HomePage() {
           <section aria-label="Popular Characters">
             <div className="hp-section-header">
               <h2 className="hp-section-title">💖 Popular Characters</h2>
-              <Link href="/tags" className="hp-section-link">See all &#8594;</Link>
+              <Link href="/tags" className="hp-section-link">
+                See all &#8594;
+              </Link>
             </div>
 
             <div className="hp-chars-scroll" role="list">
               {characters.map((char, i) => {
-                const ringClass = CHAR_RING_CLASSES[i % CHAR_RING_CLASSES.length];
+                const ringClass =
+                  CHAR_RING_CLASSES[i % CHAR_RING_CLASSES.length];
                 const displayName = char.name.replace(/_/g, " ");
-                const count = char.count >= 1000 ? `${(char.count / 1000).toFixed(1)}k` : String(char.count);
+                const count =
+                  char.count >= 1000
+                    ? `${(char.count / 1000).toFixed(1)}k`
+                    : String(char.count);
 
                 return (
                   <Link
@@ -545,7 +795,10 @@ export default async function HomePage() {
                   >
                     <div className={`hp-char-avatar-wrap ${ringClass}`}>
                       <div className="hp-char-avatar">
-                        <span className="hp-char-avatar__emoji" style={{ fontSize: "28px", lineHeight: 1 }}>
+                        <span
+                          className="hp-char-avatar__emoji"
+                          style={{ fontSize: "28px", lineHeight: 1 }}
+                        >
                           {CHAR_EMOJIS[i % CHAR_EMOJIS.length]}
                         </span>
                       </div>
@@ -559,16 +812,29 @@ export default async function HomePage() {
           </section>
 
           {/* Ad cluster #3 — between Popular Characters and Premium yearly CTA. */}
-          <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap", margin: "16px 0" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: 16,
+              flexWrap: "wrap",
+              margin: "16px 0",
+            }}
+          >
             <HentaiProsBanner format="300x250" mobileFormat={null} />
             <AdsterraBanner format="banner300x250" />
           </div>
 
           {/* Premium CTA #2 — different angle from #1 (yearly nudge). */}
-          <Link href="/pricing" className="hp-premium-strip hp-premium-strip--yearly" aria-label="Save with yearly Premium">
+          <Link
+            href="/pricing"
+            className="hp-premium-strip hp-premium-strip--yearly"
+            aria-label="Save with yearly Premium"
+          >
             <span className="hp-premium-strip__icon">💎</span>
             <span className="hp-premium-strip__text">
-              <strong>Yearly Premium — save 33%</strong> · 39.99€/year (3.33€/mo) · Cancel anytime
+              <strong>Yearly Premium — save 33%</strong> · 39.99€/year
+              (3.33€/mo) · Cancel anytime
             </span>
             <span className="hp-premium-strip__cta">See plans →</span>
           </Link>
@@ -580,14 +846,19 @@ export default async function HomePage() {
           <section aria-label="Browse by Genre">
             <div className="hp-section-header">
               <h2 className="hp-section-title">🏷️ Browse by Genre</h2>
-              <Link href="/tags" className="hp-section-link">See all &#8594;</Link>
+              <Link href="/tags" className="hp-section-link">
+                See all &#8594;
+              </Link>
             </div>
 
             <div className="hp-tag-stories" role="list">
               {genres.map((genre, i) => {
                 const thumb = genreThumbs[genre.name] || "";
                 const colorClass = TAG_COLORS[i % TAG_COLORS.length];
-                const count = genre.count >= 1000 ? `${(genre.count / 1000).toFixed(1)}k` : String(genre.count);
+                const count =
+                  genre.count >= 1000
+                    ? `${(genre.count / 1000).toFixed(1)}k`
+                    : String(genre.count);
                 return (
                   <Link
                     key={genre.name}
@@ -635,8 +906,22 @@ export default async function HomePage() {
 
           {/* Ad cluster #4 — pre-signup wall: 3 ads stacked. */}
           <HentaiProsBanner format="300x100" mobileFormat={null} />
-          <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap", margin: "16px 0" }}>
-            <AdZoneClient zoneId={AD_ZONES.exoclick.watchUnderplayer728} size="728x90" mobileZoneId={AD_ZONES.exoclick.mobileBanner300x50 ?? undefined} mobileSize="300x50" lazy />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: 12,
+              flexWrap: "wrap",
+              margin: "16px 0",
+            }}
+          >
+            <AdZoneClient
+              zoneId={AD_ZONES.exoclick.watchUnderplayer728}
+              size="728x90"
+              mobileZoneId={AD_ZONES.exoclick.mobileBanner300x50 ?? undefined}
+              mobileSize="300x50"
+              lazy
+            />
             <AdsterraBanner format="banner300x250" />
           </div>
 
@@ -656,11 +941,13 @@ export default async function HomePage() {
               <div className="hp-go-pro__content">
                 <div className="hp-go-pro__eyebrow">✨ iku.gg Pro</div>
                 <h2 className="hp-go-pro__title">
-                  Remove ads. <span className="hp-go-pro__title-accent">Forever.</span>
+                  Remove ads.{" "}
+                  <span className="hp-go-pro__title-accent">Forever.</span>
                 </h2>
                 <p className="hp-go-pro__sub">
-                  Zero ads, unlimited favorites, 48h early access, Discord Pro lounge,
-                  and more. From <strong>4.99€/month</strong> — cancel anytime.
+                  Zero ads, unlimited favorites, 48h early access, Discord Pro
+                  lounge, and more. From <strong>4.99€/month</strong> — cancel
+                  anytime.
                 </p>
                 <div className="hp-go-pro__features">
                   <span>🚫 Zero ads</span>
@@ -672,21 +959,28 @@ export default async function HomePage() {
                 </div>
                 <div className="hp-go-pro__ctas">
                   <MagneticButton>
-                    <Link href="/pricing" className="hp-go-pro__btn hp-go-pro__btn--primary">
+                    <Link
+                      href="/pricing"
+                      className="hp-go-pro__btn hp-go-pro__btn--primary"
+                    >
                       See plans ✨
                     </Link>
                   </MagneticButton>
                   <MagneticButton>
-                    <Link href="/pricing" className="hp-go-pro__btn hp-go-pro__btn--ghost">
+                    <Link
+                      href="/pricing"
+                      className="hp-go-pro__btn hp-go-pro__btn--ghost"
+                    >
                       Lifetime 69.99€
-                      <span className="hp-go-pro__btn-sub">Limited 500 spots</span>
+                      <span className="hp-go-pro__btn-sub">
+                        Limited 500 spots
+                      </span>
                     </Link>
                   </MagneticButton>
                 </div>
               </div>
             </section>
           </ScrollReveal>
-
         </div>
 
         {/* ================================================================
@@ -696,16 +990,30 @@ export default async function HomePage() {
           <div className="hp-footer__grid">
             <div className="hp-footer__col">
               <h3 className="hp-footer__heading">Browse</h3>
-              <Link href="/trending" className="hp-footer__link">Trending</Link>
-              <Link href="/new" className="hp-footer__link">New Releases</Link>
-              <Link href="/explore" className="hp-footer__link">Explore All</Link>
-              <Link href="/tags" className="hp-footer__link">All Tags</Link>
-              <Link href="/feed" className="hp-footer__link">Video Feed</Link>
+              <Link href="/trending" className="hp-footer__link">
+                Trending
+              </Link>
+              <Link href="/new" className="hp-footer__link">
+                New Releases
+              </Link>
+              <Link href="/explore" className="hp-footer__link">
+                Explore All
+              </Link>
+              <Link href="/tags" className="hp-footer__link">
+                All Tags
+              </Link>
+              <Link href="/feed" className="hp-footer__link">
+                Video Feed
+              </Link>
             </div>
             <div className="hp-footer__col">
               <h3 className="hp-footer__heading">Characters</h3>
               {characters.slice(0, 6).map((c) => (
-                <Link key={c.name} href={`/character/${encodeURIComponent(c.name)}`} className="hp-footer__link">
+                <Link
+                  key={c.name}
+                  href={`/character/${encodeURIComponent(c.name)}`}
+                  className="hp-footer__link"
+                >
                   {c.name.replace(/_/g, " ")}
                 </Link>
               ))}
@@ -713,26 +1021,48 @@ export default async function HomePage() {
             <div className="hp-footer__col">
               <h3 className="hp-footer__heading">Series</h3>
               {SERIES.slice(0, 6).map((s) => (
-                <Link key={s.slug} href={`/series/${s.slug}`} className="hp-footer__link">
+                <Link
+                  key={s.slug}
+                  href={`/series/${s.slug}`}
+                  className="hp-footer__link"
+                >
                   {s.name}
                 </Link>
               ))}
             </div>
             <div className="hp-footer__col">
               <h3 className="hp-footer__heading">About</h3>
-              <Link href="/blog" className="hp-footer__link">Blog</Link>
-              <Link href="/glossary" className="hp-footer__link">Glossary</Link>
-              <a href="/terms" className="hp-footer__link">Terms</a>
-              <a href="/privacy" className="hp-footer__link">Privacy</a>
-              <a href="/dmca" className="hp-footer__link">DMCA</a>
+              <Link href="/blog" className="hp-footer__link">
+                Blog
+              </Link>
+              <Link href="/glossary" className="hp-footer__link">
+                Glossary
+              </Link>
+              <a href="/terms" className="hp-footer__link">
+                Terms
+              </a>
+              <a href="/privacy" className="hp-footer__link">
+                Privacy
+              </a>
+              <a href="/dmca" className="hp-footer__link">
+                DMCA
+              </a>
+              <a href="/2257" className="hp-footer__link">
+                18 U.S.C. § 2257
+              </a>
+              <a href="/contact" className="hp-footer__link">
+                Contact
+              </a>
             </div>
           </div>
           <div className="hp-footer__bottom">
             <span className="hp-footer__logo">iku</span>
-            <p className="hp-footer__copy">&copy; {new Date().getFullYear()} iku.gg — All rights reserved. 18+ only.</p>
+            <p className="hp-footer__copy">
+              &copy; {new Date().getFullYear()} iku.gg — All rights reserved.
+              18+ only.
+            </p>
           </div>
         </footer>
-
       </main>
     </AgeGate>
   );
