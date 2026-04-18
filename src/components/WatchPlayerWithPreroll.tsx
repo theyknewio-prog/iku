@@ -18,10 +18,10 @@
  * real bounding box even before the video's natural dimensions are known.
  */
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { WatchPlayer } from "./WatchPlayer";
 import { VastPrerollAd } from "./VastPrerollAd";
-import { PostrollAd }  from "./PostrollAd";
+import { PostrollAd } from "./PostrollAd";
 
 interface RelatedVideo {
   slug: string;
@@ -36,10 +36,22 @@ interface Props {
   relatedVideos?: RelatedVideo[];
 }
 
-export function WatchPlayerWithPreroll({ src, poster, resolveUrl, relatedVideos }: Props) {
-  const [prerollDone,  setPrerollDone]  = useState(false);
+export function WatchPlayerWithPreroll({
+  src,
+  poster,
+  resolveUrl,
+  relatedVideos,
+}: Props) {
+  const [prerollDone, setPrerollDone] = useState(false);
   const [showPostroll, setShowPostroll] = useState(false);
   const [postrollDone, setPostrollDone] = useState(false);
+
+  // A/B preroll provider 50/50 per mount — stable so the countdown
+  // doesn't reset on parent re-renders.
+  const provider = useMemo<"exoclick" | "hilltopads">(
+    () => (Math.random() < 0.5 ? "exoclick" : "hilltopads"),
+    [],
+  );
 
   // Called by WatchPlayer when the video finishes playing
   const handleEnded = useCallback(() => {
@@ -63,7 +75,7 @@ export function WatchPlayerWithPreroll({ src, poster, resolveUrl, relatedVideos 
       {/* Pre-roll — real VAST video ad from ExoClick (zone 5893268).
           Fails open on no-fill / timeout so the user is never blocked. */}
       {!prerollDone && (
-        <VastPrerollAd onComplete={handlePrerollComplete} />
+        <VastPrerollAd onComplete={handlePrerollComplete} provider={provider} />
       )}
 
       {/* Post-roll — shown as an overlay after the video ends */}

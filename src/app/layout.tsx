@@ -9,7 +9,9 @@ import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { getNonce } from "@/lib/csp-nonce";
 import { PushNotifications } from "@/components/PushNotifications";
 import { AdScript } from "@/components/AdScript";
-import { AdsterraPopunder } from "@/components/AdsterraPopunder";
+import { PopunderRotator } from "@/components/PopunderRotator";
+import { AdsterraSocialBar } from "@/components/AdsterraSocialBar";
+import { HilltopAdsInPagePush } from "@/components/HilltopAdsInPagePush";
 import { StickyPremiumBanner } from "@/components/StickyPremiumBanner";
 
 // Fonts: Nunito (primary body) + Righteous (display/headings).
@@ -162,7 +164,13 @@ export default async function RootLayout({
           {/* ExoClick provider — needed for PrerollAd (wave 2 2026-04-13).
               Loads lazyOnload, skips for Pro users. */}
           <AdScript />
-          <AdsterraPopunder />
+          {/* Popunder — 50/50 Adsterra vs HilltopAds per session,
+              never stacks two pops. */}
+          <PopunderRotator />
+          {/* Adsterra Social Bar — sticky icon cluster, high mobile CPM. */}
+          <AdsterraSocialBar />
+          {/* HilltopAds in-page push — browser-style notification slide-in. */}
+          <HilltopAdsInPagePush />
           <StickyPremiumBanner />
           <AppShell footer={<MegaFooter />}>{children}</AppShell>
         </SessionProviderClient>

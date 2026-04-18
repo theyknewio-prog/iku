@@ -6,6 +6,7 @@ import { getVideos } from "@/lib/content";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
+import { NativeAdCard } from "@/components/NativeAdCard";
 import { SortTabs, parseSort } from "@/components/SortTabs";
 
 export const metadata: Metadata = {
@@ -106,13 +107,19 @@ export default async function TrendingPage(props: {
           ) : (
             <div className="video-grid">
               {videos.map((video: Video, i) => (
-                <ThumbnailCard
-                  key={video.id}
-                  video={video}
-                  rank={i + 1}
-                  priority={i < 4}
-                  lazy={i >= 4}
-                />
+                <React.Fragment key={video.id}>
+                  <ThumbnailCard
+                    video={video}
+                    rank={i + 1}
+                    priority={i < 4}
+                    lazy={i >= 4}
+                  />
+                  {/* Native ad every 12 videos on desktop (CSS hides on mobile
+                      via .native-ad-card @media max-width: 767px). */}
+                  {(i + 1) % 12 === 0 && i < videos.length - 1 && (
+                    <NativeAdCard />
+                  )}
+                </React.Fragment>
               ))}
             </div>
           )}

@@ -15,7 +15,7 @@
  */
 
 import { NextResponse, type NextRequest } from "next/server";
-import { AD_ZONES } from "@/lib/ad-config";
+import { AD_ZONES, HILLTOPADS_SCRIPTS } from "@/lib/ad-config";
 
 export const dynamic = "force-dynamic";
 
@@ -62,7 +62,10 @@ type ParsedAd = {
   tracking: Record<string, string[]>;
 };
 
-async function resolveVast(url: string, hops: number): Promise<ParsedAd | null> {
+async function resolveVast(
+  url: string,
+  hops: number,
+): Promise<ParsedAd | null> {
   if (hops > MAX_WRAPPER_HOPS) return null;
   let xml: string;
   try {
@@ -76,7 +79,9 @@ async function resolveVast(url: string, hops: number): Promise<ParsedAd | null> 
   const wrapper = xml.match(/<VASTAdTagURI[^>]*>([\s\S]*?)<\/VASTAdTagURI>/i);
   if (wrapper) {
     const childUrl = cdata(wrapper[1]);
-    const parentImpressions = Array.from(xml.matchAll(/<Impression[^>]*>([\s\S]*?)<\/Impression>/gi))
+    const parentImpressions = Array.from(
+      xml.matchAll(/<Impression[^>]*>([\s\S]*?)<\/Impression>/gi),
+    )
       .map((m) => cdata(m[1]))
       .filter(Boolean);
     const parentTracking = collectTracking(xml);
@@ -91,7 +96,7 @@ async function resolveVast(url: string, hops: number): Promise<ParsedAd | null> 
 
   // InLine — extract MediaFile, tracking, clickthrough.
   const mediaFiles = Array.from(
-    xml.matchAll(/<MediaFile\b[^>]*>([\s\S]*?)<\/MediaFile>/gi)
+    xml.matchAll(/<MediaFile\b[^>]*>([\s\S]*?)<\/MediaFile>/gi),
   )
     .map((m) => ({
       attrs: m[0],
@@ -112,11 +117,13 @@ async function resolveVast(url: string, hops: number): Promise<ParsedAd | null> 
   const skipMatch = xml.match(/skipoffset\s*=\s*"([^"]+)"/i);
   const skipOffset = skipMatch ? parseDuration(skipMatch[1]) : 5;
 
-  const clickMatch = xml.match(/<ClickThrough[^>]*>([\s\S]*?)<\/ClickThrough>/i);
+  const clickMatch = xml.match(
+    /<ClickThrough[^>]*>([\s\S]*?)<\/ClickThrough>/i,
+  );
   const clickThrough = clickMatch ? cdata(clickMatch[1]) : "";
 
   const impressions = Array.from(
-    xml.matchAll(/<Impression[^>]*>([\s\S]*?)<\/Impression>/gi)
+    xml.matchAll(/<Impression[^>]*>([\s\S]*?)<\/Impression>/gi),
   )
     .map((m) => cdata(m[1]))
     .filter(Boolean);
@@ -125,13 +132,22 @@ async function resolveVast(url: string, hops: number): Promise<ParsedAd | null> 
 
   // Click-tracking pixels — we fire these on click alongside the clickThrough.
   const clickTrackMatches = Array.from(
-    xml.matchAll(/<ClickTracking[^>]*>([\s\S]*?)<\/ClickTracking>/gi)
-  ).map((m) => cdata(m[1])).filter(Boolean);
+    xml.matchAll(/<ClickTracking[^>]*>([\s\S]*?)<\/ClickTracking>/gi),
+  )
+    .map((m) => cdata(m[1]))
+    .filter(Boolean);
   if (clickTrackMatches.length) {
     tracking.click = [...(tracking.click ?? []), ...clickTrackMatches];
   }
 
-  return { mediaUrl, duration, skipOffset, clickThrough, impressions, tracking };
+  return {
+    mediaUrl,
+    duration,
+    skipOffset,
+    clickThrough,
+    impressions,
+    tracking,
+  };
 }
 
 function collectTracking(xml: string): Record<string, string[]> {
@@ -148,7 +164,7 @@ function collectTracking(xml: string): Record<string, string[]> {
 
 function mergeTracking(
   a: Record<string, string[]>,
-  b: Record<string, string[]>
+  b: Record<string, string[]>,
 ): Record<string, string[]> {
   const out: Record<string, string[]> = { ...a };
   for (const [k, v] of Object.entries(b)) {
@@ -158,18 +174,29 @@ function mergeTracking(
 }
 
 export async function GET(req: NextRequest) {
-  const zone = req.nextUrl.searchParams.get("zone") || AD_ZONES.exoclick.videoPreroll;
-  // Validate zone is numeric — don't let callers inject an arbitrary URL.
-  if (!/^\d+$/.test(zone)) {
-    return NextResponse.json({ ok: false, reason: "bad_zone" }, { status: 400 });
+  const provider = req.nextUrl.searchParams.get("provider") || "exoclick";
+
+  let vastUrl: string;
+  if (provider === "hilltopads") {
+    // HilltopAds VAST URL is a fixed tokenized endpoint (not zone-param based).
+    vastUrl = HILLTOPADS_SCRIPTS.vastPrerollUrl;
+  } else {
+    const zone =
+      req.nextUrl.searchParams.get("zone") || AD_ZONES.exoclick.videoPreroll;
+    if (!/^\d+$/.test(zone)) {
+      return NextResponse.json(
+        { ok: false, reason: "bad_zone" },
+        { status: 400 },
+      );
+    }
+    vastUrl = `https://s.magsrv.com/v1/vast.php?idzone=${zone}`;
   }
 
-  const vastUrl = `https://s.magsrv.com/v1/vast.php?idzone=${zone}`;
   const ad = await resolveVast(vastUrl, 0);
   if (!ad) {
     return NextResponse.json(
       { ok: false, reason: "no_fill" },
-      { headers: { "Cache-Control": "no-store" } }
+      { headers: { "Cache-Control": "no-store" } },
     );
   }
   // Rewrite mediaUrl through our /api/vast-stream proxy so the browser
@@ -178,6 +205,6 @@ export async function GET(req: NextRequest) {
   const proxied = `/api/vast-stream?url=${encodeURIComponent(ad.mediaUrl)}`;
   return NextResponse.json(
     { ok: true, ...ad, mediaUrl: proxied },
-    { headers: { "Cache-Control": "no-store" } }
+    { headers: { "Cache-Control": "no-store" } },
   );
 }

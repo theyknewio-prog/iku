@@ -25,7 +25,12 @@ type VastAd = {
   tracking: Record<string, string[]>;
 };
 
-type Props = { onComplete: () => void };
+type Props = {
+  onComplete: () => void;
+  provider?: "exoclick" | "hilltopads";
+};
+
+const MIN_SKIP_OFFSET = 10;
 
 const LOAD_TIMEOUT_MS = 3000;
 
@@ -41,7 +46,7 @@ function firePixels(urls: string[] | undefined) {
   }
 }
 
-export function VastPrerollAd({ onComplete }: Props) {
+export function VastPrerollAd({ onComplete, provider = "exoclick" }: Props) {
   const [ad, setAd] = useState<VastAd | null>(null);
   const [started, setStarted] = useState(false);
   const [skipArmed, setSkipArmed] = useState(false);
@@ -72,7 +77,7 @@ export function VastPrerollAd({ onComplete }: Props) {
       completeRef.current();
     }, LOAD_TIMEOUT_MS);
 
-    fetch("/api/vast", { cache: "no-store" })
+    fetch(`/api/vast?provider=${provider}`, { cache: "no-store" })
       .then((r) => r.json())
       .then((data: { ok: boolean } & VastAd) => {
         if (cancelled) return;
@@ -81,8 +86,14 @@ export function VastPrerollAd({ onComplete }: Props) {
           completeRef.current();
           return;
         }
-        setAd(data);
-        setRemaining(data.duration || 15);
+        // Force a minimum skip delay so users can't skip in 3–5s
+        // (which hurts fill rate and our ad revenue).
+        const patched: VastAd = {
+          ...data,
+          skipOffset: Math.max(MIN_SKIP_OFFSET, data.skipOffset || 0),
+        };
+        setAd(patched);
+        setRemaining(patched.duration || 15);
       })
       .catch(() => {
         if (cancelled) return;
@@ -95,7 +106,7 @@ export function VastPrerollAd({ onComplete }: Props) {
       cancelled = true;
       clearTimeout(timeoutId);
     };
-  }, [onComplete, started]);
+  }, [onComplete, started, provider]);
 
   const fireOnce = useCallback((key: string, urls?: string[]) => {
     if (firedRef.current.has(key)) return;
