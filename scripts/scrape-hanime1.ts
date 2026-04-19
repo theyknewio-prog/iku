@@ -203,10 +203,12 @@ async function enumerateAllIds(): Promise<number[]> {
 function extractBestMp4(
   html: string,
 ): { url: string; height: number; size: number } | null {
-  // <source src="https://vdownload.hembed.com/<id>-<q>p.mp4?secure=..."
+  // <source src="https://vdownload[-N].hembed.com/<id>-<q>p.mp4?(secure|token)=..."
   //         type="video/mp4" size="<bytes>">
+  // 2026-04: hanime1 migrated some videos from vdownload.hembed.com (secure=)
+  // to vdownload-{1..N}.hembed.com (token=&expires=). Accept both.
   const re =
-    /<source[^>]+src=["'](https:\/\/vdownload\.hembed\.com\/[^"']+\.mp4[^"']*)["'][^>]+type=["']video\/mp4["'][^>]*(?:size=["'](\d+)["'])?/gi;
+    /<source[^>]+src=["'](https:\/\/vdownload(?:-\d+)?\.hembed\.com\/[^"']+\.mp4[^"']*)["'][^>]+type=["']video\/mp4["'][^>]*(?:size=["'](\d+)["'])?/gi;
   const sources: { url: string; height: number; size: number }[] = [];
   let m: RegExpExecArray | null;
   while ((m = re.exec(html))) {
