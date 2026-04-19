@@ -131,9 +131,12 @@ function buildAdsterraSrcDoc(key: string, w: number, h: number): string {
 
 /**
  * Checks 5s after zone insertion whether ExoClick rendered a creative.
- * ExoClick injects an <iframe> inside the <ins> on fill. If no iframe
- * and <ins> has zero dimensions, we consider it a no-fill and swap in
- * an Adsterra srcdoc iframe at the matching size.
+ * ExoClick fills in one of two ways:
+ *  (a) injects an <iframe> inside <ins>, or
+ *  (b) appends an inline <div> creative (with <style>) as a sibling and
+ *      disconnects the empty <ins>.
+ * Only consider no-fill when the container has NO meaningful content at all.
+ * Otherwise we stack ExoClick + Adsterra and break the 300x250 slot.
  */
 function scheduleNoFillFallback(
   container: HTMLElement,
@@ -142,10 +145,17 @@ function scheduleNoFillFallback(
 ): void {
   setTimeout(() => {
     if (!container.isConnected) return;
-    const hasIframe = !!ins.querySelector("iframe");
-    const rect = ins.getBoundingClientRect();
-    const filled = hasIframe && rect.width > 0 && rect.height > 0;
-    if (filled) return;
+
+    const insFilled =
+      ins.isConnected &&
+      (!!ins.querySelector("iframe") || ins.children.length > 0);
+
+    // Any non-ins child (e.g. the inline <div> creative ExoClick appends) counts as fill.
+    const hasSiblingCreative = Array.from(container.children).some(
+      (c) => c !== ins,
+    );
+
+    if (insFilled || hasSiblingCreative) return;
 
     const cfg = ADSTERRA_FALLBACK[size];
     if (!cfg) return;
