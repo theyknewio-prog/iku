@@ -16,6 +16,7 @@ import { getWPHentaiPost, getWPHentaiPageUrl } from "@/lib/wp-hentai";
 import { getHentaicityPost } from "@/lib/hentaicity";
 import { getSfmCompilePost } from "@/lib/sfmcompile";
 import { get3dHentaiTubePost } from "@/lib/3dhentaitube";
+import { getEpornerPost } from "@/lib/eporner";
 import {
   extractIdFromSlug,
   isGelbooruSlug,
@@ -25,6 +26,7 @@ import {
   isHentaicitySlug,
   isSfmCompileSlug,
   is3dHentaiTubeSlug,
+  isEpornerSlug,
 } from "@/lib/slugify";
 import type { Video } from "@/types/video";
 import {
@@ -128,6 +130,11 @@ export async function generateMetadata({
       if (!tv)
         return { title: "Hentai Video | iku.gg", robots: { index: false } };
       video = tv;
+    } else if (isEpornerSlug(slug)) {
+      const ev = await getEpornerPost(id);
+      if (!ev)
+        return { title: "Hentai Video | iku.gg", robots: { index: false } };
+      video = ev;
     } else if (isWPHentaiSlug(slug)) {
       const wv = await getWPHentaiPost(id);
       if (!wv)
@@ -263,6 +270,17 @@ export default async function WatchPage({ params }: WatchPageProps) {
       video = tv;
       if (tv.url) {
         streamProxyUrl = `/api/video-stream?url=${encodeURIComponent(tv.url)}`;
+      }
+    } else if (isEpornerSlug(slug)) {
+      const ev = await getEpornerPost(id);
+      if (!ev) notFound();
+      video = ev;
+      // eporner MP4 URLs are IP-bound at resolve time — yt-dlp on our
+      // server resolves from the canonical page URL, and video-stream
+      // streams bytes from our IP.
+      const pageUrl = ev.pageUrl || ev.url;
+      if (pageUrl) {
+        streamProxyUrl = `/api/video-stream?url=${encodeURIComponent(pageUrl)}`;
       }
     } else if (isWPHentaiSlug(slug)) {
       const wv = await getWPHentaiPost(id);
