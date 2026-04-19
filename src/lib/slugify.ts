@@ -98,6 +98,7 @@ export function isPorn3dxSlug(slug: string): boolean {
  * Longer prefixes must come first so "hbro-" is matched before "hb-" etc.
  */
 export const GENERIC_SOURCE_PREFIXES = [
+  { prefix: "p3dx-", source: "porn3dx" as const },
   { prefix: "hbro-", source: "hentaibros" as const },
   { prefix: "hcld-", source: "hentaicloud" as const },
   { prefix: "hmam-", source: "hentaimama" as const },

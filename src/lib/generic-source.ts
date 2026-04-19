@@ -24,7 +24,8 @@ export type GenericSource =
   | "hentaimama"
   | "hentaiplay"
   | "hentaisea"
-  | "hentaistream";
+  | "hentaistream"
+  | "porn3dx";
 
 function rowToVideo(
   row: Record<string, unknown>,

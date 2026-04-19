@@ -227,6 +227,7 @@ export async function GET(request: NextRequest) {
     "pornobuono.com", // hentaisea mirror
     "freakpornos.com", // hentaisea mirror
     "streamhentai.org", // hentaistream (cdn1/cdn2/cdn3.*)
+    "b-cdn.net", // porn3dx (Bunny Stream, vz-*.b-cdn.net serves m3u8 + segments)
   ];
 
   let parsed: URL;

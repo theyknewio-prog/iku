@@ -109,6 +109,50 @@ export function WatchPlayer({
     };
   }, [src, resolveUrl]);
 
+  /*
+   * HLS (m3u8) support via dynamic hls.js import.
+   *
+   * MP4 goes through the native <video src={resolvedSrc}> path. HLS manifests
+   * (`.m3u8`) need a JS manifest parser on Chrome/Firefox — Safari/iOS can play
+   * them natively via `canPlayType('application/vnd.apple.mpegurl')`.
+   *
+   * We skip setting `src` on the video element when it's an HLS URL (see JSX),
+   * and attach the stream here instead. Dynamic import keeps hls.js (~120KB)
+   * out of the main bundle for MP4-only pages.
+   */
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v || !resolvedSrc) return;
+    const isHls = resolvedSrc.toLowerCase().split("?")[0].endsWith(".m3u8");
+    if (!isHls) return;
+
+    if (v.canPlayType("application/vnd.apple.mpegurl")) {
+      v.src = resolvedSrc;
+      return;
+    }
+
+    let hls: import("hls.js").default | null = null;
+    let cancelled = false;
+    import("hls.js").then(({ default: Hls }) => {
+      if (cancelled || !Hls.isSupported() || !videoRef.current) return;
+      hls = new Hls({ enableWorker: true, lowLatencyMode: false });
+      hls.loadSource(resolvedSrc);
+      hls.attachMedia(videoRef.current);
+      hls.on(Hls.Events.ERROR, (_e, data) => {
+        if (data.fatal) setError(true);
+      });
+    });
+
+    return () => {
+      cancelled = true;
+      if (hls) {
+        try {
+          hls.destroy();
+        } catch {}
+      }
+    };
+  }, [resolvedSrc]);
+
   /* ── Playback state ────────────────────────────────────── */
   /*
    * `playing` mirrors whether the <video> element is actively playing.
@@ -1053,7 +1097,12 @@ export function WatchPlayer({
         {/* Video */}
         <video
           ref={videoRef}
-          src={resolvedSrc || undefined}
+          src={
+            resolvedSrc &&
+            !resolvedSrc.toLowerCase().split("?")[0].endsWith(".m3u8")
+              ? resolvedSrc
+              : undefined
+          }
           poster={poster}
           /* NO autoPlay attribute — playback is controlled entirely via the
              pausedByOverlay effect below. When the preroll overlay is up,
