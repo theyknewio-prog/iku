@@ -473,8 +473,13 @@ const VERTICAL_ESTIMATE: Record<string, number> = {
 };
 
 function estimateCount(opts: GetVideosOptions): number {
-  const { vertical = "all", longFormat, requireThumbnail } = opts;
+  const { vertical = "all", longFormat, requireThumbnail, tags } = opts;
   const thumbKey = requireThumbnail ? "true" : "false";
+  // Tag-scoped estimate: long-tail tags (not in precompute) are typically
+  // under 2000 videos. Return a safe upper bound so pagination renders as
+  // "up to 100 pages" — users clicking past real results get an empty
+  // page, but we never stall PG on a 400K-row COUNT scan.
+  if (tags && tags.trim()) return 2000;
   if (longFormat) return VERTICAL_ESTIMATE[`longFormat:${thumbKey}`];
   return (
     VERTICAL_ESTIMATE[`${vertical}:${thumbKey}`] ??
@@ -515,108 +520,20 @@ async function readPrecomputedCount(
 }
 
 async function _countVideos(options: GetVideosOptions = {}): Promise<number> {
+  // Precomputed cache covers: all base vertical × requireThumbnail × longFormat
+  // combos + the top ~100 tags by popularity (see scripts/precompute-video-counts.ts
+  // and .sql). A hit here is the fast path — a single indexed PG lookup.
   const precomputed = await readPrecomputedCount(options);
   if (precomputed !== null) return precomputed;
 
-  const {
-    tags = "",
-    source = "all",
-    vertical = "all",
-    requireThumbnail = false,
-    longFormat = false,
-  } = options;
-
-  const conditions: string[] = [];
-  const params: unknown[] = [];
-  let paramIndex = 1;
-
-  const banned = buildBannedSqlCondition("", params, paramIndex);
-  conditions.push(banned.condition);
-  paramIndex = banned.nextIdx;
-
-  // Match getVideos: exclude dead rows from counts so pagination totals
-  // stay consistent with what's actually listed.
-  conditions.push(`dead_at IS NULL`);
-
-  if (requireThumbnail) {
-    conditions.push(`thumbnail IS NOT NULL AND thumbnail <> ''`);
-  }
-
-  if (longFormat) {
-    conditions.push(`source IN ('hentaicity','hentaigasm')`);
-  }
-
-  if (source === "danbooru" || source === "gelbooru") {
-    conditions.push(`source = $${paramIndex}`);
-    params.push(source);
-    paramIndex++;
-  }
-
-  if (source === "all" && vertical !== "all") {
-    const group = VERTICAL_SOURCES[vertical];
-    conditions.push(`source = ANY($${paramIndex}::text[])`);
-    params.push(group as readonly string[] as string[]);
-    paramIndex++;
-  }
-
-  if (tags) {
-    const searchTerms = tags.toLowerCase().split(/\s+/).filter(Boolean);
-    for (const term of searchTerms) {
-      conditions.push(
-        `(tags && ARRAY[$${paramIndex}]::text[] OR COALESCE(characters,ARRAY[]::text[]) && ARRAY[$${paramIndex}]::text[] OR COALESCE(copyrights,ARRAY[]::text[]) && ARRAY[$${paramIndex}]::text[])`,
-      );
-      params.push(term);
-      paramIndex++;
-    }
-  }
-
-  const whereClause =
-    conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
-
-  // Per-query 3s timeout — we'd rather return an estimate than stall the
-  // page for 10s waiting for PG's global statement_timeout to fire.
-  // SET LOCAL only works inside a transaction, so we BEGIN/COMMIT around
-  // the count. The pooled client gets its state reset on COMMIT/ROLLBACK.
-  const client = await pool.connect();
-  try {
-    await client.query("BEGIN");
-    await client.query(`SET LOCAL statement_timeout = '500ms'`);
-    const { rows } = await client.query<{ count: string }>(
-      `SELECT COUNT(*)::bigint AS count FROM videos ${whereClause}`,
-      params,
-    );
-    await client.query("COMMIT");
-    return Number(rows[0]?.count ?? 0);
-  } catch (err) {
-    try {
-      await client.query("ROLLBACK");
-    } catch {
-      /* already rolled back by PG on timeout */
-    }
-    const code = (err as { code?: string }).code;
-    const message = (err as { message?: string }).message ?? "";
-    // 57014 = query canceled (statement_timeout fired). Use estimate.
-    // "Connection terminated" / ETIMEDOUT = pool saturated — PG is melting
-    // under a thundering herd of COUNT queries. Same fix: return estimate
-    // so the memoize cache gets populated and we stop hitting PG for this
-    // exact key for the next hour.
-    if (
-      code === "57014" ||
-      message.includes("Connection terminated") ||
-      message.includes("timeout")
-    ) {
-      console.warn("countVideos timed out, using estimate:", {
-        vertical,
-        tags,
-        requireThumbnail,
-        reason: code === "57014" ? "statement_timeout" : "pool_timeout",
-      });
-      return estimateCount(options);
-    }
-    throw err;
-  } finally {
-    client.release();
-  }
+  // Cache miss. Never run the live COUNT(*) — even with a 500ms statement
+  // timeout, each failed query burns 500ms × 4 parallel workers of CPU
+  // and under a traffic burst across long-tail tag/character/series pages
+  // that thundering herd saturates PG and triggers cascading pool timeouts
+  // + connection drops ("PG restart every 15min" incident 2026-04-19).
+  // Return an estimate so pagination UI still renders; the precompute
+  // cron (every 15min) converts frequent misses into hits over time.
+  return estimateCount(options);
 }
 
 const _countVideosMemo = memoize("videos-count", _countVideos, 60 * 60 * 1000);
