@@ -513,7 +513,9 @@ export default async function WatchPage({ params }: WatchPageProps) {
                       video.source === "rule34video" ||
                       video.source === "wp" ||
                       video.source === "hentaicity" ||
-                      video.source === "sfmcompile"
+                      video.source === "sfmcompile" ||
+                      video.source === "3dhentaitube" ||
+                      video.source === "eporner"
                         ? streamProxyUrl || ""
                         : video.url || ""
                     }
@@ -531,7 +533,9 @@ export default async function WatchPage({ params }: WatchPageProps) {
                       video.source === "rule34video" ||
                       video.source === "wp" ||
                       video.source === "hentaicity" ||
-                      video.source === "sfmcompile"
+                      video.source === "sfmcompile" ||
+                      video.source === "3dhentaitube" ||
+                      video.source === "eporner"
                         ? streamProxyUrl || ""
                         : video.url || ""
                     }
@@ -697,7 +701,11 @@ export default async function WatchPage({ params }: WatchPageProps) {
                               ? video.pageUrl || `https://www.hentaicity.com`
                               : video.source === "sfmcompile"
                                 ? video.pageUrl || "https://iku.gg"
-                                : `https://danbooru.donmai.us/posts/${video.id}`
+                                : video.source === "3dhentaitube"
+                                  ? video.pageUrl || "https://iku.gg"
+                                  : video.source === "eporner"
+                                    ? video.pageUrl || "https://iku.gg"
+                                    : `https://danbooru.donmai.us/posts/${video.id}`
                     }
                     target="_blank"
                     rel="noopener noreferrer"
