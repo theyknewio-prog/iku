@@ -201,6 +201,17 @@ export async function GET(request: NextRequest) {
     "watchhentai.net",
     "hentaiworld.tv",
     "hentaigasm.com",
+    "sfmcompile.club",
+    // 3dhentai.tube serves MP4s via a rotating fleet of mirrors
+    "3dhentai.tube",
+    "naughtyhentai.com",
+    "watchpornmovie.com",
+    "hentaianime.tv",
+    "hentaiporn.tube",
+    "hentaivideo.tube",
+    // Future sources
+    "eporner.com",
+    "porn3dx.com",
   ];
 
   let parsed: URL;

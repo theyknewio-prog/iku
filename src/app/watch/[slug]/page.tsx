@@ -15,6 +15,7 @@ import { getRule34VideoPost, getRule34VideoPageUrl } from "@/lib/rule34video";
 import { getWPHentaiPost, getWPHentaiPageUrl } from "@/lib/wp-hentai";
 import { getHentaicityPost } from "@/lib/hentaicity";
 import { getSfmCompilePost } from "@/lib/sfmcompile";
+import { get3dHentaiTubePost } from "@/lib/3dhentaitube";
 import {
   extractIdFromSlug,
   isGelbooruSlug,
@@ -23,6 +24,7 @@ import {
   isWPHentaiSlug,
   isHentaicitySlug,
   isSfmCompileSlug,
+  is3dHentaiTubeSlug,
 } from "@/lib/slugify";
 import type { Video } from "@/types/video";
 import {
@@ -121,6 +123,11 @@ export async function generateMetadata({
       if (!sv)
         return { title: "Hentai Video | iku.gg", robots: { index: false } };
       video = sv;
+    } else if (is3dHentaiTubeSlug(slug)) {
+      const tv = await get3dHentaiTubePost(id);
+      if (!tv)
+        return { title: "Hentai Video | iku.gg", robots: { index: false } };
+      video = tv;
     } else if (isWPHentaiSlug(slug)) {
       const wv = await getWPHentaiPost(id);
       if (!wv)
@@ -249,6 +256,13 @@ export default async function WatchPage({ params }: WatchPageProps) {
       // CORS, but we still proxy so the source domain never leaks.
       if (sv.url) {
         streamProxyUrl = `/api/video-stream?url=${encodeURIComponent(sv.url)}`;
+      }
+    } else if (is3dHentaiTubeSlug(slug)) {
+      const tv = await get3dHentaiTubePost(id);
+      if (!tv) notFound();
+      video = tv;
+      if (tv.url) {
+        streamProxyUrl = `/api/video-stream?url=${encodeURIComponent(tv.url)}`;
       }
     } else if (isWPHentaiSlug(slug)) {
       const wv = await getWPHentaiPost(id);

@@ -38,6 +38,9 @@ export function extractIdFromSlug(slug: string): number {
   else if (cleaned.startsWith("hg-")) cleaned = cleaned.slice(3);
   else if (cleaned.startsWith("hc-")) cleaned = cleaned.slice(3);
   else if (cleaned.startsWith("sfm-")) cleaned = cleaned.slice(4);
+  else if (cleaned.startsWith("3dt-")) cleaned = cleaned.slice(4);
+  else if (cleaned.startsWith("ep-")) cleaned = cleaned.slice(3);
+  else if (cleaned.startsWith("p3dx-")) cleaned = cleaned.slice(5);
 
   const match = cleaned.match(/^(\d+)/);
   if (!match) throw new Error(`Invalid slug: ${slug}`);
@@ -67,6 +70,18 @@ export function isHentaicitySlug(slug: string): boolean {
 
 export function isSfmCompileSlug(slug: string): boolean {
   return slug.startsWith("sfm-");
+}
+
+export function is3dHentaiTubeSlug(slug: string): boolean {
+  return slug.startsWith("3dt-");
+}
+
+export function isEpornerSlug(slug: string): boolean {
+  return slug.startsWith("ep-");
+}
+
+export function isPorn3dxSlug(slug: string): boolean {
+  return slug.startsWith("p3dx-");
 }
 
 /**

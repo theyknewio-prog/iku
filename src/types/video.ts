@@ -56,7 +56,10 @@ export interface Video {
     | "wp"
     | "hentaicity"
     | "hentaigasm"
-    | "sfmcompile";
+    | "sfmcompile"
+    | "3dhentaitube"
+    | "eporner"
+    | "porn3dx";
   /** Scraped title (rule34video, WP sources). Empty for booru sources. */
   title?: string;
   /** Original page URL for sources that need proxy resolution (rule34video, WP). */
