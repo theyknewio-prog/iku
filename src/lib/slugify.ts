@@ -41,6 +41,14 @@ export function extractIdFromSlug(slug: string): number {
   else if (cleaned.startsWith("3dt-")) cleaned = cleaned.slice(4);
   else if (cleaned.startsWith("ep-")) cleaned = cleaned.slice(3);
   else if (cleaned.startsWith("p3dx-")) cleaned = cleaned.slice(5);
+  else if (cleaned.startsWith("hn1-")) cleaned = cleaned.slice(4);
+  else if (cleaned.startsWith("hbro-")) cleaned = cleaned.slice(5);
+  else if (cleaned.startsWith("hcld-")) cleaned = cleaned.slice(5);
+  else if (cleaned.startsWith("hfk-")) cleaned = cleaned.slice(4);
+  else if (cleaned.startsWith("hmam-")) cleaned = cleaned.slice(5);
+  else if (cleaned.startsWith("hpl-")) cleaned = cleaned.slice(4);
+  else if (cleaned.startsWith("hst-")) cleaned = cleaned.slice(4);
+  else if (cleaned.startsWith("hs-")) cleaned = cleaned.slice(3);
 
   const match = cleaned.match(/^(\d+)/);
   if (!match) throw new Error(`Invalid slug: ${slug}`);
@@ -82,6 +90,31 @@ export function isEpornerSlug(slug: string): boolean {
 
 export function isPorn3dxSlug(slug: string): boolean {
   return slug.startsWith("p3dx-");
+}
+
+/**
+ * Map from slug prefix → source name for direct-MP4 PG-backed sources.
+ * Used by /watch/[slug]/page.tsx to dispatch to the generic lookup.
+ * Longer prefixes must come first so "hbro-" is matched before "hb-" etc.
+ */
+export const GENERIC_SOURCE_PREFIXES = [
+  { prefix: "hbro-", source: "hentaibros" as const },
+  { prefix: "hcld-", source: "hentaicloud" as const },
+  { prefix: "hmam-", source: "hentaimama" as const },
+  { prefix: "hn1-", source: "hanime1" as const },
+  { prefix: "hfk-", source: "hentaifreak" as const },
+  { prefix: "hpl-", source: "hentaiplay" as const },
+  { prefix: "hst-", source: "hentaistream" as const },
+  { prefix: "hs-", source: "hentaisea" as const },
+];
+
+export function getGenericSource(
+  slug: string,
+): (typeof GENERIC_SOURCE_PREFIXES)[number]["source"] | null {
+  for (const { prefix, source } of GENERIC_SOURCE_PREFIXES) {
+    if (slug.startsWith(prefix)) return source;
+  }
+  return null;
 }
 
 /**

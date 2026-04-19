@@ -17,6 +17,7 @@ import { getHentaicityPost } from "@/lib/hentaicity";
 import { getSfmCompilePost } from "@/lib/sfmcompile";
 import { get3dHentaiTubePost } from "@/lib/3dhentaitube";
 import { getEpornerPost } from "@/lib/eporner";
+import { getGenericSourcePost } from "@/lib/generic-source";
 import {
   extractIdFromSlug,
   isGelbooruSlug,
@@ -27,6 +28,7 @@ import {
   isSfmCompileSlug,
   is3dHentaiTubeSlug,
   isEpornerSlug,
+  getGenericSource,
 } from "@/lib/slugify";
 import type { Video } from "@/types/video";
 import {
@@ -115,7 +117,13 @@ export async function generateMetadata({
   let video: Video;
   try {
     const id = extractIdFromSlug(slug);
-    if (isHentaicitySlug(slug)) {
+    const genericSource = getGenericSource(slug);
+    if (genericSource) {
+      const gv = await getGenericSourcePost(genericSource, id);
+      if (!gv)
+        return { title: "Hentai Video | iku.gg", robots: { index: false } };
+      video = gv;
+    } else if (isHentaicitySlug(slug)) {
       const hv = await getHentaicityPost(id);
       if (!hv)
         return { title: "Hentai Video | iku.gg", robots: { index: false } };
@@ -246,7 +254,18 @@ export default async function WatchPage({ params }: WatchPageProps) {
   let streamProxyUrl: string | null = null;
   try {
     const id = extractIdFromSlug(slug);
-    if (isHentaicitySlug(slug)) {
+    const genericSource = getGenericSource(slug);
+    if (genericSource) {
+      const gv = await getGenericSourcePost(genericSource, id);
+      if (!gv) notFound();
+      video = gv;
+      // All generic sources serve MP4s directly from their own CDN.
+      // Proxy through /api/video-stream so the source host never appears
+      // in the user's DOM/devtools and Range handling stays uniform.
+      if (gv.url) {
+        streamProxyUrl = `/api/video-stream?url=${encodeURIComponent(gv.url)}`;
+      }
+    } else if (isHentaicitySlug(slug)) {
       const hv = await getHentaicityPost(id);
       if (!hv) notFound();
       video = hv;

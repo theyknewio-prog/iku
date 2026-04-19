@@ -59,7 +59,15 @@ export interface Video {
     | "sfmcompile"
     | "3dhentaitube"
     | "eporner"
-    | "porn3dx";
+    | "porn3dx"
+    | "hanime1"
+    | "hentaibros"
+    | "hentaicloud"
+    | "hentaifreak"
+    | "hentaimama"
+    | "hentaiplay"
+    | "hentaisea"
+    | "hentaistream";
   /** Scraped title (rule34video, WP sources). Empty for booru sources. */
   title?: string;
   /** Original page URL for sources that need proxy resolution (rule34video, WP). */
