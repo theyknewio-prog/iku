@@ -528,16 +528,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
               <div className="player-video-wrap">
                 {isProLocked(video) ? (
                   <ProGatedPlayer
-                    src={
-                      video.source === "rule34video" ||
-                      video.source === "wp" ||
-                      video.source === "hentaicity" ||
-                      video.source === "sfmcompile" ||
-                      video.source === "3dhentaitube" ||
-                      video.source === "eporner"
-                        ? streamProxyUrl || ""
-                        : video.url || ""
-                    }
+                    src={streamProxyUrl || video.url || ""}
                     poster={video.thumbnail || undefined}
                     resolveUrl={resolvePageUrl || undefined}
                     relatedVideos={relatedForPlayer}
@@ -548,16 +539,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
                   />
                 ) : (
                   <WatchPlayerWithPreroll
-                    src={
-                      video.source === "rule34video" ||
-                      video.source === "wp" ||
-                      video.source === "hentaicity" ||
-                      video.source === "sfmcompile" ||
-                      video.source === "3dhentaitube" ||
-                      video.source === "eporner"
-                        ? streamProxyUrl || ""
-                        : video.url || ""
-                    }
+                    src={streamProxyUrl || video.url || ""}
                     poster={video.thumbnail || undefined}
                     resolveUrl={resolvePageUrl || undefined}
                     slug={video.slug}
