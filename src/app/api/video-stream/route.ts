@@ -209,9 +209,24 @@ export async function GET(request: NextRequest) {
     "hentaianime.tv",
     "hentaiporn.tube",
     "hentaivideo.tube",
-    // Future sources
     "eporner.com",
     "porn3dx.com",
+    // 8 generic-source CDNs (direct MP4, no yt-dlp resolve)
+    "hembed.com", // hanime1 (vdownload.hembed.com)
+    "vintageporno.stream", // hentaibros (cdn.*)
+    "povblowjob.net", // hentaibros fallback
+    "hentaicloud.com", // hentaicloud (www.*)
+    "hentaifreak.org", // hentaifreak (media.*)
+    "hgasm1.com", // hentaigasm mirror 1
+    "hgasm2.com", // hentaigasm mirror 2
+    "hgasm3.com", // hentaigasm mirror 3
+    "gdvid.info", // hentaimama
+    "javprovider.com", // hentaimama fallback
+    "hentaiplanet.info", // hentaiplay
+    "hentaisea.com", // hentaisea (www.*)
+    "pornobuono.com", // hentaisea mirror
+    "freakpornos.com", // hentaisea mirror
+    "streamhentai.org", // hentaistream (cdn1/cdn2/cdn3.*)
   ];
 
   let parsed: URL;
@@ -231,8 +246,20 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "unsupported source" }, { status: 400 });
   }
 
-  // Resolve the page URL to a stream URL
-  const streamUrl = await resolveUrl(pageUrl);
+  // Fast path: if the URL already points at a playable MP4, skip the
+  // yt-dlp/HTML-parse resolve step entirely. The 8 generic sources
+  // (hanime1, hentaibros, hentaicloud, hentaifreak, hentaimama, hentaiplay,
+  // hentaisea, hentaistream) plus hentaicity store direct MP4 URLs — running
+  // yt-dlp on them always 502s. We still proxy to hide the source host and
+  // normalise Range handling.
+  const pathname = parsed.pathname.toLowerCase();
+  const isDirectMp4 =
+    pathname.endsWith(".mp4") ||
+    pathname.endsWith(".m4v") ||
+    pathname.endsWith(".webm");
+
+  // Resolve the page URL to a stream URL (only when we actually need to)
+  const streamUrl = isDirectMp4 ? pageUrl : await resolveUrl(pageUrl);
   if (!streamUrl) {
     return NextResponse.json(
       { error: "could not resolve video URL" },
