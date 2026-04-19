@@ -81,6 +81,44 @@ function parseTags(keywords: string): string[] {
     .slice(0, 20);
 }
 
+/**
+ * eporner tags the "hentai" category onto a lot of live-action JAV/amateur
+ * content, so the tag alone is not enough. Require either a strong animated
+ * tag OR an animated keyword in the title. Reject anything with strong
+ * live-action signals in the title unless it also flags as animated.
+ */
+const ANIMATED_TAGS = new Set([
+  "anime",
+  "3d",
+  "cartoon",
+  "animation",
+  "3dsexplay",
+  "sfm",
+  "animated",
+  "futa",
+  "futanari",
+  "manga",
+  "doujin",
+  "tentacle",
+  "koikatsu",
+  "waifu",
+  "virt-a-mate",
+]);
+
+const ANIMATED_TITLE_RE =
+  /\b(hentai|anime|cartoon|animation|animated|3d|3dcg|manga|doujin|sfm|waifu|nagoon|blender|porn3dx|koikatsu|honey\s?select|virt.a.mate|futa|tentacle|succubus|monster girl|pokemon|overwatch|genshin|raiden|ahegao|d[\s.]?va|widowmaker|tifa|bayonetta|2b|nier|touhou|fire emblem|undertale|minecraft|fortnite|vtuber|hololive|rwby|zelda|samus|lara|elizabeth|elden ring|fnaf|doki)\b/i;
+
+const LIVE_ACTION_TITLE_RE =
+  /\b(stepm|step-m|stepsi|step-s|step-d|stepd|stepbro|step-bro|stepbr|milf|amateur|real\s|leaked|jav\s|bbw|webcam|camgirl|camboy|onlyfans|cosplayer|pornstar|vivamax|filipino|tiktok|twitch|solo girl|pawg|homemade|homevideo)\b/i;
+
+function isLikelyAnimated(title: string, tags: string[]): boolean {
+  const titleMatch = ANIMATED_TITLE_RE.test(title);
+  const tagMatch = tags.some((t) => ANIMATED_TAGS.has(t));
+  if (!titleMatch && !tagMatch) return false;
+  if (LIVE_ACTION_TITLE_RE.test(title) && !titleMatch) return false;
+  return true;
+}
+
 async function fetchSearch(
   query: string,
   page: number,
@@ -145,6 +183,13 @@ async function main(): Promise<void> {
 
         const tags = parseTags(v.keywords);
         if (tags.some((t) => hasBannedTitle(t))) {
+          totalRejected++;
+          continue;
+        }
+
+        // Drop live-action — eporner's "hentai" tag bleeds into JAV/amateur
+        // catalog and we only want animated content on iku.gg.
+        if (!isLikelyAnimated(title, tags)) {
           totalRejected++;
           continue;
         }
