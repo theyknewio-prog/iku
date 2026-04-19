@@ -148,12 +148,13 @@ export function SwipeFeed() {
     });
   }, []);
 
-  // Conversion CTA every 8 swipes — alternates signup (anon only) ↔
-  // premium (everyone non-Pro).
+  // Conversion CTA every 15 swipes — alternates signup (anon only) ↔
+  // premium (everyone non-Pro). Offset from the VAST preroll (every 10)
+  // so the two never fire on the same swipe.
   useEffect(() => {
     if (
       activeIndex > 0 &&
-      activeIndex % 8 === 0 &&
+      activeIndex % 15 === 0 &&
       activeIndex !== lastInterstitialIndexRef.current &&
       !isPro.current
     ) {
@@ -171,15 +172,14 @@ export function SwipeFeed() {
     }
   }, [activeIndex]);
 
-  // VAST video preroll every 5 swipes — overlaps with CTA cycle (5/8 = ~13s).
-  // Both can fire on the same swipe at activeIndex 40, 80 etc — the CTA renders
-  // on top because it's mounted later.
+  // VAST video preroll every 10 swipes. Spaced apart from the CTA (every 15)
+  // so a user hits an ad roughly every 6-8 swipes instead of every 2-3.
   const [showShortsAd, setShowShortsAd] = useState(false);
   const lastAdIndexRef = useRef(-10);
   useEffect(() => {
     if (
       activeIndex > 0 &&
-      activeIndex % 5 === 0 &&
+      activeIndex % 10 === 0 &&
       activeIndex !== lastAdIndexRef.current &&
       !isPro.current
     ) {
@@ -289,7 +289,7 @@ export function SwipeFeed() {
             video={video}
             index={index}
             isActive={index === activeIndex}
-            preloadNext={index > activeIndex && index <= activeIndex + 6}
+            preloadNext={index > activeIndex && index <= activeIndex + 2}
             globalMuted={globalMuted}
             onMuteChange={setGlobalMuted}
             onBroken={handleBrokenCard}
