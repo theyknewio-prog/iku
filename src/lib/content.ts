@@ -319,28 +319,37 @@ async function _getVideos(
   const searchTerms = tags
     ? tags.toLowerCase().split(/\s+/).filter(Boolean)
     : [];
-  let matchesCteParamIdx = -1;
+  let hasMatchesCte = false;
   let cteClause = "";
-  if (searchTerms.length === 1) {
-    matchesCteParamIdx = paramIndex;
-    params.push(searchTerms[0]);
-    paramIndex++;
-    cteClause = `WITH matches AS MATERIALIZED (
-      SELECT pk FROM videos WHERE tags && ARRAY[$${matchesCteParamIdx}]::text[]
-      UNION
-      SELECT pk FROM videos WHERE characters && ARRAY[$${matchesCteParamIdx}]::text[]
-      UNION
-      SELECT pk FROM videos WHERE copyrights && ARRAY[$${matchesCteParamIdx}]::text[]
-    )`;
-  } else if (searchTerms.length > 1) {
-    // Rare multi-term case — fall back to inline OR (slower but correct).
-    for (const term of searchTerms) {
-      conditions.push(
-        `(tags && ARRAY[$${paramIndex}]::text[] OR COALESCE(characters,ARRAY[]::text[]) && ARRAY[$${paramIndex}]::text[] OR COALESCE(copyrights,ARRAY[]::text[]) && ARRAY[$${paramIndex}]::text[])`,
-      );
+  if (searchTerms.length >= 1) {
+    // Build N per-term CTEs (m1, m2, ...) each forcing a BitmapOr across the
+    // three GIN indexes, then INTERSECT them into `matches`. The single-term
+    // path is a special case of this — no INTERSECT needed. The previous
+    // multi-term fallback used an inline `(tags && A OR ...) AND (tags && B OR ...)`
+    // form that defeated the planner: PG switched to idx_videos_score + filter
+    // and scanned 362K rows, timing out the container and triggering PG
+    // restarts under load (2026-04-20 auto-heal).
+    const termCteNames: string[] = [];
+    searchTerms.forEach((term, i) => {
+      const idx = paramIndex;
       params.push(term);
       paramIndex++;
-    }
+      const name = `m${i + 1}`;
+      termCteNames.push(name);
+      const cte = `${name} AS MATERIALIZED (
+        SELECT pk FROM videos WHERE tags && ARRAY[$${idx}]::text[]
+        UNION
+        SELECT pk FROM videos WHERE characters && ARRAY[$${idx}]::text[]
+        UNION
+        SELECT pk FROM videos WHERE copyrights && ARRAY[$${idx}]::text[]
+      )`;
+      cteClause += (cteClause ? ", " : "WITH ") + cte;
+    });
+    cteClause +=
+      ", matches AS MATERIALIZED (" +
+      termCteNames.map((n) => `SELECT pk FROM ${n}`).join(" INTERSECT ") +
+      ")";
+    hasMatchesCte = true;
   }
 
   const whereClause =
@@ -355,9 +364,8 @@ async function _getVideos(
           ? "ORDER BY duration DESC NULLS LAST, score DESC"
           : "ORDER BY created_at DESC";
 
-  const query =
-    matchesCteParamIdx !== -1
-      ? `${cteClause}
+  const query = hasMatchesCte
+    ? `${cteClause}
          SELECT v.pk, v.source, v.source_id, v.slug, v.url, v.page_url, v.site, v.title,
                 v.thumbnail, v.preview, v.score, v.favorites,
                 v.tags, v.characters, v.copyrights, v.artists,
@@ -373,7 +381,7 @@ async function _getVideos(
            .replace(/\bfavorites\b/g, "v.favorites")
            .replace(/\bduration\b/g, "v.duration")}
          LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`
-      : `SELECT pk, source, source_id, slug, url, page_url, site, title,
+    : `SELECT pk, source, source_id, slug, url, page_url, site, title,
                 thumbnail, preview, score, favorites,
                 tags, characters, copyrights, artists,
                 width, height, file_size, duration, created_at
