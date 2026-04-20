@@ -127,6 +127,7 @@ export function PosterCard({
             loading={priority ? "eager" : "lazy"}
             priority={priority}
             unoptimized
+            referrerPolicy="no-referrer"
           />
         )}
 

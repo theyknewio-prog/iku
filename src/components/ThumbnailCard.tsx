@@ -167,6 +167,11 @@ export function ThumbnailCard({
             loading={lazy && !priority ? "lazy" : "eager"}
             priority={priority}
             unoptimized
+            // hanime1 CDN (vdownload.hembed.com) returns 403 when Referer is
+            // set to iku.gg (hotlink protection). no-referrer makes the
+            // browser omit Referer entirely → CDN serves the image. Safe for
+            // every other source because we never rely on Referer upstream.
+            referrerPolicy="no-referrer"
             onError={() => setImgError(true)}
           />
         ) : (
@@ -194,6 +199,8 @@ export function ThumbnailCard({
           muted
           playsInline
           preload="none"
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          {...({ referrerpolicy: "no-referrer" } as any)}
           onTimeUpdate={handleTimeUpdate}
           style={{ opacity: previewActive ? 1 : 0 }}
         />

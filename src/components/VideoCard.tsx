@@ -687,6 +687,7 @@ export function VideoCard({
               alt=""
               loading="lazy"
               decoding="async"
+              referrerPolicy="no-referrer"
               style={{
                 position: "absolute",
                 inset: 0,

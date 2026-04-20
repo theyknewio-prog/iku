@@ -239,8 +239,11 @@ function extractMeta(
   if (og) title = og[1].trim();
   if (!title) {
     const t = html.match(/<title>([^<]+)<\/title>/);
-    if (t) title = t[1].replace(/\s*[-|]\s*Hanime1\.me.*$/i, "").trim();
+    if (t) title = t[1].trim();
   }
+  // Both og:title and <title> contain the " - Hanime1.me" suffix on most
+  // pages. Always strip — users see this text in cards and it looks messy.
+  title = title.replace(/\s*[-|]\s*Hanime1\.me.*$/i, "").trim();
   if (!title) return null;
 
   let thumbnail = "";

@@ -340,6 +340,7 @@ function VideoPlayerCard({
           aria-hidden="true"
           loading="lazy"
           decoding="async"
+          referrerPolicy="no-referrer"
         />
       </div>
 
@@ -363,6 +364,7 @@ function VideoPlayerCard({
             className="gif-preview__poster"
             loading="lazy"
             decoding="async"
+            referrerPolicy="no-referrer"
           />
         )}
 
