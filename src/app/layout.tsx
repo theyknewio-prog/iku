@@ -13,7 +13,6 @@ import { PopunderRotator } from "@/components/PopunderRotator";
 import { AdsterraSocialBar } from "@/components/AdsterraSocialBar";
 import { HilltopAdsInPagePush } from "@/components/HilltopAdsInPagePush";
 import { StickyFooterAd } from "@/components/StickyFooterAd";
-import { StickyPremiumBanner } from "@/components/StickyPremiumBanner";
 
 // Fonts: Nunito (primary body) + Righteous (display/headings).
 // Previously we also loaded Inter, Poppins, and Quicksand — they were
@@ -174,8 +173,12 @@ export default async function RootLayout({
           {/* Adsterra Social Bar — sticky icon cluster, high mobile CPM. */}
           <AdsterraSocialBar />
           <HilltopAdsInPagePush />
+          {/* StickyPremiumBanner unmounted 2026-04-20 — was occluding
+              StickyFooterAd at the same bottom anchor with higher z-index,
+              killing the 320x50 ExoClick mobile slot. Premium upsell still
+              lives via in-grid hp-premium-strip on /tag /character /series,
+              SignupCTA on listing pages, and the /pricing CTA in header. */}
           <StickyFooterAd />
-          <StickyPremiumBanner />
           <AppShell footer={<MegaFooter />}>{children}</AppShell>
         </SessionProviderClient>
       </body>
