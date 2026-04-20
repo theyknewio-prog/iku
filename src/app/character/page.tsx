@@ -1,3 +1,4 @@
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ListingAdBlock } from "@/components/ListingAdBlock";
@@ -113,57 +114,63 @@ export default async function CharactersPage() {
           </div>
 
           {/* ── All characters by series ─────────────────────── */}
-          {groups.map(({ series, chars }) => (
-            <section key={series.slug} className="page-section">
-              <div className="section-header">
-                <h2 className="section-title">
-                  <span className="section-title__bar" aria-hidden />
-                  <Link
-                    href={`/series/${series.slug}`}
-                    style={{ color: "inherit", textDecoration: "none" }}
-                  >
-                    {series.name}
-                  </Link>
-                </h2>
-              </div>
-              <div className="index-char-grid">
-                {chars.map((c) => {
-                  const thumb = thumbnails[c.tags[0]] || "";
-                  return (
+          {groups.map(({ series, chars }, idx) => (
+            <React.Fragment key={series.slug}>
+              {/* Ship #7 2026-04-20: mid-grid leaderboard every 4 series. */}
+              {idx > 0 && idx % 4 === 0 && <ListingAdBlock variant="mid" />}
+              <section className="page-section">
+                <div className="section-header">
+                  <h2 className="section-title">
+                    <span className="section-title__bar" aria-hidden />
                     <Link
-                      key={c.slug}
-                      href={`/character/${c.slug}`}
-                      className="index-char-card"
+                      href={`/series/${series.slug}`}
+                      style={{ color: "inherit", textDecoration: "none" }}
                     >
-                      <div className="index-char-card__avatar">
-                        {thumb ? (
-                          <Image
-                            src={thumb}
-                            alt={c.name}
-                            fill
-                            sizes="(max-width: 768px) 110px, 130px"
-                            className="index-char-card__img"
-                            unoptimized
-                          />
-                        ) : (
-                          <span
-                            className="index-char-card__fallback"
-                            aria-hidden
-                          >
-                            {fallbackEmoji(c.name)}
-                          </span>
-                        )}
-                      </div>
-                      <span className="index-char-card__name">{c.name}</span>
-                      <span className="index-char-card__series">
-                        {c.seriesName}
-                      </span>
+                      {series.name}
                     </Link>
-                  );
-                })}
-              </div>
-            </section>
+                  </h2>
+                </div>
+                <div className="index-char-grid">
+                  {chars.map((c) => {
+                    const thumb = thumbnails[c.tags[0]] || "";
+                    return (
+                      <Link
+                        key={c.slug}
+                        href={`/character/${c.slug}`}
+                        className="index-char-card"
+                      >
+                        <div className="index-char-card__avatar">
+                          {thumb ? (
+                            <Image
+                              src={thumb}
+                              alt={c.name}
+                              fill
+                              sizes="(max-width: 768px) 110px, 130px"
+                              className="index-char-card__img"
+                              unoptimized
+                            />
+                          ) : (
+                            <span
+                              className="index-char-card__fallback"
+                              aria-hidden
+                            >
+                              {fallbackEmoji(c.name)}
+                            </span>
+                          )}
+                        </div>
+                        <span className="index-char-card__name">{c.name}</span>
+                        <span className="index-char-card__series">
+                          {c.seriesName}
+                        </span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </section>
+            </React.Fragment>
           ))}
+
+          <ListingAdBlock variant="bottom" />
 
           {/* ── Cross-links ──────────────────────────────────── */}
           <section className="page-section">

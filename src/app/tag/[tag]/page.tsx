@@ -251,6 +251,12 @@ export default async function TagPage({ params, searchParams }: Props) {
             ))}
           </div>
 
+          {/* Ship #7 2026-04-20: above-grid leaderboard. /tag/* is the
+              site's #1 page-view bucket (~10K tags indexed) — was missing
+              variant="top" while /3d /hentai /character/[slug] /episodes
+              /new all had it. Direct revenue parity fix. */}
+          <ListingAdBlock variant="top" />
+
           {/* ── Video grid ────────────────────────────────────── */}
           {videos.length === 0 ? (
             <div
