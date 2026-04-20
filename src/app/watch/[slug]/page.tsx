@@ -562,10 +562,13 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 )}
               </div>
 
-              {/* Single HentaiPros 300x250 under player (verified working via
-                  Playwright). All other ad zones removed 2026-04-11. */}
+              {/* Ship #5 2026-04-20: upgraded from 300x250 → 728x90 with
+                  300x250 mobile fallback. Now bookends the player with the
+                  728x90 above (line 519) — symmetric leaderboard pattern
+                  copied from Hentaigasm/HentaiCity. Desktop CPM ~3× higher
+                  on 728x90 vs 300x250 (industry standard). */}
               <div style={{ margin: "12px auto", textAlign: "center" }}>
-                <HentaiProsBanner format="300x250" mobileFormat={null} />
+                <HentaiProsBanner format="728x90" mobileFormat="300x250" />
               </div>
 
               {/* Remove Ads CTA — only for non-Pro, non-logged-in users */}
