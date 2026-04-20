@@ -2428,6 +2428,20 @@ body {
   overflow: hidden;
 }
 
+/* Compact variant: used on /tag/* and /trending so the video grid sits above
+   the fold on desktop 1440x900. Long intro + FAQ render below the grid. */
+.tag-hero--compact {
+  padding: 20px 0 18px;
+  margin-bottom: 16px;
+}
+.tag-hero--compact .tag-hero__title {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin-bottom: 8px;
+}
+.tag-hero--compact .tag-hero__label {
+  margin-bottom: 4px;
+}
+
 .tag-hero::before {
   content: "";
   position: absolute;

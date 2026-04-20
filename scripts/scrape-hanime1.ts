@@ -244,6 +244,26 @@ function extractMeta(
   // Both og:title and <title> contain the " - Hanime1.me" suffix on most
   // pages. Always strip — users see this text in cards and it looks messy.
   title = title.replace(/\s*[-|]\s*Hanime1\.me.*$/i, "").trim();
+  // hanime1 ships bilingual titles as "JP title|EN title". iku.gg targets
+  // English SEO — keep the portion with the most Latin characters.
+  if (title.includes("|")) {
+    const parts = title
+      .split("|")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    if (parts.length > 1) {
+      let best = parts[0];
+      let bestScore = (best.match(/[a-zA-Z]/g) || []).length;
+      for (const p of parts.slice(1)) {
+        const score = (p.match(/[a-zA-Z]/g) || []).length;
+        if (score > bestScore) {
+          best = p;
+          bestScore = score;
+        }
+      }
+      title = best;
+    }
+  }
   if (!title) return null;
 
   let thumbnail = "";

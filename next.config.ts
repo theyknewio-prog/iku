@@ -40,6 +40,18 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      // Legacy routes linked from old emails / SEO farms / shares.
+      { source: "/premium", destination: "/pricing", permanent: true },
+      { source: "/characters", destination: "/character", permanent: true },
+      {
+        source: "/characters/:slug",
+        destination: "/character/:slug",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

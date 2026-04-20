@@ -101,11 +101,33 @@ function distinctTags(tags: string[], n: number): string[] {
   return out;
 }
 
+// hanime1 ships bilingual titles as "JP title|EN title" — keep the Latin
+// portion for EN-targeted UI. Other sources without `|` pass through.
+function pickLatinPortion(raw: string): string {
+  if (!raw.includes("|")) return raw;
+  const parts = raw
+    .split("|")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (parts.length <= 1) return raw;
+  let best = parts[0];
+  let bestScore = (best.match(/[a-zA-Z]/g) || []).length;
+  for (const p of parts.slice(1)) {
+    const score = (p.match(/[a-zA-Z]/g) || []).length;
+    if (score > bestScore) {
+      best = p;
+      bestScore = score;
+    }
+  }
+  return best;
+}
+
 /** Build a human-friendly title from any Video (for cards/UI). */
 export function buildTitle(video: Video): string {
-  // Prefer scraped title (rule34video, WP)
+  // Prefer scraped title (rule34video, WP, hanime1)
   if (video.title && video.title.trim()) {
-    return titleCase(video.title.replace(/_/g, " "));
+    const clean = pickLatinPortion(video.title);
+    return titleCase(clean.replace(/_/g, " "));
   }
   // Then character name (+ copyright if present)
   if (video.characters[0]) {

@@ -6,6 +6,42 @@
 import { Pool } from "pg";
 import { BANNED_TAGS, hasBannedTitle } from "./banned-tags";
 
+// Scrapers used to store raw HTML-encoded titles (e.g. "&#039;", "&amp;",
+// "&quot;") straight from <title>/<og:title>. Decode at the upsert layer so
+// every scraper is covered, including ones we add later.
+function decodeHtmlEntities(raw: string): string {
+  if (!raw) return raw;
+  let s = raw;
+  s = s.replace(/&#(0?39|apos);/gi, "'");
+  s = s.replace(/&quot;/gi, '"');
+  s = s.replace(/&(gt|Gt);/g, ">");
+  s = s.replace(/&(lt|Lt);/g, "<");
+  s = s.replace(/&nbsp;/gi, " ");
+  s = s.replace(/&ndash;/gi, "-");
+  s = s.replace(/&mdash;/gi, "—");
+  s = s.replace(/&hellip;/gi, "…");
+  // Numeric entities (&#1234; or &#x1F60A;)
+  s = s.replace(/&#(\d+);/g, (_, n) => {
+    try {
+      return String.fromCodePoint(parseInt(n, 10));
+    } catch {
+      return _;
+    }
+  });
+  s = s.replace(/&#x([0-9a-f]+);/gi, (_, n) => {
+    try {
+      return String.fromCodePoint(parseInt(n, 16));
+    } catch {
+      return _;
+    }
+  });
+  // &amp; LAST so "&amp;quot;" → "&quot;" (first pass) → '"' (this pass's
+  // next invocation wouldn't touch it, but at least it doesn't collapse real
+  // "&quot;" into nothing).
+  s = s.replace(/&amp;/gi, "&");
+  return s;
+}
+
 const DATABASE_URL = process.env.DATABASE_URL;
 if (!DATABASE_URL) {
   console.error("DATABASE_URL env var is required");
@@ -76,7 +112,10 @@ export async function upsertVideos(
     );
   }
   if (filtered.length === 0) return 0;
-  rows = filtered;
+  rows = filtered.map((r) => ({
+    ...r,
+    title: r.title ? decodeHtmlEntities(r.title).trim() : r.title,
+  }));
 
   const values: unknown[] = [];
   const placeholders: string[] = [];

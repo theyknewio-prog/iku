@@ -61,10 +61,8 @@ export default async function TrendingPage(props: {
     <div className="shell-content">
       <main>
         <div className="page-container">
-          <HentaiProsBanner format="300x250" mobileFormat={null} />
-
-          {/* ── Page hero ─────────────────────────────────────── */}
-          <div className="tag-hero">
+          {/* ── Page hero (compact, no top ad so grid is above fold) ── */}
+          <div className="tag-hero tag-hero--compact">
             <p className="tag-hero__label">Most Popular</p>
             <h1 className="tag-hero__title">Trending Hentai</h1>
             <p
@@ -126,6 +124,17 @@ export default async function TrendingPage(props: {
 
           {/* ── Signup CTA (shown only for anonymous visitors) ───── */}
           <SignupCTA placement="trending" />
+
+          {/* ── Below-grid ad (moved from top so cards are above fold) ── */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "32px",
+            }}
+          >
+            <HentaiProsBanner format="728x90" mobileFormat="300x250" />
+          </div>
 
           {/* ── Bottom CTA ────────────────────────────────────── */}
           <div

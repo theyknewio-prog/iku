@@ -8,13 +8,46 @@ function humanize(tag: string): string {
   return tag.replace(/_/g, " ");
 }
 
+// iku.gg targets English SEO. hanime1/rule34video/WP sources ship titles like
+// "内射 Hentai" (CJK) or bilingual "【KonoSuba】Yunyun x Kazuma|this is the EN"
+// separated by |. We must strip CJK-only portions and keep the Latin half.
+const HAS_LATIN_RE = /[a-zA-Z]/;
+
+function pickLatinPortion(raw: string): string {
+  const parts = raw
+    .split("|")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (parts.length <= 1) return raw.trim();
+  let best = parts[0];
+  let bestScore = (best.match(/[a-zA-Z]/g) || []).length;
+  for (const p of parts.slice(1)) {
+    const score = (p.match(/[a-zA-Z]/g) || []).length;
+    if (score > bestScore) {
+      best = p;
+      bestScore = score;
+    }
+  }
+  return best;
+}
+
 function videoTitle(v: Video): string {
+  // Prefer the real scraped title when it has Latin text. Booru sources
+  // (Danbooru/Gelbooru/Rule34) ship empty titles → fall back to synthesis.
+  if (v.title && v.title.trim()) {
+    const clean = pickLatinPortion(v.title);
+    if (HAS_LATIN_RE.test(clean)) return clean;
+  }
   const char = v.characters[0] ? humanize(v.characters[0]) : "";
   const copy = v.copyrights[0] ? humanize(v.copyrights[0]) : "";
   if (char && copy) return `${char} — ${copy}`;
   if (char) return char;
   if (copy) return copy;
-  return v.tags.slice(0, 3).map(humanize).join(", ") || `Video #${v.id}`;
+  // Prefer Latin-script tags for the synthesis fallback (EN SEO). If none,
+  // accept anything so the title is never empty.
+  const latinTags = v.tags.filter((t) => HAS_LATIN_RE.test(t));
+  const tagList = latinTags.length > 0 ? latinTags : v.tags;
+  return tagList.slice(0, 3).map(humanize).join(", ") || `Video #${v.id}`;
 }
 
 export function buildVideoMetadata(video: Video): Metadata {
