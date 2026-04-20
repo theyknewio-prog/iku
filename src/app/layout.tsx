@@ -11,6 +11,7 @@ import { PushNotifications } from "@/components/PushNotifications";
 import { AdScript } from "@/components/AdScript";
 import { PopunderRotator } from "@/components/PopunderRotator";
 import { AdsterraSocialBar } from "@/components/AdsterraSocialBar";
+import { HilltopAdsInPagePush } from "@/components/HilltopAdsInPagePush";
 import { StickyPremiumBanner } from "@/components/StickyPremiumBanner";
 
 // Fonts: Nunito (primary body) + Righteous (display/headings).
@@ -58,6 +59,9 @@ export const metadata: Metadata = {
   other: { rating: "adult" },
   metadataBase: new URL("https://iku.gg"),
   robots: { index: true, follow: true },
+  verification: {
+    yandex: "bdf515e43c7b4f57",
+  },
   openGraph: {
     title: "iku.gg — Free Hentai, 3D Cartoon Porn & Animation Tube",
     description:
@@ -168,6 +172,7 @@ export default async function RootLayout({
           <PopunderRotator />
           {/* Adsterra Social Bar — sticky icon cluster, high mobile CPM. */}
           <AdsterraSocialBar />
+          <HilltopAdsInPagePush />
           <StickyPremiumBanner />
           <AppShell footer={<MegaFooter />}>{children}</AppShell>
         </SessionProviderClient>
