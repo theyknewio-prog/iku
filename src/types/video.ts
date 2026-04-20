@@ -72,6 +72,11 @@ export interface Video {
   title?: string;
   /** Original page URL for sources that need proxy resolution (rule34video, WP). */
   pageUrl?: string;
+  /** Set when a scraper/health-check confirms the source video is gone.
+   *  Used to render `noindex` on /watch/[slug] without 404'ing — Google
+   *  drops the URL on next crawl while users still see the auto-skip
+   *  fallback. */
+  deadAt?: Date | null;
 }
 
 export interface SearchOptions {

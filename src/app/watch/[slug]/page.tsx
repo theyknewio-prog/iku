@@ -40,6 +40,7 @@ import {
   containsBannedContent,
   getRelatedVideos,
   getDanbooruVideo,
+  isVideoDeadBySlug,
 } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
@@ -184,6 +185,11 @@ export async function generateMetadata({
     video.thumbnail || video.preview || "https://iku.gg/og-default.png";
   const ogVideo = video.url;
 
+  // SEO: noindex when the source video is dead. Page still renders with
+  // auto-skip fallback for users who land via direct link, but Google
+  // drops the URL on next crawl.
+  const isDead = await isVideoDeadBySlug(video.slug);
+
   return {
     title,
     description,
@@ -194,7 +200,7 @@ export async function generateMetadata({
       canonical: canonicalUrl,
     },
     robots: {
-      index: true,
+      index: !isDead,
       follow: true,
     },
     openGraph: {

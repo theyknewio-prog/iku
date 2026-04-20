@@ -825,6 +825,27 @@ export async function getDanbooruVideo(
 }
 
 // ---------------------------------------------------------------------------
+// Dead-video lookup — surfaces dead_at to /watch metadata so we can render
+// noindex on URLs whose source video has been pulled. Not a 404: the page
+// still renders with auto-skip fallback so existing visitors aren't blocked,
+// but we tell Google to drop the URL on next crawl.
+// ---------------------------------------------------------------------------
+
+async function _isVideoDeadBySlug(slug: string): Promise<boolean> {
+  const { rows } = await pool.query<{ dead_at: Date | null }>(
+    `SELECT dead_at FROM videos WHERE slug = $1 LIMIT 1`,
+    [slug],
+  );
+  return rows.length > 0 && rows[0].dead_at !== null;
+}
+// Memoize 5min so generateMetadata + page render share one PG hit per slug.
+export const isVideoDeadBySlug = memoize(
+  "video-dead-by-slug",
+  _isVideoDeadBySlug,
+  5 * 60 * 1000,
+);
+
+// ---------------------------------------------------------------------------
 // Keyset pagination for /api/feed — infinite scroll without OFFSET hell
 // ---------------------------------------------------------------------------
 
