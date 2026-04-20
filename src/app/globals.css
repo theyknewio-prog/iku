@@ -11281,6 +11281,23 @@ body {
   pointer-events: none;
 }
 
+/* Mobile-only in-grid ad slot — counterpart to .native-ad-card which is
+   desktop-only. Spans the full grid row so the 300x250 iframe is centered
+   between two card rows instead of squeezed into one cell. Hidden on
+   desktop where NativeAdCard handles the same position. */
+.grid-ad-mobile {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 8px 0;
+}
+@media (min-width: 768px) {
+  .grid-ad-mobile {
+    display: none !important;
+  }
+}
+
 /* ── 49d. Feed Interstitial ──────────────────────────────────── */
 .feed-interstitial {
   position: fixed;
