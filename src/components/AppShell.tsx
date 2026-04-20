@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { SearchAutocomplete } from "./SearchAutocomplete";
 import { StreakBadge } from "./StreakBadge";
+import { FooterAdBlock } from "./FooterAdBlock";
 
 /* ── SVG Icons ─────────────────────────────────────────────── */
 
@@ -898,6 +899,8 @@ export function AppShell({
           </nav>
 
           {children}
+          {/* Ship #8 2026-04-20: universal above-footer banner. */}
+          <FooterAdBlock />
           {footer}
         </div>
       </div>
