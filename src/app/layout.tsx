@@ -12,6 +12,7 @@ import { AdScript } from "@/components/AdScript";
 import { PopunderRotator } from "@/components/PopunderRotator";
 import { AdsterraSocialBar } from "@/components/AdsterraSocialBar";
 import { HilltopAdsInPagePush } from "@/components/HilltopAdsInPagePush";
+import { StickyFooterAd } from "@/components/StickyFooterAd";
 import { StickyPremiumBanner } from "@/components/StickyPremiumBanner";
 
 // Fonts: Nunito (primary body) + Righteous (display/headings).
@@ -173,6 +174,7 @@ export default async function RootLayout({
           {/* Adsterra Social Bar — sticky icon cluster, high mobile CPM. */}
           <AdsterraSocialBar />
           <HilltopAdsInPagePush />
+          <StickyFooterAd />
           <StickyPremiumBanner />
           <AppShell footer={<MegaFooter />}>{children}</AppShell>
         </SessionProviderClient>
