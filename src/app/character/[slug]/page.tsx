@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { Pagination } from "@/components/Pagination";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
-import { getVideos, countVideos } from "@/lib/content";
+import { getVideos, countVideos, isBannedTag } from "@/lib/content";
 import { getEntitySeo } from "@/lib/entity-seo";
 import { getNonce } from "@/lib/csp-nonce";
 import { shouldBlockTaxonomy } from "@/lib/taxonomy-guard";
@@ -67,6 +67,12 @@ export async function generateMetadata({
   searchParams,
 }: Props): Promise<Metadata> {
   const { slug } = await params;
+  if (isBannedTag(slug)) {
+    return {
+      title: "Not Found | iku.gg",
+      robots: { index: false, follow: false },
+    };
+  }
   const sp = await searchParams;
   const character = resolveCharacter(slug);
   if (!character) return { title: "Character Not Found | iku.gg" };
@@ -134,6 +140,7 @@ export default async function CharacterPage({ params, searchParams }: Props) {
 
   const nonce = await getNonce();
   const { slug } = await params;
+  if (isBannedTag(slug)) notFound();
   const sp = await searchParams;
   const character = resolveCharacter(slug);
   if (!character) notFound();

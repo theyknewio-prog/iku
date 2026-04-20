@@ -44,6 +44,22 @@ const BANNED_TAGS = new Set([
 
 export const BANNED_TAGS_ARRAY = Array.from(BANNED_TAGS);
 
+/**
+ * Returns true if a single tag/character/series slug should NEVER be exposed
+ * as a taxonomy URL. Used by /tag/[tag], /character/[slug], /series/[slug] to
+ * 404 banned terms before rendering an empty SEO-indexable shell page.
+ *
+ * Without this, Google indexes pages titled "Loli Hentai Videos | iku.gg" even
+ * though the grid is empty — which torches brand safety, ad-network approval,
+ * and is just legally bad.
+ */
+export function isBannedTag(slug: string): boolean {
+  if (!slug) return false;
+  const s = slug.toLowerCase();
+  if (BANNED_TAGS.has(s)) return true;
+  return BANNED_WORD_RE.test(` ${s.replace(/-/g, "_")} `);
+}
+
 // Substring patterns for title/slug scanning. Intentionally broad because
 // Danbooru/Gelbooru embed these words in titles even when they're not in
 // general tags. A positive match on any of these kills the row.

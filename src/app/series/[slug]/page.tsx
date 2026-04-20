@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { Pagination } from "@/components/Pagination";
-import { getVideos, countVideos } from "@/lib/content";
+import { getVideos, countVideos, isBannedTag } from "@/lib/content";
 import { getEntitySeo } from "@/lib/entity-seo";
 import { getNonce } from "@/lib/csp-nonce";
 import { shouldBlockTaxonomy } from "@/lib/taxonomy-guard";
@@ -90,6 +90,12 @@ export async function generateMetadata({
   searchParams,
 }: Props): Promise<Metadata> {
   const { slug } = await params;
+  if (isBannedTag(slug)) {
+    return {
+      title: "Not Found | iku.gg",
+      robots: { index: false, follow: false },
+    };
+  }
   const sp = await searchParams;
   const series = await resolveSeries(slug);
   if (!series) return { title: "Series Not Found | iku.gg" };
@@ -157,6 +163,7 @@ export default async function SeriesPage({ params, searchParams }: Props) {
 
   const nonce = await getNonce();
   const { slug } = await params;
+  if (isBannedTag(slug)) notFound();
   const sp = await searchParams;
   const series = await resolveSeries(slug);
   if (!series) notFound();

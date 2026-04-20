@@ -5,7 +5,8 @@ import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { Pagination } from "@/components/Pagination";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
-import { getVideos, countVideos } from "@/lib/content";
+import { notFound } from "next/navigation";
+import { getVideos, countVideos, isBannedTag } from "@/lib/content";
 import { getEntitySeo } from "@/lib/entity-seo";
 import { getNonce } from "@/lib/csp-nonce";
 import { shouldBlockTaxonomy } from "@/lib/taxonomy-guard";
@@ -30,6 +31,12 @@ export async function generateMetadata({
   searchParams,
 }: Props): Promise<Metadata> {
   const { tag } = await params;
+  if (isBannedTag(tag)) {
+    return {
+      title: "Not Found | iku.gg",
+      robots: { index: false, follow: false },
+    };
+  }
   const sp = await searchParams;
   const label = tag.replace(/_/g, " ");
   const titleCased = label.replace(/\b\w/g, (c) => c.toUpperCase());
@@ -127,6 +134,7 @@ export default async function TagPage({ params, searchParams }: Props) {
 
   const nonce = await getNonce();
   const { tag } = await params;
+  if (isBannedTag(tag)) notFound();
   const sp = await searchParams;
   const pageParam = typeof sp.page === "string" ? sp.page : "1";
   const sortParam = typeof sp.sort === "string" ? sp.sort : "score";
