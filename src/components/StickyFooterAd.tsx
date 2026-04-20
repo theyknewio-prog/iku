@@ -1,69 +1,49 @@
 "use client";
 
 /**
- * StickyFooterAd — 320x50 banner fixed at the bottom of the screen on mobile.
+ * StickyFooterAd — sticky bottom mobile ad above the bottom nav.
  *
- * Visible only on viewports narrower than 768px. Sits above the mobile
- * bottom nav bar (which is ~60px tall) so it does not cover navigation.
- * A close button lets users dismiss it; dismissal is persisted for the
- * session via sessionStorage so the banner does not reappear on navigation.
+ * Visible only on viewports <768px. Sits at bottom: 64px (above the 60px
+ * mobile nav + 4px gap). Dismissible per session.
  *
- * Uses the ExoClick underplayer728 zone — ExoClick auto-serves the best
- * ad format for the slot width (320x50 on mobile).
- *
- * Industry context: xHamster and Pornhub both run a sticky 320x50 mobile
- * footer banner. It is the highest-RPM mobile placement after the pre-roll.
- * Positioned at bottom: 64px to clear the 60px bottom nav + 4px gap.
+ * Ship #4 2026-04-20: switched from ExoClick mobileBanner300x50 (which was
+ * delivering 160-wide creatives into a 300-wide zone, half-empty / cropped
+ * appearance) to HentaiPros 300x100 — guaranteed-fill iframe, exact size,
+ * no dynamic <ins> injection that triggers iOS reflow → also fixes the
+ * "bottom nav detaches on iOS Chrome" regression Sab reported.
  *
  * Pro users never see this.
  */
 
-import { useEffect, useRef, useState } from "react";
-import { AD_ZONES } from "@/lib/ad-config";
-import { insertExoClickZone } from "@/lib/ad-utils";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
-// Use the 300x50 mobile banner zone, NOT watchUnderplayer728 (728x90).
-// Previous version loaded a 728-wide creative into a ~160-wide container →
-// ExoClick rendered the full 728x90 creative and the nested iframe clipped
-// to the narrow parent so users saw only a ~160px top-left slice of the
-// creative (Sab screenshot 2026-04-11: "your Porn squad of..." zoomed corner).
-// 300x50 is the format ExoClick actually sells for this slot size.
-const ZONE_ID =
-  AD_ZONES.exoclick.mobileBanner300x50 ?? AD_ZONES.exoclick.watchUnderplayer728;
 const STORAGE_KEY = "iku_sticky_footer_dismissed";
+const HENTAI_PROS_300x100_SPOT = 10001817; // AdultForce hentai-niche, 300x100
 
 export function StickyFooterAd() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const insertedRef = useRef(false);
+  const pathname = usePathname();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Do not show for Pro users
+    // Hide on routes where a sticky bottom is wrong (immersive feed,
+    // auth, checkout, pricing).
+    if (
+      pathname === "/feed" ||
+      pathname.startsWith("/feed/") ||
+      pathname.startsWith("/preview/") ||
+      pathname.startsWith("/login") ||
+      pathname.startsWith("/signup") ||
+      pathname.startsWith("/pricing") ||
+      pathname.startsWith("/checkout")
+    ) {
+      setVisible(false);
+      return;
+    }
     if (document.body.dataset.pro === "1") return;
-    // Do not show if dismissed this session
     if (sessionStorage.getItem(STORAGE_KEY) === "1") return;
     setVisible(true);
-  }, []);
-
-  // Insert the ad zone once the banner becomes visible
-  useEffect(() => {
-    if (!visible) return;
-    const container = containerRef.current;
-    if (!container) return;
-    insertExoClickZone(container, ZONE_ID, insertedRef);
-  }, [visible]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      const container = containerRef.current;
-      if (container) {
-        const ins = container.querySelector("ins");
-        if (ins) ins.remove();
-      }
-      insertedRef.current = false;
-    };
-  }, []);
+  }, [pathname]);
 
   function dismiss() {
     sessionStorage.setItem(STORAGE_KEY, "1");
@@ -74,7 +54,26 @@ export function StickyFooterAd() {
 
   return (
     <div className="sticky-footer-ad" aria-label="Advertisement">
-      <div ref={containerRef} className="sticky-footer-ad__zone" />
+      <iframe
+        title="hentaipros-300x100"
+        aria-label="Advertisement"
+        src={`//a.adtng.com/get/${HENTAI_PROS_300x100_SPOT}?ata=iku.media.gg`}
+        width={300}
+        height={100}
+        loading="lazy"
+        scrolling="no"
+        frameBorder={0}
+        allowTransparency
+        marginHeight={0}
+        marginWidth={0}
+        sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+        style={{
+          backgroundColor: "transparent",
+          border: "none",
+          display: "block",
+          maxWidth: "100%",
+        }}
+      />
       <button
         className="sticky-footer-ad__close"
         onClick={dismiss}
