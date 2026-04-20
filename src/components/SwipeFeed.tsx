@@ -148,13 +148,14 @@ export function SwipeFeed() {
     });
   }, []);
 
-  // Conversion CTA every 15 swipes — alternates signup (anon only) ↔
-  // premium (everyone non-Pro). Offset from the VAST preroll (every 10)
-  // so the two never fire on the same swipe.
+  // Conversion CTA every 12 swipes — tightened from /15 alongside the VAST
+  // /10 → /7 (Ship #10). Still offset from the VAST cadence so the two
+  // never collide on the same swipe (LCM(7,12) = 84 — collisions only
+  // every 84 swipes, well past typical session length).
   useEffect(() => {
     if (
       activeIndex > 0 &&
-      activeIndex % 15 === 0 &&
+      activeIndex % 12 === 0 &&
       activeIndex !== lastInterstitialIndexRef.current &&
       !isPro.current
     ) {
@@ -172,18 +173,31 @@ export function SwipeFeed() {
     }
   }, [activeIndex]);
 
-  // VAST video preroll every 10 swipes. Spaced apart from the CTA (every 15)
-  // so a user hits an ad roughly every 6-8 swipes instead of every 2-3.
+  // VAST video preroll every 7 swipes. Tightened from /10 → /7 alongside
+  // CTA /15 → /12 (Ship #10) so a user hits an ad roughly every 4-5 swipes
+  // instead of every 6-8. Top hentai sites (Hentaigasm 17 zones, HentaiCity
+  // 8 zones) saturate way more aggressively.
+  //
+  // Provider is picked 50/50 ExoClick vs HilltopAds (Ship #9). Both VAST
+  // endpoints are wired through /api/vast?provider=...; the rotation lets
+  // us A/B which one actually pays better eCPM. ExoClick zone 5893268
+  // historically logged 0 views / 2.6K hits because of an SPOF in the old
+  // /api/vast-stream proxy (fixed 2026-04-18). HilltopAds VAST is fresh
+  // inventory we've never measured.
   const [showShortsAd, setShowShortsAd] = useState(false);
+  const [shortsAdProvider, setShortsAdProvider] = useState<
+    "exoclick" | "hilltopads"
+  >("exoclick");
   const lastAdIndexRef = useRef(-10);
   useEffect(() => {
     if (
       activeIndex > 0 &&
-      activeIndex % 10 === 0 &&
+      activeIndex % 7 === 0 &&
       activeIndex !== lastAdIndexRef.current &&
       !isPro.current
     ) {
       lastAdIndexRef.current = activeIndex;
+      setShortsAdProvider(Math.random() < 0.5 ? "exoclick" : "hilltopads");
       setShowShortsAd(true);
     }
   }, [activeIndex]);
@@ -240,7 +254,10 @@ export function SwipeFeed() {
             background: "#000",
           }}
         >
-          <VastPrerollAd onComplete={() => setShowShortsAd(false)} />
+          <VastPrerollAd
+            provider={shortsAdProvider}
+            onComplete={() => setShowShortsAd(false)}
+          />
         </div>
       )}
 
