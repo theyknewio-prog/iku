@@ -197,11 +197,16 @@ export function buildSeoTitle(video: Video): string {
     return `${tag} Hentai | Watch Free on iku.gg`;
   }
 
-  // Scraped title fallback (rule34video, WP)
-  if (video.title && video.title.trim()) {
-    const t = titleCase(video.title.replace(/_/g, " "));
-    const title = `${t.slice(0, 30)} Hentai | Watch Free on iku.gg`;
-    if (title.length <= 60) return title;
+  // Scraped title fallback (rule34video, WP). Skip when title has zero
+  // Latin letters — rendering "25歳の女子高生 Hentai | …" is a SEO disaster
+  // for an EN-targeted site (12,858 hanime1 pages had this problem).
+  if (video.title && video.title.trim() && /[a-zA-Z]/.test(video.title)) {
+    const clean = pickLatinPortion(video.title);
+    if (/[a-zA-Z]/.test(clean)) {
+      const t = titleCase(clean.replace(/_/g, " "));
+      const title = `${t.slice(0, 30)} Hentai | Watch Free on iku.gg`;
+      if (title.length <= 60) return title;
+    }
   }
 
   return "Free Animated Hentai | Watch on iku.gg";
