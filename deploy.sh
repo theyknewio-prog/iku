@@ -194,5 +194,18 @@ else
   warn "CF_ZONE_ID or CF_API_TOKEN not set — skipping Cloudflare cache purge"
 fi
 
+# ─────────────────────────────────────────────────────────────
+# 7. Smoke test — 15 routes must return 200. Catches regressions
+#    that build passed but runtime breaks (404s, 500s, PG timeouts).
+# ─────────────────────────────────────────────────────────────
+if [ -x "$(command -v node)" ] && [ -f "$SCRIPT_DIR/scripts/smoke-test.mjs" ]; then
+  step "Running smoke test on $SITE_URL"
+  if SITE_URL="$SITE_URL" node "$SCRIPT_DIR/scripts/smoke-test.mjs"; then
+    ok "Smoke test passed"
+  else
+    warn "Smoke test reported failures — investigate above before considering deploy healthy"
+  fi
+fi
+
 echo
 echo -e "${GREEN}${BOLD}✅ Done.${RESET} Commit ${AFTER_SHA:0:7} is live on $SITE_URL"

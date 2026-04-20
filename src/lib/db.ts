@@ -19,21 +19,20 @@ function createPool(): Pool {
     max: 35,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 10000,
-    // Hard server-side cap — any query running over 10s is killed by PG.
-    // Prevents a single runaway count/seq-scan from holding a pool slot
-    // for 50s+ and blocking everything else. Also applied via ALTER SYSTEM
-    // on the server, but setting it here means new deploys always carry it.
-    statement_timeout: 10000,
+    // Hard server-side cap — any query over 3s is killed by PG. Was 10s but
+    // a 10s runaway holds a pool slot long enough to cascade pool exhaustion.
+    // 3s is well above our p99 (~350ms) and kills plan regressions fast.
+    // Use `queryWithTimeout(ms, ...)` below for rare queries that legitimately
+    // need more (e.g. bulk upserts from scrapers).
+    statement_timeout: 3000,
   });
 
   pool.on("error", (err) => {
     console.error("Unexpected PG pool error:", err);
   });
 
-  // Belt-and-suspenders: also SET per session in case statement_timeout
-  // param isn't honored by the pg driver version.
   pool.on("connect", (client) => {
-    client.query("SET statement_timeout = '10s'").catch(() => {});
+    client.query("SET statement_timeout = '3s'").catch(() => {});
   });
 
   return pool;
@@ -43,6 +42,38 @@ export const pool = globalForPg.pgPool ?? createPool();
 
 if (process.env.NODE_ENV !== "production") {
   globalForPg.pgPool = pool;
+}
+
+/**
+ * Run a query with a custom statement_timeout (in ms). Acquires a dedicated
+ * client, sets the timeout, runs the query, resets, releases. Use sparingly
+ * — the default 3s already covers 99% of the code paths.
+ *
+ * Intended use cases:
+ *   - Scraper ingest (COPY, bulk UPSERT)       → 30000
+ *   - Admin/analytics queries                  → 15000
+ *   - Cold-cache count(*)                      → 10000
+ */
+export async function queryWithTimeout<R extends Record<string, unknown>>(
+  timeoutMs: number,
+  sql: string,
+  params?: unknown[],
+): Promise<{ rows: R[]; rowCount: number | null }> {
+  const client = await pool.connect();
+  try {
+    await client.query(
+      `SET statement_timeout = ${Math.max(100, timeoutMs | 0)}`,
+    );
+    const result = await client.query<R>(sql, params);
+    return { rows: result.rows, rowCount: result.rowCount };
+  } finally {
+    try {
+      await client.query("SET statement_timeout = '3s'");
+    } catch {
+      // swallow — the client is about to be returned to the pool anyway
+    }
+    client.release();
+  }
 }
 
 export default pool;
