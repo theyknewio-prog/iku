@@ -61,13 +61,23 @@ function isNoise(tag: string): boolean {
   return /^\d/.test(tag) || tag.includes("x1080") || tag.includes("x720");
 }
 
-/** Pick a meaningful genre tag, skipping generic/noise tags. */
+// Site is EN-targeted, so tags with no Latin letters (CJK / Cyrillic / etc.)
+// must never reach the SEO <title> or H1. hanime1 ships ~3.3K rows with pure
+// CJK titles AND pure CJK tags — without this filter, "內射 Hentai | Watch
+// Free Animated on iku.gg" gets rendered and Google indexes Chinese on an
+// English site (2026-04-20 audit).
+function isLatin(tag: string): boolean {
+  return /[a-zA-Z]/.test(tag);
+}
+
+/** Pick a meaningful genre tag, skipping generic/noise/non-Latin tags. */
 export function pickGenreTag(video: Video): string {
   const candidate = video.tags.find(
-    (t) => !GENERIC_TAGS.has(t.toLowerCase()) && !isNoise(t),
+    (t) => !GENERIC_TAGS.has(t.toLowerCase()) && !isNoise(t) && isLatin(t),
   );
   if (candidate) return candidate.replace(/_/g, " ");
-  if (video.tags.length > 0) return video.tags[0].replace(/_/g, " ");
+  const anyLatin = video.tags.find((t) => isLatin(t));
+  if (anyLatin) return anyLatin.replace(/_/g, " ");
   return "Hentai";
 }
 
@@ -78,12 +88,13 @@ function titleCase(s: string): string {
   );
 }
 
-/** Pick up to N distinct meaningful tags — no duplicates, no prefix collisions. */
+/** Pick up to N distinct meaningful tags — no duplicates, no prefix collisions, Latin-only. */
 function distinctTags(tags: string[], n: number): string[] {
   const out: string[] = [];
   const seen = new Set<string>();
   for (const t of tags) {
-    if (GENERIC_TAGS.has(t.toLowerCase()) || isNoise(t)) continue;
+    if (GENERIC_TAGS.has(t.toLowerCase()) || isNoise(t) || !isLatin(t))
+      continue;
     const clean = t.replace(/_/g, " ").toLowerCase();
     // Skip if we already have this word OR a word that starts with the same 4 chars
     const first4 = clean.slice(0, 4);
@@ -124,10 +135,15 @@ function pickLatinPortion(raw: string): string {
 
 /** Build a human-friendly title from any Video (for cards/UI). */
 export function buildTitle(video: Video): string {
-  // Prefer scraped title (rule34video, WP, hanime1)
+  // Prefer scraped title (rule34video, WP, hanime1) — but only when it
+  // actually contains Latin letters. Pure CJK titles fall through to the
+  // character/copyright/tag fallbacks (also Latin-filtered) so the H1 on
+  // an EN-targeted site never renders as a Japanese sentence.
   if (video.title && video.title.trim()) {
     const clean = pickLatinPortion(video.title);
-    return titleCase(clean.replace(/_/g, " "));
+    if (/[a-zA-Z]/.test(clean)) {
+      return titleCase(clean.replace(/_/g, " "));
+    }
   }
   // Then character name (+ copyright if present)
   if (video.characters[0]) {
