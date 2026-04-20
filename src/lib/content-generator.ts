@@ -1,4 +1,5 @@
 import type { Video } from "@/types/video";
+import { pickGenreTag } from "./video-display";
 
 function fmt(raw: string): string {
   return raw.replace(/_/g, " ");
@@ -146,11 +147,9 @@ export function generateBreadcrumbs(
     label = `${cap(fmt(video.characters[0]))} hentai`;
   } else if (video.copyrights[0]) {
     label = `${cap(fmt(video.copyrights[0]))} hentai`;
-  } else if (video.tags[0]) {
-    label = `${cap(fmt(video.tags[0]))} hentai`;
   } else {
-    // Only use id if it's a valid truthy value — prevents "Video #undefined"
-    label = video.id ? `Video #${video.id}` : "Hentai video";
+    const genre = pickGenreTag(video);
+    label = genre === "Hentai" ? "Hentai video" : `${cap(genre)} hentai`;
   }
   crumbs.push({ name: label, url: `https://iku.gg/watch/${video.slug}` });
   return crumbs;
