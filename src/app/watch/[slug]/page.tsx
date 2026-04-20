@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import type { Metadata } from "next";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { WatchPlayerWithPreroll } from "@/components/WatchPlayerWithPreroll";
@@ -338,6 +338,14 @@ export default async function WatchPage({ params }: WatchPageProps) {
   // Block banned content from being viewed directly
   if (containsBannedContent(video)) {
     notFound();
+  }
+
+  // SEO: 308 (≈301) redirect when URL slug doesn't match the canonical DB
+  // slug. Prevents duplicate content from people forging /watch/<id>-anything
+  // (Google indexed many of these). Routing is by ID extracted from slug,
+  // so any cosmetic suffix used to silently render the same page.
+  if (slug !== video.slug) {
+    permanentRedirect(`/watch/${video.slug}`);
   }
 
   // Fetch related for autoplay-next (small set, no suspense needed)
