@@ -339,7 +339,13 @@ function isBanned(v: Hn1Video): boolean {
 }
 
 function slugify(s: string): string {
-  return s
+  // Strip the "| hanime1.me" / " - hanime1.me" brand suffix the source site
+  // appends to every title before slugifying. Otherwise the slug ends with
+  // "---hanime1me" (or truncated variants like "---hanime1m" / "---hanime1"
+  // depending on the 60-char clamp), which polluted ~17K Google-indexed URLs
+  // before the 2026-04-20 cleanup.
+  const cleaned = s.replace(/\s*[\|\-–—]\s*hanime1(\.me)?\s*$/i, "");
+  return cleaned
     .toLowerCase()
     .replace(/[^a-z0-9\s-]/g, "")
     .trim()
