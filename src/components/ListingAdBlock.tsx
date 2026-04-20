@@ -6,13 +6,17 @@
  * grid below the fold on /hentai, /3d, /new, /tag/*, /character/*, etc.
  *
  * Now:
- *   - "top"    → HentaiPros 300x250 (known-clean, strongest CPM for this niche)
+ *   - "top"    → HentaiPros 728x90 desktop / 300x250 mobile (above-fold leaderboard,
+ *                universal pattern across HentaiCity / Hentaigasm / Hentai.tv)
  *   - "mid"    → Adsterra 300x250 (mid-page diversity)
  *   - "bottom" → ExoClick 300x250 (bottom of grid)
  *
+ * Ship #3 2026-04-20: top variant upgraded from 300x250 to 728x90/300x250 to
+ * match competitor leaderboard density. Mid + bottom unchanged.
+ *
  * Callers get 1 ad per invocation. A listing page that calls all three
- * variants shows 3 ads total, not 9. Each variant renders the same 300x250
- * footprint so CLS stays stable across mobile + desktop.
+ * variants shows 3 ads total. Each variant uses HentaiPros's mobile=300x250
+ * downgrade so CLS stays stable on small viewports.
  */
 
 import { HentaiProsBanner } from "./HentaiProsBanner";
@@ -32,7 +36,7 @@ export function ListingAdBlock({ variant }: { variant: Variant }) {
   if (variant === "top") {
     return (
       <div style={wrap}>
-        <HentaiProsBanner format="300x250" mobileFormat="300x250" />
+        <HentaiProsBanner format="728x90" mobileFormat="300x250" />
       </div>
     );
   }

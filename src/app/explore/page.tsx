@@ -204,10 +204,10 @@ export default async function ExplorePage(props: {
     <AgeGate>
       <main className="shell-content">
         <div className="page-container">
-          {/* 2026-04-18: enabled mobileFormat="300x250" — was null so mobile
-              /explore had zero ads above fold despite healthy SEO traffic.
-              HentaiPros 300x250 is already proven on /tag/* and home. */}
-          <HentaiProsBanner format="300x250" mobileFormat="300x250" />
+          {/* Ship #3 2026-04-20 — header leaderboard 728x90 desktop / 300x250
+              mobile. Was 300x250-only; upgraded to match competitor pattern
+              (HentaiCity, Hentaigasm, Hentai.tv all run 728-wide above-fold). */}
+          <HentaiProsBanner format="728x90" mobileFormat="300x250" />
 
           {/* ── Page header ───────────────────────────────── */}
           <div className="explore-header">
