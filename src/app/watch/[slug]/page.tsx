@@ -881,34 +881,15 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
             {/* ── Sidebar (desktop) ─────────────────────────── */}
             <aside className="player-sidebar">
-              {/* CPM densification 2026-04-15: ExoClick 300x250 above
-                  HentaiPros. Sidebar is display:none <768px so this is
-                  a desktop-only surface. lazy={true} 2026-04-18 — desktop
-                  has 3 eager ad zones above fold (under-player HentaiPros
-                  iframe + this one + sidebar 160x600). IntersectionObserver
-                  pushes ExoClick script injection after first paint even
-                  though the zone is visible, cutting time-to-interactive. */}
-              <div
-                style={{
-                  marginBottom: 16,
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <AdZoneClient
-                  zoneId={AD_ZONES.exoclick.sidebar300}
-                  size="300x250"
-                  lazy
-                />
-              </div>
-              {/* Wave 1b 2026-04-13: swapped generic ExoClick for
-                  HentaiProsBanner 160x600 — hentai-niche rotation
-                  (HentaiPros / Candy.ai / hentai games) matches the
-                  audience intent. Sidebar is display:none <768px. */}
-              <HentaiProsBanner format="160x600" mobileFormat={null} />
+              {/* Audit 2026-04-20: related videos were below 850px of ads
+                  in the sticky sidebar → invisible at 1440x900. Interleaved
+                  layout: 6 related → 300x250 ad → 6 more related → 160x600
+                  banner. First related thumbs visible above fold (driver
+                  #1 of pages/session) AND both ad zones still appear in the
+                  scroll path. PornHub uses the same pattern. */}
               <div className="player-sidebar__title">Up next</div>
               <Suspense
-                fallback={Array.from({ length: 10 }).map((_, i) => (
+                fallback={Array.from({ length: 6 }).map((_, i) => (
                   <div key={i} className="related-item">
                     <div
                       className="related-item__thumb skeleton-thumb"
@@ -927,8 +908,35 @@ export default async function WatchPage({ params }: WatchPageProps) {
                   </div>
                 ))}
               >
-                <RelatedSidebar video={video} />
+                <RelatedSidebar video={video} offset={0} limit={6} />
               </Suspense>
+
+              {/* In-content ad between two related slots. ExoClick 300x250.
+                  lazy={true} — IntersectionObserver pushes script injection
+                  after first paint (cuts time-to-interactive). */}
+              <div
+                style={{
+                  margin: "16px 0",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <AdZoneClient
+                  zoneId={AD_ZONES.exoclick.sidebar300}
+                  size="300x250"
+                  lazy
+                />
+              </div>
+
+              <Suspense fallback={null}>
+                <RelatedSidebar video={video} offset={6} limit={6} />
+              </Suspense>
+
+              {/* HentaiProsBanner 160x600 — niche rotation (HentaiPros /
+                  Candy.ai / hentai games) below the second related slot. */}
+              <div style={{ marginTop: 24 }}>
+                <HentaiProsBanner format="160x600" mobileFormat={null} />
+              </div>
             </aside>
           </div>
 
@@ -979,19 +987,34 @@ async function RelatedGrid({ video }: { video: Video }) {
   );
 }
 
-async function RelatedSidebar({ video }: { video: Video }) {
-  const related = await getRelatedVideos(video, 12);
-  if (!related.length)
-    return (
-      <p
-        style={{
-          fontSize: "var(--text-sm)",
-          color: "var(--color-text-tertiary)",
-        }}
-      >
-        No related videos found.
-      </p>
-    );
+async function RelatedSidebar({
+  video,
+  offset = 0,
+  limit = 12,
+}: {
+  video: Video;
+  offset?: number;
+  limit?: number;
+}) {
+  // getRelatedVideos is memoized so calling it twice (top + bottom slot)
+  // for the same video hits the same cached result, no extra PG load.
+  const all = await getRelatedVideos(video, 12);
+  const related = all.slice(offset, offset + limit);
+  if (!related.length) {
+    if (offset === 0) {
+      return (
+        <p
+          style={{
+            fontSize: "var(--text-sm)",
+            color: "var(--color-text-tertiary)",
+          }}
+        >
+          No related videos found.
+        </p>
+      );
+    }
+    return null;
+  }
 
   return (
     <>
