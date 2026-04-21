@@ -135,6 +135,22 @@ function stripIdSuffix(raw: string): string {
   return raw.replace(/\s*#\d{4,}\s*$/, "").trim();
 }
 
+// "Aether (Genshin Impact) Hentai — Genshin Impact" is a scraper artifact
+// where the series name appears both inside parens and after the em-dash.
+// Detect and strip the trailing " — X" when X already appears in the head.
+// Only runs if the string contains an em-dash separator, so short titles
+// are untouched.
+function dedupeTrailingSeries(s: string): string {
+  const m = s.match(/^(.+?)\s+—\s+([^—]+?)\s*$/);
+  if (!m) return s;
+  const head = m[1];
+  const trailing = m[2].trim();
+  if (trailing && head.toLowerCase().includes(trailing.toLowerCase())) {
+    return head.trim();
+  }
+  return s;
+}
+
 // hanime1 ships bilingual titles as "JP title|EN title" — keep the Latin
 // portion for EN-targeted UI. Other sources without `|` pass through.
 function pickLatinPortion(raw: string): string {
@@ -166,7 +182,7 @@ export function buildTitle(video: Video): string {
   if (video.title && video.title.trim() && !looksSynthetic(video.title)) {
     const clean = pickLatinPortion(stripIdSuffix(video.title));
     if (/[a-zA-Z]/.test(clean)) {
-      return titleCase(clean.replace(/_/g, " "));
+      return dedupeTrailingSeries(titleCase(clean.replace(/_/g, " ")));
     }
   }
   // Then character name (+ copyright if present, but skip when the
@@ -186,10 +202,14 @@ export function buildTitle(video: Video): string {
   if (video.copyrights[0]) {
     return titleCase(video.copyrights[0].replace(/_/g, " "));
   }
-  // Then first meaningful tags (distinct, no prefix duplicates)
+  // Then first meaningful tags (distinct, no prefix duplicates). Append
+  // "Hentai" so the card reads as a proper title and picks up the money
+  // keyword ("Abs & Anal" → "Abs & Anal Hentai"). Skip the append if the
+  // tags already include it to avoid "Hentai & Something Hentai".
   const meaningful = distinctTags(video.tags, 2);
   if (meaningful.length > 0) {
-    return meaningful.map(titleCase).join(" & ");
+    const joined = meaningful.map(titleCase).join(" & ");
+    return /hentai/i.test(joined) ? joined : `${joined} Hentai`;
   }
   return "Animated Hentai";
 }
