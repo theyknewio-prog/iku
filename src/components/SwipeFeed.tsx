@@ -250,7 +250,7 @@ export function SwipeFeed() {
           style={{
             position: "fixed",
             inset: 0,
-            zIndex: 9998,
+            zIndex: 10001,
             background: "#000",
           }}
         >
