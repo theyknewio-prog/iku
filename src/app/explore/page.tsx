@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { getVideos, getThumbnailsForTags } from "@/lib/content";
+import React from "react";
 import { AgeGate } from "@/components/AgeGate";
+import { isLikelyBot } from "@/lib/is-bot";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { SignupCTA } from "@/components/SignupCTA";
 import { CHARACTERS } from "@/data/characters";
@@ -201,8 +203,11 @@ export default async function ExplorePage(props: {
     (_, i) => windowStart + i,
   );
 
+  const bot = await isLikelyBot();
+  const Wrapper = bot ? React.Fragment : AgeGate;
+
   return (
-    <AgeGate>
+    <Wrapper>
       <main className="shell-content">
         <div className="page-container">
           {/* Ship #3 2026-04-20 — header leaderboard 728x90 desktop / 300x250
@@ -537,6 +542,6 @@ export default async function ExplorePage(props: {
           </div>
         </footer>
       </main>
-    </AgeGate>
+    </Wrapper>
   );
 }

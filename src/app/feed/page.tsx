@@ -1,6 +1,8 @@
+import React from "react";
 import type { Metadata } from "next";
 import { AgeGate } from "@/components/AgeGate";
 import { SwipeFeed } from "@/components/SwipeFeed";
+import { isLikelyBot } from "@/lib/is-bot";
 
 export const metadata: Metadata = {
   title: "Hentai Shorts Feed — Swipe & Watch | iku.gg",
@@ -11,10 +13,13 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://iku.gg/feed" },
 };
 
-export default function FeedPage() {
+export default async function FeedPage() {
+  const bot = await isLikelyBot();
+  const Wrapper = bot ? React.Fragment : AgeGate;
+
   return (
-    <AgeGate>
+    <Wrapper>
       <SwipeFeed />
-    </AgeGate>
+    </Wrapper>
   );
 }

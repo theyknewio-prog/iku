@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { AgeGate } from "@/components/AgeGate";
+import { isLikelyBot } from "@/lib/is-bot";
 import { PosterCard } from "@/components/PosterCard";
 import { Carousel } from "@/components/Carousel";
 import { getPopularCharacters } from "@/lib/danbooru";
@@ -136,6 +137,8 @@ function formatViews(score: number): string {
 }
 
 export default async function HomePage() {
+  const bot = await isLikelyBot();
+
   // Random offset (pages 1–5) so "New Releases" shows different content on each load.
   const newReleasesPage = Math.floor(Math.random() * 5) + 1;
 
@@ -212,8 +215,10 @@ export default async function HomePage() {
     ];
   }
 
+  const Wrapper = bot ? React.Fragment : AgeGate;
+
   return (
-    <AgeGate>
+    <Wrapper>
       <main className="v2-page">
         <div className="v2-content">
           {/* ── Mobile stats bar — visible only when hero-right is hidden (<960px) ── */}
@@ -1083,6 +1088,6 @@ export default async function HomePage() {
           </div>
         </footer>
       </main>
-    </AgeGate>
+    </Wrapper>
   );
 }
