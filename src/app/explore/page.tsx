@@ -8,6 +8,7 @@ import { SignupCTA } from "@/components/SignupCTA";
 import { CHARACTERS } from "@/data/characters";
 import { SERIES } from "@/data/series";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
+import { ListingAdBlock } from "@/components/ListingAdBlock";
 
 export const revalidate = 3600;
 export const dynamic = "force-dynamic";
@@ -400,8 +401,28 @@ export default async function ExplorePage(props: {
               ))}
             </nav>
 
+            {/* Ship A 2026-04-21 — port tag/series ad pattern: premium strip
+                + mid-block above grid, in-grid natives every 6 (BlacklistFilter),
+                bottom ExoClick 300x250 below grid. Brings /explore from
+                4 unique slots → ~18 to match tag/series density. */}
+            <Link
+              href="/pricing"
+              className="hp-premium-strip"
+              aria-label="Get iku Premium"
+            >
+              <span className="hp-premium-strip__icon">🚫</span>
+              <span className="hp-premium-strip__text">
+                <strong>Skip every ad</strong> · 4K when available · Early
+                access · Unlimited favorites
+              </span>
+              <span className="hp-premium-strip__cta">Premium 4.99€/mo →</span>
+            </Link>
+            <ListingAdBlock variant="mid" />
+
             {/* Video grid */}
             <BlacklistFilter videos={videos} />
+
+            <ListingAdBlock variant="bottom" />
 
             {/* Empty state */}
             {videos.length === 0 && (

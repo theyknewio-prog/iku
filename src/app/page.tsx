@@ -23,6 +23,8 @@ import { MagneticButton } from "@/components/MagneticButton";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 import { AdZoneClient } from "@/components/AdZoneClient";
 import { AdsterraBanner } from "@/components/AdsterraBanner";
+import { ListingAdBlock } from "@/components/ListingAdBlock";
+import { NativeAdCard } from "@/components/NativeAdCard";
 import { AD_ZONES } from "@/lib/ad-config";
 
 export const metadata: Metadata = {
@@ -544,6 +546,11 @@ export default async function HomePage() {
             </section>
           )}
 
+          {/* Ship A 2026-04-21 — mid-block above Top Rated grid (Adsterra
+              300x250). Mirrors the tag/series pattern that runs 18 unique
+              slots vs the homepage's 4. */}
+          <ListingAdBlock variant="mid" />
+
           {/* ================================================================
               TOP RATED THIS WEEK -- 4-column grid
           ================================================================ */}
@@ -571,63 +578,79 @@ export default async function HomePage() {
                   72 * 60 * 60 * 1000;
 
                 return (
-                  <Link
-                    key={video.id}
-                    href={`/watch/${video.slug}`}
-                    className="hp-grid-card"
-                    role="listitem"
-                  >
-                    <div className="hp-grid-card__thumb">
-                      <div className="hp-grid-card__thumb-inner">
-                        {video.preview ? (
-                          <Image
-                            src={video.preview}
-                            alt={title}
-                            fill
-                            sizes="(max-width: 600px) 50vw, (max-width: 960px) 33vw, 25vw"
-                            style={{ objectFit: "cover" }}
-                            unoptimized
-                          />
-                        ) : (
-                          <div
-                            className={`hp-thumb-grad hp-thumb-grad--${(i % 12) + 1}`}
-                          />
+                  <React.Fragment key={video.id}>
+                    <Link
+                      href={`/watch/${video.slug}`}
+                      className="hp-grid-card"
+                      role="listitem"
+                    >
+                      <div className="hp-grid-card__thumb">
+                        <div className="hp-grid-card__thumb-inner">
+                          {video.preview ? (
+                            <Image
+                              src={video.preview}
+                              alt={title}
+                              fill
+                              sizes="(max-width: 600px) 50vw, (max-width: 960px) 33vw, 25vw"
+                              style={{ objectFit: "cover" }}
+                              unoptimized
+                            />
+                          ) : (
+                            <div
+                              className={`hp-thumb-grad hp-thumb-grad--${(i % 12) + 1}`}
+                            />
+                          )}
+                        </div>
+                        {isHot && <span className="hp-hot-badge">🔥 Hot</span>}
+                        {!isHot && isNew && (
+                          <span className="hp-new-badge">New</span>
+                        )}
+                        {video.duration && (
+                          <span className="hp-duration-badge">
+                            {formatDuration(video.duration)}
+                          </span>
                         )}
                       </div>
-                      {isHot && <span className="hp-hot-badge">🔥 Hot</span>}
-                      {!isHot && isNew && (
-                        <span className="hp-new-badge">New</span>
-                      )}
-                      {video.duration && (
-                        <span className="hp-duration-badge">
-                          {formatDuration(video.duration)}
+                      <div className="hp-grid-card__info">
+                        <span
+                          className={`hp-grid-card__category ${categoryColor}`}
+                        >
+                          {genre}
                         </span>
-                      )}
-                    </div>
-                    <div className="hp-grid-card__info">
-                      <span
-                        className={`hp-grid-card__category ${categoryColor}`}
-                      >
-                        {genre}
-                      </span>
-                      <div className="hp-grid-card__title">{title}</div>
-                      {charName && (
-                        <div className="hp-grid-card__char">👤 {charName}</div>
-                      )}
-                      <div className="hp-grid-card__foot">
-                        <div className="hp-rating-row">
-                          <span className="hp-star-filled">&#9733;</span>
-                          <span className="hp-rating-num">
-                            {rating.toFixed(1)}
+                        <div className="hp-grid-card__title">{title}</div>
+                        {charName && (
+                          <div className="hp-grid-card__char">
+                            👤 {charName}
+                          </div>
+                        )}
+                        <div className="hp-grid-card__foot">
+                          <div className="hp-rating-row">
+                            <span className="hp-star-filled">&#9733;</span>
+                            <span className="hp-rating-num">
+                              {rating.toFixed(1)}
+                            </span>
+                            <span>({formatViews(video.favorites)})</span>
+                          </div>
+                          <span className="hp-views-count">
+                            {formatViews(video.score)} views
                           </span>
-                          <span>({formatViews(video.favorites)})</span>
                         </div>
-                        <span className="hp-views-count">
-                          {formatViews(video.score)} views
-                        </span>
                       </div>
-                    </div>
-                  </Link>
+                    </Link>
+                    {/* Ship A 2026-04-21 — in-grid native every 6 cards, mirrors
+                      BlacklistFilter cadence used on /tag/* and /series/*. */}
+                    {(i + 1) % 6 === 0 && i < topRated.data.length - 1 && (
+                      <>
+                        <NativeAdCard />
+                        <div className="grid-ad-mobile">
+                          <HentaiProsBanner
+                            format="300x250"
+                            mobileFormat="300x250"
+                          />
+                        </div>
+                      </>
+                    )}
+                  </React.Fragment>
                 );
               })}
             </div>
@@ -916,6 +939,10 @@ export default async function HomePage() {
             />
             <AdsterraBanner format="banner300x250" />
           </div>
+
+          {/* Ship A 2026-04-21 — bottom block (ExoClick sidebar300 lazy).
+              Final ad before the Pro pitch. */}
+          <ListingAdBlock variant="bottom" />
 
           {/* Signup CTA — anon visitors only, before the Pro pitch */}
           <SignupCTA placement="homepage" />
