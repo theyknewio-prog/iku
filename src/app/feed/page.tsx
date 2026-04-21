@@ -5,6 +5,7 @@ import { AgeGate } from "@/components/AgeGate";
 import { SwipeFeed } from "@/components/SwipeFeed";
 import { isLikelyBot } from "@/lib/is-bot";
 import { getVideos } from "@/lib/content";
+import { buildTitle } from "@/lib/video-display";
 
 export const metadata: Metadata = {
   title: "Hentai Shorts Feed — Swipe & Watch | iku.gg",
@@ -60,11 +61,12 @@ export default async function FeedPage() {
             }}
           >
             {videos.map((v) => {
-              const label =
-                v.title ||
-                v.characters?.[0] ||
-                v.tags?.find((t) => !/^\d+$/.test(t)) ||
-                `Hentai short #${v.id}`;
+              // buildTitle is the same helper PosterCard/watch-page use —
+              // prefers clean Latin scraped titles, then character+series,
+              // then distinct meaningful tags, finally "Animated Hentai".
+              // Avoids the tag-salad fallback ("6+boys 6boys Adventurer
+              // Hentai #855275") the hand-rolled version produced.
+              const label = buildTitle(v);
               return (
                 <li key={v.id}>
                   <Link

@@ -173,7 +173,11 @@ export default async function HomePage() {
       requireThumbnail: true,
     }),
     getVideos({
-      limit: 8,
+      // Bumped 8 → 24 so the "native every 6 cards" cadence (line ~647)
+      // actually yields 3 ad slots on this grid instead of 1. At limit 8 the
+      // mod-6 condition only fired once (i=5) leaving the grid under-
+      // monetized. 24 rows = positions 6, 12, 18 → 3 natives.
+      limit: 24,
       order: "favcount",
       source: "all",
       requireThumbnail: true,
