@@ -53,6 +53,9 @@ src/data/wp-hentai-videos.json
 
 # Audit output from skill explorations
 /audit/
+/audit-*/
+/.deploy-tmp/
+/tmp/
 # Local agent skill installs (they're per-machine symlinks)
 /.agents/
 gsc-service-account.json

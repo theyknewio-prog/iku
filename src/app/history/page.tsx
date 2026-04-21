@@ -6,6 +6,7 @@ import { HistoryClient, type InitialHistoryItem } from "./history-client";
 export const metadata: Metadata = {
   title: "Watch History — iku.gg",
   robots: { index: false, follow: false },
+  alternates: { canonical: "https://iku.gg/history" },
 };
 
 export const dynamic = "force-dynamic";

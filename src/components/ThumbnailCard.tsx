@@ -60,6 +60,10 @@ export function ThumbnailCard({
   // upstream CDN garbage-collected them. Track per-card so we can swap to
   // a gradient fallback instead of showing a broken-image icon.
   const [imgError, setImgError] = useState(false);
+  // Some thumbnail CDNs (cdn.donmai.us) block flagged residential IPs with 403.
+  // On first error for a supported host, retry via /api/proxy which fetches
+  // from our Hetzner IP. Only flips to gradient if the proxy fails too.
+  const [proxyRetry, setProxyRetry] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -159,7 +163,11 @@ export function ThumbnailCard({
             image 404s (rule34video old-asset GC). */}
         {video.thumbnail && !imgError ? (
           <Image
-            src={video.thumbnail}
+            src={
+              proxyRetry && /^https:\/\/cdn\.donmai\.us\//.test(video.thumbnail)
+                ? `/api/proxy?url=${encodeURIComponent(video.thumbnail)}`
+                : video.thumbnail
+            }
             alt={title}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
@@ -172,7 +180,16 @@ export function ThumbnailCard({
             // browser omit Referer entirely → CDN serves the image. Safe for
             // every other source because we never rely on Referer upstream.
             referrerPolicy="no-referrer"
-            onError={() => setImgError(true)}
+            onError={() => {
+              if (
+                !proxyRetry &&
+                /^https:\/\/cdn\.donmai\.us\//.test(video.thumbnail)
+              ) {
+                setProxyRetry(true);
+              } else {
+                setImgError(true);
+              }
+            }}
           />
         ) : (
           <div

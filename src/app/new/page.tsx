@@ -16,6 +16,7 @@ export const metadata: Metadata = {
     "The latest hentai video uploads on iku.gg. Stream brand new animated hentai clips as they drop — sorted by newest first.",
   other: { rating: "adult" },
   robots: { index: true, follow: true },
+  alternates: { canonical: "https://iku.gg/new" },
   openGraph: {
     title: "New Hentai Videos — Latest Uploads | iku.gg",
     description:

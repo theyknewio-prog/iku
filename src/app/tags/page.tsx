@@ -8,6 +8,7 @@ export const metadata: Metadata = {
     "Browse all hentai video tags on iku.gg. Find your favorite animated hentai categories, characters, and styles.",
   other: { rating: "adult" },
   robots: { index: true, follow: true },
+  alternates: { canonical: "https://iku.gg/tags" },
   openGraph: {
     title: "Hentai Tags — Browse All Categories | iku.gg",
     description:

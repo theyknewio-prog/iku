@@ -15,6 +15,7 @@ export const metadata: Metadata = {
     "The hottest trending hentai videos right now. Top rated animated hentai clips ranked by score — updated daily on iku.gg.",
   other: { rating: "adult" },
   robots: { index: true, follow: true },
+  alternates: { canonical: "https://iku.gg/trending" },
   openGraph: {
     title: "Trending Hentai Videos 2026 | iku.gg",
     description:

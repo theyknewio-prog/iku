@@ -4,6 +4,7 @@ import { ForgotPasswordForm } from "./forgot-password-form";
 export const metadata: Metadata = {
   title: "Forgot password — iku.gg",
   robots: { index: false, follow: false },
+  alternates: { canonical: "https://iku.gg/forgot-password" },
 };
 
 export default function ForgotPasswordPage() {

@@ -6,6 +6,7 @@ import { FavoritesClient, type InitialFavorite } from "./favorites-client";
 export const metadata: Metadata = {
   title: "Favorites — iku.gg",
   robots: { index: false, follow: false },
+  alternates: { canonical: "https://iku.gg/favorites" },
 };
 
 export const dynamic = "force-dynamic";

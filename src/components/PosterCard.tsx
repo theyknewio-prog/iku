@@ -88,6 +88,7 @@ export function PosterCard({
   priority = false,
 }: PosterCardProps) {
   const [watched, setWatched] = useState(false);
+  const [proxyRetry, setProxyRetry] = useState(false);
 
   useEffect(() => {
     setWatched(isWatched(video.id));
@@ -119,7 +120,11 @@ export function PosterCard({
         {/* Real thumbnail */}
         {video.thumbnail && (
           <Image
-            src={video.thumbnail}
+            src={
+              proxyRetry && /^https:\/\/cdn\.donmai\.us\//.test(video.thumbnail)
+                ? `/api/proxy?url=${encodeURIComponent(video.thumbnail)}`
+                : video.thumbnail
+            }
             alt={title}
             fill
             sizes="(max-width: 640px) 150px, 180px"
@@ -128,6 +133,14 @@ export function PosterCard({
             priority={priority}
             unoptimized
             referrerPolicy="no-referrer"
+            onError={() => {
+              if (
+                !proxyRetry &&
+                /^https:\/\/cdn\.donmai\.us\//.test(video.thumbnail)
+              ) {
+                setProxyRetry(true);
+              }
+            }}
           />
         )}
 

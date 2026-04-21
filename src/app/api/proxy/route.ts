@@ -21,7 +21,20 @@ const ALLOWED_HOSTS = [
   "img1.gelbooru.com",
   "media.gelbooru.com",
   "gelbooru.com",
+  // Danbooru thumbnail CDN — hotlink-protected against flagged residential IPs
+  // (consumer IP pools that hit too often get 403). Proxying through Hetzner
+  // IP bypasses the flag for those users. Opt-in via client <img onError>.
+  "cdn.donmai.us",
 ];
+
+// Per-host fetch headers. Default mimics a real browser so hotlink-protected
+// CDNs that sniff the UA (donmai) serve the image. Gelbooru keeps its own
+// Referer because gelbooru.com is whitelisted upstream.
+const HOST_HEADERS: Record<string, { ua?: string; referer?: string }> = {
+  "cdn.donmai.us": {
+    ua: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+  },
+};
 
 const limiter = createRateLimiter({ name: "proxy", max: 60, windowMs: 60_000 });
 
@@ -61,11 +74,17 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Host not allowed" }, { status: 403 });
   }
 
-  // Forward Range header for seeking support
+  // Per-host headers — default is gelbooru-style, override per ALLOWED_HOST
+  const hostOverride = HOST_HEADERS[parsed.hostname] ?? {};
   const headers: Record<string, string> = {
-    "User-Agent": "Mozilla/5.0 (compatible; IkuProxy/1.0)",
-    Referer: "https://gelbooru.com/",
+    "User-Agent": hostOverride.ua ?? "Mozilla/5.0 (compatible; IkuProxy/1.0)",
   };
+  if (hostOverride.referer !== undefined) {
+    if (hostOverride.referer) headers.Referer = hostOverride.referer;
+    // empty string → omit Referer
+  } else {
+    headers.Referer = "https://gelbooru.com/";
+  }
 
   const rangeHeader = request.headers.get("range");
   if (rangeHeader) {

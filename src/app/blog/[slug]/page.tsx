@@ -37,6 +37,20 @@ export async function generateMetadata({
       siteName: "iku.gg",
       type: "article",
       publishedTime: article.publishedAt,
+      images: [
+        {
+          url: "https://iku.gg/og-default.png",
+          width: 1200,
+          height: 630,
+          alt: article.seoTitle,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.seoTitle,
+      description: article.seoDescription,
+      images: ["https://iku.gg/og-default.png"],
     },
   };
 }
