@@ -447,14 +447,30 @@ export default async function HomePage() {
               TRENDING NOW -- Horizontal poster scroll
           ================================================================ */}
           <Carousel title="🔥 Trending Now" badge="HOT" seeAllHref="/trending">
-            {trending.data.map((video, i) => (
-              <PosterCard
-                key={video.id}
-                video={video}
-                rank={i < 8 ? i + 1 : undefined}
-                priority={i < 5}
-              />
-            ))}
+            {trending.data.flatMap((video, i) => {
+              const card = (
+                <PosterCard
+                  key={video.id}
+                  video={video}
+                  rank={i < 8 ? i + 1 : undefined}
+                  priority={i < 5}
+                />
+              );
+              // Inject native ad after position 8 and 16 — matches the cadence
+              // top hentai tubes use on trending strips. poster-card-size
+              // keeps the ad the same 150/180px width as surrounding cards so
+              // the strip scrolls uniformly. Pro users see nothing.
+              if ((i === 7 || i === 15) && i < trending.data.length - 1) {
+                return [
+                  card,
+                  <NativeAdCard
+                    key={`native-trending-${i}`}
+                    className="poster-card-size"
+                  />,
+                ];
+              }
+              return [card];
+            })}
           </Carousel>
 
           {/* Ad #2 — ExoClick 728x90 desktop / 300x50 mobile sticky banner. */}
@@ -919,9 +935,23 @@ export default async function HomePage() {
               NEW RELEASES -- Horizontal poster scroll
           ================================================================ */}
           <Carousel title="🆕 New Releases" badge="NEW" seeAllHref="/new">
-            {newest.data.map((video) => (
-              <PosterCard key={video.id} video={video} badge="NEW" />
-            ))}
+            {newest.data.flatMap((video, i) => {
+              const card = (
+                <PosterCard key={video.id} video={video} badge="NEW" />
+              );
+              // Single native after card 5 — New Releases is limited to 10
+              // items so one mid-strip slot is enough; more crowds the scroll.
+              if (i === 4 && i < newest.data.length - 1) {
+                return [
+                  card,
+                  <NativeAdCard
+                    key={`native-newest-${i}`}
+                    className="poster-card-size"
+                  />,
+                ];
+              }
+              return [card];
+            })}
           </Carousel>
 
           {/* Ad cluster #4 — pre-signup wall: 3 ads stacked. */}
