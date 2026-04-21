@@ -112,6 +112,29 @@ function distinctTags(tags: string[], n: number): string[] {
   return out;
 }
 
+// Some scrapers emit synthetic titles when no scraped string is available,
+// joining tag tokens into a sentence and appending the post id — e.g.
+// "Abs Anal Anus Hentai #405092", "6+boys 6boys Adventurer Hentai #855275".
+// They tokenize badly ("6+boys 6boys" is two near-duplicate tags) and Google
+// reads them as keyword stuffing. Detect them so buildTitle falls through
+// to the character/copyright/tags branch instead.
+function looksSynthetic(raw: string): boolean {
+  const t = raw.trim();
+  // "... #12345" or "... #012051" — any 4+ digit id suffix is synthetic.
+  if (/#\d{4,}\s*$/.test(t)) return true;
+  // 3+ short single-word tokens before "Hentai" — the "Abs Anal Anus Hentai"
+  // pattern. Real scraped titles are rarely all-caps single words.
+  if (/^(?:[A-Z][a-z]{1,8}\+?[a-z]*\s+){3,}Hentai\b/.test(t)) return true;
+  return false;
+}
+
+// Strip stray `#12345` id suffixes that still leak through from scrapers
+// that otherwise produced a legitimate title ("Some Series Ep 3 #88128" →
+// "Some Series Ep 3").
+function stripIdSuffix(raw: string): string {
+  return raw.replace(/\s*#\d{4,}\s*$/, "").trim();
+}
+
 // hanime1 ships bilingual titles as "JP title|EN title" — keep the Latin
 // portion for EN-targeted UI. Other sources without `|` pass through.
 function pickLatinPortion(raw: string): string {
@@ -136,21 +159,28 @@ function pickLatinPortion(raw: string): string {
 /** Build a human-friendly title from any Video (for cards/UI). */
 export function buildTitle(video: Video): string {
   // Prefer scraped title (rule34video, WP, hanime1) — but only when it
-  // actually contains Latin letters. Pure CJK titles fall through to the
-  // character/copyright/tag fallbacks (also Latin-filtered) so the H1 on
-  // an EN-targeted site never renders as a Japanese sentence.
-  if (video.title && video.title.trim()) {
-    const clean = pickLatinPortion(video.title);
+  // actually contains Latin letters AND isn't a synthetic tag-salad
+  // title ("Abs Anal Anus Hentai #405092"). Pure CJK titles + synthetic
+  // ones fall through to the character/copyright/tag fallbacks so the
+  // H1 on an EN-targeted site stays readable and keyword-clean.
+  if (video.title && video.title.trim() && !looksSynthetic(video.title)) {
+    const clean = pickLatinPortion(stripIdSuffix(video.title));
     if (/[a-zA-Z]/.test(clean)) {
       return titleCase(clean.replace(/_/g, " "));
     }
   }
-  // Then character name (+ copyright if present)
+  // Then character name (+ copyright if present, but skip when the
+  // character already contains the copyright in parens — "Aether
+  // (genshin_impact)" + copyright "genshin_impact" would otherwise
+  // render as "Aether (Genshin Impact) — Genshin Impact").
   if (video.characters[0]) {
     const char = titleCase(video.characters[0].replace(/_/g, " "));
-    return video.copyrights[0]
-      ? `${char} — ${titleCase(video.copyrights[0].replace(/_/g, " "))}`
-      : char;
+    const copy = video.copyrights[0]
+      ? titleCase(video.copyrights[0].replace(/_/g, " "))
+      : "";
+    if (!copy) return char;
+    if (char.toLowerCase().includes(copy.toLowerCase())) return char;
+    return `${char} — ${copy}`;
   }
   // Then copyright
   if (video.copyrights[0]) {
