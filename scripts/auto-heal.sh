@@ -25,13 +25,22 @@ ping_sab() {
 # ---- 1. PG CPU > 80% sustained → restart container ----
 PG_CPU=$(docker stats --no-stream --format '{{.CPUPerc}}' iku-postgres 2>/dev/null | tr -d '%' | cut -d. -f1)
 if [ -n "${PG_CPU:-}" ] && [ "$PG_CPU" -gt 80 ]; then
-  last_pg_heal=$(cat "$STATE/last_pg_heal" 2>/dev/null || echo 0)
-  now=$(date +%s)
-  if [ $((now - last_pg_heal)) -gt 1800 ]; then
-    log "PG CPU ${PG_CPU}% — restarting iku-postgres"
-    docker restart iku-postgres > /dev/null 2>&1
-    echo "$now" > "$STATE/last_pg_heal"
-    ping_sab "PG saturé ($PG_CPU% CPU) → restart. Site reprend."
+  # Confirm sustained load before restarting. The hourly precompute (cron iku-precompute-counts)
+  # spikes PG to 80-230% CPU for 3-5 seconds at XX:00, and */15 auto-heal runs collide with it.
+  # A real overload lasts minutes; a precompute spike is gone after one 20s sample.
+  sleep 20
+  PG_CPU_2=$(docker stats --no-stream --format '{{.CPUPerc}}' iku-postgres 2>/dev/null | tr -d '%' | cut -d. -f1)
+  if [ -n "${PG_CPU_2:-}" ] && [ "$PG_CPU_2" -gt 80 ]; then
+    last_pg_heal=$(cat "$STATE/last_pg_heal" 2>/dev/null || echo 0)
+    now=$(date +%s)
+    if [ $((now - last_pg_heal)) -gt 1800 ]; then
+      log "PG CPU ${PG_CPU}%→${PG_CPU_2}% sustained — restarting iku-postgres"
+      docker restart iku-postgres > /dev/null 2>&1
+      echo "$now" > "$STATE/last_pg_heal"
+      ping_sab "PG saturé (${PG_CPU_2}% CPU sustained) → restart. Site reprend."
+    fi
+  else
+    log "PG CPU spike ${PG_CPU}% (transient, now ${PG_CPU_2:-?}%) — no restart"
   fi
 fi
 
