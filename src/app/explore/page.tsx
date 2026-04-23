@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { getVideos, getThumbnailsForTags } from "@/lib/content";
+import { SORT_OPTIONS, parseSort, type SortValue } from "@/lib/sort-options";
 import React from "react";
 import { AgeGate } from "@/components/AgeGate";
 import { isLikelyBot } from "@/lib/is-bot";
@@ -43,14 +44,6 @@ export async function generateMetadata(props: {
       page > 1 ? { index: false, follow: true } : { index: true, follow: true },
   };
 }
-
-type SortOption = "score" | "date" | "favcount" | "duration";
-const SORT_OPTIONS: { value: SortOption; label: string }[] = [
-  { value: "score", label: "Top Rated" },
-  { value: "date", label: "Newest" },
-  { value: "duration", label: "Longest" },
-  { value: "favcount", label: "Most Saved" },
-];
 
 const PER_PAGE = 40;
 
@@ -163,8 +156,7 @@ export default async function ExplorePage(props: {
 }) {
   const searchParams = await props.searchParams;
   const page = Math.max(1, parseInt(searchParams.page || "1"));
-  const sort = (SORT_OPTIONS.find((o) => o.value === searchParams.sort)
-    ?.value || "score") as SortOption;
+  const sort: SortValue = parseSort(searchParams.sort, "score");
 
   const { data: videos, hasMore } = await getVideos({
     limit: PER_PAGE,
@@ -386,12 +378,12 @@ export default async function ExplorePage(props: {
             </div>
 
             {/* Sort bar */}
-            <nav className="sort-bar" aria-label="Sort options">
+            <nav className="sort-tabs" aria-label="Sort options">
               {SORT_OPTIONS.map((opt) => (
                 <Link
                   key={opt.value}
                   href={`/explore?sort=${opt.value}&page=1`}
-                  className={`sort-pill${sort === opt.value ? " sort-pill--active" : ""}`}
+                  className={`filter-chip${sort === opt.value ? " filter-chip--active" : ""}`}
                   aria-current={sort === opt.value ? "page" : undefined}
                 >
                   {opt.label}

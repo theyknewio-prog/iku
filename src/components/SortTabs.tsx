@@ -1,19 +1,17 @@
 import Link from "next/link";
+import {
+  SORT_OPTIONS,
+  parseSort as parseSortOption,
+  type SortValue,
+} from "@/lib/sort-options";
 
-export type SortKey = "score" | "date" | "duration" | "favcount";
+export type SortKey = SortValue;
 
 interface Props {
   basePath: string;
   current: SortKey;
   extraQuery?: Record<string, string | undefined>;
 }
-
-const OPTIONS: { value: SortKey; label: string }[] = [
-  { value: "score", label: "Most popular" },
-  { value: "date", label: "Newest" },
-  { value: "duration", label: "Longest" },
-  { value: "favcount", label: "Most liked" },
-];
 
 function buildHref(
   basePath: string,
@@ -39,22 +37,13 @@ export function SortTabs({
   defaultSort = "score",
 }: Props & { defaultSort?: SortKey }) {
   return (
-    <nav
-      className="sort-tabs"
-      aria-label="Sort videos"
-      style={{
-        display: "flex",
-        gap: 8,
-        flexWrap: "wrap",
-        margin: "0 0 20px",
-        overflowX: "auto",
-      }}
-    >
-      {OPTIONS.map((opt) => (
+    <nav className="sort-tabs" aria-label="Sort videos">
+      {SORT_OPTIONS.map((opt) => (
         <Link
           key={opt.value}
           href={buildHref(basePath, opt.value, defaultSort, extraQuery)}
           className={`filter-chip${current === opt.value ? " filter-chip--active" : ""}`}
+          aria-current={current === opt.value ? "page" : undefined}
           prefetch={false}
         >
           {opt.label}
@@ -64,12 +53,5 @@ export function SortTabs({
   );
 }
 
-export function parseSort(
-  raw: string | string[] | undefined,
-  fallback: SortKey = "score",
-): SortKey {
-  const v = Array.isArray(raw) ? raw[0] : raw;
-  if (v === "score" || v === "date" || v === "duration" || v === "favcount")
-    return v;
-  return fallback;
-}
+// Re-export so existing imports keep working.
+export const parseSort = parseSortOption;

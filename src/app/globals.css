@@ -9470,13 +9470,19 @@ body {
   font-weight: 700;
 }
 
-/* Discord CTA pinned at the bottom of the sidebar — sticky so it stays visible
-   even when the sidebar content is scrolled */
-.v2-sidebar-discord {
+/* Community CTAs (Telegram + Discord) pinned at the bottom of the sidebar
+   — sticky so they stay visible even when the sidebar content is scrolled.
+   Two distinct brand-coloured variants, NOT the same-blob-twice that the
+   previous single .v2-sidebar-discord-btn shape created (user feedback
+   2026-04-23: "le Telegram et Discord c'est la même UI, ça embrouille"). */
+.v2-sidebar-community {
   position: sticky;
   bottom: 0;
   margin-top: auto;
   padding: 16px 12px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   background: linear-gradient(
     to top,
     var(--v2-surface) 60%,
@@ -9485,28 +9491,26 @@ body {
   z-index: 2;
 }
 
-.v2-sidebar-discord-btn {
+.v2-community-btn {
   display: flex;
   align-items: center;
   gap: 10px;
   width: 100%;
   padding: 10px 12px;
-  background: linear-gradient(135deg, #5865f2 0%, #7289da 50%, #9b84ec 100%);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
   text-decoration: none;
   color: #fff;
   font-family: var(--font-sans);
-  box-shadow: 0 6px 18px rgba(88, 101, 242, 0.35);
+  position: relative;
+  overflow: hidden;
   transition:
     transform 0.18s ease,
     box-shadow 0.2s ease,
     filter 0.2s ease;
-  position: relative;
-  overflow: hidden;
 }
 
-.v2-sidebar-discord-btn::before {
+.v2-community-btn::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -9521,17 +9525,34 @@ body {
   pointer-events: none;
 }
 
-.v2-sidebar-discord-btn:hover {
+.v2-community-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 26px rgba(88, 101, 242, 0.5);
   filter: brightness(1.08);
 }
 
-.v2-sidebar-discord-btn:hover::before {
+.v2-community-btn:hover::before {
   transform: translateX(110%);
 }
 
-.v2-sidebar-discord-btn__icon {
+/* Telegram — official brand blue. Cold palette, airplane-icon mark. */
+.v2-community-btn--telegram {
+  background: linear-gradient(135deg, #0088cc 0%, #229ed9 100%);
+  box-shadow: 0 6px 18px rgba(0, 136, 204, 0.32);
+}
+.v2-community-btn--telegram:hover {
+  box-shadow: 0 10px 26px rgba(0, 136, 204, 0.48);
+}
+
+/* Discord — blurple. Warm palette, chat bubble mark. */
+.v2-community-btn--discord {
+  background: linear-gradient(135deg, #5865f2 0%, #7289da 100%);
+  box-shadow: 0 6px 18px rgba(88, 101, 242, 0.32);
+}
+.v2-community-btn--discord:hover {
+  box-shadow: 0 10px 26px rgba(88, 101, 242, 0.48);
+}
+
+.v2-community-btn__icon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9542,20 +9563,20 @@ body {
   background: rgba(255, 255, 255, 0.18);
 }
 
-.v2-sidebar-discord-btn__text {
+.v2-community-btn__text {
   display: flex;
   flex-direction: column;
   line-height: 1.2;
   overflow: hidden;
 }
 
-.v2-sidebar-discord-btn__title {
+.v2-community-btn__title {
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.01em;
 }
 
-.v2-sidebar-discord-btn__sub {
+.v2-community-btn__sub {
   font-size: 10px;
   font-weight: 500;
   opacity: 0.85;
@@ -12678,4 +12699,334 @@ body {
   font-size: 11px;
   font-weight: 500;
   margin-left: 6px;
+}
+
+/* ============================================================
+   WATCH ACTIONS — views · like/dislike · save · share
+   ============================================================ */
+
+.watch-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0 18px;
+  position: relative;
+  font-size: var(--text-sm);
+}
+
+.watch-actions__views {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--color-bg-muted);
+  color: var(--color-text-tertiary);
+  font-weight: 500;
+  min-height: 40px;
+}
+
+.watch-actions__ratio {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  background: var(--color-bg-muted);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 999px;
+  padding: 2px;
+  min-height: 40px;
+}
+
+.watch-actions__rate {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  font-family: var(--font-sans);
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) ease,
+    color var(--dur-fast) ease;
+  min-height: 36px;
+}
+.watch-actions__rate:hover {
+  background: var(--color-bg-overlay);
+  color: var(--color-text-primary);
+}
+.watch-actions__rate.is-active.watch-actions__rate--like {
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.12);
+}
+.watch-actions__rate.is-active.watch-actions__rate--dislike {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.watch-actions__ratio-bar {
+  display: inline-block;
+  width: 48px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(239, 68, 68, 0.35);
+  overflow: hidden;
+  margin: 0 6px;
+  position: relative;
+}
+.watch-actions__ratio-fill {
+  display: block;
+  height: 100%;
+  width: var(--ratio, 100%);
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+  transition: width 220ms ease;
+}
+
+.watch-actions__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-bg-muted);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  min-height: 40px;
+  transition:
+    background var(--dur-fast) ease,
+    border-color var(--dur-fast) ease,
+    color var(--dur-fast) ease;
+}
+.watch-actions__btn:hover {
+  background: var(--color-bg-overlay);
+  color: var(--color-text-primary);
+}
+.watch-actions__btn.is-active {
+  background: rgba(255, 32, 128, 0.12);
+  border-color: rgba(255, 32, 128, 0.45);
+  color: #ff4090;
+}
+.watch-actions__btn-count {
+  opacity: 0.65;
+  font-weight: 500;
+  margin-left: 2px;
+}
+
+.watch-actions__share-wrap {
+  position: relative;
+}
+.watch-actions__share-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 40;
+  min-width: 180px;
+  background: var(--color-bg-elevated, #1a0f22);
+  border: 1px solid var(--color-border-default);
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+}
+.watch-actions__share-menu button {
+  background: transparent;
+  border: none;
+  color: var(--color-text-primary);
+  padding: 10px 12px;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  text-align: left;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+.watch-actions__share-menu button:hover {
+  background: var(--color-bg-overlay);
+}
+
+.watch-actions__flash {
+  position: absolute;
+  top: -14px;
+  right: 12px;
+  background: linear-gradient(135deg, #ff3d7a, #8b38ff);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 999px;
+  box-shadow: 0 6px 16px rgba(139, 56, 255, 0.35);
+  animation: watch-actions-flash 1.4s ease forwards;
+  pointer-events: none;
+}
+@keyframes watch-actions-flash {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.9);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-18px) scale(0.95);
+  }
+}
+
+@media (max-width: 479px) {
+  .watch-actions {
+    gap: 8px;
+  }
+  .watch-actions__views,
+  .watch-actions__btn,
+  .watch-actions__rate {
+    font-size: 13px;
+    padding: 7px 11px;
+    min-height: 38px;
+  }
+  .watch-actions__ratio-bar {
+    width: 32px;
+  }
+}
+
+/* ============================================================
+   PREMIUM CARD — clean upsell under watch player
+   (replaces the stale 🚫 "Skip every preroll + ad" strip)
+   ============================================================ */
+
+.premium-card {
+  margin: 18px 0;
+  padding: 18px 18px 16px;
+  border-radius: 16px;
+  background:
+    linear-gradient(135deg, rgba(255, 61, 122, 0.08), rgba(139, 56, 255, 0.08)),
+    var(--color-bg-elevated, #13091c);
+  border: 1px solid rgba(139, 56, 255, 0.28);
+  box-shadow: 0 10px 30px rgba(139, 56, 255, 0.08);
+}
+.premium-card__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.premium-card__badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff3d7a, #8b38ff);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.premium-card__title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-text-primary, #fff);
+  line-height: 1.25;
+}
+.premium-card__perks {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 14px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 16px;
+}
+.premium-card__perk {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.78));
+  line-height: 1.45;
+}
+.premium-card__perk strong {
+  display: block;
+  color: var(--color-text-primary, #fff);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.premium-card__perk-emoji {
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.premium-card__perk-sub {
+  display: block;
+  font-size: 12px;
+  opacity: 0.7;
+}
+.premium-card__cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ff3d7a 0%, #8b38ff 100%);
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(139, 56, 255, 0.28);
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease;
+}
+.premium-card__cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(139, 56, 255, 0.45);
+}
+.premium-card__support {
+  margin: 10px 0 0;
+  font-size: 11.5px;
+  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
+  text-align: center;
+}
+@media (max-width: 479px) {
+  .premium-card__perks {
+    grid-template-columns: 1fr;
+  }
+  .premium-card__title {
+    font-size: 16px;
+  }
+}
+
+/* ============================================================
+   WATCH FAQ — internal links inside answerHtml
+   ============================================================ */
+
+.watch-faq__answer a {
+  color: var(--color-accent, #ff7aa8);
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 122, 168, 0.4);
+  text-underline-offset: 2px;
+  transition: color 150ms ease;
+}
+.watch-faq__answer a:hover {
+  color: #ff9bbf;
+  text-decoration-color: currentColor;
+}
+.watch-faq__answer strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
 }

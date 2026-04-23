@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { Pagination } from "@/components/Pagination";
 import { getVideos, countVideos } from "@/lib/content";
+import { SORT_OPTIONS, parseSort } from "@/lib/sort-options";
 import type { Video } from "@/types/video";
 
 export const revalidate = 1800;
@@ -41,11 +42,9 @@ export default async function EpisodesPage({ searchParams }: Props) {
   // Default sort = date because rule34video garbage-collects old thumbnails
   // (404s on screencap CDN). Sorting by score surfaces popular-but-old
   // videos with dead images. Date keeps fresh, working thumbs at top.
-  const { page = "1", sort = "date" } = await searchParams;
+  const { page = "1", sort } = await searchParams;
   const currentPage = Math.max(1, parseInt(String(page)));
-  const sortOrder = (
-    ["score", "date", "favcount"].includes(String(sort)) ? sort : "date"
-  ) as "score" | "date" | "favcount";
+  const sortOrder = parseSort(sort, "date");
 
   const [{ data: videos, hasMore }, totalCount] = await Promise.all([
     getVideos({
@@ -114,23 +113,22 @@ export default async function EpisodesPage({ searchParams }: Props) {
           </Link>
 
           {/* ── Sort filter bar ───────────────────────────────── */}
-          <div className="filter-bar" style={{ marginTop: 24 }}>
-            {(
-              [
-                { value: "date", label: "Newest" },
-                { value: "score", label: "Top Rated" },
-                { value: "favcount", label: "Most Saved" },
-              ] as const
-            ).map((opt) => (
+          <nav
+            className="sort-tabs"
+            aria-label="Sort episodes"
+            style={{ marginTop: 24 }}
+          >
+            {SORT_OPTIONS.map((opt) => (
               <Link
                 key={opt.value}
                 href={`/episodes?sort=${opt.value}&page=1`}
                 className={`filter-chip${sortOrder === opt.value ? " filter-chip--active" : ""}`}
+                aria-current={sortOrder === opt.value ? "page" : undefined}
               >
                 {opt.label}
               </Link>
             ))}
-          </div>
+          </nav>
 
           {/* ── Grid ──────────────────────────────────────────── */}
           {videos.length === 0 ? (

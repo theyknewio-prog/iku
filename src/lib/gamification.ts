@@ -26,6 +26,8 @@ export const POINTS: Record<string, number> = {
   video_of_day: 20,
   new_character: 10,
   share_click: 5,
+  video_like: 1,
+  video_dislike: 1,
   streak_7_bonus: 50,
   streak_30_bonus: 200,
   streak_100_bonus: 500,
@@ -39,6 +41,8 @@ export type ScoreEventType =
   | "video_of_day"
   | "new_character"
   | "share_click"
+  | "video_like"
+  | "video_dislike"
   | "streak_7_bonus"
   | "streak_30_bonus"
   | "streak_100_bonus";

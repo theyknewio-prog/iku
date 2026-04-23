@@ -202,7 +202,9 @@ export async function getThumbnailsForTags(
 export interface GetVideosOptions {
   limit?: number;
   page?: number;
-  order?: "score" | "date" | "favcount" | "duration";
+  // "duration-asc" = Shortest. Excludes duration IS NULL / 0 so unresolved
+  // rows (no metadata yet) don't pollute the top — see _getVideos WHERE.
+  order?: "score" | "date" | "favcount" | "duration" | "duration-asc";
   tags?: string;
   source?: "all" | "danbooru" | "gelbooru";
   /**
@@ -323,6 +325,12 @@ async function _getVideos(
     conditions.push(`source IN ('hentaicity','hentaigasm')`);
   }
 
+  // "Shortest" sort: exclude rows without a real duration so unresolved
+  // entries (duration NULL or 0) don't dominate the top of the grid.
+  if (order === "duration-asc") {
+    conditions.push(`duration IS NOT NULL AND duration > 0`);
+  }
+
   // Tag/character/copyright search — rewritten 2026-04-18 as a CTE UNION
   // because the previous `(tags && X OR characters && X OR copyrights && X)`
   // form defeated the bitmap planner. With a matching tag (e.g. "naruto")
@@ -378,7 +386,11 @@ async function _getVideos(
         ? "ORDER BY favorites DESC, score DESC"
         : order === "duration"
           ? "ORDER BY duration DESC NULLS LAST, score DESC"
-          : "ORDER BY created_at DESC";
+          : order === "duration-asc"
+            ? // duration > 0 already filtered in WHERE, so NULLS LAST is
+              // a belt-and-suspenders safeguard.
+              "ORDER BY duration ASC NULLS LAST, score DESC"
+            : "ORDER BY created_at DESC";
 
   const query = hasMatchesCte
     ? `${cteClause}
@@ -390,7 +402,8 @@ async function _getVideos(
          ${whereClause
            .replace(/\btags\b/g, "v.tags")
            .replace(/\bthumbnail\b/g, "v.thumbnail")
-           .replace(/\bsource\b/g, "v.source")}
+           .replace(/\bsource\b/g, "v.source")
+           .replace(/\bduration\b/g, "v.duration")}
          ${orderClause
            .replace(/\bscore\b/g, "v.score")
            .replace(/\bcreated_at\b/g, "v.created_at")

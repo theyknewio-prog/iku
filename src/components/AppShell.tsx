@@ -764,10 +764,10 @@ export function AppShell({
               href="https://discord.gg/cQZc8trq8N"
               target="_blank"
               rel="noopener noreferrer"
-              className="v2-sidebar-discord-btn"
+              className="v2-community-btn v2-community-btn--discord"
               aria-label="Join our Discord server"
             >
-              <span className="v2-sidebar-discord-btn__icon" aria-hidden="true">
+              <span className="v2-community-btn__icon" aria-hidden="true">
                 <svg
                   viewBox="0 0 24 24"
                   width="18"
@@ -1003,7 +1003,7 @@ export function AppShell({
                       onClick={() => setMenuOpen(false)}
                     >
                       <span className="v2-nav-drawer__emoji" aria-hidden>
-                        {item.emoji}
+                        {item.Icon ? <item.Icon size={18} /> : item.emoji}
                       </span>
                       <span className="v2-nav-drawer__label">{item.label}</span>
                       {item.badge && (
@@ -1018,27 +1018,31 @@ export function AppShell({
                 </div>
               ))}
 
-              <div className="v2-nav-drawer__section">
-                <div className="v2-nav-drawer__section-label">Partners</div>
-                {AFFILIATE_ITEMS.map((item) => (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="v2-nav-drawer__item v2-nav-drawer__item--affiliate"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    <span className="v2-nav-drawer__emoji" aria-hidden>
-                      {item.emoji}
-                    </span>
-                    <span className="v2-nav-drawer__label">{item.label}</span>
-                    <span className="v2-nav-drawer__badge v2-nav-drawer__badge--gradient">
-                      Ad
-                    </span>
-                  </a>
-                ))}
-              </div>
+              {AFFILIATE_ITEMS.length > 0 && (
+                <div className="v2-nav-drawer__section">
+                  <div className="v2-nav-drawer__section-label">Partners</div>
+                  {AFFILIATE_ITEMS.map((item) => (
+                    <a
+                      key={item.label}
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="v2-nav-drawer__item v2-nav-drawer__item--affiliate"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      {item.emoji && (
+                        <span className="v2-nav-drawer__emoji" aria-hidden>
+                          {item.emoji}
+                        </span>
+                      )}
+                      <span className="v2-nav-drawer__label">{item.label}</span>
+                      <span className="v2-nav-drawer__badge v2-nav-drawer__badge--gradient">
+                        Ad
+                      </span>
+                    </a>
+                  ))}
+                </div>
+              )}
 
               <div className="v2-nav-drawer__section">
                 <div className="v2-nav-drawer__section-label">More</div>
@@ -1050,7 +1054,7 @@ export function AppShell({
                     onClick={() => setMenuOpen(false)}
                   >
                     <span className="v2-nav-drawer__emoji" aria-hidden>
-                      {item.emoji}
+                      <item.Icon size={18} />
                     </span>
                     <span className="v2-nav-drawer__label">{item.label}</span>
                   </Link>

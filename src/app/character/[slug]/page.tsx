@@ -6,6 +6,7 @@ import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { Pagination } from "@/components/Pagination";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { getVideos, countVideos, isBannedTag } from "@/lib/content";
+import { SORT_OPTIONS, parseSort } from "@/lib/sort-options";
 import { getEntitySeo } from "@/lib/entity-seo";
 import { getNonce } from "@/lib/csp-nonce";
 import { shouldBlockTaxonomy } from "@/lib/taxonomy-guard";
@@ -142,13 +143,6 @@ export async function generateMetadata({
   };
 }
 
-const SORT_OPTIONS = [
-  { value: "score", label: "Top Rated" },
-  { value: "date", label: "Newest" },
-  { value: "duration", label: "Longest" },
-  { value: "favcount", label: "Most Saved" },
-] as const;
-
 export default async function CharacterPage({ params, searchParams }: Props) {
   const h = await headers();
   const ip =
@@ -175,13 +169,7 @@ export default async function CharacterPage({ params, searchParams }: Props) {
   const pageParam = typeof sp.page === "string" ? sp.page : "1";
   const sortParam = typeof sp.sort === "string" ? sp.sort : "score";
   const currentPage = Math.max(1, parseInt(pageParam));
-  const order =
-    sortParam === "date" ||
-    sortParam === "favcount" ||
-    sortParam === "score" ||
-    sortParam === "duration"
-      ? sortParam
-      : "score";
+  const order = parseSort(sortParam, "score");
 
   const [{ data: videos, hasMore }, totalCount, entitySeo] = await Promise.all([
     getVideos({
@@ -410,17 +398,18 @@ export default async function CharacterPage({ params, searchParams }: Props) {
           </section>
 
           {/* ── Sort filter bar ───────────────────────────────── */}
-          <div className="filter-bar">
+          <nav className="sort-tabs" aria-label="Sort videos">
             {SORT_OPTIONS.map((opt) => (
               <Link
                 key={opt.value}
                 href={`/character/${slug}?sort=${opt.value}&page=1`}
                 className={`filter-chip${order === opt.value ? " filter-chip--active" : ""}`}
+                aria-current={order === opt.value ? "page" : undefined}
               >
                 {opt.label}
               </Link>
             ))}
-          </div>
+          </nav>
 
           {/* ── Video grid ────────────────────────────────────── */}
           {videos.length === 0 ? (

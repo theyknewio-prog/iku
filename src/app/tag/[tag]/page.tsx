@@ -7,6 +7,7 @@ import { Pagination } from "@/components/Pagination";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { notFound } from "next/navigation";
 import { getVideos, countVideos, isBannedTag } from "@/lib/content";
+import { SORT_OPTIONS, parseSort } from "@/lib/sort-options";
 import { getEntitySeo } from "@/lib/entity-seo";
 import { getNonce } from "@/lib/csp-nonce";
 import { shouldBlockTaxonomy } from "@/lib/taxonomy-guard";
@@ -119,13 +120,6 @@ export async function generateMetadata({
   };
 }
 
-const SORT_OPTIONS = [
-  { value: "score", label: "Top Rated" },
-  { value: "date", label: "Newest" },
-  { value: "duration", label: "Longest" },
-  { value: "favcount", label: "Most Saved" },
-] as const;
-
 const RELATED_TAGS = [
   "animated",
   "solo",
@@ -168,13 +162,7 @@ export default async function TagPage({ params, searchParams }: Props) {
   const currentPage = Math.max(1, parseInt(pageParam));
   const label = tag.replace(/_/g, " ");
   const titleCased = label.replace(/\b\w/g, (c) => c.toUpperCase());
-  const order =
-    sortParam === "date" ||
-    sortParam === "favcount" ||
-    sortParam === "score" ||
-    sortParam === "duration"
-      ? sortParam
-      : "score";
+  const order = parseSort(sortParam, "score");
 
   const [{ data: videos, hasMore }, totalCount, entitySeo] = await Promise.all([
     getVideos({
@@ -265,17 +253,18 @@ export default async function TagPage({ params, searchParams }: Props) {
           </div>
 
           {/* ── Sort filter bar ───────────────────────────────── */}
-          <div className="filter-bar">
+          <nav className="sort-tabs" aria-label="Sort videos">
             {SORT_OPTIONS.map((opt) => (
               <Link
                 key={opt.value}
                 href={`/tag/${tag}?sort=${opt.value}&page=1`}
                 className={`filter-chip${order === opt.value ? " filter-chip--active" : ""}`}
+                aria-current={order === opt.value ? "page" : undefined}
               >
                 {opt.label}
               </Link>
             ))}
-          </div>
+          </nav>
 
           {/* ── Video grid ────────────────────────────────────── */}
           {videos.length === 0 ? (

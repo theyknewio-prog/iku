@@ -31,6 +31,8 @@ const ALLOWED_CLIENT_EVENTS = new Set<ScoreEventType>([
   "video_view",
   "video_complete",
   "share_click",
+  "video_like",
+  "video_dislike",
 ]);
 
 // Per-user rate limit (anti point-farming). 30 events/min is more than enough

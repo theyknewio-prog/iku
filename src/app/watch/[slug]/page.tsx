@@ -532,9 +532,6 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 )}
               </div>
 
-              {/* Remove Ads CTA — only for non-Pro, non-logged-in users */}
-              <RemoveAdsCTA />
-
               {/* Signup nudge after 30s for anon users */}
               <WatchSignupNudge />
 
@@ -547,22 +544,6 @@ export default async function WatchPage({ params }: WatchPageProps) {
                   return /hentai/i.test(base) ? base : `${base} Hentai`;
                 })()}
               </h1>
-
-              {/* Premium nudge under H1 — slim gradient strip pushing /pricing. */}
-              <Link
-                href="/pricing"
-                className="hp-premium-strip"
-                aria-label="Get iku Premium"
-              >
-                <span className="hp-premium-strip__icon">🚫</span>
-                <span className="hp-premium-strip__text">
-                  <strong>Skip every preroll + ad</strong> · 4K when available ·
-                  Early access · Unlimited favorites
-                </span>
-                <span className="hp-premium-strip__cta">
-                  Premium 4.99€/mo →
-                </span>
-              </Link>
 
               {/* Characters + copyrights */}
               {(video.characters.length > 0 || video.copyrights.length > 0) && (
@@ -584,116 +565,23 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 </div>
               )}
 
-              {/* Meta row */}
-              <div className="player-meta-row">
-                <span className="player-views">
-                  <svg
-                    width="13"
-                    height="13"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    style={{
-                      display: "inline",
-                      marginRight: "4px",
-                      verticalAlign: "middle",
-                    }}
-                  >
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                  </svg>
-                  {video.favorites.toLocaleString()} saved
-                </span>
-
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "8px",
-                    marginLeft: "auto",
-                    flexWrap: "wrap",
-                    alignItems: "center",
-                  }}
-                >
-                  {/* Favorite + history tracking */}
-                  <WatchActions
-                    videoId={video.id}
-                    slug={video.slug}
-                    title={
-                      video.characters[0]
-                        ? `${fmt(video.characters[0])}${video.copyrights[0] ? ` — ${fmt(video.copyrights[0])}` : ""}`
-                        : video.copyrights[0]
-                          ? fmt(video.copyrights[0])
-                          : video.slug
-                    }
-                    thumbnail={video.thumbnail}
-                  />
-
-                  <button
-                    className="player-vote-btn player-vote-btn--up"
-                    aria-label="Upvote"
-                  >
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z" />
-                      <path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
-                    </svg>
-                    {video.score}
-                  </button>
-                  <button
-                    className="player-vote-btn player-vote-btn--down"
-                    aria-label="Downvote"
-                  >
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z" />
-                      <path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17" />
-                    </svg>
-                  </button>
-
-                  <a
-                    href={
-                      video.source === "rule34video"
-                        ? resolvePageUrl ||
-                          `https://rule34video.com/video/${video.id}/`
-                        : video.source === "gelbooru"
-                          ? `https://gelbooru.com/index.php?page=post&s=view&id=${video.id}`
-                          : video.source === "rule34"
-                            ? `https://rule34.xxx/index.php?page=post&s=view&id=${video.id}`
-                            : video.source === "hentaicity"
-                              ? video.pageUrl || `https://www.hentaicity.com`
-                              : video.source === "sfmcompile"
-                                ? video.pageUrl || "https://iku.gg"
-                                : video.source === "3dhentaitube"
-                                  ? video.pageUrl || "https://iku.gg"
-                                  : video.source === "eporner"
-                                    ? video.pageUrl || "https://iku.gg"
-                                    : `https://danbooru.donmai.us/posts/${video.id}`
-                    }
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-ghost btn-sm"
-                  >
-                    Source
-                  </a>
-                </div>
-              </div>
+              {/* Social action bar — views · like/dislike ratio · save · share.
+                  Opsec: no "Source" button (would leak upstream provider name
+                  to the user per feedback_public_copy_opsec). */}
+              <WatchActions
+                videoId={video.id}
+                slug={video.slug}
+                title={
+                  video.characters[0]
+                    ? `${fmt(video.characters[0])}${video.copyrights[0] ? ` — ${fmt(video.copyrights[0])}` : ""}`
+                    : video.copyrights[0]
+                      ? fmt(video.copyrights[0])
+                      : buildDisplayTitle(video)
+                }
+                thumbnail={video.thumbnail}
+                initialFavorites={video.favorites}
+                initialScore={video.score}
+              />
 
               <div className="player-divider" />
 
@@ -715,10 +603,16 @@ export default async function WatchPage({ params }: WatchPageProps) {
               {/* Auto-generated video description */}
               <p className="watch-description">{videoDescription}</p>
 
-              {/* FAQ accordion */}
+              {/* FAQ accordion — renders rich answerHtml (internal links) when
+                  present. content-generator escapes every user/source value
+                  before building answerHtml. Plain-text `answer` stays the
+                  canonical version in the FAQPage JSON-LD above. */}
               {videoFAQ.length > 0 && (
-                <div className="watch-faq">
-                  <h2 className="watch-faq__heading">
+                <section
+                  className="watch-faq"
+                  aria-labelledby="watch-faq-heading"
+                >
+                  <h2 id="watch-faq-heading" className="watch-faq__heading">
                     Frequently Asked Questions
                   </h2>
                   {videoFAQ.map((item, i) => (
@@ -726,11 +620,22 @@ export default async function WatchPage({ params }: WatchPageProps) {
                       <summary className="watch-faq__question">
                         {item.question}
                       </summary>
-                      <p className="watch-faq__answer">{item.answer}</p>
+                      {item.answerHtml ? (
+                        <p
+                          className="watch-faq__answer"
+                          dangerouslySetInnerHTML={{ __html: item.answerHtml }}
+                        />
+                      ) : (
+                        <p className="watch-faq__answer">{item.answer}</p>
+                      )}
                     </details>
                   ))}
-                </div>
+                </section>
               )}
+
+              {/* Premium upsell card — hidden for Pro users. Replaces the
+                  stale 🚫 "Skip every preroll + ad" strip. */}
+              <RemoveAdsCTA />
 
               {/* Artist credit */}
               {video.artists[0] && (

@@ -13,7 +13,9 @@ type ScoreEvent =
   | "daily_quest"
   | "video_of_day"
   | "new_character"
-  | "share_click";
+  | "share_click"
+  | "video_like"
+  | "video_dislike";
 
 interface ScoreResponse {
   ok: boolean;

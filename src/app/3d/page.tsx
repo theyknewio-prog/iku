@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { Pagination } from "@/components/Pagination";
 import { getVideos, countVideos } from "@/lib/content";
+import { SORT_OPTIONS, parseSort } from "@/lib/sort-options";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 
@@ -51,11 +52,9 @@ const TOP_GAMES = [
 ];
 
 export default async function ThreeDPage({ searchParams }: Props) {
-  const { page = "1", sort = "score" } = await searchParams;
+  const { page = "1", sort } = await searchParams;
   const currentPage = Math.max(1, parseInt(String(page)));
-  const sortOrder = (
-    ["score", "date", "favcount"].includes(String(sort)) ? sort : "score"
-  ) as "score" | "date" | "favcount";
+  const sortOrder = parseSort(sort, "score");
 
   const [{ data: videos, hasMore }, totalCount] = await Promise.all([
     getVideos({
@@ -117,28 +116,17 @@ export default async function ThreeDPage({ searchParams }: Props) {
           </div>
 
           {/* ── Sort bar ──────────────────────────────────────── */}
-          <nav className="sort-bar" aria-label="Sort 3D videos">
-            <Link
-              href={`/3d?sort=score&page=1`}
-              className={`sort-pill${sortOrder === "score" ? " sort-pill--active" : ""}`}
-              aria-current={sortOrder === "score" ? "page" : undefined}
-            >
-              Top Rated
-            </Link>
-            <Link
-              href={`/3d?sort=date&page=1`}
-              className={`sort-pill${sortOrder === "date" ? " sort-pill--active" : ""}`}
-              aria-current={sortOrder === "date" ? "page" : undefined}
-            >
-              Newest
-            </Link>
-            <Link
-              href={`/3d?sort=favcount&page=1`}
-              className={`sort-pill${sortOrder === "favcount" ? " sort-pill--active" : ""}`}
-              aria-current={sortOrder === "favcount" ? "page" : undefined}
-            >
-              Most Favorited
-            </Link>
+          <nav className="sort-tabs" aria-label="Sort 3D videos">
+            {SORT_OPTIONS.map((opt) => (
+              <Link
+                key={opt.value}
+                href={`/3d?sort=${opt.value}&page=1`}
+                className={`filter-chip${sortOrder === opt.value ? " filter-chip--active" : ""}`}
+                aria-current={sortOrder === opt.value ? "page" : undefined}
+              >
+                {opt.label}
+              </Link>
+            ))}
           </nav>
 
           {/* ── Video grid ────────────────────────────────────── */}
