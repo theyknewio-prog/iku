@@ -3,7 +3,6 @@ import Image from "next/image";
 import { SERIES } from "@/data/series";
 import { getThumbnailsForTags } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
-import { ListingAdBlock } from "@/components/ListingAdBlock";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -86,12 +85,6 @@ export default async function SeriesIndexPage() {
           </div>
 
           {/* ── All series ───────────────────────────────────── */}
-          {/* Ship #7 2026-04-20: /series (index) had ZERO ads. Adding
-              top + bottom leaderboards (matches /character /3d /hentai
-              pattern). Index pages = high-intent SEO landings, deserve
-              same monetization. */}
-          <ListingAdBlock variant="top" />
-
           <section className="page-section">
             <div className="section-header">
               <h2 className="section-title">
@@ -130,8 +123,6 @@ export default async function SeriesIndexPage() {
               })}
             </div>
           </section>
-
-          <ListingAdBlock variant="bottom" />
 
           {/* ── Cross-links ──────────────────────────────────── */}
           <section className="page-section">

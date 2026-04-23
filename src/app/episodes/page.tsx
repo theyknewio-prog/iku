@@ -1,10 +1,8 @@
-import React from "react";
 import Link from "next/link";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { Pagination } from "@/components/Pagination";
-import { ListingAdBlock } from "@/components/ListingAdBlock";
 import { getVideos, countVideos } from "@/lib/content";
 import type { Video } from "@/types/video";
 
@@ -65,8 +63,6 @@ export default async function EpisodesPage({ searchParams }: Props) {
     <div className="shell-content">
       <main>
         <div className="page-container">
-          <ListingAdBlock variant="top" />
-
           {/* ── Page hero ─────────────────────────────────────── */}
           <div className="tag-hero">
             <p className="tag-hero__label">Premium · Full-length episodes</p>
@@ -163,7 +159,6 @@ export default async function EpisodesPage({ searchParams }: Props) {
                   Premium 4.99€/mo →
                 </span>
               </Link>
-              <ListingAdBlock variant="mid" />
               <div className="video-grid">
                 {videos.map((video: Video, i) => (
                   <ThumbnailCard
@@ -174,7 +169,6 @@ export default async function EpisodesPage({ searchParams }: Props) {
                   />
                 ))}
               </div>
-              <ListingAdBlock variant="bottom" />
             </>
           )}
 

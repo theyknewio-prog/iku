@@ -1,4 +1,3 @@
-import React from "react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
@@ -6,8 +5,6 @@ import { Pagination } from "@/components/Pagination";
 import { getVideos, countVideos } from "@/lib/content";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
-import { HentaiProsBanner } from "@/components/HentaiProsBanner";
-import { ListingAdBlock } from "@/components/ListingAdBlock";
 import { SortTabs, parseSort } from "@/components/SortTabs";
 
 export const metadata: Metadata = {
@@ -61,8 +58,6 @@ export default async function NewPage({ searchParams }: Props) {
     <div className="shell-content">
       <main>
         <div className="page-container">
-          <ListingAdBlock variant="top" />
-
           {/* ── Page hero ─────────────────────────────────────── */}
           <div className="tag-hero">
             <p className="tag-hero__label">Fresh Uploads</p>
@@ -125,7 +120,6 @@ export default async function NewPage({ searchParams }: Props) {
                   Premium 4.99€/mo →
                 </span>
               </Link>
-              <ListingAdBlock variant="mid" />
               <div className="video-grid">
                 {videos.map((video: Video, i) => (
                   <ThumbnailCard
@@ -136,7 +130,6 @@ export default async function NewPage({ searchParams }: Props) {
                   />
                 ))}
               </div>
-              <ListingAdBlock variant="bottom" />
             </>
           )}
 

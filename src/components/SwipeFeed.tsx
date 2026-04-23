@@ -4,7 +4,6 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { VideoCard } from "./VideoCard";
 import { FeedConversionCTA } from "./FeedConversionCTA";
-import { VastPrerollAd } from "./VastPrerollAd";
 import { useSession } from "next-auth/react";
 
 export interface FeedVideo {
@@ -173,35 +172,6 @@ export function SwipeFeed() {
     }
   }, [activeIndex]);
 
-  // VAST video preroll every 7 swipes. Tightened from /10 → /7 alongside
-  // CTA /15 → /12 (Ship #10) so a user hits an ad roughly every 4-5 swipes
-  // instead of every 6-8. Top hentai sites (Hentaigasm 17 zones, HentaiCity
-  // 8 zones) saturate way more aggressively.
-  //
-  // Provider is picked 50/50 ExoClick vs HilltopAds (Ship #9). Both VAST
-  // endpoints are wired through /api/vast?provider=...; the rotation lets
-  // us A/B which one actually pays better eCPM. ExoClick zone 5893268
-  // historically logged 0 views / 2.6K hits because of an SPOF in the old
-  // /api/vast-stream proxy (fixed 2026-04-18). HilltopAds VAST is fresh
-  // inventory we've never measured.
-  const [showShortsAd, setShowShortsAd] = useState(false);
-  const [shortsAdProvider, setShortsAdProvider] = useState<
-    "exoclick" | "hilltopads"
-  >("exoclick");
-  const lastAdIndexRef = useRef(-10);
-  useEffect(() => {
-    if (
-      activeIndex > 0 &&
-      activeIndex % 7 === 0 &&
-      activeIndex !== lastAdIndexRef.current &&
-      !isPro.current
-    ) {
-      lastAdIndexRef.current = activeIndex;
-      setShortsAdProvider(Math.random() < 0.5 ? "exoclick" : "hilltopads");
-      setShowShortsAd(true);
-    }
-  }, [activeIndex]);
-
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -245,22 +215,6 @@ export function SwipeFeed() {
       {/* Conversion CTA — alternates signup ↔ premium based on count
           and login state. Anon users see signup first; logged-in non-Pro
           users always see premium. */}
-      {showShortsAd && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 10001,
-            background: "#000",
-          }}
-        >
-          <VastPrerollAd
-            provider={shortsAdProvider}
-            onComplete={() => setShowShortsAd(false)}
-          />
-        </div>
-      )}
-
       {showInterstitial && (
         <FeedConversionCTA
           variant={

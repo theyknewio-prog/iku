@@ -21,12 +21,6 @@ import { JoinDiscordCTA } from "@/components/JoinDiscordCTA";
 import { SignupCTA } from "@/components/SignupCTA";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { MagneticButton } from "@/components/MagneticButton";
-import { HentaiProsBanner } from "@/components/HentaiProsBanner";
-import { AdZoneClient } from "@/components/AdZoneClient";
-import { AdsterraBanner } from "@/components/AdsterraBanner";
-import { ListingAdBlock } from "@/components/ListingAdBlock";
-import { NativeAdCard } from "@/components/NativeAdCard";
-import { AD_ZONES, EXOCLICK_LOW_CPM_GEOS } from "@/lib/ad-config";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai, 3D Hentai & Cartoon Porn | 360,000+ Videos",
@@ -440,60 +434,19 @@ export default async function HomePage() {
             </Link>
           </section>
 
-          {/* Ad #1 — HentaiPros 728x90 desktop / 300x250 mobile.
-              Top of fold above Trending Now, niche-matched.
-              Adsterra 300x250 duplicate removed 2026-04-18 — mobile was
-              stacking two 300x250 creatives at the same fold position, both
-              autoplaying MP4 video ads. HentaiPros pays better per fill. */}
-          <HentaiProsBanner format="728x90" mobileFormat="300x250" />
-
           {/* ================================================================
               TRENDING NOW -- Horizontal poster scroll
           ================================================================ */}
           <Carousel title="🔥 Trending Now" badge="HOT" seeAllHref="/trending">
-            {trending.data.flatMap((video, i) => {
-              const card = (
-                <PosterCard
-                  key={video.id}
-                  video={video}
-                  rank={i < 8 ? i + 1 : undefined}
-                  priority={i < 5}
-                />
-              );
-              // Inject native ad after position 8 and 16 — matches the cadence
-              // top hentai tubes use on trending strips. poster-card-size
-              // keeps the ad the same 150/180px width as surrounding cards so
-              // the strip scrolls uniformly. Pro users see nothing.
-              if ((i === 7 || i === 15) && i < trending.data.length - 1) {
-                return [
-                  card,
-                  <NativeAdCard
-                    key={`native-trending-${i}`}
-                    className="poster-card-size"
-                  />,
-                ];
-              }
-              return [card];
-            })}
+            {trending.data.map((video, i) => (
+              <PosterCard
+                key={video.id}
+                video={video}
+                rank={i < 8 ? i + 1 : undefined}
+                priority={i < 5}
+              />
+            ))}
           </Carousel>
-
-          {/* Ad #2 — ExoClick 728x90 desktop / 300x50 mobile sticky banner. */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              margin: "20px 0",
-            }}
-          >
-            <AdZoneClient
-              zoneId={AD_ZONES.exoclick.watchUnderplayer728}
-              size="728x90"
-              mobileZoneId={AD_ZONES.exoclick.mobileBanner300x50 ?? undefined}
-              mobileSize="300x50"
-              lazy
-              blockCountries={EXOCLICK_LOW_CPM_GEOS}
-            />
-          </div>
 
           {/* Premium CTA #1 — slim inline strip after Trending. */}
           <Link
@@ -571,11 +524,6 @@ export default async function HomePage() {
               </Link>
             </section>
           )}
-
-          {/* Ship A 2026-04-21 — mid-block above Top Rated grid (Adsterra
-              300x250). Mirrors the tag/series pattern that runs 18 unique
-              slots vs the homepage's 4. */}
-          <ListingAdBlock variant="mid" />
 
           {/* ================================================================
               TOP RATED THIS WEEK -- 4-column grid
@@ -663,56 +611,11 @@ export default async function HomePage() {
                         </div>
                       </div>
                     </Link>
-                    {/* Ship A 2026-04-21 — in-grid native every 6 cards, mirrors
-                      BlacklistFilter cadence used on /tag/* and /series/*. */}
-                    {(i + 1) % 6 === 0 && i < topRated.data.length - 1 && (
-                      <>
-                        <NativeAdCard />
-                        <div className="grid-ad-mobile">
-                          <HentaiProsBanner
-                            format="300x250"
-                            mobileFormat="300x250"
-                          />
-                        </div>
-                      </>
-                    )}
                   </React.Fragment>
                 );
               })}
             </div>
           </section>
-
-          {/* Ad #2 — HentaiPros 300x250 between Top Rated and Popular Games. */}
-          <HentaiProsBanner format="300x250" mobileFormat={null} />
-
-          {/* Ad #2bis — Adsterra 728x90/300x250 mobile (parallel network). */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              margin: "12px 0",
-            }}
-          >
-            <AdsterraBanner
-              format="banner728x90"
-              mobileFormat="banner300x250"
-            />
-          </div>
-
-          {/* Ad #2ter — ExoClick 300x250. */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              margin: "12px 0",
-            }}
-          >
-            <AdZoneClient
-              zoneId={AD_ZONES.exoclick.sidebar300}
-              size="300x250"
-              lazy
-            />
-          </div>
 
           {/* ================================================================
               POPULAR GAMES — 3D niche anchor. Ten gradient tiles linking
@@ -852,20 +755,6 @@ export default async function HomePage() {
             </div>
           </section>
 
-          {/* Ad cluster #3 — between Popular Characters and Premium yearly CTA. */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: 16,
-              flexWrap: "wrap",
-              margin: "16px 0",
-            }}
-          >
-            <HentaiProsBanner format="300x250" mobileFormat={null} />
-            <AdsterraBanner format="banner300x250" />
-          </div>
-
           {/* Premium CTA #2 — different angle from #1 (yearly nudge). */}
           <Link
             href="/pricing"
@@ -940,50 +829,10 @@ export default async function HomePage() {
               NEW RELEASES -- Horizontal poster scroll
           ================================================================ */}
           <Carousel title="🆕 New Releases" badge="NEW" seeAllHref="/new">
-            {newest.data.flatMap((video, i) => {
-              const card = (
-                <PosterCard key={video.id} video={video} badge="NEW" />
-              );
-              // Single native after card 5 — New Releases is limited to 10
-              // items so one mid-strip slot is enough; more crowds the scroll.
-              if (i === 4 && i < newest.data.length - 1) {
-                return [
-                  card,
-                  <NativeAdCard
-                    key={`native-newest-${i}`}
-                    className="poster-card-size"
-                  />,
-                ];
-              }
-              return [card];
-            })}
+            {newest.data.map((video) => (
+              <PosterCard key={video.id} video={video} badge="NEW" />
+            ))}
           </Carousel>
-
-          {/* Ad cluster #4 — pre-signup wall: 3 ads stacked. */}
-          <HentaiProsBanner format="300x100" mobileFormat={null} />
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: 12,
-              flexWrap: "wrap",
-              margin: "16px 0",
-            }}
-          >
-            <AdZoneClient
-              zoneId={AD_ZONES.exoclick.watchUnderplayer728}
-              size="728x90"
-              mobileZoneId={AD_ZONES.exoclick.mobileBanner300x50 ?? undefined}
-              mobileSize="300x50"
-              lazy
-              blockCountries={EXOCLICK_LOW_CPM_GEOS}
-            />
-            <AdsterraBanner format="banner300x250" />
-          </div>
-
-          {/* Ship A 2026-04-21 — bottom block (ExoClick sidebar300 lazy).
-              Final ad before the Pro pitch. */}
-          <ListingAdBlock variant="bottom" />
 
           {/* Signup CTA — anon visitors only, before the Pro pitch */}
           <SignupCTA placement="homepage" />

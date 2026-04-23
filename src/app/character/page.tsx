@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ListingAdBlock } from "@/components/ListingAdBlock";
 import { CHARACTERS } from "@/data/characters";
 import { SERIES } from "@/data/series";
 import { getThumbnailsForTags } from "@/lib/content";
@@ -97,7 +96,6 @@ export default async function CharactersPage() {
       />
       <main>
         <div className="page-container">
-          <ListingAdBlock variant="top" />
           {/* ── Page hero ─────────────────────────────────────── */}
           <div className="tag-hero">
             <p className="tag-hero__label">Character Directory</p>
@@ -114,10 +112,8 @@ export default async function CharactersPage() {
           </div>
 
           {/* ── All characters by series ─────────────────────── */}
-          {groups.map(({ series, chars }, idx) => (
+          {groups.map(({ series, chars }) => (
             <React.Fragment key={series.slug}>
-              {/* Ship #7 2026-04-20: mid-grid leaderboard every 4 series. */}
-              {idx > 0 && idx % 4 === 0 && <ListingAdBlock variant="mid" />}
               <section className="page-section">
                 <div className="section-header">
                   <h2 className="section-title">
@@ -169,8 +165,6 @@ export default async function CharactersPage() {
               </section>
             </React.Fragment>
           ))}
-
-          <ListingAdBlock variant="bottom" />
 
           {/* ── Cross-links ──────────────────────────────────── */}
           <section className="page-section">

@@ -10,8 +10,6 @@ import { getVideos, countVideos, isBannedTag } from "@/lib/content";
 import { getEntitySeo } from "@/lib/entity-seo";
 import { getNonce } from "@/lib/csp-nonce";
 import { shouldBlockTaxonomy } from "@/lib/taxonomy-guard";
-import { HentaiProsBanner } from "@/components/HentaiProsBanner";
-import { ListingAdBlock } from "@/components/ListingAdBlock";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 
@@ -279,12 +277,6 @@ export default async function TagPage({ params, searchParams }: Props) {
             ))}
           </div>
 
-          {/* Ship #7 2026-04-20: above-grid leaderboard. /tag/* is the
-              site's #1 page-view bucket (~10K tags indexed) — was missing
-              variant="top" while /3d /hentai /character/[slug] /episodes
-              /new all had it. Direct revenue parity fix. */}
-          <ListingAdBlock variant="top" />
-
           {/* ── Video grid ────────────────────────────────────── */}
           {videos.length === 0 ? (
             <div
@@ -321,9 +313,7 @@ export default async function TagPage({ params, searchParams }: Props) {
                   Premium 4.99€/mo →
                 </span>
               </Link>
-              <ListingAdBlock variant="mid" />
               <BlacklistFilter videos={videos} />
-              <ListingAdBlock variant="bottom" />
             </>
           )}
 

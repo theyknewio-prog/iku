@@ -9,8 +9,6 @@ import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { SignupCTA } from "@/components/SignupCTA";
 import { CHARACTERS } from "@/data/characters";
 import { SERIES } from "@/data/series";
-import { HentaiProsBanner } from "@/components/HentaiProsBanner";
-import { ListingAdBlock } from "@/components/ListingAdBlock";
 
 export const revalidate = 3600;
 export const dynamic = "force-dynamic";
@@ -210,11 +208,6 @@ export default async function ExplorePage(props: {
     <Wrapper>
       <main className="shell-content">
         <div className="page-container">
-          {/* Ship #3 2026-04-20 — header leaderboard 728x90 desktop / 300x250
-              mobile. Was 300x250-only; upgraded to match competitor pattern
-              (HentaiCity, Hentaigasm, Hentai.tv all run 728-wide above-fold). */}
-          <HentaiProsBanner format="728x90" mobileFormat="300x250" />
-
           {/* ── Page header ───────────────────────────────── */}
           <div className="explore-header">
             <h1 className="explore-header__title">Explore</h1>
@@ -406,10 +399,6 @@ export default async function ExplorePage(props: {
               ))}
             </nav>
 
-            {/* Ship A 2026-04-21 — port tag/series ad pattern: premium strip
-                + mid-block above grid, in-grid natives every 6 (BlacklistFilter),
-                bottom ExoClick 300x250 below grid. Brings /explore from
-                4 unique slots → ~18 to match tag/series density. */}
             <Link
               href="/pricing"
               className="hp-premium-strip"
@@ -422,12 +411,9 @@ export default async function ExplorePage(props: {
               </span>
               <span className="hp-premium-strip__cta">Premium 4.99€/mo →</span>
             </Link>
-            <ListingAdBlock variant="mid" />
 
             {/* Video grid */}
             <BlacklistFilter videos={videos} />
-
-            <ListingAdBlock variant="bottom" />
 
             {/* Empty state */}
             {videos.length === 0 && (

@@ -9,8 +9,6 @@ import { getVideos, countVideos, isBannedTag } from "@/lib/content";
 import { getEntitySeo } from "@/lib/entity-seo";
 import { getNonce } from "@/lib/csp-nonce";
 import { shouldBlockTaxonomy } from "@/lib/taxonomy-guard";
-import { HentaiProsBanner } from "@/components/HentaiProsBanner";
-import { ListingAdBlock } from "@/components/ListingAdBlock";
 import {
   CHARACTERS,
   getCharacterBySlug,
@@ -276,8 +274,6 @@ export default async function CharacterPage({ params, searchParams }: Props) {
       )}
       <main>
         <div className="page-container">
-          <ListingAdBlock variant="top" />
-
           {/* ── Character hero ──────────────────────────────────── */}
           <div className="tag-hero">
             <nav
@@ -462,9 +458,7 @@ export default async function CharacterPage({ params, searchParams }: Props) {
                   Premium 4.99€/mo →
                 </span>
               </Link>
-              <ListingAdBlock variant="mid" />
               <BlacklistFilter videos={videos} />
-              <ListingAdBlock variant="bottom" />
             </>
           )}
 

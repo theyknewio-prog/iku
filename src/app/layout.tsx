@@ -8,11 +8,6 @@ import { UserDataSync } from "@/components/UserDataSync";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { getNonce } from "@/lib/csp-nonce";
 import { PushNotifications } from "@/components/PushNotifications";
-import { AdScript } from "@/components/AdScript";
-import { PopunderRotator } from "@/components/PopunderRotator";
-import { AdsterraSocialBar } from "@/components/AdsterraSocialBar";
-import { HilltopAdsInPagePush } from "@/components/HilltopAdsInPagePush";
-import { StickyFooterAd } from "@/components/StickyFooterAd";
 
 // Fonts: Nunito (primary body) + Righteous (display/headings).
 // Previously we also loaded Inter, Poppins, and Quicksand — they were
@@ -157,28 +152,10 @@ export default async function RootLayout({
         <SessionProviderClient>
           <AnalyticsProvider />
           <UserDataSync />
-          {/* 2026-04-11 night — FULL AD BLACKOUT. Every ad surface removed
-              (AdScript, PopunderAd, AdsterraSocialBar, StickyFooterAd,
-              CamWidget, all page-level banners) after Sab reported too
-              many broken, cropped, or confusing ad placements. Reintroduce
-              ONE at a time after verifying each renders cleanly in
-              Playwright. */}
+          {/* 2026-04-23 — FULL AD NUKE. Every ad surface ripped out to reach
+              a clean $0 baseline before rebuilding with the Playmak3r stack
+              (Clickadu + HilltopAds + Stripcash) one surface at a time. */}
           <PushNotifications />
-          {/* ExoClick provider — needed for PrerollAd (wave 2 2026-04-13).
-              Loads lazyOnload, skips for Pro users. */}
-          <AdScript />
-          {/* Popunder — 50/50 Adsterra vs HilltopAds per session,
-              never stacks two pops. */}
-          <PopunderRotator />
-          {/* Adsterra Social Bar — sticky icon cluster, high mobile CPM. */}
-          <AdsterraSocialBar />
-          <HilltopAdsInPagePush />
-          {/* StickyPremiumBanner unmounted 2026-04-20 — was occluding
-              StickyFooterAd at the same bottom anchor with higher z-index,
-              killing the 320x50 ExoClick mobile slot. Premium upsell still
-              lives via in-grid hp-premium-strip on /tag /character /series,
-              SignupCTA on listing pages, and the /pricing CTA in header. */}
-          <StickyFooterAd />
           <AppShell footer={<MegaFooter />}>{children}</AppShell>
         </SessionProviderClient>
       </body>

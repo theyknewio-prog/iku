@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { notFound, permanentRedirect } from "next/navigation";
 import type { Metadata } from "next";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
-import { WatchPlayerWithPreroll } from "@/components/WatchPlayerWithPreroll";
+import { WatchPlayer } from "@/components/WatchPlayer";
 import { WatchSignupNudge } from "@/components/WatchSignupNudge";
 import { ProGatedPlayer } from "@/components/ProGatedPlayer";
 import { isProLocked } from "@/lib/pro-gate";
@@ -43,10 +43,6 @@ import {
   isVideoDeadBySlug,
 } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
-import { HentaiProsBanner } from "@/components/HentaiProsBanner";
-import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
-import { AdZoneClient } from "@/components/AdZoneClient";
-import { AD_ZONES, EXOCLICK_LOW_CPM_GEOS } from "@/lib/ad-config";
 import { RemoveAdsCTA } from "@/components/RemoveAdsCTA";
 import {
   buildSeoTitle,
@@ -505,28 +501,6 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 ))}
               </nav>
 
-              {/* Wave 3 ad reintro 2026-04-13: above-player banner.
-                  Desktop = ExoClick 728x90 leaderboard (zone 5893256).
-                  Mobile  = ExoClick 300x50 mobile sticky (zone 5895978).
-                  AdZoneClient handles the swap via window.innerWidth. */}
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  margin: "12px 0",
-                }}
-              >
-                <AdZoneClient
-                  zoneId={AD_ZONES.exoclick.watchUnderplayer728}
-                  size="728x90"
-                  mobileZoneId={
-                    AD_ZONES.exoclick.mobileBanner300x50 ?? undefined
-                  }
-                  mobileSize="300x50"
-                  blockCountries={EXOCLICK_LOW_CPM_GEOS}
-                />
-              </div>
-
               {/* Video player — Gelbooru URLs are proxied through /api/proxy,
                   Rule34Video + WP are proxied through /api/video-stream to
                   bypass IP-bound access tokens.
@@ -534,12 +508,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
                   upstream MP4 with an IP-bound token that returns 403 in the
                   browser (CLAUDE.md silent bug). We MUST use streamProxyUrl
                   for those sources. Short-circuiting via `||` would always
-                  return the raw URL and break 78% of the catalog.
-
-                  Swapped from WatchPlayerWithPreroll (which wrapped WatchPlayer
-                  in a 15s ExoClick preroll) to bare WatchPlayer 2026-04-11
-                  night as part of the ad blackout — the preroll was an ad
-                  surface we weren't verifying. */}
+                  return the raw URL and break 78% of the catalog. */}
               <div className="player-video-wrap">
                 {isProLocked(video) ? (
                   <ProGatedPlayer
@@ -553,7 +522,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
                     unlockCost={unlockCost(video)}
                   />
                 ) : (
-                  <WatchPlayerWithPreroll
+                  <WatchPlayer
                     src={streamProxyUrl || video.url || ""}
                     poster={video.thumbnail || undefined}
                     resolveUrl={resolvePageUrl || undefined}
@@ -561,15 +530,6 @@ export default async function WatchPage({ params }: WatchPageProps) {
                     relatedVideos={relatedForPlayer}
                   />
                 )}
-              </div>
-
-              {/* Ship #5 2026-04-20: upgraded from 300x250 → 728x90 with
-                  300x250 mobile fallback. Now bookends the player with the
-                  728x90 above (line 519) — symmetric leaderboard pattern
-                  copied from Hentaigasm/HentaiCity. Desktop CPM ~3× higher
-                  on 728x90 vs 300x250 (industry standard). */}
-              <div style={{ margin: "12px auto", textAlign: "center" }}>
-                <HentaiProsBanner format="728x90" mobileFormat="300x250" />
               </div>
 
               {/* Remove Ads CTA — only for non-Pro, non-logged-in users */}
@@ -835,20 +795,6 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
               {/* Related — mobile grid (below player) */}
               <div style={{ marginTop: "32px" }}>
-                {/* A/B test 2026-04-18: HilltopAds 300x250 (zone 6969681)
-                    replacing ExoClick sidebar300 lazy in this in-content slot.
-                    Same spot, direct eCPM comparison vs Adsterra baseline
-                    ($0.36) over 48h. If HilltopAds fills and pays, scale to
-                    other surfaces; if not, revert. */}
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    margin: "0 0 20px",
-                  }}
-                >
-                  <HilltopAdsBanner format="banner300x250" />
-                </div>
                 <div className="section-header">
                   <h2
                     className="section-title"
@@ -885,15 +831,9 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
             {/* ── Sidebar (desktop) ─────────────────────────── */}
             <aside className="player-sidebar">
-              {/* Audit 2026-04-20: related videos were below 850px of ads
-                  in the sticky sidebar → invisible at 1440x900. Interleaved
-                  layout: 6 related → 300x250 ad → 6 more related → 160x600
-                  banner. First related thumbs visible above fold (driver
-                  #1 of pages/session) AND both ad zones still appear in the
-                  scroll path. PornHub uses the same pattern. */}
               <div className="player-sidebar__title">Up next</div>
               <Suspense
-                fallback={Array.from({ length: 6 }).map((_, i) => (
+                fallback={Array.from({ length: 12 }).map((_, i) => (
                   <div key={i} className="related-item">
                     <div
                       className="related-item__thumb skeleton-thumb"
@@ -912,35 +852,8 @@ export default async function WatchPage({ params }: WatchPageProps) {
                   </div>
                 ))}
               >
-                <RelatedSidebar video={video} offset={0} limit={6} />
+                <RelatedSidebar video={video} offset={0} limit={12} />
               </Suspense>
-
-              {/* In-content ad between two related slots. ExoClick 300x250.
-                  lazy={true} — IntersectionObserver pushes script injection
-                  after first paint (cuts time-to-interactive). */}
-              <div
-                style={{
-                  margin: "16px 0",
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <AdZoneClient
-                  zoneId={AD_ZONES.exoclick.sidebar300}
-                  size="300x250"
-                  lazy
-                />
-              </div>
-
-              <Suspense fallback={null}>
-                <RelatedSidebar video={video} offset={6} limit={6} />
-              </Suspense>
-
-              {/* HentaiProsBanner 160x600 — niche rotation (HentaiPros /
-                  Candy.ai / hentai games) below the second related slot. */}
-              <div style={{ marginTop: 24 }}>
-                <HentaiProsBanner format="160x600" mobileFormat={null} />
-              </div>
             </aside>
           </div>
 

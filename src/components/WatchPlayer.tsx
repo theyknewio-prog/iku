@@ -42,12 +42,6 @@ interface WatchPlayerProps {
   /** Current video slug — used to mark dead on player error */
   slug?: string;
   relatedVideos?: RelatedVideo[];
-  /** Called when the video fires its native `ended` event (used by WatchPlayerWithPreroll to trigger post-roll). */
-  onVideoEnded?: () => void;
-  /** When true, suppresses the built-in "Up Next" end overlay so the post-roll ad overlay can occupy that space. */
-  suppressEndOverlay?: boolean;
-  /** When true, pauses the video and rewinds to 0. Used by WatchPlayerWithPreroll to prevent the muted video from silently playing behind the pre-roll overlay. */
-  pausedByOverlay?: boolean;
 }
 
 interface SeekOverlay {
@@ -72,9 +66,6 @@ export function WatchPlayer({
   resolveUrl,
   slug,
   relatedVideos,
-  onVideoEnded,
-  suppressEndOverlay,
-  pausedByOverlay,
 }: WatchPlayerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -211,69 +202,7 @@ export function WatchPlayer({
     }
   }, [muted]);
 
-  /*
-   * Control video playback via overlay state.
-   *
-   * The <video> element has NO `autoPlay` attribute (see JSX below) — playback
-   * is driven entirely from here. On mount, pausedByOverlay defaults to true
-   * (preroll is showing), so we make sure the video is paused at 0. When the
-   * overlay dismisses we explicitly .play().
-   *
-   * We also guard against late autoplay attempts by re-pausing on canplay
-   * and timeupdate events when the overlay is still up — some browsers
-   * will try to start playback when metadata loads or when the tab regains
-   * focus, which used to advance currentTime silently behind the preroll.
-   */
-  useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-
-    if (pausedByOverlay) {
-      try {
-        v.pause();
-      } catch {}
-      try {
-        v.currentTime = 0;
-      } catch {}
-      setPlaying(false);
-
-      // Defensive: re-pause on any event that could have started playback
-      // while the overlay is still up.
-      const forcePause = () => {
-        if (!v.paused) {
-          try {
-            v.pause();
-          } catch {}
-        }
-        if (v.currentTime > 0.1) {
-          try {
-            v.currentTime = 0;
-          } catch {}
-        }
-      };
-      v.addEventListener("canplay", forcePause);
-      v.addEventListener("play", forcePause);
-      v.addEventListener("timeupdate", forcePause);
-      return () => {
-        v.removeEventListener("canplay", forcePause);
-        v.removeEventListener("play", forcePause);
-        v.removeEventListener("timeupdate", forcePause);
-      };
-    }
-
-    // Overlay gone — start playback from 0.
-    try {
-      v.currentTime = 0;
-    } catch {}
-    const p = v.play();
-    if (p && typeof p.catch === "function")
-      p.catch(() => {
-        /* autoplay blocked, user will tap */
-      });
-    setPlaying(true);
-  }, [pausedByOverlay]);
-
-  /* ── Feature 1: Loop toggle (default OFF so onEnded fires for postroll) ─ */
+  /* ── Feature 1: Loop toggle ───────────────────────────── */
   const [looping, setLooping] = useState(false);
   const toggleLoop = useCallback(() => {
     setLooping((l) => !l);
@@ -352,11 +281,6 @@ export function WatchPlayer({
 
   const handleEnded = useCallback(() => {
     if (looping) return; // video loops naturally, onEnded won't fire when loop=true, but guard anyway
-    // Notify parent (WatchPlayerWithPreroll) so post-roll can be triggered.
-    // We call this BEFORE showing the end overlay so the post-roll overlay
-    // renders on top first; once the post-roll completes, suppressEndOverlay
-    // becomes false and the native "Up Next" overlay becomes visible.
-    onVideoEnded?.();
     if (relatedVideos && relatedVideos.length > 0) {
       setEnded(true);
       setCountdown(5);
@@ -372,7 +296,7 @@ export function WatchPlayer({
         });
       }, 1000);
     }
-  }, [looping, relatedVideos, onVideoEnded]);
+  }, [looping, relatedVideos]);
 
   /* ── Feature 4: Mobile volume gesture (left-side vertical swipe) */
   const touchStartRef = useRef<{
@@ -1104,12 +1028,7 @@ export function WatchPlayer({
               : undefined
           }
           poster={poster}
-          /* NO autoPlay attribute — playback is controlled entirely via the
-             pausedByOverlay effect below. When the preroll overlay is up,
-             the video must stay paused at 0; when the overlay dismisses, we
-             explicitly call .play(). Previously autoPlay raced against the
-             pause effect and caused the video to silently advance 10-25s
-             behind the overlay. */
+          autoPlay
           muted={muted}
           loop={looping}
           playsInline
@@ -1421,190 +1340,182 @@ export function WatchPlayer({
         )}
 
         {/* ── Feature 3: End-of-video overlay ─────────────── */}
-        {/* suppressEndOverlay is true while PostrollAd is displayed so the
-            post-roll occupies the overlay space; once it completes the
-            native "Up Next" panel is revealed normally. */}
-        {ended &&
-          !looping &&
-          !suppressEndOverlay &&
-          relatedVideos &&
-          relatedVideos.length > 0 && (
-            <div
+        {ended && !looping && relatedVideos && relatedVideos.length > 0 && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "rgba(0,0,0,0.92)",
+              zIndex: 8,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 20,
+              padding: "24px 16px",
+              animation: "wp-fade-in 0.22s ease",
+            }}
+          >
+            {/* Header */}
+            <p
               style={{
-                position: "absolute",
-                inset: 0,
-                background: "rgba(0,0,0,0.92)",
-                zIndex: 8,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 20,
-                padding: "24px 16px",
-                animation: "wp-fade-in 0.22s ease",
+                color: "rgba(255,255,255,0.7)",
+                fontSize: 14,
+                fontWeight: 600,
+                margin: 0,
+                letterSpacing: "0.04em",
+                textTransform: "uppercase",
               }}
             >
-              {/* Header */}
-              <p
+              Up next in{" "}
+              <span
                 style={{
-                  color: "rgba(255,255,255,0.7)",
-                  fontSize: 14,
-                  fontWeight: 600,
-                  margin: 0,
-                  letterSpacing: "0.04em",
-                  textTransform: "uppercase",
+                  color: "#e8467c",
+                  fontVariantNumeric: "tabular-nums",
                 }}
               >
-                Up next in{" "}
-                <span
+                {countdown}s
+              </span>
+            </p>
+
+            {/* Related thumbnails grid */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(2, 1fr)",
+                gap: 10,
+                width: "100%",
+                maxWidth: 480,
+              }}
+            >
+              {relatedVideos.slice(0, 4).map((rv) => (
+                <a
+                  key={rv.slug}
+                  href={`/watch/${rv.slug}`}
                   style={{
-                    color: "#e8467c",
-                    fontVariantNumeric: "tabular-nums",
+                    display: "block",
+                    textDecoration: "none",
+                    borderRadius: 8,
+                    overflow: "hidden",
+                    background: "rgba(255,255,255,0.05)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    transition: "border-color 0.15s ease, transform 0.15s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLAnchorElement).style.borderColor =
+                      "#e8467c";
+                    (e.currentTarget as HTMLAnchorElement).style.transform =
+                      "scale(1.02)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLAnchorElement).style.borderColor =
+                      "rgba(255,255,255,0.08)";
+                    (e.currentTarget as HTMLAnchorElement).style.transform =
+                      "scale(1)";
                   }}
                 >
-                  {countdown}s
-                </span>
-              </p>
-
-              {/* Related thumbnails grid */}
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(2, 1fr)",
-                  gap: 10,
-                  width: "100%",
-                  maxWidth: 480,
-                }}
-              >
-                {relatedVideos.slice(0, 4).map((rv) => (
-                  <a
-                    key={rv.slug}
-                    href={`/watch/${rv.slug}`}
+                  <div
                     style={{
-                      display: "block",
-                      textDecoration: "none",
-                      borderRadius: 8,
-                      overflow: "hidden",
-                      background: "rgba(255,255,255,0.05)",
-                      border: "1px solid rgba(255,255,255,0.08)",
-                      transition:
-                        "border-color 0.15s ease, transform 0.15s ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLAnchorElement).style.borderColor =
-                        "#e8467c";
-                      (e.currentTarget as HTMLAnchorElement).style.transform =
-                        "scale(1.02)";
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLAnchorElement).style.borderColor =
-                        "rgba(255,255,255,0.08)";
-                      (e.currentTarget as HTMLAnchorElement).style.transform =
-                        "scale(1)";
+                      position: "relative",
+                      aspectRatio: "16/9",
+                      width: "100%",
                     }}
                   >
-                    <div
-                      style={{
-                        position: "relative",
-                        aspectRatio: "16/9",
-                        width: "100%",
-                      }}
-                    >
-                      <Image
-                        src={rv.thumbnail}
-                        alt={rv.title}
-                        fill
-                        sizes="(max-width: 640px) 45vw, 220px"
-                        style={{ objectFit: "cover" }}
-                        unoptimized
-                      />
-                    </div>
-                    <p
-                      style={{
-                        color: "rgba(255,255,255,0.82)",
-                        fontSize: 11,
-                        fontWeight: 500,
-                        margin: 0,
-                        padding: "6px 8px",
-                        overflow: "hidden",
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        lineHeight: 1.4,
-                      }}
-                    >
-                      {rv.title}
-                    </p>
-                  </a>
-                ))}
-              </div>
+                    <Image
+                      src={rv.thumbnail}
+                      alt={rv.title}
+                      fill
+                      sizes="(max-width: 640px) 45vw, 220px"
+                      style={{ objectFit: "cover" }}
+                      unoptimized
+                    />
+                  </div>
+                  <p
+                    style={{
+                      color: "rgba(255,255,255,0.82)",
+                      fontSize: 11,
+                      fontWeight: 500,
+                      margin: 0,
+                      padding: "6px 8px",
+                      overflow: "hidden",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    {rv.title}
+                  </p>
+                </a>
+              ))}
+            </div>
 
-              {/* Action buttons */}
-              <div
+            {/* Action buttons */}
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                flexWrap: "wrap",
+                justifyContent: "center",
+              }}
+            >
+              <button
+                onClick={handleReplay}
                 style={{
                   display: "flex",
-                  gap: 10,
-                  flexWrap: "wrap",
-                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 6,
+                  background: "rgba(255,255,255,0.1)",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  borderRadius: 8,
+                  color: "#fff",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  padding: "10px 18px",
+                  cursor: "pointer",
+                  transition: "background 0.15s ease",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background =
+                    "rgba(255,255,255,0.18)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background =
+                    "rgba(255,255,255,0.1)";
                 }}
               >
-                <button
-                  onClick={handleReplay}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                    background: "rgba(255,255,255,0.1)",
-                    border: "1px solid rgba(255,255,255,0.2)",
-                    borderRadius: 8,
-                    color: "#fff",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    padding: "10px 18px",
-                    cursor: "pointer",
-                    transition: "background 0.15s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLButtonElement).style.background =
-                      "rgba(255,255,255,0.18)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLButtonElement).style.background =
-                      "rgba(255,255,255,0.1)";
-                  }}
-                >
-                  <div style={{ width: 16, height: 16 }}>
-                    <IconReplay />
-                  </div>
-                  Replay
-                </button>
-                <button
-                  onClick={handleCancelAutoplay}
-                  style={{
-                    background: "rgba(232,70,124,0.15)",
-                    border: "1px solid rgba(232,70,124,0.4)",
-                    borderRadius: 8,
-                    color: "#e8467c",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    padding: "10px 18px",
-                    cursor: "pointer",
-                    transition: "background 0.15s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLButtonElement).style.background =
-                      "rgba(232,70,124,0.28)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLButtonElement).style.background =
-                      "rgba(232,70,124,0.15)";
-                  }}
-                >
-                  Cancel
-                </button>
-              </div>
+                <div style={{ width: 16, height: 16 }}>
+                  <IconReplay />
+                </div>
+                Replay
+              </button>
+              <button
+                onClick={handleCancelAutoplay}
+                style={{
+                  background: "rgba(232,70,124,0.15)",
+                  border: "1px solid rgba(232,70,124,0.4)",
+                  borderRadius: 8,
+                  color: "#e8467c",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  padding: "10px 18px",
+                  cursor: "pointer",
+                  transition: "background 0.15s ease",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background =
+                    "rgba(232,70,124,0.28)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background =
+                    "rgba(232,70,124,0.15)";
+                }}
+              >
+                Cancel
+              </button>
             </div>
-          )}
+          </div>
+        )}
 
         {/* Always-visible progress bar — sits at the very bottom, never hides */}
         {!ended && (

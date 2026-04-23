@@ -1,7 +1,4 @@
-import React from "react";
 import Link from "next/link";
-import { HentaiProsBanner } from "@/components/HentaiProsBanner";
-import { ListingAdBlock } from "@/components/ListingAdBlock";
 import { Suspense } from "react";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { Pagination } from "@/components/Pagination";
@@ -63,7 +60,6 @@ export default async function HentaiPage({ searchParams }: Props) {
     <div className="shell-content">
       <main>
         <div className="page-container">
-          <ListingAdBlock variant="top" />
           {/* ── Page hero ─────────────────────────────────────── */}
           <div className="tag-hero">
             <p className="tag-hero__label">2D Anime Hentai</p>
@@ -134,7 +130,6 @@ export default async function HentaiPage({ searchParams }: Props) {
                   Premium 4.99€/mo →
                 </span>
               </Link>
-              <ListingAdBlock variant="mid" />
               <div className="video-grid">
                 {videos.map((video: Video, i) => (
                   <ThumbnailCard
@@ -145,7 +140,6 @@ export default async function HentaiPage({ searchParams }: Props) {
                   />
                 ))}
               </div>
-              <ListingAdBlock variant="bottom" />
             </>
           )}
 

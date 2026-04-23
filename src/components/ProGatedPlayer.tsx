@@ -9,7 +9,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react";
-import { WatchPlayerWithPreroll } from "@/components/WatchPlayerWithPreroll";
+import { WatchPlayer } from "@/components/WatchPlayer";
 import { ProLockOverlay } from "@/components/ProLockOverlay";
 
 type Props = {
@@ -84,7 +84,7 @@ export function ProGatedPlayer(props: Props) {
 
   if (state.status === "unlocked") {
     return (
-      <WatchPlayerWithPreroll
+      <WatchPlayer
         src={props.src}
         poster={props.poster}
         resolveUrl={props.resolveUrl}

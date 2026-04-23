@@ -8,8 +8,6 @@ import { getVideos, countVideos, isBannedTag } from "@/lib/content";
 import { getEntitySeo } from "@/lib/entity-seo";
 import { getNonce } from "@/lib/csp-nonce";
 import { shouldBlockTaxonomy } from "@/lib/taxonomy-guard";
-import { HentaiProsBanner } from "@/components/HentaiProsBanner";
-import { ListingAdBlock } from "@/components/ListingAdBlock";
 import { SERIES, getSeriesBySlug, type Series } from "@/data/series";
 import { getCharacterBySlug } from "@/data/characters";
 import pool from "@/lib/db";
@@ -275,8 +273,6 @@ export default async function SeriesPage({ params, searchParams }: Props) {
       />
       <main>
         <div className="page-container">
-          <ListingAdBlock variant="top" />
-
           {/* ── Series hero ─────────────────────────────────────── */}
           <div className="tag-hero">
             <nav
@@ -445,9 +441,7 @@ export default async function SeriesPage({ params, searchParams }: Props) {
                   Premium 4.99€/mo →
                 </span>
               </Link>
-              <ListingAdBlock variant="mid" />
               <BlacklistFilter videos={videos} />
-              <ListingAdBlock variant="bottom" />
             </>
           )}
 
