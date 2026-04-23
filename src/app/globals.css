@@ -2501,6 +2501,44 @@ body {
   flex-wrap: wrap;
 }
 
+/* Sort tabs — horizontal scroll on mobile, inline-flex desktop.
+   Missing .sort-tabs CSS caused chips to stack vertically (2026-04-23). */
+.sort-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 4px 0 6px;
+  margin: 0 0 16px;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    #000 0,
+    #000 calc(100% - 24px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    #000 0,
+    #000 calc(100% - 24px),
+    transparent 100%
+  );
+}
+
+.sort-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .sort-tabs {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
 .filter-chip {
   display: flex;
   align-items: center;
@@ -2516,6 +2554,8 @@ body {
   font-family: var(--font-sans);
   min-height: 36px;
   white-space: nowrap;
+  text-decoration: none;
+  flex-shrink: 0;
   transition:
     background var(--dur-fast) ease,
     border-color var(--dur-fast) ease,

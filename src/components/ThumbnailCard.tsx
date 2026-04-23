@@ -192,19 +192,32 @@ export function ThumbnailCard({
             }}
           />
         ) : (
+          // Thumbnail fallback — upstream image 404'd (Danbooru rotates
+          // cached hashes, Rule34Video GCs old assets). A flower emoji
+          // read "broken site" on listing pages with many 404s. A flat
+          // dark panel with a play glyph reads "video loaded, preview
+          // unavailable" — closer to the truth and premium-looking.
           <div
             style={{
               position: "absolute",
               inset: 0,
-              background: `linear-gradient(135deg, hsl(${(video.id * 47) % 360}, 60%, 25%) 0%, hsl(${(video.id * 47 + 80) % 360}, 70%, 15%) 100%)`,
+              background:
+                "linear-gradient(135deg, rgba(40,15,45,0.95) 0%, rgba(20,10,30,0.98) 100%)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "rgba(255,255,255,0.4)",
-              fontSize: 32,
+              color: "rgba(255,255,255,0.18)",
             }}
           >
-            🌸
+            <svg
+              width="44"
+              height="44"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <polygon points="6 4 20 12 6 20 6 4" />
+            </svg>
           </div>
         )}
 
