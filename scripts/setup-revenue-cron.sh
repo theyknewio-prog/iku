@@ -43,7 +43,7 @@ if [ -f "$ENV_FILE" ]; then
 else
   echo "WARNING: $ENV_FILE not found."
   echo "  Create it with:"
-  echo "    TELEGRAM_BOT_TOKEN=8428448598:AAFwli73qAOBXrhMYqAGLfgpBjeM5M5Ehkw"
+  echo "    TELEGRAM_BOT_TOKEN=<get from @BotFather>"
   echo "    STRIPE_SECRET_KEY=sk_live_..."
   echo "    DATABASE_URL=postgresql://..."
   echo "    # Optional — add when API keys are obtained:"

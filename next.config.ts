@@ -5,7 +5,8 @@ import type { NextConfig } from "next";
 const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "DENY" },
-  { key: "X-XSS-Protection", value: "1; mode=block" },
+  // X-XSS-Protection retiré 2026-04-23 (V11): deprecated since ~2019, can
+  // reintroduce XSS in old Edge variants. CSP + frame-ancestors cover us.
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   {
     key: "Strict-Transport-Security",

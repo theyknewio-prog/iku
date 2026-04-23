@@ -11,6 +11,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import pool from "@/lib/db";
 import { getVerifyStatus } from "@/lib/email-verify-guard";
+import { recordScore } from "@/lib/gamification";
 
 export async function GET() {
   const session = await auth();
@@ -78,11 +79,25 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid slug" }, { status: 400 });
   }
 
-  await pool.query(
+  const { rowCount } = await pool.query(
     `INSERT INTO user_favorites (user_id, video_slug) VALUES ($1, $2)
      ON CONFLICT DO NOTHING`,
     [session.user.id, slug],
   );
+
+  // Award points only when the INSERT actually added a row (not on conflict).
+  // Keeps favorite_add out of the client /api/score allowlist (V4 fix).
+  if (rowCount && rowCount > 0) {
+    try {
+      await recordScore({
+        userId: session.user.id,
+        event: "favorite_add",
+        meta: { slug },
+      });
+    } catch {
+      /* score failure mustn't block the favorite */
+    }
+  }
 
   return NextResponse.json({ ok: true });
 }

@@ -4,9 +4,12 @@
  * Using HTML parse_mode to avoid MarkdownV2 escape hell.
  */
 
-const TOKEN =
-  process.env.BOT_TOKEN || "8428448598:AAFwli73qAOBXrhMYqAGLfgpBjeM5M5Ehkw";
-const CHAT_ID = "5617056258";
+const TOKEN = process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN || "";
+const CHAT_ID = process.env.TELEGRAM_CHAT_ID ?? "5617056258";
+if (!TOKEN) {
+  console.error("TELEGRAM_BOT_TOKEN must be set in env");
+  process.exit(1);
+}
 
 const MSG = `🌙 <b>Recap overnight iku.gg — 2026-04-18</b>
 

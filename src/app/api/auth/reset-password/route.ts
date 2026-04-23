@@ -8,8 +8,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import pool from "@/lib/db";
+import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
+
+// V14 / B5 (audits 2026-04-23): reset-password used to be the only auth
+// route without a rate-limit — token is strong but a PG query per call
+// is still a DoS primitive. 10/h/IP mirrors forgot-password.
+const limiter = createRateLimiter({
+  name: "reset-password",
+  max: 10,
+  windowMs: 3600_000,
+});
 
 export async function POST(request: NextRequest) {
+  if (limiter.consume(getClientIp(request))) {
+    return NextResponse.json({ error: "rate limited" }, { status: 429 });
+  }
+
   let body: unknown;
   try {
     body = await request.json();

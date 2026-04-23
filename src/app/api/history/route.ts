@@ -9,6 +9,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import pool from "@/lib/db";
+import { getVerifyStatus } from "@/lib/email-verify-guard";
 
 export async function GET() {
   const session = await auth();
@@ -44,6 +45,20 @@ export async function POST(request: NextRequest) {
   const { slug, bulk } = (body ?? {}) as { slug?: string; bulk?: string[] };
 
   if (Array.isArray(bulk)) {
+    // V16 / B7 (audits 2026-04-23): symmetry with /api/favorites — bulk
+    // import requires a verified email so spam signups can't flood
+    // user_history with 500 slugs × N calls.
+    const vStatus = await getVerifyStatus(session.user.id);
+    if (!vStatus.passed) {
+      return NextResponse.json(
+        {
+          error: "email_not_verified",
+          message: "Verify your email to sync history.",
+        },
+        { status: 403 },
+      );
+    }
+
     const slugs = bulk
       .filter((s) => typeof s === "string" && s.length > 0 && s.length <= 200)
       .slice(0, 500);

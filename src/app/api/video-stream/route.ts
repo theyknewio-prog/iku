@@ -298,10 +298,20 @@ export async function GET(request: NextRequest) {
   if (parsed.protocol !== "https:") {
     return NextResponse.json({ error: "https required" }, { status: 400 });
   }
-  const isAllowed = allowedDomains.some(
-    (domain) =>
-      parsed.hostname === domain || parsed.hostname.endsWith(`.${domain}`),
-  );
+  // `b-cdn.net` is Bunny CDN multi-tenant: a generic endsWith on the base
+  // domain accepts `evil-*.b-cdn.net` which would turn us into a bandwidth
+  // + DMCA laundry for any Bunny subscriber (V5, security audit 2026-04-23).
+  // Restrict to the `vz-*.b-cdn.net` pattern used by our porn3dx stream
+  // setup. Same posture recommended for future multi-tenant CDN allowlists.
+  const host = parsed.hostname;
+  const isBunnyPullZone = /^vz-[a-z0-9-]+\.b-cdn\.net$/i.test(host);
+  const isAllowed =
+    isBunnyPullZone ||
+    allowedDomains.some(
+      (domain) =>
+        domain !== "b-cdn.net" &&
+        (host === domain || host.endsWith(`.${domain}`)),
+    );
   if (!isAllowed) {
     return NextResponse.json({ error: "unsupported source" }, { status: 400 });
   }

@@ -119,7 +119,7 @@ export function memoize<Args extends readonly unknown[], T>(
 }
 
 if (typeof setInterval !== "undefined") {
-  setInterval(
+  const _timer = setInterval(
     () => {
       const now = Date.now();
       for (const store of stores.values()) {
@@ -132,4 +132,10 @@ if (typeof setInterval !== "undefined") {
     },
     5 * 60 * 1000,
   );
+  // unref so scripts/tests importing this module can exit cleanly
+  if (
+    typeof (_timer as unknown as { unref?: () => void }).unref === "function"
+  ) {
+    (_timer as unknown as { unref: () => void }).unref();
+  }
 }

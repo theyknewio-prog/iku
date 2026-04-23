@@ -1,6 +1,10 @@
 #!/usr/bin/env node
-const TOKEN = "8428448598:AAFwli73qAOBXrhMYqAGLfgpBjeM5M5Ehkw";
-const CHAT = "5617056258";
+const TOKEN = process.env.TELEGRAM_BOT_TOKEN ?? "";
+const CHAT = process.env.TELEGRAM_CHAT_ID ?? "5617056258";
+if (!TOKEN) {
+  console.error("TELEGRAM_BOT_TOKEN must be set in env");
+  process.exit(1);
+}
 
 const msg = [
   "✅ 3 nouveaux partenaires pub signup",

@@ -38,12 +38,11 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  const seenHeaders = GEO_HEADER_CANDIDATES.filter((h) =>
-    req.headers.get(h),
-  ).map((h) => `${h}=${req.headers.get(h)}`);
-
+  // V13 (security audit 2026-04-23): seenHeaders + cfRay were debug
+  // leftovers that revealed our Cloudflare colo + header shape. Strip
+  // them from the production response.
   return NextResponse.json(
-    { country, source, seenHeaders, cfRay: req.headers.get("cf-ray") },
+    { country, source },
     {
       headers: {
         "Cache-Control": "no-store, max-age=0",

@@ -24,11 +24,19 @@ import { sendVerificationEmail } from "@/lib/email";
 const lastSend = new Map<string, number>();
 const COOLDOWN_MS = 5 * 60_000;
 
-// Periodic cleanup of stale entries (> 1h old) to cap memory.
-setInterval(() => {
+// Periodic cleanup of stale entries (> 1h old) to cap memory. unref()
+// lets the process exit cleanly when the module is imported in scripts /
+// tests (V6 / B8, audits 2026-04-23).
+const _cleanupTimer = setInterval(() => {
   const cutoff = Date.now() - 60 * 60_000;
   for (const [k, ts] of lastSend) if (ts < cutoff) lastSend.delete(k);
 }, 10 * 60_000);
+if (
+  typeof (_cleanupTimer as unknown as { unref?: () => void }).unref ===
+  "function"
+) {
+  (_cleanupTimer as unknown as { unref: () => void }).unref();
+}
 
 export async function POST() {
   const session = await auth();

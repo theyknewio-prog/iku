@@ -11,10 +11,27 @@ import { NextResponse, type NextRequest } from "next/server";
 import { auth } from "@/auth";
 import { isUserPro } from "@/lib/pro-gate-server";
 import pool from "@/lib/db";
+import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
+// V7 (security audit 2026-04-23): 60/min/IP prevents a scraper from
+// blasting the endpoint — each call does 2-3 PG queries, no cache, and
+// was one of the easier DoS targets against the PG pool.
+const limiter = createRateLimiter({
+  name: "pro-status",
+  max: 60,
+  windowMs: 60_000,
+});
+
 export async function GET(req: NextRequest) {
+  if (limiter.consume(getClientIp(req))) {
+    return NextResponse.json(
+      { error: "rate limited" },
+      { status: 429, headers: { "Retry-After": "60" } },
+    );
+  }
+
   const session = await auth();
   const userId = session?.user?.id;
   const pro = await isUserPro(userId);

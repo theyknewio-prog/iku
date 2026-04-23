@@ -11,13 +11,27 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { recordScore, POINTS, type ScoreEventType } from "@/lib/gamification";
+import { recordScore, type ScoreEventType } from "@/lib/gamification";
 import { advanceDailyQuests } from "@/lib/daily-quests";
 import { createRateLimiter } from "@/lib/rate-limit";
 
-const ALLOWED_EVENTS = new Set<ScoreEventType>(
-  Object.keys(POINTS) as ScoreEventType[],
-);
+/**
+ * Events the CLIENT is allowed to trigger via this API.
+ *
+ * Server-only events (streak_*_bonus, daily_quest, video_of_day,
+ * new_character, badge_unlock_bonus) are calculated INSIDE recordScore or
+ * by crons/server-side handlers. Allowing them from the client lets any
+ * authenticated user farm 15k+ points/min → unlock Pro videos for free +
+ * trigger the 30% Stripe coupon. Fixed 2026-04-23 after security audit V1.
+ *
+ * favorite_add is also server-only: /api/favorites POST triggers it after
+ * a successful INSERT, not the client.
+ */
+const ALLOWED_CLIENT_EVENTS = new Set<ScoreEventType>([
+  "video_view",
+  "video_complete",
+  "share_click",
+]);
 
 // Per-user rate limit (anti point-farming). 30 events/min is more than enough
 // for legitimate watch+favorite+quest flows.
@@ -46,8 +60,8 @@ export async function POST(request: NextRequest) {
     meta?: Record<string, unknown>;
   };
 
-  if (!event || !ALLOWED_EVENTS.has(event as ScoreEventType)) {
-    return NextResponse.json({ error: "unknown event" }, { status: 400 });
+  if (!event || !ALLOWED_CLIENT_EVENTS.has(event as ScoreEventType)) {
+    return NextResponse.json({ error: "forbidden event" }, { status: 403 });
   }
 
   const result = await recordScore({

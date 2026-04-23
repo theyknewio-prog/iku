@@ -8,7 +8,14 @@ import { signIn } from "next-auth/react";
 export function LoginForm() {
   const router = useRouter();
   const search = useSearchParams();
-  const callbackUrl = search.get("callbackUrl") || "/";
+  // Sanitize callbackUrl — same-origin paths only. Blocks open-redirect
+  // phishing (V3, security audit 2026-04-23): `?callbackUrl=https://evil.gg`
+  // was accepted, letting attackers brand phishing flows with iku.gg trust.
+  const rawCallback = search.get("callbackUrl") || "/";
+  const callbackUrl =
+    rawCallback.startsWith("/") && !rawCallback.startsWith("//")
+      ? rawCallback
+      : "/";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

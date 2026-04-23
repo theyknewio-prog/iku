@@ -6,11 +6,24 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { auth } from "@/auth";
 import pool from "@/lib/db";
+import { createRateLimiter } from "@/lib/rate-limit";
+
+// V15 / B6 (audits 2026-04-23): 5/h/user — cookie-jacking scenarios could
+// brute-force currentPassword at 150ms/try otherwise.
+const limiter = createRateLimiter({
+  name: "pwd-change",
+  max: 5,
+  windowMs: 3600_000,
+});
 
 export async function POST(request: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  if (limiter.consume(session.user.id)) {
+    return NextResponse.json({ error: "rate limited" }, { status: 429 });
   }
 
   let body: unknown;
