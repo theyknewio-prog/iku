@@ -26,7 +26,7 @@ import { AdZoneClient } from "@/components/AdZoneClient";
 import { AdsterraBanner } from "@/components/AdsterraBanner";
 import { ListingAdBlock } from "@/components/ListingAdBlock";
 import { NativeAdCard } from "@/components/NativeAdCard";
-import { AD_ZONES } from "@/lib/ad-config";
+import { AD_ZONES, EXOCLICK_LOW_CPM_GEOS } from "@/lib/ad-config";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai, 3D Hentai & Cartoon Porn | 360,000+ Videos",
@@ -491,6 +491,7 @@ export default async function HomePage() {
               mobileZoneId={AD_ZONES.exoclick.mobileBanner300x50 ?? undefined}
               mobileSize="300x50"
               lazy
+              blockCountries={EXOCLICK_LOW_CPM_GEOS}
             />
           </div>
 
@@ -975,6 +976,7 @@ export default async function HomePage() {
               mobileZoneId={AD_ZONES.exoclick.mobileBanner300x50 ?? undefined}
               mobileSize="300x50"
               lazy
+              blockCountries={EXOCLICK_LOW_CPM_GEOS}
             />
             <AdsterraBanner format="banner300x250" />
           </div>

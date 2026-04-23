@@ -46,7 +46,7 @@ import { getNonce } from "@/lib/csp-nonce";
 import { HentaiProsBanner } from "@/components/HentaiProsBanner";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdZoneClient } from "@/components/AdZoneClient";
-import { AD_ZONES } from "@/lib/ad-config";
+import { AD_ZONES, EXOCLICK_LOW_CPM_GEOS } from "@/lib/ad-config";
 import { RemoveAdsCTA } from "@/components/RemoveAdsCTA";
 import {
   buildSeoTitle,
@@ -523,6 +523,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
                     AD_ZONES.exoclick.mobileBanner300x50 ?? undefined
                   }
                   mobileSize="300x50"
+                  blockCountries={EXOCLICK_LOW_CPM_GEOS}
                 />
               </div>
 

@@ -76,6 +76,24 @@ export const ADSTERRA_SCRIPTS = {
 export const EXOCLICK_SCRIPT_URL = "https://a.magsrv.com/ad-provider.js";
 
 /**
+ * ISO-3166 alpha-2 country codes where we skip ExoClick mount entirely.
+ *
+ * Rationale: ExoClick eCPM 2026-04-23 7d snapshot showed TR = $0.002 on 2086
+ * imps (49% of our ExoClick inventory) versus DE at $0.185 (92× better).
+ * ExoClick's publisher UI has no geo-exclusion field, so we gate at the
+ * mount site via /api/geo (cf-ipcountry). HilltopAds fills these geos
+ * better — Phase 3 will route them there; Phase 2 just skips.
+ *
+ * List is kept short (highest-volume tier-3 only) so we don't accidentally
+ * starve ourselves of legit inventory.
+ */
+export const EXOCLICK_LOW_CPM_GEOS = [
+  "TR", // Turkey   — 49% of ExoClick imps, $0.002 eCPM
+  "RU", // Russia   — sanctioned + low CPM
+  "BY", // Belarus  — sanctioned + low CPM
+] as const;
+
+/**
  * HilltopAds zones for iku.gg (site 890489, account 378863).
  * Zones created 2026-04-18 via Playwright MCP on user.hilltopads.com.
  * Status: all approved. NOT yet wired to the layout — infra only.
