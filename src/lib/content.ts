@@ -295,9 +295,12 @@ async function _getVideos(
   // via /watch/[slug] for SEO, but they won't appear in listings.
   conditions.push(`dead_at IS NULL`);
 
-  // Thumbnail filter — hide WP entries that still lack a poster image
+  // Thumbnail filter — hide videos with no thumbnail or dead thumbnail (404/403)
+  // Dead thumbnails flagged by scripts/scrub-dead-thumbnails.ts nightly cron.
   if (requireThumbnail) {
-    conditions.push(`thumbnail IS NOT NULL AND thumbnail <> ''`);
+    conditions.push(
+      `thumbnail IS NOT NULL AND thumbnail <> '' AND dead_thumbnail_at IS NULL`,
+    );
   }
 
   // Source filter (single source)
