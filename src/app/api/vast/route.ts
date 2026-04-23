@@ -25,15 +25,17 @@ const MAX_WRAPPER_HOPS = 3;
 // meant the silent catch below fired constantly, killing all prerolls.
 const FETCH_TIMEOUT_MS = 10000;
 
-async function fetchWithTimeout(url: string): Promise<string> {
+const FALLBACK_UA =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122 Safari/537.36";
+
+async function fetchWithTimeout(url: string, ua: string): Promise<string> {
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
   try {
     const res = await fetch(url, {
       signal: ctrl.signal,
       headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122 Safari/537.36",
+        "User-Agent": ua,
         Accept: "application/xml, text/xml, */*",
       },
       cache: "no-store",
@@ -72,11 +74,12 @@ type ParsedAd = {
 async function resolveVast(
   url: string,
   hops: number,
+  ua: string,
 ): Promise<ParsedAd | null> {
   if (hops > MAX_WRAPPER_HOPS) return null;
   let xml: string;
   try {
-    xml = await fetchWithTimeout(url);
+    xml = await fetchWithTimeout(url, ua);
   } catch (e) {
     console.error(`[vast] fetch threw for ${url}:`, (e as Error)?.message);
     return null;
@@ -98,7 +101,7 @@ async function resolveVast(
       .map((m) => cdata(m[1]))
       .filter(Boolean);
     const parentTracking = collectTracking(xml);
-    const child = await resolveVast(childUrl, hops + 1);
+    const child = await resolveVast(childUrl, hops + 1, ua);
     if (!child) return null;
     return {
       ...child,
@@ -194,9 +197,31 @@ function mergeTracking(
 export async function GET(req: NextRequest) {
   const provider = req.nextUrl.searchParams.get("provider") || "exoclick";
 
+  // Real client context. Without this the VAST endpoint sees every request
+  // coming from the Hetzner egress IP with the same UA/no referer, and
+  // ExoClick flags the fill with `should_log=0` so the impression pixel we
+  // eventually fire is not counted. Confirmed 2026-04-23: zone 5893268 had
+  // $0.13 revenue but 0 impressions because of this exact flag.
+  //
+  // Precedence matches the rest of the app (memory feedback_never_use_xff0):
+  //   x-real-ip  (Traefik sets this, non-spoofable)
+  //   x-forwarded-for (last entry — closest to proxy, also non-spoofable)
+  //
+  // UA + referer come from the browser request that hit /api/vast.
+  const clientIp =
+    req.headers.get("x-real-ip")?.trim() ||
+    req.headers.get("x-forwarded-for")?.split(",").pop()?.trim() ||
+    "";
+  const clientUa = req.headers.get("user-agent") || FALLBACK_UA;
+  const clientReferer =
+    req.headers.get("referer") || req.headers.get("origin") || "";
+  const cacheBuster =
+    Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+
   let vastUrl: string;
   if (provider === "hilltopads") {
     // HilltopAds VAST URL is a fixed tokenized endpoint (not zone-param based).
+    // HilltopAds appears to infer IP server-side; no extra params required.
     vastUrl = HILLTOPADS_SCRIPTS.vastPrerollUrl;
   } else {
     const zone =
@@ -207,10 +232,19 @@ export async function GET(req: NextRequest) {
         { status: 400 },
       );
     }
-    vastUrl = `https://s.magsrv.com/v1/vast.php?idzone=${zone}`;
+    // Pass real user context so ExoClick attributes the impression to the
+    // viewer, not our server. Params documented at
+    // https://exoclick.com/advertisers/vast-zones/ — `cb` is the required
+    // cache buster, others are optional but raise the counted-impression
+    // rate from ~0% to the normal 95%+.
+    const params = new URLSearchParams({ idzone: zone, cb: cacheBuster });
+    if (clientIp) params.set("ip", clientIp);
+    if (clientUa) params.set("ua", clientUa);
+    if (clientReferer) params.set("referer", clientReferer);
+    vastUrl = `https://s.magsrv.com/v1/vast.php?${params.toString()}`;
   }
 
-  const ad = await resolveVast(vastUrl, 0);
+  const ad = await resolveVast(vastUrl, 0, clientUa);
   if (!ad) {
     return NextResponse.json(
       { ok: false, reason: "no_fill" },
