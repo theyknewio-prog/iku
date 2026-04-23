@@ -83,19 +83,47 @@ export async function generateMetadata({
       ? `https://iku.gg/character/${slug}?page=${page}`
       : `https://iku.gg/character/${slug}`;
 
+  // Count-based title + description. Desktop CTR 0.6% → the stored seoTitle
+  // pattern ("{Name} Hentai — Best Videos & Fan Animation") is identical
+  // across every character; searchers skim SERPs by difference. Adding the
+  // clip count makes each title specific and trustworthy. Falls back to the
+  // stored copy when count is unavailable.
+  let count = 0;
+  try {
+    const charTag = character.tags[0] || slug.replace(/-/g, "_");
+    count = await countVideos({ tags: charTag, requireThumbnail: true });
+  } catch {
+    /* fall through to stored seoTitle */
+  }
+  const countStr = count > 0 ? count.toLocaleString("en-US") : "";
+
+  const pageTitle = (() => {
+    if (page > 1) return `${character.name} Hentai — Page ${page} | iku.gg`;
+    if (count > 0)
+      return `${character.name} Hentai — ${countStr} Free HD Clips | iku.gg`;
+    return character.seoTitle;
+  })();
+
+  const pageDescription =
+    count > 0
+      ? `Stream ${countStr} free ${character.name} hentai clips in HD. Animated videos updated daily, no sign-up. All your favourite ${character.name} scenes on iku.gg.`
+      : character.seoDescription;
+
+  const socialTitle =
+    count > 0
+      ? `${character.name} Hentai — ${countStr} Free Clips`
+      : `${character.name} Hentai Videos`;
+
   return {
-    title:
-      page > 1
-        ? `${character.name} Hentai — Page ${page} | iku.gg`
-        : character.seoTitle,
-    description: character.seoDescription,
+    title: pageTitle,
+    description: pageDescription,
     other: { rating: "adult" },
     alternates: { canonical },
     robots:
       page > 1 ? { index: false, follow: true } : { index: true, follow: true },
     openGraph: {
-      title: `${character.name} Hentai Videos | iku.gg`,
-      description: character.seoDescription,
+      title: socialTitle,
+      description: pageDescription,
       siteName: "iku.gg",
       type: "website",
       images: [
@@ -109,8 +137,8 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `${character.name} Hentai Videos | iku.gg`,
-      description: character.seoDescription,
+      title: socialTitle,
+      description: pageDescription,
       images: ["https://iku.gg/og-default.png"],
     },
   };

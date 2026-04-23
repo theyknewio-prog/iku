@@ -106,19 +106,46 @@ export async function generateMetadata({
       ? `https://iku.gg/series/${slug}?page=${page}`
       : `https://iku.gg/series/${slug}`;
 
+  // Count-injected title. Same rationale as /tag and /character: the stored
+  // series.seoTitle is boilerplate ("{Name} Hentai — Best Videos & Fan
+  // Animation") which all 23 hand-curated series share, so desktop CTR
+  // suffers. The precomputed count is a real trust signal.
+  let count = 0;
+  try {
+    const seriesTag = series.tags[0] || slug.replace(/-/g, "_");
+    count = await countVideos({ tags: seriesTag, requireThumbnail: true });
+  } catch {
+    /* fall through to stored seoTitle */
+  }
+  const countStr = count > 0 ? count.toLocaleString("en-US") : "";
+
+  const pageTitle = (() => {
+    if (page > 1) return `${series.name} Hentai — Page ${page} | iku.gg`;
+    if (count > 0)
+      return `${series.name} Hentai — ${countStr} Free HD Clips | iku.gg`;
+    return series.seoTitle;
+  })();
+
+  const pageDescription =
+    count > 0
+      ? `Stream ${countStr} free ${series.name} hentai clips in HD. Animated videos updated daily, no sign-up. All ${series.name} characters on iku.gg.`
+      : series.seoDescription;
+
+  const socialTitle =
+    count > 0
+      ? `${series.name} Hentai — ${countStr} Free Clips`
+      : `${series.name} Hentai Videos`;
+
   return {
-    title:
-      page > 1
-        ? `${series.name} Hentai — Page ${page} | iku.gg`
-        : series.seoTitle,
-    description: series.seoDescription,
+    title: pageTitle,
+    description: pageDescription,
     other: { rating: "adult" },
     alternates: { canonical },
     robots:
       page > 1 ? { index: false, follow: true } : { index: true, follow: true },
     openGraph: {
-      title: `${series.name} Hentai Videos | iku.gg`,
-      description: series.seoDescription,
+      title: socialTitle,
+      description: pageDescription,
       siteName: "iku.gg",
       type: "website",
       images: [
@@ -132,8 +159,8 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `${series.name} Hentai Videos | iku.gg`,
-      description: series.seoDescription,
+      title: socialTitle,
+      description: pageDescription,
       images: ["https://iku.gg/og-default.png"],
     },
   };

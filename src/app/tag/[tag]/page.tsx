@@ -50,12 +50,40 @@ export async function generateMetadata({
   const prev = page > 1 ? `${base}?sort=${sort}&page=${page - 1}` : undefined;
   const next = `${base}?sort=${sort}&page=${page + 1}`;
 
+  // Pull precomputed count. Returns 0 on cache miss — we then fall back to
+  // a no-count copy so the title still reads naturally.
+  // Desktop CTR 0.6% → 3-5% target: the old title repeated the keyword twice
+  // ("Anal Hentai Videos - Best Anal Anime Porn") which looks like spammy SEO
+  // in a SERP. New format leads with a specific count (trust signal), avoids
+  // keyword repetition, and fits inside Google's 60-char desktop cutoff.
+  let count = 0;
+  try {
+    count = await countVideos({ tags: tag, requireThumbnail: true });
+  } catch {
+    /* fall through to no-count copy */
+  }
+  const countStr = count > 0 ? count.toLocaleString("en-US") : "";
+
+  const pageTitle = (() => {
+    if (page > 1) return `${titleCased} Hentai — Page ${page} | iku.gg`;
+    if (count > 0)
+      return `${titleCased} Hentai — ${countStr} Free HD Clips | iku.gg`;
+    return `${titleCased} Hentai — Watch Free HD Clips | iku.gg`;
+  })();
+
+  const pageDescription =
+    count > 0
+      ? `Stream ${countStr} free ${label} hentai clips in HD. Animated videos updated daily, no sign-up. Search by character, series, or tag on iku.gg.`
+      : `Stream free ${label} hentai clips in HD. Animated videos updated daily, no sign-up. Search by character, series, or tag on iku.gg.`;
+
+  const socialTitle =
+    count > 0
+      ? `${titleCased} Hentai — ${countStr} Free Clips`
+      : `${titleCased} Hentai — Free HD Clips`;
+
   return {
-    title:
-      page > 1
-        ? `${titleCased} Hentai Videos — Page ${page} | iku.gg`
-        : `${titleCased} Hentai Videos - Best ${titleCased} Anime Porn | iku.gg`,
-    description: `Watch the best ${label} hentai videos on iku.gg. Stream free ${label} animated hentai clips — top rated by score, sorted by date or favorites.`,
+    title: pageTitle,
+    description: pageDescription,
     other: { rating: "adult" },
     alternates: {
       canonical,
@@ -71,8 +99,8 @@ export async function generateMetadata({
     robots:
       page > 1 ? { index: false, follow: true } : { index: true, follow: true },
     openGraph: {
-      title: `${titleCased} Hentai Videos | iku.gg`,
-      description: `Stream free ${label} hentai videos. The best ${label} animated hentai on iku.gg.`,
+      title: socialTitle,
+      description: pageDescription,
       siteName: "iku.gg",
       type: "website",
       images: [
@@ -86,8 +114,8 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `${titleCased} Hentai Videos | iku.gg`,
-      description: `Stream free ${label} hentai videos. The best ${label} animated hentai on iku.gg.`,
+      title: socialTitle,
+      description: pageDescription,
       images: ["https://iku.gg/og-default.png"],
     },
   };

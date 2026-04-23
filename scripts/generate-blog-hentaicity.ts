@@ -42,9 +42,31 @@ function slugify(raw: string): string {
     .slice(0, 60);
 }
 
+// Hentai tags are often collapsed compound words in the DB ("bigtits",
+// "roughsex", "groupsex") but they read as broken English to search users.
+// Split the known ones back out before title-casing so SERP titles look
+// natural: "Best Big Tits Hentai Episodes 2026" instead of "Best Bigtits".
+const COMPOUND_TAG_SPLITS: Record<string, string> = {
+  bigtits: "big tits",
+  bigdick: "big dick",
+  bigass: "big ass",
+  bigboobs: "big boobs",
+  bigcock: "big cock",
+  roughsex: "rough sex",
+  groupsex: "group sex",
+  analsex: "anal sex",
+  oralsex: "oral sex",
+  publicsex: "public sex",
+  schoolgirl: "schoolgirl",
+  catgirl: "catgirl",
+};
+
 function humanize(tag: string): string {
-  return tag
-    .split(/[-_]/)
+  const normalised = tag.toLowerCase();
+  const expanded = COMPOUND_TAG_SPLITS[normalised] ?? tag;
+  return expanded
+    .split(/[-_ ]/)
+    .filter(Boolean)
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ");
 }
