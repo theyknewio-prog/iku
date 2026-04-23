@@ -23,32 +23,26 @@
 import Link from "next/link";
 import pool from "@/lib/db";
 import { memoize } from "@/lib/memo";
-import { BANNED_TAGS_ARRAY } from "@/lib/content";
 
 interface TopEntry {
   name: string;
   count: number;
 }
 
+// All three queries read from `precompute_aggregates` (refreshed hourly by
+// scripts/precompute-aggregates.sql). Previously they ran live unnest()
+// GROUP BY over 150K+ videos every time the memoize cache expired — and
+// timed out under load, producing 500s that Googlebot penalised.
+
 async function _getTopGames(): Promise<TopEntry[]> {
   try {
-    const { rows } = await pool.query(
-      `SELECT copy AS name, COUNT(*)::int AS count
-       FROM (
-         SELECT unnest(copyrights) AS copy
-         FROM videos
-         WHERE NOT (tags && $1::text[])
-           AND NOT (COALESCE(characters, ARRAY[]::text[]) && $1::text[])
-           AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $1::text[])
-           AND array_length(copyrights, 1) > 0
-       ) t
-       WHERE copy <> '' AND copy NOT IN ('original')
-       GROUP BY copy
-       ORDER BY count DESC
-       LIMIT 48`,
-      [BANNED_TAGS_ARRAY],
+    const { rows } = await pool.query<TopEntry>(
+      `SELECT name, count FROM precompute_aggregates
+        WHERE kind = 'top_games'
+        ORDER BY rank ASC
+        LIMIT 48`,
     );
-    return rows as TopEntry[];
+    return rows;
   } catch (err) {
     console.error("getTopGames error:", err);
     return [];
@@ -58,23 +52,13 @@ const getTopGames = memoize("footer-top-games", _getTopGames, 60 * 60 * 1000);
 
 async function _getTopCharacters(): Promise<TopEntry[]> {
   try {
-    const { rows } = await pool.query(
-      `SELECT ch AS name, COUNT(*)::int AS count
-       FROM (
-         SELECT unnest(characters) AS ch
-         FROM videos
-         WHERE NOT (tags && $1::text[])
-           AND NOT (COALESCE(characters, ARRAY[]::text[]) && $1::text[])
-           AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $1::text[])
-           AND array_length(characters, 1) > 0
-       ) t
-       WHERE ch <> ''
-       GROUP BY ch
-       ORDER BY count DESC
-       LIMIT 48`,
-      [BANNED_TAGS_ARRAY],
+    const { rows } = await pool.query<TopEntry>(
+      `SELECT name, count FROM precompute_aggregates
+        WHERE kind = 'top_chars_footer'
+        ORDER BY rank ASC
+        LIMIT 48`,
     );
-    return rows as TopEntry[];
+    return rows;
   } catch (err) {
     console.error("getTopCharacters error:", err);
     return [];
@@ -86,62 +70,15 @@ const getTopCharacters = memoize(
   60 * 60 * 1000,
 );
 
-// Curated tag list — we skip boring/utility tags that aren't useful SEO anchors
-const FOOTER_TAG_BLACKLIST = new Set([
-  "animated",
-  "sound",
-  "1girl",
-  "1boy",
-  "solo",
-  "hetero",
-  "video",
-  "tagme",
-  "highres",
-  "absurdres",
-  "long_hair",
-  "short_hair",
-  "breasts",
-  "small_breasts",
-  "commentary",
-  "english_commentary",
-  "japanese_text",
-  "artist_name",
-  "signature",
-  "with",
-  "the",
-  "and",
-  "1girls",
-  "2girls",
-  "multiple_girls",
-  "looking_at_viewer",
-  "nipples",
-  "pussy",
-  "penis",
-  "completely_nude",
-  "nude",
-  "naked",
-]);
-
 async function _getTopTags(): Promise<TopEntry[]> {
   try {
-    const { rows } = await pool.query(
-      `SELECT tag AS name, COUNT(*)::int AS count
-       FROM (
-         SELECT unnest(tags) AS tag
-         FROM videos
-         WHERE NOT (tags && $1::text[])
-           AND NOT (COALESCE(characters, ARRAY[]::text[]) && $1::text[])
-           AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $1::text[])
-       ) t
-       WHERE tag <> ''
-       GROUP BY tag
-       ORDER BY count DESC
-       LIMIT 120`,
-      [BANNED_TAGS_ARRAY],
+    const { rows } = await pool.query<TopEntry>(
+      `SELECT name, count FROM precompute_aggregates
+        WHERE kind = 'top_tags_footer'
+        ORDER BY rank ASC
+        LIMIT 48`,
     );
-    return (rows as TopEntry[])
-      .filter((r) => !FOOTER_TAG_BLACKLIST.has(r.name.toLowerCase()))
-      .slice(0, 48);
+    return rows;
   } catch (err) {
     console.error("getTopTags error:", err);
     return [];

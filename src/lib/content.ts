@@ -602,25 +602,23 @@ export const CURATED_GENRES: { name: string; emoji: string }[] = [
   { name: "threesome", emoji: "3️⃣" },
 ];
 
-/** Count how many videos match each curated genre tag. Returns [{name, emoji, count}]. */
+/** Count how many videos match each curated genre tag. Returns [{name, emoji, count}].
+ *
+ * Reads from `precompute_aggregates` (refreshed hourly by
+ * scripts/precompute-aggregates.sql). The live unnest() GROUP BY over 150K+
+ * rows was consistently tripping the 10s statement_timeout — see the
+ * investigation in memory_project_session_2026_04_23. */
 async function _getCuratedGenreCounts(): Promise<
   { name: string; emoji: string; count: number }[]
 > {
   try {
-    const names = CURATED_GENRES.map((g) => g.name);
-    const { rows } = await pool.query(
-      `SELECT tag, COUNT(*)::int AS count
-       FROM (
-         SELECT unnest(tags) AS tag FROM videos
-         WHERE NOT (tags && $1::text[])
-           AND NOT (COALESCE(characters, ARRAY[]::text[]) && $1::text[])
-           AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $1::text[])
-       ) t
-       WHERE tag = ANY($2::text[])
-       GROUP BY tag`,
-      [BANNED_TAGS_ARRAY, names],
+    const { rows } = await pool.query<{ name: string; count: number }>(
+      `SELECT name, count FROM precompute_aggregates
+        WHERE kind = 'curated_genres'
+        ORDER BY rank ASC`,
     );
-    const byName = new Map<string, number>(rows.map((r) => [r.tag, r.count]));
+    if (rows.length === 0) return [];
+    const byName = new Map(rows.map((r) => [r.name, r.count]));
     return CURATED_GENRES.map((g) => ({
       ...g,
       count: byName.get(g.name) ?? 0,
@@ -653,24 +651,14 @@ export interface TagCount {
 
 async function _getPopularTagsFromPg(limit: number): Promise<TagCount[]> {
   try {
-    const { rows } = await pool.query(
-      `SELECT tag, COUNT(*)::int AS count
-       FROM (
-         SELECT unnest(tags) AS tag FROM videos
-         WHERE NOT (tags && $1::text[])
-           AND NOT (COALESCE(characters, ARRAY[]::text[]) && $1::text[])
-           AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $1::text[])
-       ) t
-       WHERE tag <> ''
-       GROUP BY tag
-       ORDER BY count DESC
-       LIMIT $2`,
-      [BANNED_TAGS_ARRAY, limit],
+    const { rows } = await pool.query<{ name: string; count: number }>(
+      `SELECT name, count FROM precompute_aggregates
+        WHERE kind = 'popular_tags'
+        ORDER BY rank ASC
+        LIMIT $1`,
+      [limit],
     );
-    return rows.map((r) => ({
-      name: r.tag as string,
-      count: r.count as number,
-    }));
+    return rows.map((r) => ({ name: r.name, count: r.count }));
   } catch (err) {
     console.error("getPopularTagsFromPg error:", err);
     return [];
@@ -691,26 +679,14 @@ export async function getPopularTags(limit: number = 60): Promise<TagCount[]> {
 
 async function _getPopularCharactersFromPg(limit: number): Promise<TagCount[]> {
   try {
-    const { rows } = await pool.query(
-      `SELECT character, COUNT(*)::int AS count
-       FROM (
-         SELECT unnest(characters) AS character FROM videos
-         WHERE NOT (tags && $1::text[])
-           AND NOT (COALESCE(characters, ARRAY[]::text[]) && $1::text[])
-           AND NOT (COALESCE(copyrights, ARRAY[]::text[]) && $1::text[])
-           AND characters IS NOT NULL
-           AND array_length(characters, 1) > 0
-       ) t
-       WHERE character <> ''
-       GROUP BY character
-       ORDER BY count DESC
-       LIMIT $2`,
-      [BANNED_TAGS_ARRAY, limit],
+    const { rows } = await pool.query<{ name: string; count: number }>(
+      `SELECT name, count FROM precompute_aggregates
+        WHERE kind = 'popular_chars'
+        ORDER BY rank ASC
+        LIMIT $1`,
+      [limit],
     );
-    return rows.map((r) => ({
-      name: r.character as string,
-      count: r.count as number,
-    }));
+    return rows.map((r) => ({ name: r.name, count: r.count }));
   } catch (err) {
     console.error("getPopularCharactersFromPg error:", err);
     return [];
