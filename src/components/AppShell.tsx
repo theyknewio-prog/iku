@@ -429,38 +429,37 @@ function UserMenu() {
  */
 // WATCH = formats. The "what kind of video do I want" answer.
 const DISCOVER_ITEMS = [
-  { href: "/", label: "Home", Icon: IconHome, emoji: "🏠" },
-  { href: "/hentai", label: "Hentai 2D", Icon: IconBrowse, emoji: "🌸" },
-  { href: "/3d", label: "3D", Icon: IconBrowse, emoji: "🎮" },
+  { href: "/", label: "Home", Icon: IconHome },
+  { href: "/hentai", label: "Hentai 2D", Icon: IconBrowse },
+  { href: "/3d", label: "3D", Icon: IconBrowse },
   {
     href: "/episodes",
     label: "Episodes",
     Icon: IconBrowse,
-    emoji: "🎬",
     badge: "Premium",
     badgeGradient: true,
   },
-  { href: "/feed", label: "Shorts", Icon: IconFeed, emoji: "⚡" },
+  { href: "/feed", label: "Shorts", Icon: IconFeed },
 ] as const;
 
 // FRESH = sort views. The "what's hot or new" answer.
 const FRESH_ITEMS = [
-  { href: "/trending", label: "Trending", Icon: IconTrending, emoji: "🔥" },
-  { href: "/new", label: "New uploads", Icon: IconNew, emoji: "🆕" },
-  { href: "/explore", label: "All catalogue", Icon: IconBrowse, emoji: "🔎" },
+  { href: "/trending", label: "Trending", Icon: IconTrending },
+  { href: "/new", label: "Latest", Icon: IconNew },
+  { href: "/explore", label: "All videos", Icon: IconBrowse },
 ] as const;
 
 // BROWSE = taxonomy. "Filter by who or what".
 const BROWSE_ITEMS = [
-  { href: "/character", label: "Characters", Icon: IconCharacter, emoji: "👤" },
-  { href: "/series", label: "Series", Icon: IconSeries, emoji: "📺" },
-  { href: "/tags", label: "Tags", Icon: IconTag, emoji: "🏷️" },
+  { href: "/character", label: "Characters", Icon: IconCharacter },
+  { href: "/series", label: "Series", Icon: IconSeries },
+  { href: "/tags", label: "Tags", Icon: IconTag },
 ] as const;
 
 // LIBRARY = user-state things.
 const LIBRARY_ITEMS = [
-  { href: "/favorites", label: "Favorites", Icon: IconHeart, emoji: "❤️" },
-  { href: "/history", label: "History", Icon: IconHistory, emoji: "🕐" },
+  { href: "/favorites", label: "Favorites", Icon: IconHeart },
+  { href: "/history", label: "History", Icon: IconHistory },
 ] as const;
 
 // ACCOUNT = settings + premium upsell.
@@ -469,32 +468,24 @@ const ACCOUNT_ITEMS = [
     href: "/pricing",
     label: "Go Premium",
     Icon: IconStar,
-    emoji: "✨",
     badge: "4.99€",
     badgeGradient: true,
   },
-  { href: "/settings", label: "Settings", Icon: IconSettings, emoji: "⚙️" },
+  { href: "/settings", label: "Settings", Icon: IconSettings },
 ] as const;
 
 /* Affiliate partners — external links, open in new tab */
-const AFFILIATE_ITEMS = [
-  {
-    href: "https://www.nutaku.net/home/?af=ikugg",
-    label: "Hentai Games",
-    emoji: "\uD83C\uDFAE",
-  },
-  {
-    href: "https://t.mbjms.com/410186/9403/0?target=banners&aff_sub5=SF_006OG000004lmDN",
-    label: "AI Hentai",
-    emoji: "\u2728",
-  },
-] as const;
+const AFFILIATE_ITEMS: readonly {
+  href: string;
+  label: string;
+  emoji?: string;
+}[] = [];
 
 /* Extras — content pages that weren't previously reachable from mobile */
 const EXTRA_ITEMS = [
-  { href: "/blog", label: "Blog", Icon: IconBrowse, emoji: "📰" },
-  { href: "/pricing", label: "Pricing", Icon: IconStar, emoji: "💎" },
-  { href: "/glossary", label: "Glossary", Icon: IconTag, emoji: "📖" },
+  { href: "/blog", label: "Blog", Icon: IconBrowse },
+  { href: "/pricing", label: "Pricing", Icon: IconStar },
+  { href: "/glossary", label: "Glossary", Icon: IconTag },
 ] as const;
 
 /* Quick tags for sidebar bottom */
@@ -698,25 +689,31 @@ export function AppShell({
             {(ACCOUNT_ITEMS as unknown as NavItem[]).map(renderNavItem)}
           </div>
 
-          {/* Affiliate Partners */}
-          <div className="v2-sidebar-section">
-            <div className="v2-sidebar-section__label">Partners</div>
-            {AFFILIATE_ITEMS.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="v2-nav-item v2-nav-item--affiliate"
-              >
-                <span className="v2-nav-icon" aria-hidden="true">
-                  {item.emoji}
-                </span>
-                <span className="v2-nav-item__label">{item.label}</span>
-                <span className="v2-nav-badge v2-nav-badge--gradient">Ad</span>
-              </a>
-            ))}
-          </div>
+          {/* Partners — hidden while AFFILIATE_ITEMS is empty post-nuke. */}
+          {AFFILIATE_ITEMS.length > 0 && (
+            <div className="v2-sidebar-section">
+              <div className="v2-sidebar-section__label">Partners</div>
+              {AFFILIATE_ITEMS.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="v2-nav-item v2-nav-item--affiliate"
+                >
+                  {item.emoji && (
+                    <span className="v2-nav-icon" aria-hidden="true">
+                      {item.emoji}
+                    </span>
+                  )}
+                  <span className="v2-nav-item__label">{item.label}</span>
+                  <span className="v2-nav-badge v2-nav-badge--gradient">
+                    Ad
+                  </span>
+                </a>
+              ))}
+            </div>
+          )}
 
           {/* Quick Tags */}
           <div className="v2-sidebar-section">
@@ -735,15 +732,15 @@ export function AppShell({
           </div>
 
           {/* Telegram + Discord CTAs — pinned at the bottom of the sidebar */}
-          <div className="v2-sidebar-discord">
+          <div className="v2-sidebar-community">
             <a
               href="https://t.me/ikudotgg"
               target="_blank"
               rel="noopener noreferrer"
-              className="v2-sidebar-discord-btn v2-sidebar-telegram-btn"
+              className="v2-community-btn v2-community-btn--telegram"
               aria-label="Join our Telegram channel"
             >
-              <span className="v2-sidebar-discord-btn__icon" aria-hidden="true">
+              <span className="v2-community-btn__icon" aria-hidden="true">
                 <svg
                   viewBox="0 0 24 24"
                   width="18"
@@ -753,9 +750,9 @@ export function AppShell({
                   <path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
                 </svg>
               </span>
-              <span className="v2-sidebar-discord-btn__text">
-                <span className="v2-sidebar-discord-btn__title">Telegram</span>
-                <span className="v2-sidebar-discord-btn__sub">
+              <span className="v2-community-btn__text">
+                <span className="v2-community-btn__title">Telegram</span>
+                <span className="v2-community-btn__sub">
                   Daily videos · trending
                 </span>
               </span>
@@ -777,11 +774,9 @@ export function AppShell({
                   <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
                 </svg>
               </span>
-              <span className="v2-sidebar-discord-btn__text">
-                <span className="v2-sidebar-discord-btn__title">
-                  Join Discord
-                </span>
-                <span className="v2-sidebar-discord-btn__sub">
+              <span className="v2-community-btn__text">
+                <span className="v2-community-btn__title">Join Discord</span>
+                <span className="v2-community-btn__sub">
                   Daily drops · watch parties
                 </span>
               </span>
