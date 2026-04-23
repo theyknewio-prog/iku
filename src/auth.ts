@@ -15,6 +15,22 @@ import Credentials from "next-auth/providers/credentials";
 import Discord from "next-auth/providers/discord";
 import bcrypt from "bcryptjs";
 import pool from "@/lib/db";
+import { createRateLimiter } from "@/lib/rate-limit";
+
+// Login brute-force guards (B4, bug audit 2026-04-23).
+// 20 attempts per 5 min per IP, 10 per 15 min per email — a targeted
+// stuffing campaign that rotates IPs still burns itself out after 10
+// tries against any single email.
+const loginIpLimiter = createRateLimiter({
+  name: "login-ip",
+  max: 20,
+  windowMs: 5 * 60_000,
+});
+const loginEmailLimiter = createRateLimiter({
+  name: "login-email",
+  max: 10,
+  windowMs: 15 * 60_000,
+});
 
 declare module "next-auth" {
   interface Session {
@@ -165,10 +181,31 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
-        const email = String(credentials?.email ?? "").trim();
+      async authorize(credentials, request) {
+        const email = String(credentials?.email ?? "")
+          .trim()
+          .toLowerCase();
         const password = String(credentials?.password ?? "");
         if (!email || !password) return null;
+
+        // Rate-limit the login endpoint — B4 (bug audit 2026-04-23).
+        // NextAuth's /api/auth/callback/credentials had zero limiter while
+        // forgot-password and signup are both capped at 5/h, making the
+        // login endpoint the natural credential-stuffing target. Keyed on
+        // both IP (blocks single-IP brute force) and email (blocks
+        // multi-IP targeted stuffing of one account).
+        //
+        // On the first failure we silently treat it as an auth reject
+        // (return null) so the attacker can't distinguish "bad password"
+        // from "rate-limited" — stops them from backing off to dodge the
+        // limit.
+        const ipHeaders = request?.headers;
+        const ip =
+          ipHeaders?.get?.("x-real-ip")?.trim() ||
+          ipHeaders?.get?.("x-forwarded-for")?.split(",").pop()?.trim() ||
+          "unknown";
+        if (loginIpLimiter.consume(ip)) return null;
+        if (loginEmailLimiter.consume(email)) return null;
 
         const user = await findUserByEmail(email);
         if (!user || !user.password_hash) return null;

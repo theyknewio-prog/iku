@@ -13,9 +13,15 @@
 import { hasBannedTagString } from "./banned-tags";
 import { pool, upsertVideos } from "./db";
 
-const API_KEY =
-  "f230feb40110c4e896f9cb32fd4d8c08c13c476f4bf83d64036ad23887e482510b1a391cefab9dacdde28b51cd64c9695ed1fd06ad327753074c494d528f1790";
-const USER_ID = "6053223";
+const API_KEY = process.env.RULE34_API_KEY ?? "";
+const USER_ID = process.env.RULE34_USER_ID ?? "";
+
+if (!API_KEY || !USER_ID) {
+  console.error(
+    "RULE34_API_KEY + RULE34_USER_ID must be set in env (GH Actions secrets or .env.local).",
+  );
+  process.exit(1);
+}
 const BASE_URL = "https://api.rule34.xxx/index.php";
 const DELAY = 500; // 500ms between requests
 const LIMIT = 100;

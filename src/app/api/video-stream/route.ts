@@ -3,6 +3,7 @@ import { execFile } from "child_process";
 import { promisify } from "util";
 import pool from "@/lib/db";
 import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
+import { BANNED_TAGS_ARRAY, containsBannedContent } from "@/lib/content";
 
 const execFileAsync = promisify(execFile);
 
@@ -133,6 +134,64 @@ async function resolveViaYtDlp(pageUrl: string): Promise<string | null> {
   }
 }
 
+/**
+ * Banned-content + dead-row guard.
+ * Returns:
+ *   "ok"      — URL matches a clean, live row in `videos` → proxy it
+ *   "banned"  — URL matches a row flagged by banned-tag filter, or dead_at set
+ *   "unknown" — no row matches → don't proxy (reject: we only stream what we ingested)
+ *
+ * Fixes B3 (bug audit 2026-04-23): before this guard, an attacker could
+ * forge `?url=https://rule34video.com/videos/<banned-slug>/` and use iku.gg
+ * as an anonymous streaming proxy for content we never validated. That
+ * makes us an intermediary for 2257/DMCA-liability content with no paper
+ * trail. The ingestion-time banned-content filter in `upsertVideos` was
+ * the only line of defence; this adds a request-time check as well.
+ */
+async function checkPageUrlAllowed(
+  pageUrl: string,
+): Promise<"ok" | "banned" | "unknown"> {
+  try {
+    const { rows } = await pool.query<{
+      tags: string[];
+      characters: string[] | null;
+      copyrights: string[] | null;
+      dead_at: Date | null;
+    }>(
+      `SELECT tags, characters, copyrights, dead_at
+         FROM videos
+         WHERE url = $1 OR page_url = $1
+         LIMIT 1`,
+      [pageUrl],
+    );
+    if (rows.length === 0) return "unknown";
+    const row = rows[0];
+    if (row.dead_at !== null) return "banned";
+    if (
+      containsBannedContent({
+        tags: row.tags || [],
+        characters: row.characters || [],
+        copyrights: row.copyrights || [],
+      })
+    ) {
+      return "banned";
+    }
+    // Belt + suspenders: also filter by raw SQL in case a row slipped past
+    // containsBannedContent() for some edge reason (stale casing, etc.).
+    const banned = BANNED_TAGS_ARRAY;
+    const tagHit =
+      (row.tags || []).some((t) => banned.includes(t.toLowerCase())) ||
+      (row.characters || []).some((c) => banned.includes(c.toLowerCase())) ||
+      (row.copyrights || []).some((c) => banned.includes(c.toLowerCase()));
+    if (tagHit) return "banned";
+    return "ok";
+  } catch {
+    // On DB error fail closed — better to 500 a legit request than proxy
+    // a banned one. Reporting fallback lets ops see these in logs.
+    return "unknown";
+  }
+}
+
 async function resolveUrl(pageUrl: string): Promise<string | null> {
   // L1
   const l1 = l1Cache.get(pageUrl);
@@ -245,6 +304,23 @@ export async function GET(request: NextRequest) {
   );
   if (!isAllowed) {
     return NextResponse.json({ error: "unsupported source" }, { status: 400 });
+  }
+
+  // Banned-content + dead-row guard (B3). Must run BEFORE any outbound
+  // fetch so we never become an anonymous proxy for content we didn't
+  // ingest + validate. Runs exactly one indexed DB lookup.
+  const allowCheck = await checkPageUrlAllowed(pageUrl);
+  if (allowCheck === "banned") {
+    return NextResponse.json(
+      { error: "content not available" },
+      { status: 403 },
+    );
+  }
+  if (allowCheck === "unknown") {
+    return NextResponse.json(
+      { error: "content not in catalogue" },
+      { status: 404 },
+    );
   }
 
   // Fast path: if the URL already points at a playable MP4, skip the

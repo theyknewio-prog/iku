@@ -13,9 +13,15 @@ import { hasBannedTagString } from "./banned-tags";
 import { pool, upsertVideos } from "./db";
 
 const BASE_URL = "https://gelbooru.com/index.php";
-const API_KEY =
-  "3ed16caf49d543883a94b9e8beeb56804c4bbdd577bbb22697579e11d84aca13c755ad81e6c3caf03c8b158f07b92097466280dfec9ea35313b61efd3bcc1a41";
-const USER_ID = "1943515";
+const API_KEY = process.env.GELBOORU_API_KEY ?? "";
+const USER_ID = process.env.GELBOORU_USER_ID ?? "";
+
+if (!API_KEY || !USER_ID) {
+  console.error(
+    "GELBOORU_API_KEY + GELBOORU_USER_ID must be set in env (GH Actions secrets or .env.local).",
+  );
+  process.exit(1);
+}
 const DELAY = 1100; // 1.1s between requests
 const LIMIT = 100;
 
