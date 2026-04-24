@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     "hentai streaming",
     "hentai clips",
   ],
-  other: { rating: "adult" },
+  other: { rating: "adult", clckd: "f87d90023de4b02956ca4b938e1939ea" },
   metadataBase: new URL("https://iku.gg"),
   robots: { index: true, follow: true },
   verification: {
