@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { notFound, permanentRedirect } from "next/navigation";
 import type { Metadata } from "next";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
-import { WatchPlayer } from "@/components/WatchPlayer";
+import { WatchPlayerVast } from "@/components/WatchPlayerVast";
 import { WatchSignupNudge } from "@/components/WatchSignupNudge";
 import { ProGatedPlayer } from "@/components/ProGatedPlayer";
 import { isProLocked } from "@/lib/pro-gate";
@@ -523,7 +523,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
                     unlockCost={unlockCost(video)}
                   />
                 ) : (
-                  <WatchPlayer
+                  <WatchPlayerVast
                     src={streamProxyUrl || video.url || ""}
                     poster={video.thumbnail || undefined}
                     resolveUrl={resolvePageUrl || undefined}
