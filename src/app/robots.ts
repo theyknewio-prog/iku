@@ -45,6 +45,9 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
         "/explore",
         "/blog/",
         "/glossary/",
+        "/md/", // markdown mirrors for LLM crawlers (added 2026-04-25)
+        "/llms.txt",
+        "/llms-full.txt",
       ],
       disallow: [
         "/api/",

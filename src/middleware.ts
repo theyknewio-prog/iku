@@ -14,6 +14,17 @@
 
 import { NextRequest, NextResponse } from "next/server";
 
+// Sections that expose a markdown mirror under /md/<section>/<slug>.
+// Append `.md` to any canonical URL → middleware rewrites to /md/.
+const MD_SECTIONS = new Set([
+  "watch",
+  "blog",
+  "glossary",
+  "tag",
+  "character",
+  "series",
+]);
+
 // Adsterra rotating shards. Each one needs BOTH the bare domain and the
 // wildcard form because CSP wildcards do not match the apex (silent bug
 // in CLAUDE.md). Adsterra rotates these every few weeks — when a new
@@ -31,8 +42,31 @@ const ADSTERRA_HOSTS = [
 ];
 const ADSTERRA_BARE = ADSTERRA_HOSTS.map((h) => `https://${h}`).join(" ");
 
-export function middleware(_request: NextRequest) {
+export function middleware(request: NextRequest) {
+  // Markdown-mirror rewrite: /watch/foo.md → /md/watch/foo (and same for
+  // blog/glossary/tag/character/series). Anthropic-style convention used by
+  // LLM crawlers (ChatGPT, Claude, Perplexity, Google AI Overviews).
+  const path = request.nextUrl.pathname;
+  if (path.endsWith(".md")) {
+    const m = path.match(/^\/([^/]+)\/(.+)\.md$/);
+    if (m && MD_SECTIONS.has(m[1])) {
+      const url = request.nextUrl.clone();
+      url.pathname = `/md/${m[1]}/${m[2]}`;
+      return NextResponse.rewrite(url);
+    }
+  }
+
   const response = NextResponse.next();
+
+  // Advertise the markdown mirror to LLM crawlers via Link header on canonical
+  // pages. Format: <https://iku.gg/blog/foo.md>; rel="alternate"; type="text/markdown"
+  const mdMatch = path.match(/^\/([^/]+)\/([^/]+?)\/?$/);
+  if (mdMatch && MD_SECTIONS.has(mdMatch[1])) {
+    response.headers.set(
+      "Link",
+      `<https://iku.gg/${mdMatch[1]}/${mdMatch[2]}.md>; rel="alternate"; type="text/markdown"`,
+    );
+  }
 
   // Static CSP. `'unsafe-inline'` + `'unsafe-eval'` are required by the ad
   // networks (ExoClick injects inline scripts into its iframes) so nonces
