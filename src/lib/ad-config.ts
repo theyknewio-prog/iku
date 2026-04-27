@@ -57,6 +57,24 @@ export const HILLTOPADS_ZONES = {
 export const STRIPCASH = {
   smartLinkUrl:
     "https://go.mavrtracktor.com?userId=17e833691806534d444a0f2a237e4ac61d0cd81990649940427306c52266eced",
+
+  /**
+   * Video Slider widget JS embed (closable bottom-right corner cam preview).
+   * Captured 2026-04-27 via clipboard hook on the Stripcash builder.
+   *
+   * NOT mounted yet — queued as Surface #4, ETA 2026-05-04 after Surface #3
+   * (sidebar Live Cams link) finishes its J+7 measurement window.
+   *
+   * When mounting:
+   *  - Add `creative.mavrtracktor.com` to CSP (script-src + connect-src)
+   *  - Lazy load on requestIdleCallback / after first user interaction
+   *  - Mount on /watch only (NOT homepage — keeps surfaces non-overlapping)
+   *  - Replace `.mount(document.body)` with `.mount(scopedRef.current)` to
+   *    avoid SSR hydration mismatch and to allow per-page unmount on route change
+   */
+  videoSliderUserId:
+    "17e833691806534d444a0f2a237e4ac61d0cd81990649940427306c52266eced",
+  videoSliderLibUrl: "https://creative.mavrtracktor.com/widgets/Spot/lib.js",
 } as const;
 
 export const HILLTOPADS_SCRIPTS = {
