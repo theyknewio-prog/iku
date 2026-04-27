@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { SearchAutocomplete } from "./SearchAutocomplete";
 import { StreakBadge } from "./StreakBadge";
+import { STRIPCASH } from "@/lib/ad-config";
 
 /* ── SVG Icons ─────────────────────────────────────────────── */
 
@@ -474,12 +475,17 @@ const ACCOUNT_ITEMS = [
   { href: "/settings", label: "Settings", Icon: IconSettings },
 ] as const;
 
-/* Affiliate partners — external links, open in new tab */
+/* Affiliate partners — external links, open in new tab.
+ *
+ * Surface #3 of the Playmak3r monetization stack rebuild (2026-04-27):
+ * Stripcash cam revshare smart link surfaced as a sidebar entry.
+ * No popunder, no JS, no perf impact — just a tagged outbound link.
+ */
 const AFFILIATE_ITEMS: readonly {
   href: string;
   label: string;
   emoji?: string;
-}[] = [];
+}[] = [{ href: STRIPCASH.smartLinkUrl, label: "Live Cams", emoji: "🔴" }];
 
 /* Extras — content pages that weren't previously reachable from mobile */
 const EXTRA_ITEMS = [
@@ -698,7 +704,7 @@ export function AppShell({
                   key={item.label}
                   href={item.href}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="sponsored noopener noreferrer"
                   className="v2-nav-item v2-nav-item--affiliate"
                 >
                   {item.emoji && (
@@ -1021,7 +1027,7 @@ export function AppShell({
                       key={item.label}
                       href={item.href}
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel="sponsored noopener noreferrer"
                       className="v2-nav-drawer__item v2-nav-drawer__item--affiliate"
                       onClick={() => setMenuOpen(false)}
                     >

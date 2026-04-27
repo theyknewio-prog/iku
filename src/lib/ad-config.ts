@@ -5,14 +5,15 @@
  * Each addition deploys alone + measures J+7 before next surface is wired.
  *
  * Active now:
- *  - HilltopAds banner 300x250 on /watch (zone 6969681) — mounted 2026-04-24
+ *  - Surface #1: HilltopAds banner 300x250 on /watch (zone 6969681) — mounted 2026-04-24
+ *  - Surface #2: VAST preroll 1/3 via HilltopAds (zone 6969713) — mounted 2026-04-24
+ *  - Surface #3: Stripcash cam revshare "Live Cams" sidebar link — mounted 2026-04-27
  *
  * Queued (waiting on reviews / future deploys):
- *  - Clickadu popunder — account pending review, zones TBD
+ *  - Clickadu popunder — REJECTED 2026-04-27 (insufficient traffic). Replace with PopAds or TrafficStars.
  *  - HilltopAds IPP (zone 6969697)
  *  - HilltopAds banner 300x100 mobile (zone 6969733)
- *  - Stripcash cam revshare link menu — account pending review (36h max)
- *  - VAST preroll 1/3 (HilltopAds zone 6969713)
+ *  - Stripcash Video Slider widget on /watch — waiting on JS embed code from publisher panel
  */
 
 export const AD_ZONES = {
@@ -37,6 +38,25 @@ export const HILLTOPADS_ZONES = {
   inPagePushId: "6969697",
   vastPrerollId: "6969713",
   banner300x100MobileId: "6969733",
+} as const;
+
+/**
+ * Stripcash (StripChat parent) — cam revshare smart link.
+ * Account: ikumediagg (iku.media.gg@gmail.com), approved 2026-04-27.
+ * Scheme: REV 20% lifetime.
+ *
+ * Domain `go.mavrtracktor.com` is Stripcash's tracker — it 302s to the
+ * best-converting StripChat landing for the visitor's geo. Add to CSP if
+ * we ever need to render it inside an iframe; for plain `<a target="_blank">`
+ * links no CSP change is needed (top-level navigation).
+ *
+ * Placement per plan-monetisation-iku.md ligne 144:
+ *   "Link menu dédié 'Live Cam 🔴' dans sidebar (comme Playmak3r)"
+ * Explicitly NOT a popunder — popunder slot is reserved for Clickadu/PopAds.
+ */
+export const STRIPCASH = {
+  smartLinkUrl:
+    "https://go.mavrtracktor.com?userId=17e833691806534d444a0f2a237e4ac61d0cd81990649940427306c52266eced",
 } as const;
 
 export const HILLTOPADS_SCRIPTS = {
