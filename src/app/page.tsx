@@ -23,15 +23,15 @@ import { ScrollReveal } from "@/components/ScrollReveal";
 import { MagneticButton } from "@/components/MagneticButton";
 
 export const metadata: Metadata = {
-  title: "iku.gg — Free Hentai, 3D Hentai & Cartoon Porn | 360,000+ Videos",
+  title: "iku.gg — Free Hentai, 3D Hentai & Cartoon Porn | 320,000+ Videos",
   description:
-    "Stream 360,000+ free hentai, 3D hentai & cartoon porn animations. Genshin, Overwatch, Blue Archive, SFM & classic 2D anime. Swipe Shorts feed included. No signup.",
+    "Stream 320,000+ free hentai, 3D hentai & cartoon porn animations. Genshin, Overwatch, Blue Archive, SFM & classic 2D anime. Swipe Shorts feed included. No signup.",
   other: { rating: "adult" },
   alternates: { canonical: "https://iku.gg" },
   openGraph: {
     title: "iku.gg — Free Hentai, 3D Cartoon Porn & Animation Tube",
     description:
-      "360,000+ free videos: 3D hentai, SFM, cartoon porn, 2D anime, Shorts feed. Genshin, Overwatch, Blue Archive & more.",
+      "320,000+ free videos: 3D hentai, SFM, cartoon porn, 2D anime, Shorts feed. Genshin, Overwatch, Blue Archive & more.",
     siteName: "iku.gg",
     type: "website",
     url: "https://iku.gg",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "iku.gg — Free Hentai, 3D & Cartoon Porn",
     description:
-      "360,000+ free videos: 3D hentai, SFM, cartoon porn, 2D anime, Shorts feed. Genshin, Overwatch & more.",
+      "320,000+ free videos: 3D hentai, SFM, cartoon porn, 2D anime, Shorts feed. Genshin, Overwatch & more.",
     images: ["https://iku.gg/og-default.png"],
   },
 };
@@ -253,7 +253,7 @@ export default async function HomePage() {
                 All In One Tube
               </h1>
               <p className="hp-hero-sub">
-                <strong>360,000+</strong> videos — 2D hentai episodes, 3D SFM
+                <strong>320,000+</strong> videos — 2D hentai episodes, 3D SFM
                 animations, Genshin &amp; Overwatch compilations, HMV, plus a
                 TikTok-style Shorts feed. No signup.
               </p>
@@ -282,7 +282,7 @@ export default async function HomePage() {
 
               <div className="hp-hero-stats">
                 <div className="hp-hero-stat">
-                  <span className="hp-hero-stat__num">353K+</span>
+                  <span className="hp-hero-stat__num">320K+</span>
                   <span className="hp-hero-stat__label">Videos</span>
                 </div>
                 <div className="hp-hero-stat">

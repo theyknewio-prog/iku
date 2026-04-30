@@ -170,7 +170,7 @@ export function JoinDiscordCTA({ variant = "hero", className = "" }: Props) {
         <span className="jd-cta__text">
           <span className="jd-cta__title">Join our Discord</span>
           <span className="jd-cta__sub">
-            353K+ clips · daily drops · watch parties
+            320K+ clips · daily drops · watch parties
           </span>
         </span>
         <span className="jd-cta__arrow" aria-hidden="true">

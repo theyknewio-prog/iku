@@ -25,6 +25,13 @@ export function StickyHilltopBottom() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    // Mobile-only — desktop uses underplayer slot. Below 768px is the
+    // standard mobile breakpoint everywhere else in the codebase.
+    if (typeof window !== "undefined" && window.innerWidth >= 768) {
+      setVisible(false);
+      return;
+    }
+
     // Skip on /feed (Shorts has its own ad logic), pricing/checkout/auth
     // (don't distract during conversion), and any /preview/* route.
     if (
@@ -53,10 +60,54 @@ export function StickyHilltopBottom() {
       /* localStorage may be blocked */
     }
 
-    // Settle 2s so the page paints first; ad load doesn't fight LCP.
-    const t = setTimeout(() => setVisible(true), 2000);
-    return () => clearTimeout(t);
+    // Lazy: wait for first user interaction (scroll/click) OR 8s idle.
+    // Loading another iframe immediately on mount tanked perception of
+    // page speed — Sab said 7-min load on his phone (commit 2026-04-30).
+    // Defer until we know the user is engaged.
+    let armed = false;
+    const arm = () => {
+      if (armed) return;
+      armed = true;
+      setVisible(true);
+    };
+    const onScroll = () => window.scrollY > 100 && arm();
+    const onClick = () => arm();
+    const idle = setTimeout(arm, 8000);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("click", onClick, { passive: true });
+    window.addEventListener("touchstart", onClick, { passive: true });
+
+    return () => {
+      clearTimeout(idle);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("click", onClick);
+      window.removeEventListener("touchstart", onClick);
+    };
   }, [pathname]);
+
+  // No-fill detection: after the HilltopAdsBanner iframe mounts, peek at
+  // its contentDocument body. If empty after 3s, the zone returned no
+  // creative — hide the wrapper instead of leaving an empty white box.
+  const [filled, setFilled] = useState(false);
+  useEffect(() => {
+    if (!visible) return;
+    const id = setTimeout(() => {
+      const iframe = document.querySelector<HTMLIFrameElement>(
+        ".sticky-hilltop-bottom iframe",
+      );
+      if (!iframe) return;
+      try {
+        const body = iframe.contentDocument?.body;
+        // banner300x100 should produce >= ~80px of content. <30 = empty.
+        const h = body?.scrollHeight || 0;
+        if (h >= 30) setFilled(true);
+      } catch {
+        // cross-origin frame (script-injected creative) — assume filled
+        setFilled(true);
+      }
+    }, 3000);
+    return () => clearTimeout(id);
+  }, [visible]);
 
   if (!visible) return null;
 
@@ -78,17 +129,22 @@ export function StickyHilltopBottom() {
         position: "fixed",
         left: 0,
         right: 0,
-        // .v2-bottom-nav is 64px tall (--mobile-nav-h). 56px iOS safe-area
-        // adjusted by transform when keyboard is present, so sit above it.
         bottom: "calc(64px + env(safe-area-inset-bottom, 0px))",
         zIndex: 999,
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        background: "rgba(8, 6, 18, 0.92)",
-        backdropFilter: "blur(8px)",
-        borderTop: "1px solid rgba(255, 255, 255, 0.06)",
-        padding: "6px 8px",
+        // Transparent until we confirm the iframe has paint — no more
+        // empty-white-box on no-fill (Sab feedback 2026-04-30 audit).
+        background: filled ? "rgba(8, 6, 18, 0.92)" : "transparent",
+        backdropFilter: filled ? "blur(8px)" : "none",
+        borderTop: filled ? "1px solid rgba(255, 255, 255, 0.06)" : "none",
+        padding: filled ? "6px 8px" : 0,
+        // Hide the wrapper entirely if no fill detected (after 3s probe).
+        // Keeps the bottom of the page free instead of a sad placeholder.
+        opacity: filled ? 1 : 0,
+        pointerEvents: filled ? "auto" : "none",
+        transition: "opacity 200ms",
       }}
     >
       <button

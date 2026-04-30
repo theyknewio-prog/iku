@@ -4,6 +4,22 @@ import type { Video } from "@/types/video";
 const SITE = "https://iku.gg";
 const NAME = "iku.gg";
 
+/**
+ * Single source of truth for the "X+ videos" count shown across the site.
+ *
+ * Rounded down from the live count of `SELECT COUNT(*) FROM videos
+ * WHERE (dead_at IS NULL OR dead_at > NOW())` — was 327,553 on
+ * 2026-04-30. Round to 320K to leave headroom and survive purge
+ * fluctuations without going stale.
+ *
+ * Update quarterly (or after large purges/imports) — do NOT inline new
+ * numbers in components. Three different counts on the same page
+ * (header 353K+, hero 360K+, stats 353K+) shipped 2026-04-30 because
+ * each component had its own hardcoded string.
+ */
+export const VIDEO_COUNT_DISPLAY = "320K+";
+export const VIDEO_COUNT_DISPLAY_LONG = "320,000+";
+
 function humanize(tag: string): string {
   return tag.replace(/_/g, " ");
 }

@@ -661,7 +661,7 @@ export function AppShell({
             <span className="v2-sidebar-logo__icon">iku</span>
             <span className="v2-sidebar-logo__text-wrap">
               <span className="v2-sidebar-logo__text">iku.gg ✨</span>
-              <span className="v2-sidebar-logo__sub">353K+ free videos</span>
+              <span className="v2-sidebar-logo__sub">320K+ free videos</span>
             </span>
           </Link>
 
@@ -960,7 +960,7 @@ export function AppShell({
                 onClick={() => setMenuOpen(false)}
               >
                 <span>iku.gg ✨</span>
-                <small>353K+ free videos</small>
+                <small>320K+ free videos</small>
               </Link>
               <button
                 type="button"
