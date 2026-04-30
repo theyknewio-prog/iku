@@ -2,6 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Righteous, Nunito } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "@/components/AppShell";
+import { HilltopInPagePush } from "@/components/HilltopInPagePush";
+import { StickyHilltopBottom } from "@/components/StickyHilltopBottom";
+import { StripcashVideoSlider } from "@/components/StripcashVideoSlider";
 import { MegaFooter } from "@/components/MegaFooter";
 import { SessionProviderClient } from "@/components/SessionProviderClient";
 import { UserDataSync } from "@/components/UserDataSync";
@@ -156,6 +159,13 @@ export default async function RootLayout({
               a clean $0 baseline before rebuilding with the Playmak3r stack
               (Clickadu + HilltopAds + Stripcash) one surface at a time. */}
           <PushNotifications />
+          {/* Playmak3r stack ad surfaces — global mounts. Each component
+              handles its own pathname filter (skip /feed, /pricing, /signup
+              and Pro users). Mounting in the root layout means they survive
+              client-side navigation between pages without remounting/race. */}
+          <HilltopInPagePush />
+          <StickyHilltopBottom />
+          <StripcashVideoSlider />
           <AppShell footer={<MegaFooter />}>{children}</AppShell>
         </SessionProviderClient>
       </body>

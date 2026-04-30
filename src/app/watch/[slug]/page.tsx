@@ -45,6 +45,8 @@ import {
 import { getNonce } from "@/lib/csp-nonce";
 import { RemoveAdsCTA } from "@/components/RemoveAdsCTA";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
+import { StickyHilltopBottom } from "@/components/StickyHilltopBottom";
+import { StripcashVideoSlider } from "@/components/StripcashVideoSlider";
 import {
   buildSeoTitle,
   buildTitle as buildDisplayTitle,

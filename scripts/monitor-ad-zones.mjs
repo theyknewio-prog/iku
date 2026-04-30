@@ -175,6 +175,8 @@ async function checkLivePage() {
 
   let vastFired = false;
   let bannerSeen = false;
+  let ippScriptSeen = false;
+  let stripcashScriptSeen = false;
 
   page.on("request", (req) => {
     const u = req.url();
@@ -185,6 +187,12 @@ async function checkLivePage() {
       u.includes("silent-basis.pro")
     ) {
       bannerSeen = true;
+    }
+    // IPP injection url is the same selfassured-celebration host but a
+    // different path. We can't easily distinguish, so we additionally
+    // probe DOM presence after waitForTimeout below.
+    if (u.includes("creative.mavrtracktor.com")) {
+      stripcashScriptSeen = true;
     }
   });
 
@@ -272,6 +280,40 @@ async function checkLivePage() {
       }
     } else {
       failures.push("hamburger not found — drawer broken");
+    }
+
+    // Check 4: IPP script tag injected (Surface #5, zone 6969697).
+    // Component injects after a 3s settle, so wait long enough.
+    await page.waitForTimeout(2_000);
+    const ippInjected = await page.evaluate(
+      () => !!document.getElementById("iku-hilltop-ipp-wrap"),
+    );
+    if (!ippInjected) {
+      failures.push("HilltopAds IPP wrapper script not in DOM (Surface #5)");
+    }
+
+    // Check 5: Sticky 300x100 banner present (Surface #6, zone 6969733).
+    // Component appears after 2s settle.
+    const stickyBottom = await page.evaluate(() => {
+      const el = document.querySelector(".sticky-hilltop-bottom");
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return { y: r.y, h: r.height, visible: r.height > 0 };
+    });
+    if (!stickyBottom) {
+      failures.push("Sticky 300x100 banner not mounted (Surface #6)");
+    } else if (!stickyBottom.visible) {
+      failures.push("Sticky 300x100 banner present but invisible (Surface #6)");
+    }
+
+    // Check 6: Stripcash Video Slider — host div exists OR script loaded
+    // (script defer'd via requestIdleCallback so may not have fired yet on
+    // a quick check). Either signal counts as alive.
+    const stripcashHostExists = await page.evaluate(
+      () => !!document.querySelector("[data-stripcash-slider]"),
+    );
+    if (!stripcashHostExists && !stripcashScriptSeen) {
+      failures.push("Stripcash Video Slider not mounted (Surface #4)");
     }
   } catch (e) {
     failures.push(`page error: ${e.message}`);
