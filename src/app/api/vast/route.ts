@@ -274,6 +274,14 @@ export async function GET(req: NextRequest) {
       "stripcash.com",
       "xlivrdr.com",
       "sacdnssedge.com",
+      // HilltopAds creative CDNs — added 2026-04-30 to bypass the
+      // /api/vast-stream proxy hop (saved ~500ms-1s of first-byte
+      // latency, which was tipping the preroll past LOAD_TIMEOUT_MS).
+      "silent-basis.pro",
+      "difficultblock.com",
+      "bsnsrv.com",
+      "hmoracle.com",
+      "cdn-player.com",
     ];
     const direct = allowed.some(
       (s) => u.hostname === s || u.hostname.endsWith("." + s),

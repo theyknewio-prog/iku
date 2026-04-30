@@ -29,7 +29,12 @@ type VastAd = {
 
 type Props = { onComplete: () => void };
 
-const LOAD_TIMEOUT_MS = 3000;
+// Bumped 3s → 12s on 2026-04-30: HilltopAds VAST endpoint takes 3-6s
+// from EU origin (per /api/vast comment), and the proxied MediaFile via
+// /api/vast-stream adds another ~500ms-1s for first byte. The 3s client
+// cancel was firing before onPlay could ever fire — zone 6969713 logged
+// 1 impression in 7 days because of this. 12s leaves slack for slow CDNs.
+const LOAD_TIMEOUT_MS = 12000;
 
 function firePixels(urls: string[] | undefined) {
   if (!urls || urls.length === 0) return;

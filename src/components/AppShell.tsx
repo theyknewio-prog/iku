@@ -973,6 +973,37 @@ export function AppShell({
             </div>
 
             <div className="v2-nav-drawer__body">
+              {/* Partners — moved above content groups on 2026-04-30. The
+                  previous placement after 5 sections pushed Live Cams to
+                  y=1045px (out of viewport on 430x932). 750 visits over
+                  3 days produced 2 clicks. Top placement = always above
+                  the fold when the drawer opens. */}
+              {AFFILIATE_ITEMS.length > 0 && (
+                <div className="v2-nav-drawer__section">
+                  <div className="v2-nav-drawer__section-label">Partners</div>
+                  {AFFILIATE_ITEMS.map((item) => (
+                    <a
+                      key={`top-${item.label}`}
+                      href={item.href}
+                      target="_blank"
+                      rel="sponsored noopener noreferrer"
+                      className="v2-nav-drawer__item v2-nav-drawer__item--affiliate"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      {item.emoji && (
+                        <span className="v2-nav-drawer__emoji" aria-hidden>
+                          {item.emoji}
+                        </span>
+                      )}
+                      <span className="v2-nav-drawer__label">{item.label}</span>
+                      <span className="v2-nav-drawer__badge v2-nav-drawer__badge--gradient">
+                        Ad
+                      </span>
+                    </a>
+                  ))}
+                </div>
+              )}
+
               {[
                 {
                   label: "Watch",
@@ -1018,32 +1049,6 @@ export function AppShell({
                   ))}
                 </div>
               ))}
-
-              {AFFILIATE_ITEMS.length > 0 && (
-                <div className="v2-nav-drawer__section">
-                  <div className="v2-nav-drawer__section-label">Partners</div>
-                  {AFFILIATE_ITEMS.map((item) => (
-                    <a
-                      key={item.label}
-                      href={item.href}
-                      target="_blank"
-                      rel="sponsored noopener noreferrer"
-                      className="v2-nav-drawer__item v2-nav-drawer__item--affiliate"
-                      onClick={() => setMenuOpen(false)}
-                    >
-                      {item.emoji && (
-                        <span className="v2-nav-drawer__emoji" aria-hidden>
-                          {item.emoji}
-                        </span>
-                      )}
-                      <span className="v2-nav-drawer__label">{item.label}</span>
-                      <span className="v2-nav-drawer__badge v2-nav-drawer__badge--gradient">
-                        Ad
-                      </span>
-                    </a>
-                  ))}
-                </div>
-              )}
 
               <div className="v2-nav-drawer__section">
                 <div className="v2-nav-drawer__section-label">More</div>
