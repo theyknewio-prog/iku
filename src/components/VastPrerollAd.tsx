@@ -221,6 +221,11 @@ export function VastPrerollAd({ onComplete }: Props) {
         autoPlay
         muted
         playsInline
+        // preload="metadata" tells the browser to fetch only enough bytes
+        // to decode dimensions/duration. autoPlay still kicks in once a
+        // few seconds buffer, but we no longer pre-pull the entire 26-52s
+        // creative up-front. Cuts /watch reported load time materially.
+        preload="metadata"
         onPlay={handlePlay}
         onTimeUpdate={onTimeUpdate}
         onEnded={handleEnded}
