@@ -228,11 +228,13 @@ export function VastPrerollAd({ onComplete }: Props) {
         autoPlay
         muted
         playsInline
-        // preload="metadata" tells the browser to fetch only enough bytes
-        // to decode dimensions/duration. autoPlay still kicks in once a
-        // few seconds buffer, but we no longer pre-pull the entire 26-52s
-        // creative up-front. Cuts /watch reported load time materially.
-        preload="metadata"
+        // preload="auto" — preroll component only mounts after window.load
+        // (see WatchPlayerVast), so it no longer plums the page-load timing.
+        // preload="metadata" caused Chromium to fire <video>.onError when
+        // the metadata-only fetch was aborted by the CDN (normal HTTP/2
+        // behavior), which dismissed the preroll before handlePlay could
+        // fire the impression pixel — observed in Playwright 2026-05-01.
+        preload="auto"
         onPlay={handlePlay}
         onTimeUpdate={onTimeUpdate}
         onEnded={handleEnded}
