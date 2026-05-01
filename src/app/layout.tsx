@@ -143,6 +143,8 @@ export default async function RootLayout({
           name="e9a8710706a48b652c819394214276c5acd7d438"
           content="e9a8710706a48b652c819394214276c5acd7d438"
         />
+        {/* Monetag (PropellerAds) site verification — site ID 3319518 */}
+        <meta name="monetag" content="1c258acd4421e13c48d418e4cf06f894" />
       </head>
       <body data-pro={isPro ? "1" : "0"}>
         <div className="sparkles-bg" aria-hidden="true">
