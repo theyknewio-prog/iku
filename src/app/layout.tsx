@@ -6,6 +6,9 @@ import { HilltopInPagePush } from "@/components/HilltopInPagePush";
 import { StickyHilltopBottom } from "@/components/StickyHilltopBottom";
 import { AffiliateSlideIn } from "@/components/AffiliateSlideIn";
 import { StripcashVideoSlider } from "@/components/StripcashVideoSlider";
+import { CrakRevenuePopunder } from "@/components/CrakRevenuePopunder";
+import { CrakRevenuePopIn } from "@/components/CrakRevenuePopIn";
+import { CrakRevenueCamsWidget } from "@/components/CrakRevenueCamsWidget";
 import { MegaFooter } from "@/components/MegaFooter";
 import { SessionProviderClient } from "@/components/SessionProviderClient";
 import { UserDataSync } from "@/components/UserDataSync";
@@ -176,6 +179,13 @@ export default async function RootLayout({
           <StickyHilltopBottom />
           <AffiliateSlideIn />
           <StripcashVideoSlider />
+          {/* CrakRevenue AI Smartlink ads — popunder (24h cap), pop-in
+              overlay (click-trig, 14min), cams widget bottom-right.
+              All point to the AI Smartlink so each click is tracked
+              by aff_sub4 (AT_0005 popunder, AT_0019 popin, AT_0018 cams). */}
+          <CrakRevenuePopunder />
+          <CrakRevenuePopIn />
+          <CrakRevenueCamsWidget />
           <AppShell footer={<MegaFooter />}>{children}</AppShell>
         </SessionProviderClient>
       </body>
