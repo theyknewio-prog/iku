@@ -12456,6 +12456,350 @@ body {
   border-color: rgba(255, 32, 128, 0.3);
 }
 
+/* ============================================================
+   AFFILIATE COMPONENTS — AffiliateCard, AffiliateRail,
+   AffiliateSlideIn, FeedAffInterstitial
+   FTC-compliant "Sponsored" labels on every surface.
+   ============================================================ */
+
+/* ── AffiliateCard base ───────────────────────────────────── */
+.aff-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 12px;
+  background: rgba(255, 107, 157, 0.06);
+  border: 1px solid rgba(255, 107, 157, 0.18);
+  transition:
+    background 0.18s,
+    border-color 0.18s,
+    transform 0.18s;
+  overflow: hidden;
+}
+.aff-card:hover {
+  background: rgba(255, 107, 157, 0.12);
+  border-color: rgba(255, 107, 157, 0.35);
+  transform: translateY(-2px);
+}
+
+/* FTC-compliance: every card shows a small "Sponsored" label */
+.aff-card::before {
+  content: "Sponsored";
+  position: absolute;
+  top: 5px;
+  left: 8px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Badge pill */
+.aff-card__badge {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #ff6b9d, #c084fc);
+  color: #fff;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Thumbnail container */
+.aff-card__thumb {
+  flex-shrink: 0;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+}
+.aff-card__thumb-img {
+  object-fit: cover;
+}
+
+/* Body text */
+.aff-card__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 4px 0;
+}
+.aff-card__brand {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--color-text-primary, #fff);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.aff-card__tagline {
+  font-size: 12px;
+  color: var(--color-text-secondary, #aaa);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.aff-card__stars {
+  font-size: 11px;
+  color: #fbbf24;
+}
+.aff-card__rating-value {
+  color: var(--color-text-secondary, #aaa);
+}
+
+/* CTA button */
+.aff-card__cta {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ff6b9d, #c084fc);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+.aff-card:hover .aff-card__cta {
+  opacity: 0.9;
+}
+
+/* ── Compact variant (sidebar ~280px) ────────────────────── */
+.aff-card--compact {
+  flex-direction: column;
+  align-items: stretch;
+  padding: 16px;
+  gap: 10px;
+}
+.aff-card--compact .aff-card__thumb {
+  width: 100%;
+  height: 140px;
+}
+.aff-card--compact .aff-card__body {
+  padding: 0;
+}
+.aff-card--compact .aff-card__cta {
+  text-align: center;
+  display: block;
+  padding: 10px 0;
+}
+
+/* ── Wide variant (inline banners ~728px / full-width mobile) */
+.aff-card--wide {
+  padding: 14px 16px;
+  flex-direction: row;
+}
+.aff-card--wide .aff-card__thumb {
+  width: 80px;
+  height: 60px;
+}
+@media (min-width: 768px) {
+  .aff-card--wide .aff-card__thumb {
+    width: 120px;
+    height: 80px;
+  }
+}
+
+/* ── Stacked variant (mobile sticky strip) ───────────────── */
+.aff-card--stacked {
+  padding: 8px 12px;
+  flex-direction: row;
+  min-height: 64px;
+  border-radius: 10px;
+}
+.aff-card--stacked .aff-card__thumb {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+}
+.aff-card--stacked .aff-card__tagline {
+  -webkit-line-clamp: 1;
+}
+.aff-card--stacked .aff-card__cta {
+  padding: 6px 10px;
+  font-size: 11px;
+}
+
+/* ── AffiliateRail ────────────────────────────────────────── */
+.aff-rail {
+  margin: 24px 0;
+}
+.aff-rail__title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-secondary, #aaa);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin: 0 0 12px;
+}
+
+/* Divider that visually separates the rail from adjacent content */
+.aff-rail__divider {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 16px;
+  margin-bottom: 16px;
+}
+
+/* Vertical layout — stacked column */
+.aff-rail__track--vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Carousel layout — horizontal scroll row, no scrollbar visible */
+.aff-rail__track--carousel {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.aff-rail__track--carousel::-webkit-scrollbar {
+  display: none;
+}
+/* Each carousel card has a fixed min-width so cards don't collapse on mobile */
+.aff-rail--carousel .aff-card--wide {
+  min-width: 280px;
+  max-width: 340px;
+  flex-shrink: 0;
+}
+@media (min-width: 768px) {
+  .aff-rail--carousel .aff-card--wide {
+    min-width: 320px;
+  }
+}
+/* Ensure the rail doesn't overflow the viewport on 390px */
+@media (max-width: 430px) {
+  .aff-rail--carousel .aff-card--wide {
+    min-width: 240px;
+  }
+}
+
+/* ── AffiliateSlideIn (bottom-right) ─────────────────────── */
+.aff-slide-in {
+  position: fixed;
+  bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  right: 16px;
+  width: 280px;
+  z-index: 998;
+  animation: aff-slide-in-enter 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@media (min-width: 768px) {
+  .aff-slide-in {
+    bottom: 24px;
+  }
+}
+@keyframes aff-slide-in-enter {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.aff-slide-in__close {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(30, 20, 46, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  transition: background 0.15s;
+}
+.aff-slide-in__close:hover {
+  background: rgba(255, 107, 157, 0.3);
+  color: #fff;
+}
+
+/* ── Feed Affiliate Interstitial ─────────────────────────── */
+.feed-aff-interstitial {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(8, 6, 18, 0.92);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  animation: feed-aff-enter 0.25s ease both;
+}
+@keyframes feed-aff-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.feed-aff-interstitial__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 380px;
+}
+.feed-aff-interstitial__label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.35);
+  align-self: flex-start;
+}
+.feed-aff-interstitial .aff-card--wide {
+  width: 100%;
+  min-width: unset;
+  max-width: unset;
+}
+.feed-aff-interstitial__skip {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.6);
+  padding: 10px 28px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+}
+.feed-aff-interstitial__skip:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
+}
+
 .remove-ads-cta__emoji {
   font-size: 16px;
   flex-shrink: 0;

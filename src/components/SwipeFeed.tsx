@@ -5,6 +5,18 @@ import Link from "next/link";
 import { VideoCard } from "./VideoCard";
 import { FeedConversionCTA } from "./FeedConversionCTA";
 import { useSession } from "next-auth/react";
+import AffiliateCard from "./AffiliateCard";
+import { AFFILIATES } from "@/lib/affiliates";
+
+// Slugs rotated through for the feed affiliate interstitial
+const FEED_AFF_SLUGS = [
+  "candy-ai",
+  "only-waifus",
+  "anime-genius",
+  "kupid-ai",
+  "dream-gf",
+  "crush-on",
+] as const;
 
 export interface FeedVideo {
   id: number;
@@ -31,10 +43,14 @@ export function SwipeFeed() {
   // Global mute state — shared across all cards. Once the user unmutes,
   // all subsequent videos play with sound (like TikTok/RedGIFs).
   const [globalMuted, setGlobalMuted] = useState(true);
-  // Interstitial ad tracking
+  // Conversion CTA interstitial
   const [showInterstitial, setShowInterstitial] = useState(false);
   const interstitialCountRef = useRef(0);
   const lastInterstitialIndexRef = useRef(-10);
+  // Affiliate card interstitial — fires every 8th swipe, distinct cadence
+  const [showAffInterstitial, setShowAffInterstitial] = useState(false);
+  const lastAffIndexRef = useRef(-8);
+  const affRotationRef = useRef(0);
   const isPro = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const loadingRef = useRef(false);
@@ -172,6 +188,23 @@ export function SwipeFeed() {
     }
   }, [activeIndex]);
 
+  // Affiliate card interstitial — every 8 swipes, only when no other
+  // interstitial is up (showInterstitial guard), skipped for Pro users.
+  useEffect(() => {
+    if (
+      activeIndex > 0 &&
+      (activeIndex + 1) % 8 === 0 &&
+      activeIndex !== lastAffIndexRef.current &&
+      !showInterstitial &&
+      !isPro.current
+    ) {
+      lastAffIndexRef.current = activeIndex;
+      affRotationRef.current =
+        (affRotationRef.current + 1) % FEED_AFF_SLUGS.length;
+      setShowAffInterstitial(true);
+    }
+  }, [activeIndex, showInterstitial]);
+
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -212,6 +245,47 @@ export function SwipeFeed() {
 
   return (
     <div style={{ position: "relative" }}>
+      {/* E: Affiliate interstitial — full-screen overlay every 8 swipes.
+          Rotates through AI girlfriend slugs. Skip button + next-video
+          preview beneath. Only shown when FeedConversionCTA is not up. */}
+      {showAffInterstitial &&
+        !showInterstitial &&
+        (() => {
+          const slug =
+            FEED_AFF_SLUGS[affRotationRef.current % FEED_AFF_SLUGS.length];
+          const aff = AFFILIATES.find((a) => a.slug === slug);
+          if (!aff) return null;
+          return (
+            <div
+              className="feed-aff-interstitial"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Sponsored"
+            >
+              <div className="feed-aff-interstitial__inner">
+                <span className="feed-aff-interstitial__label">Sponsored</span>
+                <AffiliateCard
+                  slug={aff.slug}
+                  brand={aff.brand}
+                  tagline={aff.tagline}
+                  thumbnail={aff.thumbnail}
+                  rating={aff.rating}
+                  badge={aff.badge}
+                  variant="wide"
+                />
+                <button
+                  className="feed-aff-interstitial__skip"
+                  onClick={() => setShowAffInterstitial(false)}
+                  type="button"
+                  aria-label="Skip ad and continue watching"
+                >
+                  Skip →
+                </button>
+              </div>
+            </div>
+          );
+        })()}
+
       {/* Conversion CTA — alternates signup ↔ premium based on count
           and login state. Anon users see signup first; logged-in non-Pro
           users always see premium. */}

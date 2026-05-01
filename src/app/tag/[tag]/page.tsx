@@ -7,6 +7,7 @@ import { Pagination } from "@/components/Pagination";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { notFound } from "next/navigation";
 import { getVideos, countVideos, isBannedTag } from "@/lib/content";
+import AffiliateRail from "@/components/AffiliateRail";
 import { SORT_OPTIONS, parseSort } from "@/lib/sort-options";
 import { getEntitySeo } from "@/lib/entity-seo";
 import { getNonce } from "@/lib/csp-nonce";
@@ -265,6 +266,14 @@ export default async function TagPage({ params, searchParams }: Props) {
               </Link>
             ))}
           </nav>
+
+          {/* D: AI Girlfriend rail — above video grid on tag pages */}
+          <AffiliateRail
+            title="AI waifu chat — no limits, free trial"
+            slugs={["candy-ai", "only-waifus", "kupid-ai", "crush-on"]}
+            layout="carousel"
+            limit={4}
+          />
 
           {/* ── Video grid ────────────────────────────────────── */}
           {videos.length === 0 ? (

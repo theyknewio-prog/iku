@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { SignupCTA } from "@/components/SignupCTA";
 import { getVideos } from "@/lib/content";
+import AffiliateRail from "@/components/AffiliateRail";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 import { SortTabs, parseSort } from "@/components/SortTabs";
@@ -88,6 +89,14 @@ export default async function TrendingPage(props: {
               </Link>
             ))}
           </div>
+
+          {/* C: AI Girlfriend rail — above video grid */}
+          <AffiliateRail
+            title="AI companions — chat uncensored, free trial"
+            slugs={["candy-ai", "kupid-ai", "only-waifus", "anime-genius"]}
+            layout="carousel"
+            limit={4}
+          />
 
           {/* ── Video grid with rank badges ───────────────────── */}
           {videos.length === 0 ? (

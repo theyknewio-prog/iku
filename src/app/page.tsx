@@ -21,6 +21,7 @@ import { JoinDiscordCTA } from "@/components/JoinDiscordCTA";
 import { SignupCTA } from "@/components/SignupCTA";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { MagneticButton } from "@/components/MagneticButton";
+import AffiliateRail from "@/components/AffiliateRail";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai, 3D Hentai & Cartoon Porn | 320,000+ Videos",
@@ -447,6 +448,21 @@ export default async function HomePage() {
               />
             ))}
           </Carousel>
+
+          {/* B: AI Girlfriend affiliate rail — between Trending and next section.
+              Best CTR position: mid-page after first engagement signal. */}
+          <AffiliateRail
+            title="AI girlfriend — try free"
+            slugs={[
+              "candy-ai",
+              "only-waifus",
+              "anime-genius",
+              "kupid-ai",
+              "dream-gf",
+            ]}
+            layout="carousel"
+            limit={5}
+          />
 
           {/* Premium CTA #1 — slim inline strip after Trending. */}
           <Link

@@ -448,6 +448,13 @@ const FRESH_ITEMS = [
   { href: "/trending", label: "Trending", Icon: IconTrending },
   { href: "/new", label: "Latest", Icon: IconNew },
   { href: "/explore", label: "All videos", Icon: IconBrowse },
+  {
+    href: "/ai-girlfriend",
+    label: "AI Girlfriend",
+    Icon: IconHeart,
+    badge: "NEW",
+    badgeGradient: true,
+  },
 ] as const;
 
 // BROWSE = taxonomy. "Filter by who or what".

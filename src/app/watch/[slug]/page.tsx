@@ -43,9 +43,9 @@ import {
 } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
 import { RemoveAdsCTA } from "@/components/RemoveAdsCTA";
-import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
-import { StickyHilltopBottom } from "@/components/StickyHilltopBottom";
-import { StripcashVideoSlider } from "@/components/StripcashVideoSlider";
+import AffiliateCard from "@/components/AffiliateCard";
+import AffiliateRail from "@/components/AffiliateRail";
+import { getAffiliate } from "@/lib/affiliates";
 import {
   buildSeoTitle,
   buildTitle as buildDisplayTitle,
@@ -702,20 +702,19 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
               {/* Related — mobile grid (below player) */}
               <div style={{ marginTop: "32px" }}>
-                {/* HilltopAds 300x250 (zone 6969681) — Playmak3r stack surface #1,
-                    re-mounted 2026-04-24 after 2026-04-23 nuke. This spot was
-                    validated in commit 0836c02 (filled real creatives at both
-                    430x932 + 1440x900). Measure eCPM J+7 before adding next
-                    surface. Baseline to beat: Adsterra $0.36 eCPM. */}
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    margin: "0 0 20px",
-                  }}
-                >
-                  <HilltopAdsBanner format="banner300x250" />
-                </div>
+                {/* A2: Affiliate rail — below player, above related. Mobile-priority.
+                    Replaces HilltopAdsBanner 300x250. */}
+                <AffiliateRail
+                  title="Try AI girlfriend chat — uncensored & free"
+                  slugs={[
+                    "candy-ai",
+                    "only-waifus",
+                    "anime-genius",
+                    "kupid-ai",
+                  ]}
+                  layout="carousel"
+                  limit={4}
+                />
                 <div className="section-header">
                   <h2
                     className="section-title"
@@ -752,6 +751,25 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
             {/* ── Sidebar (desktop) ─────────────────────────── */}
             <aside className="player-sidebar">
+              {/* A1: Affiliate compact card — desktop sidebar top slot.
+                  Replaces the old HilltopAdsBanner 300x250 surface. */}
+              {(() => {
+                const aff = getAffiliate("candy-ai");
+                if (!aff) return null;
+                return (
+                  <div className="aff-rail__divider">
+                    <AffiliateCard
+                      slug={aff.slug}
+                      brand={aff.brand}
+                      tagline={aff.tagline}
+                      thumbnail={aff.thumbnail}
+                      rating={aff.rating}
+                      badge={aff.badge}
+                      variant="compact"
+                    />
+                  </div>
+                );
+              })()}
               <div className="player-sidebar__title">Up next</div>
               <Suspense
                 fallback={Array.from({ length: 12 }).map((_, i) => (

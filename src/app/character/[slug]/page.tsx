@@ -6,6 +6,7 @@ import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { Pagination } from "@/components/Pagination";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { getVideos, countVideos, isBannedTag } from "@/lib/content";
+import AffiliateRail from "@/components/AffiliateRail";
 import { SORT_OPTIONS, parseSort } from "@/lib/sort-options";
 import { getEntitySeo } from "@/lib/entity-seo";
 import { getNonce } from "@/lib/csp-nonce";
@@ -396,6 +397,15 @@ export default async function CharacterPage({ params, searchParams }: Props) {
               })()
             )}
           </section>
+
+          {/* D: AI character chat rail — above video grid on character pages.
+              Angle: "chat with an AI version of your favorite character". */}
+          <AffiliateRail
+            title="Chat with your favorite anime character — AI, uncensored"
+            slugs={["anime-genius", "kupid-ai", "candy-ai", "crush-on"]}
+            layout="carousel"
+            limit={4}
+          />
 
           {/* ── Sort filter bar ───────────────────────────────── */}
           <nav className="sort-tabs" aria-label="Sort videos">

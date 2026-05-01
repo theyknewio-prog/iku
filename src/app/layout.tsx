@@ -4,6 +4,7 @@ import "./globals.css";
 import { AppShell } from "@/components/AppShell";
 import { HilltopInPagePush } from "@/components/HilltopInPagePush";
 import { StickyHilltopBottom } from "@/components/StickyHilltopBottom";
+import { AffiliateSlideIn } from "@/components/AffiliateSlideIn";
 import { StripcashVideoSlider } from "@/components/StripcashVideoSlider";
 import { MegaFooter } from "@/components/MegaFooter";
 import { SessionProviderClient } from "@/components/SessionProviderClient";
@@ -163,13 +164,17 @@ export default async function RootLayout({
               handles its own pathname filter (skip /feed, /pricing, /signup
               and Pro users). Mounting in the root layout means they survive
               client-side navigation between pages without remounting/race. */}
-          <HilltopInPagePush />
+          {/* HilltopInPagePush unmounted 2026-05-01: replaced by AffiliateSlideIn
+              (clean non-intrusive bottom-right card, no fake browser-notif scripts).
+              Component file kept for potential re-enable. */}
+          {/* <HilltopInPagePush /> */}
           {/* HilltopPopunder unmounted 2026-05-01: their inventory pushes
               fake-Chrome-update / fake-virus-warning scam creatives in
               full-tab takeover, which makes iku.gg look like a phishing
               site. Component file kept for future re-enable if HilltopAds
               cleans up the popunder pool. */}
           <StickyHilltopBottom />
+          <AffiliateSlideIn />
           <StripcashVideoSlider />
           <AppShell footer={<MegaFooter />}>{children}</AppShell>
         </SessionProviderClient>

@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { Pagination } from "@/components/Pagination";
 import { getVideos, countVideos } from "@/lib/content";
+import AffiliateRail from "@/components/AffiliateRail";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 import { SortTabs, parseSort } from "@/components/SortTabs";
@@ -79,6 +80,14 @@ export default async function NewPage({ searchParams }: Props) {
             extraQuery={{
               page: currentPage > 1 ? String(currentPage) : undefined,
             }}
+          />
+
+          {/* C: AI Girlfriend rail — above video grid */}
+          <AffiliateRail
+            title="Your AI girlfriend is waiting — try free"
+            slugs={["dream-gf", "nomi-ai", "crush-on", "soulkyn"]}
+            layout="carousel"
+            limit={4}
           />
 
           {/* ── Video grid ────────────────────────────────────── */}

@@ -10,6 +10,7 @@ import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { SignupCTA } from "@/components/SignupCTA";
 import { CHARACTERS } from "@/data/characters";
 import { SERIES } from "@/data/series";
+import AffiliateRail from "@/components/AffiliateRail";
 
 export const revalidate = 3600;
 export const dynamic = "force-dynamic";
@@ -368,6 +369,14 @@ export default async function ExplorePage(props: {
               })}
             </div>
           </section>
+
+          {/* C: AI Girlfriend rail — above video grid */}
+          <AffiliateRail
+            title="AI waifu chat — free & uncensored"
+            slugs={["dream-gf", "crush-on", "soulkyn", "nomi-ai"]}
+            layout="carousel"
+            limit={4}
+          />
 
           {/* ════════════════════════════════════════════════
               SECTION 4 — All Videos grid (existing, preserved)

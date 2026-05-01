@@ -1,21 +1,22 @@
 "use client";
 
 /**
- * StickyHilltopBottom — sticky 300x100 mobile banner pinned above the
- * bottom nav. Surface #6 of the Playmak3r stack (zone 6969733), mounted
- * 2026-04-30. Mobile-only — desktop uses the underplayer 728x90 slot.
+ * StickyHilltopBottom — sticky mobile affiliate card pinned above the
+ * bottom nav. Surface #6 of the Playmak3r stack (A3 affiliate swap 2026-05-01).
+ * Mobile-only — desktop uses the sidebar slot.
  *
  * Z-stack:
  *   .v2-bottom-nav     — z=1000 (mobile nav, owns y=bottom→64px)
- *   this banner        — z=999  (sits above 64px, height 100px)
+ *   this banner        — z=999  (sits above 64px, height ~80px)
  *   page content       — z=auto (gets 164px bottom padding via CSS)
  *
- * Pro users + /feed are excluded by HilltopAdsBanner internally.
+ * Pro users + /feed are excluded internally.
  */
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { HilltopAdsBanner } from "./HilltopAdsBanner";
+import AffiliateCard from "./AffiliateCard";
+import { getAffiliate } from "@/lib/affiliates";
 
 const DISMISS_KEY = "iku-sticky-hilltop-dismissed-at";
 const DISMISS_HOURS = 12;
@@ -85,31 +86,9 @@ export function StickyHilltopBottom() {
     };
   }, [pathname]);
 
-  // No-fill detection: after the HilltopAdsBanner iframe mounts, peek at
-  // its contentDocument body. If empty after 3s, the zone returned no
-  // creative — hide the wrapper instead of leaving an empty white box.
-  const [filled, setFilled] = useState(false);
-  useEffect(() => {
-    if (!visible) return;
-    const id = setTimeout(() => {
-      const iframe = document.querySelector<HTMLIFrameElement>(
-        ".sticky-hilltop-bottom iframe",
-      );
-      if (!iframe) return;
-      try {
-        const body = iframe.contentDocument?.body;
-        // banner300x100 should produce >= ~80px of content. <30 = empty.
-        const h = body?.scrollHeight || 0;
-        if (h >= 30) setFilled(true);
-      } catch {
-        // cross-origin frame (script-injected creative) — assume filled
-        setFilled(true);
-      }
-    }, 3000);
-    return () => clearTimeout(id);
-  }, [visible]);
+  const aff = getAffiliate("candy-ai");
 
-  if (!visible) return null;
+  if (!visible || !aff) return null;
 
   const dismiss = () => {
     try {
@@ -123,7 +102,7 @@ export function StickyHilltopBottom() {
   return (
     <div
       role="region"
-      aria-label="advertisement"
+      aria-label="Sponsored"
       className="sticky-hilltop-bottom"
       style={{
         position: "fixed",
@@ -134,22 +113,16 @@ export function StickyHilltopBottom() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        // Transparent until we confirm the iframe has paint — no more
-        // empty-white-box on no-fill (Sab feedback 2026-04-30 audit).
-        background: filled ? "rgba(8, 6, 18, 0.92)" : "transparent",
-        backdropFilter: filled ? "blur(8px)" : "none",
-        borderTop: filled ? "1px solid rgba(255, 255, 255, 0.06)" : "none",
-        padding: filled ? "6px 8px" : 0,
-        // Hide the wrapper entirely if no fill detected (after 3s probe).
-        // Keeps the bottom of the page free instead of a sad placeholder.
-        opacity: filled ? 1 : 0,
-        pointerEvents: filled ? "auto" : "none",
+        background: "rgba(8, 6, 18, 0.92)",
+        backdropFilter: "blur(8px)",
+        borderTop: "1px solid rgba(255, 255, 255, 0.06)",
+        padding: "6px 8px",
         transition: "opacity 200ms",
       }}
     >
       <button
         onClick={dismiss}
-        aria-label="Dismiss ad"
+        aria-label="Dismiss"
         style={{
           position: "absolute",
           top: 2,
@@ -167,11 +140,20 @@ export function StickyHilltopBottom() {
           alignItems: "center",
           justifyContent: "center",
           padding: 0,
+          zIndex: 1,
         }}
       >
         ✕
       </button>
-      <HilltopAdsBanner format="banner300x100Mobile" />
+      <AffiliateCard
+        slug={aff.slug}
+        brand={aff.brand}
+        tagline={aff.tagline}
+        thumbnail={aff.thumbnail}
+        rating={aff.rating}
+        badge={aff.badge}
+        variant="stacked"
+      />
     </div>
   );
 }

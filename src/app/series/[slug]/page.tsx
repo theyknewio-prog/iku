@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { Pagination } from "@/components/Pagination";
 import { getVideos, countVideos, isBannedTag } from "@/lib/content";
+import AffiliateRail from "@/components/AffiliateRail";
 import { SORT_OPTIONS, parseSort } from "@/lib/sort-options";
 import { getEntitySeo } from "@/lib/entity-seo";
 import { getNonce } from "@/lib/csp-nonce";
@@ -379,6 +380,15 @@ export default async function SeriesPage({ params, searchParams }: Props) {
               </div>
             </section>
           )}
+
+          {/* D: AI companion rail — above video grid on series pages.
+              Angle: "roleplay with characters from this series". */}
+          <AffiliateRail
+            title="Roleplay with AI waifus from your favorite series — free"
+            slugs={["only-waifus", "anime-genius", "dream-gf", "kupid-ai"]}
+            layout="carousel"
+            limit={4}
+          />
 
           {/* ── Sort filter bar ───────────────────────────────── */}
           <nav className="sort-tabs" aria-label="Sort videos">
