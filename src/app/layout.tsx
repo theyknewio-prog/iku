@@ -3,6 +3,7 @@ import { Righteous, Nunito } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "@/components/AppShell";
 import { HilltopInPagePush } from "@/components/HilltopInPagePush";
+import { HilltopPopunder } from "@/components/HilltopPopunder";
 import { StickyHilltopBottom } from "@/components/StickyHilltopBottom";
 import { StripcashVideoSlider } from "@/components/StripcashVideoSlider";
 import { MegaFooter } from "@/components/MegaFooter";
@@ -164,6 +165,7 @@ export default async function RootLayout({
               and Pro users). Mounting in the root layout means they survive
               client-side navigation between pages without remounting/race. */}
           <HilltopInPagePush />
+          <HilltopPopunder />
           <StickyHilltopBottom />
           <StripcashVideoSlider />
           <AppShell footer={<MegaFooter />}>{children}</AppShell>
