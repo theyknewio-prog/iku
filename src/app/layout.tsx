@@ -9,6 +9,7 @@ import { StripcashVideoSlider } from "@/components/StripcashVideoSlider";
 import { CrakRevenuePopunder } from "@/components/CrakRevenuePopunder";
 import { CrakRevenuePopIn } from "@/components/CrakRevenuePopIn";
 import { CrakRevenueCamsWidget } from "@/components/CrakRevenueCamsWidget";
+import { PopAdsPopunder } from "@/components/PopAdsPopunder";
 import { MegaFooter } from "@/components/MegaFooter";
 import { SessionProviderClient } from "@/components/SessionProviderClient";
 import { UserDataSync } from "@/components/UserDataSync";
@@ -186,6 +187,7 @@ export default async function RootLayout({
           <CrakRevenuePopunder />
           <CrakRevenuePopIn />
           <CrakRevenueCamsWidget />
+          <PopAdsPopunder />
           <AppShell footer={<MegaFooter />}>{children}</AppShell>
         </SessionProviderClient>
       </body>
