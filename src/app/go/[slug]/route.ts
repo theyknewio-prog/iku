@@ -11,8 +11,23 @@
 
 import { NextRequest, NextResponse } from "next/server";
 
+/**
+ * CrakRevenue AI Smartlink — rotates 30+ AI offers (Candy.AI, MyAnima, etc.)
+ * picking the highest-converting offer per visitor geo/device. Activated
+ * 2026-05-01 via account iku.media.gg@gmail.com (Smartlink ID
+ * SF_006OG000004lmDN). Native Ads promotion method.
+ *
+ * The other slugs below stay as placeholders — they'll point to direct
+ * tracking URLs as each affiliate signup completes (KupidAI via Dub,
+ * OnlyWaifus via FirstPromoter, etc.). Until then, /go/<slug> 404s for
+ * those, and the AffiliateCard surfaces all default to candy-ai which
+ * routes through the Smartlink and earns regardless.
+ */
+const CRAK_AI_SMARTLINK =
+  "https://t.mbjms.com/410186/9403/0?target=nativeads&aff_sub5=SF_006OG000004lmDN";
+
 const AFFILIATE_LINKS: Record<string, string> = {
-  "candy-ai": "https://candy.ai/?via=ikugg", // CrakRevenue link TBD
+  "candy-ai": CRAK_AI_SMARTLINK,
   "only-waifus": "https://onlywaifus.ai/?via=ikugg", // FirstPromoter link TBD
   "anime-genius": "https://animegenius.live3d.io/?via=ikugg", // TBD
   "kupid-ai": "https://kupid.ai/?via=ikugg", // Dub TBD
