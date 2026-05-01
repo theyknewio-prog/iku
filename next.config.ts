@@ -29,6 +29,9 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "img2.gelbooru.com" },
       { protocol: "https", hostname: "img3.gelbooru.com" },
       { protocol: "https", hostname: "img4.gelbooru.com" },
+      // CrakRevenue creative CDN — affiliate banner thumbnails for AffiliateCard
+      { protocol: "https", hostname: "www.imglnkx.com" },
+      { protocol: "https", hostname: "imglnkx.com" },
     ],
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 2592000, // 30 days
