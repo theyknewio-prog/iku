@@ -12,29 +12,44 @@
 import { NextRequest, NextResponse } from "next/server";
 
 /**
- * CrakRevenue AI Smartlink — rotates 30+ AI offers (Candy.AI, MyAnima, etc.)
- * picking the highest-converting offer per visitor geo/device. Activated
- * 2026-05-01 via account iku.media.gg@gmail.com (Smartlink ID
- * SF_006OG000004lmDN). Native Ads promotion method.
+ * CrakRevenue direct AI offers — pulled from CR's AI vertical (catalog id 233)
+ * 2026-05-02. Direct-offer tracking links convert WAY better than the
+ * Smartlink: AI Smartlink EPC $0.0007 vs direct offers up to $0.46 (660×).
  *
- * The other slugs below stay as placeholders — they'll point to direct
- * tracking URLs as each affiliate signup completes (KupidAI via Dub,
- * OnlyWaifus via FirstPromoter, etc.). Until then, /go/<slug> 404s for
- * those, and the AffiliateCard surfaces all default to candy-ai which
- * routes through the Smartlink and earns regardless.
+ * EPC values (from CR dashboard, May 2026):
+ *   joi-ai           $0.4608   $42 PPS Tier 1 Premium
+ *   candy-ai         $0.2225   $44 PPS Tier 1 Premium
+ *   darlink-ai       $0.1960   $30 PPS
+ *   lovescape        $0.1681   $35 PPS
+ *   get-harder       $0.1636   $34 PPS
+ *   secrets-ai       $0.1191   $50 PPS
+ *   girlfriend-gpt   premium   $55 PPS
+ *   dream-gf         $0.0110   35% revshare lifetime
+ *
+ * Tracking domain is `t.vlmai-1.com` (different from old Smartlink mbjms host —
+ * needs CSP whitelist via middleware.ts redirect-allowance + img/connect-src).
  */
-const CRAK_AI_SMARTLINK =
-  "https://t.mbjms.com/410186/9403/0?target=nativeads&aff_sub5=SF_006OG000004lmDN";
+const CR_BASE = "?aff_sub5=SF_006OG000004lmDN";
+const CR = (path: string) => `https://t.vlmai-1.com/410186/${path}${CR_BASE}`;
 
 const AFFILIATE_LINKS: Record<string, string> = {
-  "candy-ai": CRAK_AI_SMARTLINK,
-  "only-waifus": "https://onlywaifus.ai/?via=ikugg", // FirstPromoter link TBD
-  "anime-genius": "https://animegenius.live3d.io/?via=ikugg", // TBD
-  "kupid-ai": "https://kupid.ai/?via=ikugg", // Dub TBD
-  "dream-gf": "https://dreamgf.ai/?via=ikugg", // Traceo TBD
-  "crush-on": "https://crushon.ai/?via=ikugg", // Tapfiliate TBD
-  soulkyn: "https://soulkyn.com/?via=ikugg", // direct TBD
-  "nomi-ai": "https://nomi.ai/?via=ikugg", // direct TBD
+  // === CrakRevenue direct AI offers (May 2026 EPC verified) ===
+  "candy-ai": CR("8025"), // $44 PPS T1 Premium, EPC $0.22
+  "joi-ai": CR("8080"), // $42 PPS T1 Premium, EPC $0.46 — TOP EPC
+  "girlfriend-gpt": CR("8184"), // $55 PPS Premium
+  "secrets-ai": CR("10381/0"), // $50 PPS, EPC $0.12
+  "get-harder": CR("10182/0"), // $34 PPS, EPC $0.16
+  "darlink-ai": CR("10345/0"), // $30 PPS, EPC $0.20
+  lovescape: CR("7886"), // $35 PPS, EPC $0.17
+  "dream-gf": CR("6523"), // 35% revshare lifetime
+
+  // === Smartlink fallback for slugs not in CR catalog ===
+  "only-waifus": "https://onlywaifus.ai/?via=ikugg", // FirstPromoter pending
+  "anime-genius": "https://animegenius.live3d.io/?via=ikugg", // direct pending
+  "kupid-ai": "https://kupid.ai/?via=ikugg", // Dub pending
+  "crush-on": "https://crushon.ai/?via=ikugg", // Tapfiliate pending
+  soulkyn: "https://soulkyn.com/?via=ikugg", // direct pending
+  "nomi-ai": "https://nomi.ai/?via=ikugg", // direct pending
 };
 
 /** Fire-and-forget PostHog event. Never throws — a failed capture must not

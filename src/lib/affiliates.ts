@@ -111,6 +111,60 @@ export const AFFILIATES: readonly Affiliate[] = [
     rating: 4.6,
     category: "chat",
   },
+  // ── High-EPC CrakRevenue direct AI offers (added 2026-05-02) ──
+  {
+    slug: "joi-ai",
+    brand: "Joi AI",
+    tagline:
+      "Voice-first AI girlfriend — she calls, sexts, and remembers your kinks",
+    thumbnail: CRAK_HENTAI_300x250,
+    rating: 4.9,
+    badge: "TOP CONVERTER",
+    category: "chat",
+  },
+  {
+    slug: "girlfriend-gpt",
+    brand: "Girlfriend GPT",
+    tagline:
+      "Premium AI girlfriend with custom personalities and uncensored mode",
+    thumbnail: CRAK_MAINSTREAM_300x250,
+    rating: 4.7,
+    badge: "PREMIUM",
+    category: "both",
+  },
+  {
+    slug: "secrets-ai",
+    brand: "Secrets.ai",
+    tagline:
+      "Anonymous AI confidante — share your darkest fantasies, no judgement",
+    thumbnail: CRAK_HENTAI_300x250,
+    rating: 4.5,
+    category: "chat",
+  },
+  {
+    slug: "get-harder",
+    brand: "Get Harder",
+    tagline: "AI sexting that escalates the way you want — fast and dirty",
+    thumbnail: CRAK_MAINSTREAM_300x250,
+    rating: 4.4,
+    category: "chat",
+  },
+  {
+    slug: "darlink-ai",
+    brand: "DarLink AI",
+    tagline: "Roleplay-focused AI partner — long-form story-driven sessions",
+    thumbnail: CRAK_HENTAI_300x250,
+    rating: 4.4,
+    category: "chat",
+  },
+  {
+    slug: "lovescape",
+    brand: "Lovescape",
+    tagline: "Realistic AI dating sim — date her, build chemistry, get nudes",
+    thumbnail: CRAK_MAINSTREAM_300x250,
+    rating: 4.5,
+    category: "both",
+  },
 ] as const;
 
 /** Utility — look up a single affiliate by slug. Returns undefined if not found. */
