@@ -706,14 +706,9 @@ export default async function WatchPage({ params }: WatchPageProps) {
                     Replaces HilltopAdsBanner 300x250. */}
                 <AffiliateRail
                   title="Try AI girlfriend chat — uncensored & free"
-                  slugs={[
-                    "candy-ai",
-                    "only-waifus",
-                    "anime-genius",
-                    "kupid-ai",
-                  ]}
+                  slugs={["candy-ai", "only-waifus", "anime-genius"]}
                   layout="carousel"
-                  limit={4}
+                  limit={3}
                 />
                 <div className="section-header">
                   <h2

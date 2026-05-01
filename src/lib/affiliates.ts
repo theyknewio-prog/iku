@@ -15,8 +15,15 @@
  * CrakRevenue Creatives library and slot them in here as needed.
  */
 
+// 3 creatives pulled from the AI Smartlink Banners library 2026-05-02:
+//   Hentai     — anime/hentai-styled (best for our core audience)
+//   Mainstream — realistic AI girlfriend (premium feel)
+//   Generic    — neutral fallback
+// Rotate across the 8 cards so adjacent rails don't show the same image.
 const CRAK_HENTAI_300x250 =
   "https://www.imglnkx.com/9403/ADV-1207_DESIGN-21652_Hentai-Banners_300250.jpg";
+const CRAK_MAINSTREAM_300x250 =
+  "https://www.imglnkx.com/9403/ADV-1207_DESIGN-21652_300250_Mainstream.png";
 const CRAK_GENERIC_300x250 =
   "https://www.imglnkx.com/9403/ADV-21652_DESIGN-21652_300250.jpg";
 
@@ -63,7 +70,7 @@ export const AFFILIATES: readonly Affiliate[] = [
     slug: "kupid-ai",
     brand: "Kupid.AI",
     tagline: "Ultra-realistic AI partners — chat, images, and audio messages",
-    thumbnail: CRAK_GENERIC_300x250,
+    thumbnail: CRAK_MAINSTREAM_300x250,
     rating: 4.5,
     badge: "MOST REALISTIC",
     category: "both",
@@ -73,7 +80,7 @@ export const AFFILIATES: readonly Affiliate[] = [
     brand: "DreamGF.AI",
     tagline:
       "Design her from scratch — face, body, personality, kinks — and chat now",
-    thumbnail: CRAK_GENERIC_300x250,
+    thumbnail: CRAK_MAINSTREAM_300x250,
     rating: 4.7,
     badge: "FREE TRIAL",
     category: "both",
@@ -91,7 +98,7 @@ export const AFFILIATES: readonly Affiliate[] = [
     brand: "Soulkyn",
     tagline:
       "Emotionally deep AI companions — goes way beyond surface-level flirting",
-    thumbnail: CRAK_GENERIC_300x250,
+    thumbnail: CRAK_MAINSTREAM_300x250,
     rating: 4.3,
     category: "chat",
   },
