@@ -60,18 +60,24 @@ export function VastPrerollAd({ onComplete }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const firedRef = useRef<Set<string>>(new Set());
   const completeRef = useRef<() => void>(() => {});
+  const startedRef = useRef(false);
   completeRef.current = onComplete;
 
+  // Mount-once: fetch the VAST and cache the ad. Do NOT include `started`
+  // in deps — when handlePlay fires setStarted(true), we don't want to
+  // re-run this effect, refetch a NEW creative, and replace video.src
+  // mid-playback (which silently aborts the network request and kills
+  // the impression pixel — root cause of $0.13 over 13 days).
   useEffect(() => {
     if (typeof document !== "undefined" && document.body?.dataset.pro === "1") {
       setDone(true);
-      onComplete();
+      completeRef.current();
       return;
     }
 
     let cancelled = false;
     const timeoutId = setTimeout(() => {
-      if (cancelled || started) return;
+      if (cancelled || startedRef.current) return;
       setDone(true);
       completeRef.current();
     }, LOAD_TIMEOUT_MS);
@@ -99,7 +105,7 @@ export function VastPrerollAd({ onComplete }: Props) {
       cancelled = true;
       clearTimeout(timeoutId);
     };
-  }, [onComplete, started]);
+  }, []);
 
   const fireOnce = useCallback((key: string, urls?: string[]) => {
     if (firedRef.current.has(key)) return;
@@ -122,11 +128,12 @@ export function VastPrerollAd({ onComplete }: Props) {
   }, [ad, skipArmed, fireOnce]);
 
   const handlePlay = useCallback(() => {
-    if (!ad || started) return;
+    if (!ad || startedRef.current) return;
+    startedRef.current = true;
     setStarted(true);
     fireOnce("imp", ad.impressions);
     fireOnce("start", ad.tracking.start);
-  }, [ad, started, fireOnce]);
+  }, [ad, fireOnce]);
 
   const handleEnded = useCallback(() => {
     if (!ad) return;
