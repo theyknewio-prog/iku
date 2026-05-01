@@ -26,7 +26,11 @@ export const AFFILIATES: readonly Affiliate[] = [
     brand: "Candy.AI",
     tagline:
       "Build your perfect AI girlfriend — uncensored roleplay, voice, and photos",
-    thumbnail: "/img/affiliates/candy-ai.jpg",
+    // Using CrakRevenue's official hentai-themed creative (300x250) directly
+    // from imglnkx CDN — saves uploading our own asset and aligns visually
+    // with the routed offer. CSP allows imglnkx.com in img-src.
+    thumbnail:
+      "https://www.imglnkx.com/9403/ADV-1207_DESIGN-21652_Hentai-Banners_300250.jpg",
     rating: 4.8,
     badge: "EDITOR'S PICK",
     category: "both",
