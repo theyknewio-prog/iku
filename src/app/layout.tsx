@@ -3,7 +3,6 @@ import { Righteous, Nunito } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "@/components/AppShell";
 import { HilltopInPagePush } from "@/components/HilltopInPagePush";
-import { HilltopPopunder } from "@/components/HilltopPopunder";
 import { StickyHilltopBottom } from "@/components/StickyHilltopBottom";
 import { StripcashVideoSlider } from "@/components/StripcashVideoSlider";
 import { MegaFooter } from "@/components/MegaFooter";
@@ -165,7 +164,11 @@ export default async function RootLayout({
               and Pro users). Mounting in the root layout means they survive
               client-side navigation between pages without remounting/race. */}
           <HilltopInPagePush />
-          <HilltopPopunder />
+          {/* HilltopPopunder unmounted 2026-05-01: their inventory pushes
+              fake-Chrome-update / fake-virus-warning scam creatives in
+              full-tab takeover, which makes iku.gg look like a phishing
+              site. Component file kept for future re-enable if HilltopAds
+              cleans up the popunder pool. */}
           <StickyHilltopBottom />
           <StripcashVideoSlider />
           <AppShell footer={<MegaFooter />}>{children}</AppShell>
