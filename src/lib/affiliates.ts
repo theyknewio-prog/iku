@@ -4,11 +4,21 @@
  * This is the single source of truth for affiliate data.
  * AffiliateCard, AffiliateRail, and the /go/[slug] route all read from here.
  *
- * To add a new affiliate:
- *   1. Add an entry to AFFILIATES below
- *   2. Add the slug → tracking URL in src/app/go/[slug]/route.ts
- *   3. Drop a thumbnail at public/img/affiliates/{slug}.jpg (360x480 or 728x90 depending on variant)
+ * Thumbnails point to CrakRevenue's hosted CDN creatives (imglnkx.com).
+ * imglnkx is whitelisted in CSP img-src + media-src. Using the network's
+ * own creatives means: (a) zero asset upload burden, (b) creatives stay
+ * fresh as the network rotates them server-side, (c) visual style matches
+ * the routed offer (Smartlink rotates 30+ AI offers behind any /go/* URL).
+ *
+ * Two CrakRevenue 300x250 creatives are currently in rotation; we alternate
+ * across the 8 cards for visual variety. Pull more sizes/themes from the
+ * CrakRevenue Creatives library and slot them in here as needed.
  */
+
+const CRAK_HENTAI_300x250 =
+  "https://www.imglnkx.com/9403/ADV-1207_DESIGN-21652_Hentai-Banners_300250.jpg";
+const CRAK_GENERIC_300x250 =
+  "https://www.imglnkx.com/9403/ADV-21652_DESIGN-21652_300250.jpg";
 
 export interface Affiliate {
   slug: string;
@@ -26,11 +36,7 @@ export const AFFILIATES: readonly Affiliate[] = [
     brand: "Candy.AI",
     tagline:
       "Build your perfect AI girlfriend — uncensored roleplay, voice, and photos",
-    // Using CrakRevenue's official hentai-themed creative (300x250) directly
-    // from imglnkx CDN — saves uploading our own asset and aligns visually
-    // with the routed offer. CSP allows imglnkx.com in img-src.
-    thumbnail:
-      "https://www.imglnkx.com/9403/ADV-1207_DESIGN-21652_Hentai-Banners_300250.jpg",
+    thumbnail: CRAK_HENTAI_300x250,
     rating: 4.8,
     badge: "EDITOR'S PICK",
     category: "both",
@@ -40,7 +46,7 @@ export const AFFILIATES: readonly Affiliate[] = [
     brand: "OnlyWaifus.AI",
     tagline:
       "Anime-style waifus that send you pictures and talk back — NSFW unlocked",
-    thumbnail: "/img/affiliates/only-waifus.jpg",
+    thumbnail: CRAK_HENTAI_300x250,
     rating: 4.6,
     badge: "BEST FOR HENTAI",
     category: "both",
@@ -49,7 +55,7 @@ export const AFFILIATES: readonly Affiliate[] = [
     slug: "anime-genius",
     brand: "Anime Genius",
     tagline: "Live3D-powered waifu companions with real-time 3D expressions",
-    thumbnail: "/img/affiliates/anime-genius.jpg",
+    thumbnail: CRAK_HENTAI_300x250,
     rating: 4.4,
     category: "chat",
   },
@@ -57,7 +63,7 @@ export const AFFILIATES: readonly Affiliate[] = [
     slug: "kupid-ai",
     brand: "Kupid.AI",
     tagline: "Ultra-realistic AI partners — chat, images, and audio messages",
-    thumbnail: "/img/affiliates/kupid-ai.jpg",
+    thumbnail: CRAK_GENERIC_300x250,
     rating: 4.5,
     badge: "MOST REALISTIC",
     category: "both",
@@ -67,7 +73,7 @@ export const AFFILIATES: readonly Affiliate[] = [
     brand: "DreamGF.AI",
     tagline:
       "Design her from scratch — face, body, personality, kinks — and chat now",
-    thumbnail: "/img/affiliates/dream-gf.jpg",
+    thumbnail: CRAK_GENERIC_300x250,
     rating: 4.7,
     badge: "FREE TRIAL",
     category: "both",
@@ -76,7 +82,7 @@ export const AFFILIATES: readonly Affiliate[] = [
     slug: "crush-on",
     brand: "CrushOn.AI",
     tagline: "No filters, no limits — explicit AI chat with 2,000+ characters",
-    thumbnail: "/img/affiliates/crush-on.jpg",
+    thumbnail: CRAK_HENTAI_300x250,
     rating: 4.5,
     category: "chat",
   },
@@ -85,7 +91,7 @@ export const AFFILIATES: readonly Affiliate[] = [
     brand: "Soulkyn",
     tagline:
       "Emotionally deep AI companions — goes way beyond surface-level flirting",
-    thumbnail: "/img/affiliates/soulkyn.jpg",
+    thumbnail: CRAK_GENERIC_300x250,
     rating: 4.3,
     category: "chat",
   },
@@ -94,7 +100,7 @@ export const AFFILIATES: readonly Affiliate[] = [
     brand: "Nomi.AI",
     tagline:
       "Your AI girlfriend remembers everything — evolving personality over time",
-    thumbnail: "/img/affiliates/nomi-ai.jpg",
+    thumbnail: CRAK_HENTAI_300x250,
     rating: 4.6,
     category: "chat",
   },
