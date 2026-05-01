@@ -300,7 +300,14 @@ body {
   font-weight: 400;
   line-height: 1.6;
   min-height: 100dvh;
-  overflow-x: hidden;
+  /* `overflow-x: clip` instead of `hidden` — `hidden` on body makes the
+     body a scroll container on iOS Safari, which makes `position:fixed`
+     descendants (the bottom nav) detach during momentum-scroll while
+     the URL bar shows/hides. `clip` clips overflow without creating a
+     scroll container, so the bottom nav stays anchored to the viewport.
+     Root <html> already has overflow-x: clip as a fallback.
+     User-reported regression 2026-05-01. */
+  overflow-x: clip;
   -webkit-tap-highlight-color: transparent;
 }
 

@@ -4,7 +4,6 @@ import { notFound, permanentRedirect } from "next/navigation";
 import type { Metadata } from "next";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { WatchPlayerVast } from "@/components/WatchPlayerVast";
-import { WatchSignupNudge } from "@/components/WatchSignupNudge";
 import { ProGatedPlayer } from "@/components/ProGatedPlayer";
 import { isProLocked } from "@/lib/pro-gate";
 import { unlockCost } from "@/lib/unlock-cost";
@@ -535,8 +534,8 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 )}
               </div>
 
-              {/* Signup nudge after 30s for anon users */}
-              <WatchSignupNudge />
+              {/* Signup nudge unmounted 2026-05-01 per user request:
+                  no account-creation push during video playback. */}
 
               {/* H1 — uses buildDisplayTitle so videos without character/copy
                   metadata still get a real title (scraped title or tag) instead

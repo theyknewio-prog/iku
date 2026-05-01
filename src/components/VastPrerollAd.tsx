@@ -16,7 +16,6 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Link from "next/link";
 
 type VastAd = {
   mediaUrl: string;
@@ -55,7 +54,6 @@ export function VastPrerollAd({ onComplete }: Props) {
   const [muted, setMuted] = useState(true);
   const [remaining, setRemaining] = useState(15);
   const [done, setDone] = useState(false);
-  const [showSkipNudge, setShowSkipNudge] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const firedRef = useRef<Set<string>>(new Set());
@@ -150,29 +148,11 @@ export function VastPrerollAd({ onComplete }: Props) {
   const handleSkip = useCallback(() => {
     if (!ad || !skipArmed) return;
     fireOnce("skip", ad.tracking.skip);
-    try {
-      const path =
-        typeof window !== "undefined" ? window.location.pathname : "_";
-      const key = `iku-skip-nudge-${path}`;
-      const seen = sessionStorage.getItem(key);
-      const isPro = document.body?.dataset.pro === "1";
-      if (!seen && !isPro) {
-        sessionStorage.setItem(key, "1");
-        setShowSkipNudge(true);
-        return;
-      }
-    } catch {
-      /* sessionStorage may be blocked */
-    }
+    // Skip-nudge "Get Premium" upsell removed 2026-05-01 per user request:
+    // no account/Premium push inside the video ad surface.
     setDone(true);
     onComplete();
   }, [ad, skipArmed, fireOnce, onComplete]);
-
-  const dismissNudge = useCallback(() => {
-    setShowSkipNudge(false);
-    setDone(true);
-    onComplete();
-  }, [onComplete]);
 
   const handleClick = useCallback(() => {
     if (!ad?.clickThrough) return;
@@ -289,105 +269,6 @@ export function VastPrerollAd({ onComplete }: Props) {
         >
           🔇 Tap to unmute
         </button>
-      )}
-
-      {showSkipNudge && (
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: "rgba(0,0,0,0.92)",
-            backdropFilter: "blur(8px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 18,
-            zIndex: 20,
-          }}
-        >
-          <div
-            style={{
-              maxWidth: 360,
-              background: "#0e0a18",
-              border: "1px solid rgba(255,255,255,0.08)",
-              borderRadius: 16,
-              padding: "26px 22px",
-              textAlign: "center",
-              color: "#fff",
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            <div
-              aria-hidden
-              style={{
-                position: "absolute",
-                top: -60,
-                left: -30,
-                right: -30,
-                height: 160,
-                background:
-                  "linear-gradient(135deg, #ff3d7a, #8b38ff, #ffbe0b)",
-                opacity: 0.4,
-                filter: "blur(50px)",
-              }}
-            />
-            <div style={{ position: "relative" }}>
-              <div style={{ fontSize: 36, marginBottom: 10 }}>⏭️</div>
-              <h3
-                style={{
-                  fontSize: 20,
-                  fontWeight: 900,
-                  margin: "0 0 6px",
-                  letterSpacing: "-0.01em",
-                }}
-              >
-                Skip ads forever
-              </h3>
-              <p
-                style={{
-                  fontSize: 13,
-                  color: "rgba(255,255,255,0.75)",
-                  margin: "0 0 18px",
-                  lineHeight: 1.45,
-                }}
-              >
-                Less than a coffee a month. Zero ads, ever. Unlock every
-                long-form episode.
-              </p>
-              <Link
-                href="/pricing"
-                onClick={dismissNudge}
-                style={{
-                  display: "block",
-                  padding: "12px 18px",
-                  borderRadius: 12,
-                  background: "linear-gradient(135deg, #ff3d7a, #8b38ff)",
-                  color: "#fff",
-                  fontSize: 14,
-                  fontWeight: 800,
-                  textDecoration: "none",
-                  marginBottom: 10,
-                }}
-              >
-                Get Premium →
-              </Link>
-              <button
-                onClick={dismissNudge}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  color: "rgba(255,255,255,0.55)",
-                  fontSize: 12,
-                  cursor: "pointer",
-                  padding: "6px 12px",
-                }}
-              >
-                No thanks, continue
-              </button>
-            </div>
-          </div>
-        </div>
       )}
 
       <button
