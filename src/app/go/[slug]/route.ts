@@ -33,17 +33,47 @@ const CR_BASE = "?aff_sub5=SF_006OG000004lmDN";
 const CR = (path: string) => `https://t.vlmai-1.com/410186/${path}${CR_BASE}`;
 
 const AFFILIATE_LINKS: Record<string, string> = {
-  // === CrakRevenue direct AI offers (May 2026 EPC verified) ===
+  // ════ TIER S — Premium PPS, top EPC ($0.20+) ════
+  "joi-ai": CR("8080"), // $42 PPS T1 Premium, EPC $0.46 — TOP CONVERTER
   "candy-ai": CR("8025"), // $44 PPS T1 Premium, EPC $0.22
-  "joi-ai": CR("8080"), // $42 PPS T1 Premium, EPC $0.46 — TOP EPC
-  "girlfriend-gpt": CR("8184"), // $55 PPS Premium
-  "secrets-ai": CR("10381/0"), // $50 PPS, EPC $0.12
-  "get-harder": CR("10182/0"), // $34 PPS, EPC $0.16
+  "girlfriend-gpt": CR("8184"), // $55 PPS Premium, EPC $0.20
   "darlink-ai": CR("10345/0"), // $30 PPS, EPC $0.20
-  lovescape: CR("7886"), // $35 PPS, EPC $0.17
-  "dream-gf": CR("6523"), // 35% revshare lifetime
 
-  // === Smartlink fallback for slugs not in CR catalog ===
+  // ════ TIER A — High EPC ($0.10-0.20) ════
+  lovescape: CR("7886"), // $35 PPS, EPC $0.17
+  "get-harder": CR("10182/0"), // $34 PPS, EPC $0.16
+  "joi-ai-tier1": CR("7761"), // $35 PPS Tier 1, EPC $0.13
+  "secrets-ai": CR("10381/0"), // $50 PPS, EPC $0.12
+  "ourdream-ai-premium": CR("10402/0"), // $42 PPS Premium, EPC $0.10
+
+  // ════ TIER B — Solid EPC ($0.03-0.10) ════
+  "ourdream-ai": CR("7709"), // $32.40 PPS, EPC $0.04
+  "joi-ai-revshare": CR("7875"), // 28% revshare, EPC $0.04
+  "lovescape-revshare": CR("7887"), // 35% revshare lifetime, EPC $0.03
+  "darlink-ai-revshare": CR("10344/0"), // 45% revshare, EPC $0.05 (pending — fallback to PPS)
+  "swipey-pps": CR("10100/0"), // $38.50 PPS, EPC $0.06 (pending)
+
+  // ════ TIER C — Revshare lifetime (long-tail $$) ════
+  "candy-ai-revshare": CR("9022/0"), // 40% revshare lifetime
+  "candy-ai-pps": CR("6646"), // $36 PPS standard
+  "dream-gf": CR("6523"), // 35% revshare lifetime
+  dreambf: CR("6559"), // 35% revshare (DreamBF.ai)
+  "ehentai-ai": CR("6558"), // 35% revshare lifetime — HENTAI NICHE MATCH
+  "fantasy-ai": CR("7511"), // 35% revshare lifetime
+  "mylovely-ai": CR("10318/0"), // 35% revshare lifetime
+  "swipey-revshare": CR("10219/0"), // 35% revshare lifetime
+  "xtease-ai": CR("10341/0"), // Multi-CPA varies
+  justsext: CR("7946"), // 50% revshare lifetime ⭐ HIGHEST RATE
+
+  // ════ TIER D — Special multi-offer slots ════
+  "cr-sponsored-45": CR("7477"), // Sponsored $45 PPS rotator
+  "cr-up-to-35": CR("10338/0"), // Up to $35 PPS rotator
+  "cr-up-to-50": CR("10349/0"), // Up to $50 PPS rotator
+  "cr-revshare-70": CR("6924"), // 70% Revshare Lifetime ⭐⭐ HIGHEST RATE
+  "cr-smartlink":
+    "https://t.mbjms.com/410186/9403/0?aff_sub5=SF_006OG000004lmDN", // Smartlink fallback (low EPC)
+
+  // ════ Direct programs (signup pending) ════
   "only-waifus": "https://onlywaifus.ai/?via=ikugg", // FirstPromoter pending
   "anime-genius": "https://animegenius.live3d.io/?via=ikugg", // direct pending
   "kupid-ai": "https://kupid.ai/?via=ikugg", // Dub pending

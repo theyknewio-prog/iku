@@ -165,6 +165,69 @@ export const AFFILIATES: readonly Affiliate[] = [
     rating: 4.5,
     category: "both",
   },
+  // ── 7 more direct CR offers (May 2026) ──
+  {
+    slug: "ehentai-ai",
+    brand: "eHentai AI",
+    tagline: "AI hentai chat trained on real doujin lore — your perfect waifu",
+    thumbnail: CRAK_HENTAI_300x250,
+    rating: 4.6,
+    badge: "PURE HENTAI",
+    category: "both",
+  },
+  {
+    slug: "ourdream-ai",
+    brand: "OurDream AI",
+    tagline:
+      "Build your dream girl — fully customizable face, body, voice, kinks",
+    thumbnail: CRAK_MAINSTREAM_300x250,
+    rating: 4.4,
+    category: "both",
+  },
+  {
+    slug: "fantasy-ai",
+    brand: "Fantasy AI",
+    tagline:
+      "Step into any fantasy — fictional, anime, or real — she'll play it",
+    thumbnail: CRAK_HENTAI_300x250,
+    rating: 4.3,
+    category: "chat",
+  },
+  {
+    slug: "justsext",
+    brand: "JustSext",
+    tagline: "Pure sexting AI — no foreplay, no chitchat, just dirty messages",
+    thumbnail: CRAK_MAINSTREAM_300x250,
+    rating: 4.5,
+    badge: "50% LIFETIME",
+    category: "chat",
+  },
+  {
+    slug: "mylovely-ai",
+    brand: "MyLovely AI",
+    tagline:
+      "Sweet, romantic AI partner — soft, caring, but turns dirty on demand",
+    thumbnail: CRAK_HENTAI_300x250,
+    rating: 4.3,
+    category: "chat",
+  },
+  {
+    slug: "xtease-ai",
+    brand: "XTease AI",
+    tagline:
+      "Tease, escalate, climax — multi-stage sexting that builds tension",
+    thumbnail: CRAK_HENTAI_300x250,
+    rating: 4.4,
+    category: "chat",
+  },
+  {
+    slug: "swipey-pps",
+    brand: "Swipey",
+    tagline: "Tinder-style AI dating — swipe profiles, match, sext, repeat",
+    thumbnail: CRAK_MAINSTREAM_300x250,
+    rating: 4.3,
+    category: "chat",
+  },
 ] as const;
 
 /** Utility — look up a single affiliate by slug. Returns undefined if not found. */
