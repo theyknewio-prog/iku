@@ -10,7 +10,6 @@ import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { SignupCTA } from "@/components/SignupCTA";
 import { CHARACTERS } from "@/data/characters";
 import { SERIES } from "@/data/series";
-import AffiliateRail from "@/components/AffiliateRail";
 
 export const revalidate = 3600;
 export const dynamic = "force-dynamic";
@@ -369,21 +368,6 @@ export default async function ExplorePage(props: {
               })}
             </div>
           </section>
-
-          {/* C: AI Girlfriend rail — top-EPC offers above video grid */}
-          <AffiliateRail
-            title="🔥 AI waifu chat — try free"
-            slugs={[
-              "joi-ai",
-              "candy-ai",
-              "girlfriend-gpt",
-              "darlink-ai",
-              "lovescape",
-            ]}
-            layout="carousel"
-            limit={5}
-          />
-
           {/* ════════════════════════════════════════════════
               SECTION 4 — All Videos grid (existing, preserved)
           ════════════════════════════════════════════════ */}

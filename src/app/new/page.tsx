@@ -3,7 +3,6 @@ import { Suspense } from "react";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { Pagination } from "@/components/Pagination";
 import { getVideos, countVideos } from "@/lib/content";
-import AffiliateRail from "@/components/AffiliateRail";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 import { SortTabs, parseSort } from "@/components/SortTabs";
@@ -81,21 +80,6 @@ export default async function NewPage({ searchParams }: Props) {
               page: currentPage > 1 ? String(currentPage) : undefined,
             }}
           />
-
-          {/* C: AI Girlfriend rail — above video grid */}
-          <AffiliateRail
-            title="🔥 Your AI girlfriend awaits — try free"
-            slugs={[
-              "joi-ai",
-              "girlfriend-gpt",
-              "candy-ai",
-              "lovescape",
-              "get-harder",
-            ]}
-            layout="carousel"
-            limit={5}
-          />
-
           {/* ── Video grid ────────────────────────────────────── */}
           {videos.length === 0 ? (
             <div

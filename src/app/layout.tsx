@@ -2,14 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Righteous, Nunito } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "@/components/AppShell";
-import { HilltopInPagePush } from "@/components/HilltopInPagePush";
-import { StickyHilltopBottom } from "@/components/StickyHilltopBottom";
-import { AffiliateSlideIn } from "@/components/AffiliateSlideIn";
-import { StripcashVideoSlider } from "@/components/StripcashVideoSlider";
-import { CrakRevenuePopunder } from "@/components/CrakRevenuePopunder";
-import { CrakRevenuePopIn } from "@/components/CrakRevenuePopIn";
-import { CrakRevenueCamsWidget } from "@/components/CrakRevenueCamsWidget";
-import { PopAdsPopunder } from "@/components/PopAdsPopunder";
 import { MegaFooter } from "@/components/MegaFooter";
 import { SessionProviderClient } from "@/components/SessionProviderClient";
 import { UserDataSync } from "@/components/UserDataSync";
@@ -162,34 +154,11 @@ export default async function RootLayout({
         <SessionProviderClient>
           <AnalyticsProvider />
           <UserDataSync />
-          {/* 2026-04-23 — FULL AD NUKE. Every ad surface ripped out to reach
-              a clean $0 baseline before rebuilding with the Playmak3r stack
-              (Clickadu + HilltopAds + Stripcash) one surface at a time. */}
+          {/* 2026-05-02 — TOTAL AD NUKE #2. All ad surfaces removed (every
+              network, every popunder, every affiliate card, every banner,
+              every preroll). Site runs zero monetization while the new
+              strategy is decided. */}
           <PushNotifications />
-          {/* Playmak3r stack ad surfaces — global mounts. Each component
-              handles its own pathname filter (skip /feed, /pricing, /signup
-              and Pro users). Mounting in the root layout means they survive
-              client-side navigation between pages without remounting/race. */}
-          {/* HilltopInPagePush re-mounted 2026-05-02 — replaces revenue
-              gap from AffiliateCard-only stack. AffiliateSlideIn keeps
-              running in parallel (different surface, different vibe). */}
-          <HilltopInPagePush />
-          {/* HilltopPopunder unmounted 2026-05-01: their inventory pushes
-              fake-Chrome-update / fake-virus-warning scam creatives in
-              full-tab takeover, which makes iku.gg look like a phishing
-              site. Component file kept for future re-enable if HilltopAds
-              cleans up the popunder pool. */}
-          <StickyHilltopBottom />
-          <AffiliateSlideIn />
-          <StripcashVideoSlider />
-          {/* CrakRevenue AI Smartlink ads — popunder (24h cap), pop-in
-              overlay (click-trig, 14min), cams widget bottom-right.
-              All point to the AI Smartlink so each click is tracked
-              by aff_sub4 (AT_0005 popunder, AT_0019 popin, AT_0018 cams). */}
-          <CrakRevenuePopunder />
-          <CrakRevenuePopIn />
-          <CrakRevenueCamsWidget />
-          <PopAdsPopunder />
           <AppShell footer={<MegaFooter />}>{children}</AppShell>
         </SessionProviderClient>
       </body>

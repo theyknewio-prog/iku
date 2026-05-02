@@ -21,8 +21,6 @@ import { JoinDiscordCTA } from "@/components/JoinDiscordCTA";
 import { SignupCTA } from "@/components/SignupCTA";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { MagneticButton } from "@/components/MagneticButton";
-import AffiliateRail from "@/components/AffiliateRail";
-import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai, 3D Hentai & Cartoon Porn | 320,000+ Videos",
@@ -450,35 +448,6 @@ export default async function HomePage() {
             ))}
           </Carousel>
 
-          {/* HilltopAds 300x250 — homepage primary impression-based slot.
-              Re-mounted 2026-05-02: live probe found 0 banner ad networks
-              were rendering on `/`. Pairs with the AffiliateRail below to
-              capture both impression revenue (CPM) and conversion revenue (PPS). */}
-          <div
-            style={{
-              margin: "16px auto",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <HilltopAdsBanner format="banner300x250" />
-          </div>
-
-          {/* AI Girlfriend rail #1 — top-EPC offers, between Trending and next.
-              Highest converters first: Joi $0.46 EPC, Candy T1 Premium $0.22. */}
-          <AffiliateRail
-            title="🔥 AI girlfriend — try free now"
-            slugs={[
-              "joi-ai",
-              "candy-ai",
-              "girlfriend-gpt",
-              "darlink-ai",
-              "lovescape",
-            ]}
-            layout="carousel"
-            limit={5}
-          />
-
           {/* Premium CTA #1 — slim inline strip after Trending. */}
           <Link
             href="/pricing"
@@ -785,21 +754,6 @@ export default async function HomePage() {
               })}
             </div>
           </section>
-
-          {/* AI Girlfriend rail #2 — mid-page after Top Rated, before genre browse.
-              Features high-EPC offers a viewer hasn't seen yet. */}
-          <AffiliateRail
-            title="💋 Hentai AI chat — uncensored"
-            slugs={[
-              "secrets-ai",
-              "get-harder",
-              "ehentai-ai",
-              "fantasy-ai",
-              "anifusion",
-            ]}
-            layout="carousel"
-            limit={5}
-          />
 
           {/* Premium CTA #2 — different angle from #1 (yearly nudge). */}
           <Link

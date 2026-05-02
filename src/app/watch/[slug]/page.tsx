@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { notFound, permanentRedirect } from "next/navigation";
 import type { Metadata } from "next";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
-import { WatchPlayerVast } from "@/components/WatchPlayerVast";
+import { WatchPlayer } from "@/components/WatchPlayer";
 import { ProGatedPlayer } from "@/components/ProGatedPlayer";
 import { isProLocked } from "@/lib/pro-gate";
 import { unlockCost } from "@/lib/unlock-cost";
@@ -42,11 +42,6 @@ import {
   isVideoDeadBySlug,
 } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
-import { RemoveAdsCTA } from "@/components/RemoveAdsCTA";
-import AffiliateCard from "@/components/AffiliateCard";
-import AffiliateRail from "@/components/AffiliateRail";
-import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
-import { getAffiliate } from "@/lib/affiliates";
 import {
   buildSeoTitle,
   buildTitle as buildDisplayTitle,
@@ -504,26 +499,6 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 ))}
               </nav>
 
-              {/* Above-player AffiliateCard — high-EPC slot, viewer about to
-                  press play has maximum attention. Uses the wide banner. */}
-              {(() => {
-                const aff = getAffiliate("joi-ai");
-                if (!aff) return null;
-                return (
-                  <div style={{ marginBottom: 12 }}>
-                    <AffiliateCard
-                      slug={aff.slug}
-                      brand={aff.brand}
-                      tagline={aff.tagline}
-                      thumbnail={aff.thumbnail}
-                      rating={aff.rating}
-                      badge={aff.badge}
-                      variant="wide"
-                    />
-                  </div>
-                );
-              })()}
-
               {/* Video player — Gelbooru URLs are proxied through /api/proxy,
                   Rule34Video + WP are proxied through /api/video-stream to
                   bypass IP-bound access tokens.
@@ -545,7 +520,7 @@ export default async function WatchPage({ params }: WatchPageProps) {
                     unlockCost={unlockCost(video)}
                   />
                 ) : (
-                  <WatchPlayerVast
+                  <WatchPlayer
                     src={streamProxyUrl || video.url || ""}
                     poster={video.thumbnail || undefined}
                     resolveUrl={resolvePageUrl || undefined}
@@ -656,10 +631,6 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 </section>
               )}
 
-              {/* Premium upsell card — hidden for Pro users. Replaces the
-                  stale 🚫 "Skip every preroll + ad" strip. */}
-              <RemoveAdsCTA />
-
               {/* Artist credit */}
               {video.artists[0] && (
                 <div className="player-artist-row">
@@ -723,27 +694,6 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
               {/* Related — mobile grid (below player) */}
               <div style={{ marginTop: "32px" }}>
-                {/* HilltopAds banner 300x250 — impression-based revenue
-                    (vs. CPA AffiliateCard which only pays on conversion).
-                    Re-mounted 2026-05-02 after live probe found 0 banner
-                    impressions on the site (previous code path replaced
-                    them all with AffiliateCard). */}
-                <div
-                  style={{
-                    margin: "0 auto 16px",
-                    display: "flex",
-                    justifyContent: "center",
-                  }}
-                >
-                  <HilltopAdsBanner format="banner300x250" />
-                </div>
-                {/* A2: Affiliate rail — below player, above related. Mobile-priority. */}
-                <AffiliateRail
-                  title="🔥 AI girlfriend chat — try free now"
-                  slugs={["joi-ai", "candy-ai", "girlfriend-gpt"]}
-                  layout="carousel"
-                  limit={3}
-                />
                 <div className="section-header">
                   <h2
                     className="section-title"
@@ -780,30 +730,6 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
             {/* ── Sidebar (desktop) ─────────────────────────── */}
             <aside className="player-sidebar">
-              {/* HilltopAds banner 300x250 — top of sidebar (highest viewability).
-                  Re-mounted 2026-05-02 alongside the AffiliateCard so we earn
-                  on both impressions (HilltopAds CPM) AND conversions (CR PPS). */}
-              <div className="aff-rail__divider" style={{ marginBottom: 16 }}>
-                <HilltopAdsBanner format="banner300x250" />
-              </div>
-              {/* A1: Affiliate compact card — desktop sidebar 2nd slot. */}
-              {(() => {
-                const aff = getAffiliate("candy-ai");
-                if (!aff) return null;
-                return (
-                  <div className="aff-rail__divider">
-                    <AffiliateCard
-                      slug={aff.slug}
-                      brand={aff.brand}
-                      tagline={aff.tagline}
-                      thumbnail={aff.thumbnail}
-                      rating={aff.rating}
-                      badge={aff.badge}
-                      variant="compact"
-                    />
-                  </div>
-                );
-              })()}
               <div className="player-sidebar__title">Up next</div>
               <Suspense
                 fallback={Array.from({ length: 12 }).map((_, i) => (
@@ -827,25 +753,6 @@ export default async function WatchPage({ params }: WatchPageProps) {
               >
                 <RelatedSidebar video={video} offset={0} limit={12} />
               </Suspense>
-              {/* Bottom-of-sidebar 2nd affiliate — different brand from top to
-                  diversify offers shown in the same scroll viewport. */}
-              {(() => {
-                const aff2 = getAffiliate("girlfriend-gpt");
-                if (!aff2) return null;
-                return (
-                  <div className="aff-rail__divider" style={{ marginTop: 16 }}>
-                    <AffiliateCard
-                      slug={aff2.slug}
-                      brand={aff2.brand}
-                      tagline={aff2.tagline}
-                      thumbnail={aff2.thumbnail}
-                      rating={aff2.rating}
-                      badge={aff2.badge}
-                      variant="compact"
-                    />
-                  </div>
-                );
-              })()}
             </aside>
           </div>
 
