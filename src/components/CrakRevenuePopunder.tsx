@@ -15,7 +15,8 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { CRAK_CREATIVES } from "@/lib/crakrevenue-creatives";
+import { getCrakCreatives } from "@/lib/crakrevenue-creatives";
+import { getCfCountry } from "@/lib/cf-country";
 
 const SCRIPT_ID = "iku-crak-popunder";
 const EXCLUDED_PATHS = [
@@ -41,23 +42,24 @@ export function CrakRevenuePopunder() {
       return;
     if (document.getElementById(SCRIPT_ID)) return;
 
-    // Settle 4s — popunder shouldn't fight LCP. The browser's popup-blocker
-    // policy still requires a real user gesture, so the user has to click
-    // anyway; delaying the script load doesn't change perceived behavior.
-    const t = setTimeout(() => {
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      if (cancelled) return;
       try {
+        const country = await getCfCountry();
+        if (cancelled) return;
+        const creatives = getCrakCreatives(country);
+
         const loader = document.createElement("script");
         loader.id = SCRIPT_ID;
-        loader.src = CRAK_CREATIVES.popunder.scriptSrc;
+        loader.src = creatives.popunder.scriptSrc;
         loader.async = true;
 
-        // After mnpw3.js loads, register the popunder with the AI Smartlink
-        // URL. Use a separate inline script that runs after the loader.
         loader.onload = () => {
           try {
             const init = document.createElement("script");
             init.id = SCRIPT_ID + "-init";
-            init.text = CRAK_CREATIVES.popunder.initCall;
+            init.text = creatives.popunder.initCall;
             document.body.appendChild(init);
           } catch {
             /* swallow */
@@ -70,7 +72,10 @@ export function CrakRevenuePopunder() {
       }
     }, 4000);
 
-    return () => clearTimeout(t);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
   }, [pathname]);
 
   return null;

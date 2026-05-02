@@ -11,7 +11,8 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { CRAK_CREATIVES } from "@/lib/crakrevenue-creatives";
+import { getCrakCreatives } from "@/lib/crakrevenue-creatives";
+import { getCfCountry } from "@/lib/cf-country";
 
 const SCRIPT_ID = "iku-crak-popin";
 const EXCLUDED_PATHS = [
@@ -37,18 +38,22 @@ export function CrakRevenuePopIn() {
       return;
     if (document.getElementById(SCRIPT_ID)) return;
 
-    const t = setTimeout(() => {
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      if (cancelled) return;
       try {
-        // The affstitial script reads its config from a global named
-        // `crakPopInParamsOverlay`. Set it BEFORE injecting the loader.
+        const country = await getCfCountry();
+        if (cancelled) return;
+        const creatives = getCrakCreatives(country);
+
         const cfg = document.createElement("script");
         cfg.id = SCRIPT_ID + "-cfg";
-        cfg.text = `var ${CRAK_CREATIVES.popInOverlay.initVar} = ${JSON.stringify(CRAK_CREATIVES.popInOverlay.config)};`;
+        cfg.text = `var ${creatives.popInOverlay.initVar} = ${JSON.stringify(creatives.popInOverlay.config)};`;
         document.head.appendChild(cfg);
 
         const loader = document.createElement("script");
         loader.id = SCRIPT_ID;
-        loader.src = CRAK_CREATIVES.popInOverlay.scriptSrc;
+        loader.src = creatives.popInOverlay.scriptSrc;
         loader.async = true;
         document.body.appendChild(loader);
       } catch (e) {
@@ -56,7 +61,10 @@ export function CrakRevenuePopIn() {
       }
     }, 5000);
 
-    return () => clearTimeout(t);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
   }, [pathname]);
 
   return null;

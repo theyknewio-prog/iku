@@ -17,7 +17,8 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { CRAK_CREATIVES } from "@/lib/crakrevenue-creatives";
+import { getCrakCreatives } from "@/lib/crakrevenue-creatives";
+import { getCfCountry } from "@/lib/cf-country";
 
 const SCRIPT_ID = "iku-crak-cams";
 const EXCLUDED_PATHS = [
@@ -43,11 +44,17 @@ export function CrakRevenueCamsWidget() {
       return;
     if (document.getElementById(SCRIPT_ID)) return;
 
-    const t = setTimeout(() => {
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      if (cancelled) return;
       try {
+        const country = await getCfCountry();
+        if (cancelled) return;
+        const creatives = getCrakCreatives(country);
+
         const s = document.createElement("script");
         s.id = SCRIPT_ID;
-        s.src = CRAK_CREATIVES.camsWidget.scriptSrc;
+        s.src = creatives.camsWidget.scriptSrc;
         s.defer = true;
         document.body.appendChild(s);
       } catch (e) {
@@ -55,7 +62,10 @@ export function CrakRevenueCamsWidget() {
       }
     }, 6000);
 
-    return () => clearTimeout(t);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
   }, [pathname]);
 
   return null;
