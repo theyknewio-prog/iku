@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { VideoCard } from "./VideoCard";
 import { FeedConversionCTA } from "./FeedConversionCTA";
+import { FeedAdInterstitial } from "./FeedAdInterstitial";
 import { useSession } from "next-auth/react";
 export interface FeedVideo {
   id: number;
@@ -30,10 +31,15 @@ export function SwipeFeed() {
   // Global mute state — shared across all cards. Once the user unmutes,
   // all subsequent videos play with sound (like TikTok/RedGIFs).
   const [globalMuted, setGlobalMuted] = useState(true);
-  // Conversion CTA interstitial
+  // Conversion CTA interstitial (every 12 swipes — signup/premium nudge)
   const [showInterstitial, setShowInterstitial] = useState(false);
   const interstitialCountRef = useRef(0);
   const lastInterstitialIndexRef = useRef(-10);
+  // Ad interstitial (every 8 swipes — CR Candy.AI overlay).
+  // LCM(8,12)=24 → collides with conversion CTA only every 24 swipes
+  // so the same swipe never fires both at once.
+  const [showAdInterstitial, setShowAdInterstitial] = useState(false);
+  const lastAdIndexRef = useRef(-8);
   const isPro = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const loadingRef = useRef(false);
@@ -146,10 +152,7 @@ export function SwipeFeed() {
     });
   }, []);
 
-  // Conversion CTA every 12 swipes — tightened from /15 alongside the VAST
-  // /10 → /7 (Ship #10). Still offset from the VAST cadence so the two
-  // never collide on the same swipe (LCM(7,12) = 84 — collisions only
-  // every 84 swipes, well past typical session length).
+  // Conversion CTA every 12 swipes — signup/premium nudge.
   useEffect(() => {
     if (
       activeIndex > 0 &&
@@ -170,6 +173,22 @@ export function SwipeFeed() {
       }
     }
   }, [activeIndex]);
+
+  // Ad interstitial every 8 swipes (CR Candy.AI overlay). Skipped when
+  // a conversion CTA is already up (collision every 24 swipes by LCM)
+  // and skipped for Pro users.
+  useEffect(() => {
+    if (
+      activeIndex > 0 &&
+      activeIndex % 8 === 0 &&
+      activeIndex !== lastAdIndexRef.current &&
+      !showInterstitial &&
+      !isPro.current
+    ) {
+      lastAdIndexRef.current = activeIndex;
+      setShowAdInterstitial(true);
+    }
+  }, [activeIndex, showInterstitial]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -225,6 +244,12 @@ export function SwipeFeed() {
           }
           onClose={() => setShowInterstitial(false)}
         />
+      )}
+
+      {/* Ad interstitial — fires every 8 swipes with a CR Candy.AI GIF
+          overlay. Skipped when conversion CTA is already up. */}
+      {showAdInterstitial && !showInterstitial && (
+        <FeedAdInterstitial onDismiss={() => setShowAdInterstitial(false)} />
       )}
 
       {/* Fixed close button — top-left. Hidden when the interstitial ad
