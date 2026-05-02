@@ -88,7 +88,6 @@ export function PosterCard({
   priority = false,
 }: PosterCardProps) {
   const [watched, setWatched] = useState(false);
-  const [proxyRetry, setProxyRetry] = useState(false);
 
   useEffect(() => {
     setWatched(isWatched(video.id));
@@ -121,8 +120,8 @@ export function PosterCard({
         {video.thumbnail && (
           <Image
             src={
-              proxyRetry && /^https:\/\/cdn\.donmai\.us\//.test(video.thumbnail)
-                ? `/api/proxy?url=${encodeURIComponent(video.thumbnail)}`
+              /^https:\/\/cdn\.donmai\.us\//.test(video.thumbnail)
+                ? `https://iku-cdn.mejdi-sabri.workers.dev/stream?url=${encodeURIComponent(video.thumbnail)}`
                 : video.thumbnail
             }
             alt={title}
@@ -134,12 +133,7 @@ export function PosterCard({
             unoptimized
             referrerPolicy="no-referrer"
             onError={() => {
-              if (
-                !proxyRetry &&
-                /^https:\/\/cdn\.donmai\.us\//.test(video.thumbnail)
-              ) {
-                setProxyRetry(true);
-              }
+              /* CF Worker handles cdn.donmai.us; no fallback needed */
             }}
           />
         )}
