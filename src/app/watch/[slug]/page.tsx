@@ -696,9 +696,10 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
               {/* Placement C — CR Joi 300x250 GIF (mobile shows here below
                   player; desktop shows the same in sidebar top via the
-                  aside below). Native size, zero chrome. */}
+                  aside below). Native size, zero chrome. Different GIF
+                  pool from homepage A to avoid ad blindness. */}
               <div style={{ margin: "20px auto" }}>
-                <AdRotationBanner slug="joi-ai" />
+                <AdRotationBanner slug="joi-ai" surface="watch-c" />
               </div>
 
               {/* Related — mobile grid (below player) */}
@@ -771,9 +772,9 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
               {/* Placement D — CR Candy.AI 300x250 GIF (sidebar bottom,
                   desktop only since aside is hidden on mobile). Different
-                  brand from C above to diversify offers per visitor. */}
+                  brand AND different GIF pool from C above. */}
               <div style={{ marginTop: 16 }}>
-                <AdRotationBanner slug="candy-ai" />
+                <AdRotationBanner slug="candy-ai" surface="watch-d" />
               </div>
             </aside>
           </div>

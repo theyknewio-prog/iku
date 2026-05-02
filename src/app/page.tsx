@@ -436,8 +436,8 @@ export default async function HomePage() {
             </Link>
           </section>
 
-          {/* Placement A — CR Joi-AI 300x250 GIF (rotation 5). Native size,
-              zero chrome. Server-side random pick per request. */}
+          {/* Placement A — CR Joi-AI 300x250 GIF (homepage-a pool: 2
+              GIFs, no overlap with /watch surfaces). Native, zero chrome. */}
           <div style={{ margin: "24px auto" }}>
             <AdJoiBanner />
           </div>

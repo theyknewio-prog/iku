@@ -1,31 +1,41 @@
 /**
  * AdRotationBanner — generic 300x250 affiliate ad slot.
  *
- * Server component. Picks ONE 300x250 GIF at random per request from the
- * shared anime-themed CR creative pool (offer 10138 ourdream.ai —
- * generic creatives that fit any AI girlfriend landing). Click goes to
- * /go/<slug> → CR redirect.
+ * Server component. Picks ONE 300x250 GIF at random per request from a
+ * surface-specific pool. The 5 anime GIFs we have are split across
+ * surfaces so the same user doesn't see the same creative on homepage
+ * + /watch (ad blindness killer).
  *
  * Per `feedback_respect_ad_format.md`: ZERO wrapper, ZERO badge, ZERO
  * chrome. Plain `<a><img></a>` at native 300x250.
  */
 
-const GIFS = [
-  "https://www.imglnkx.com/10138/anime---succubus.gif",
-  "https://www.imglnkx.com/10138/anime---tentacle.gif",
-  "https://www.imglnkx.com/10138/anime---lesbian.gif",
-  "https://www.imglnkx.com/10138/anime---slimebondage.gif",
-  "https://www.imglnkx.com/10138/300x250---AI-Girls-Just-Want-To-Make-You-Cum---Copy.gif",
-] as const;
+// Surface-specific GIF pools (no overlap between surfaces).
+const POOLS = {
+  // Homepage A — entre Hero et Trending
+  "homepage-a": [
+    "https://www.imglnkx.com/10138/anime---succubus.gif",
+    "https://www.imglnkx.com/10138/300x250---AI-Girls-Just-Want-To-Make-You-Cum---Copy.gif",
+  ],
+  // /watch C — sous le player (mobile + desktop)
+  "watch-c": [
+    "https://www.imglnkx.com/10138/anime---lesbian.gif",
+    "https://www.imglnkx.com/10138/anime---tentacle.gif",
+  ],
+  // /watch D — sidebar bottom desktop
+  "watch-d": ["https://www.imglnkx.com/10138/anime---slimebondage.gif"],
+} as const;
+
+type Surface = keyof typeof POOLS;
 
 interface Props {
   slug: string;
-  /** Optional override — useful if a specific offer has dedicated creatives. */
-  gifs?: readonly string[];
+  surface: Surface;
 }
 
-export function AdRotationBanner({ slug, gifs = GIFS }: Props) {
-  const src = gifs[Math.floor(Math.random() * gifs.length)];
+export function AdRotationBanner({ slug, surface }: Props) {
+  const pool = POOLS[surface];
+  const src = pool[Math.floor(Math.random() * pool.length)];
   return (
     <a
       href={`/go/${slug}`}
@@ -47,7 +57,7 @@ export function AdRotationBanner({ slug, gifs = GIFS }: Props) {
   );
 }
 
-/** Backwards-compat alias for the homepage Placement A (uses joi-ai). */
+/** Backwards-compat alias for the homepage Placement A. */
 export function AdJoiBanner() {
-  return <AdRotationBanner slug="joi-ai" />;
+  return <AdRotationBanner slug="joi-ai" surface="homepage-a" />;
 }
