@@ -290,25 +290,6 @@ export async function MegaFooter() {
           </ul>
         </section>
 
-        {/* ── AI Tools ──────────────────────────────────────── */}
-        <section className="mega-footer__section">
-          <h3 className="mega-footer__title">AI Tools</h3>
-          <ul className="mega-footer__links">
-            <li>
-              <Link href="/ai-girlfriend">AI Girlfriend Reviews</Link>
-            </li>
-            <li>
-              <Link href="/ai-girlfriend">AI Hentai Chat</Link>
-            </li>
-            <li>
-              <Link href="/ai-girlfriend">AI Waifu Generator</Link>
-            </li>
-            <li>
-              <Link href="/ai-girlfriend">Best AI Companions</Link>
-            </li>
-          </ul>
-        </section>
-
         {/* ── Friends / Partner Sites ──────────────────────── */}
         <section className="mega-footer__section">
           <h3 className="mega-footer__title">Friends</h3>
