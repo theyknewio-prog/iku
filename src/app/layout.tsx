@@ -170,10 +170,10 @@ export default async function RootLayout({
               handles its own pathname filter (skip /feed, /pricing, /signup
               and Pro users). Mounting in the root layout means they survive
               client-side navigation between pages without remounting/race. */}
-          {/* HilltopInPagePush unmounted 2026-05-01: replaced by AffiliateSlideIn
-              (clean non-intrusive bottom-right card, no fake browser-notif scripts).
-              Component file kept for potential re-enable. */}
-          {/* <HilltopInPagePush /> */}
+          {/* HilltopInPagePush re-mounted 2026-05-02 — replaces revenue
+              gap from AffiliateCard-only stack. AffiliateSlideIn keeps
+              running in parallel (different surface, different vibe). */}
+          <HilltopInPagePush />
           {/* HilltopPopunder unmounted 2026-05-01: their inventory pushes
               fake-Chrome-update / fake-virus-warning scam creatives in
               full-tab takeover, which makes iku.gg look like a phishing

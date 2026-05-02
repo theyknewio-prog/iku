@@ -395,7 +395,7 @@ export default function AIGirlfriendPage() {
                         href={p.href}
                         className="aigf-cta-btn aigf-cta-btn--sm"
                         target="_blank"
-                        rel="noopener noreferrer nofollow"
+                        rel="noopener nofollow"
                       >
                         Try
                       </a>
@@ -488,7 +488,7 @@ export default function AIGirlfriendPage() {
                         href={p.href}
                         className="aigf-cta-btn"
                         target="_blank"
-                        rel="noopener noreferrer nofollow"
+                        rel="noopener nofollow"
                       >
                         Try {p.name} →
                       </a>
@@ -638,7 +638,7 @@ export default function AIGirlfriendPage() {
                 href="/go/candy-ai"
                 className="aigf-cta-btn aigf-cta-btn--lg"
                 target="_blank"
-                rel="noopener noreferrer nofollow"
+                rel="noopener nofollow"
               >
                 Try Candy.AI — Best AI Girlfriend →
               </a>
@@ -646,7 +646,7 @@ export default function AIGirlfriendPage() {
                 href="/go/only-waifus"
                 className="aigf-cta-btn aigf-cta-btn--lg aigf-cta-btn--secondary"
                 target="_blank"
-                rel="noopener noreferrer nofollow"
+                rel="noopener nofollow"
               >
                 Try OnlyWaifus.AI — Best Waifu Generator →
               </a>

@@ -22,6 +22,7 @@ import { SignupCTA } from "@/components/SignupCTA";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { MagneticButton } from "@/components/MagneticButton";
 import AffiliateRail from "@/components/AffiliateRail";
+import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai, 3D Hentai & Cartoon Porn | 320,000+ Videos",
@@ -448,6 +449,20 @@ export default async function HomePage() {
               />
             ))}
           </Carousel>
+
+          {/* HilltopAds 300x250 — homepage primary impression-based slot.
+              Re-mounted 2026-05-02: live probe found 0 banner ad networks
+              were rendering on `/`. Pairs with the AffiliateRail below to
+              capture both impression revenue (CPM) and conversion revenue (PPS). */}
+          <div
+            style={{
+              margin: "16px auto",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <HilltopAdsBanner format="banner300x250" />
+          </div>
 
           {/* AI Girlfriend rail #1 — top-EPC offers, between Trending and next.
               Highest converters first: Joi $0.46 EPC, Candy T1 Premium $0.22. */}

@@ -45,6 +45,7 @@ import { getNonce } from "@/lib/csp-nonce";
 import { RemoveAdsCTA } from "@/components/RemoveAdsCTA";
 import AffiliateCard from "@/components/AffiliateCard";
 import AffiliateRail from "@/components/AffiliateRail";
+import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { getAffiliate } from "@/lib/affiliates";
 import {
   buildSeoTitle,
@@ -722,8 +723,21 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
               {/* Related — mobile grid (below player) */}
               <div style={{ marginTop: "32px" }}>
-                {/* A2: Affiliate rail — below player, above related. Mobile-priority.
-                    Replaces HilltopAdsBanner 300x250. */}
+                {/* HilltopAds banner 300x250 — impression-based revenue
+                    (vs. CPA AffiliateCard which only pays on conversion).
+                    Re-mounted 2026-05-02 after live probe found 0 banner
+                    impressions on the site (previous code path replaced
+                    them all with AffiliateCard). */}
+                <div
+                  style={{
+                    margin: "0 auto 16px",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <HilltopAdsBanner format="banner300x250" />
+                </div>
+                {/* A2: Affiliate rail — below player, above related. Mobile-priority. */}
                 <AffiliateRail
                   title="🔥 AI girlfriend chat — try free now"
                   slugs={["joi-ai", "candy-ai", "girlfriend-gpt"]}
@@ -766,8 +780,13 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
             {/* ── Sidebar (desktop) ─────────────────────────── */}
             <aside className="player-sidebar">
-              {/* A1: Affiliate compact card — desktop sidebar top slot.
-                  Replaces the old HilltopAdsBanner 300x250 surface. */}
+              {/* HilltopAds banner 300x250 — top of sidebar (highest viewability).
+                  Re-mounted 2026-05-02 alongside the AffiliateCard so we earn
+                  on both impressions (HilltopAds CPM) AND conversions (CR PPS). */}
+              <div className="aff-rail__divider" style={{ marginBottom: 16 }}>
+                <HilltopAdsBanner format="banner300x250" />
+              </div>
+              {/* A1: Affiliate compact card — desktop sidebar 2nd slot. */}
               {(() => {
                 const aff = getAffiliate("candy-ai");
                 if (!aff) return null;

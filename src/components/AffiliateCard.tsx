@@ -52,7 +52,7 @@ export default function AffiliateCard({
     <a
       href={`/go/${slug}`}
       target="_blank"
-      rel="sponsored noopener noreferrer"
+      rel="sponsored noopener"
       className={`aff-card aff-card--${variant}`}
       aria-label={`${brand} — ${tagline}`}
     >

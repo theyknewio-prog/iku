@@ -711,7 +711,7 @@ export function AppShell({
                   key={item.label}
                   href={item.href}
                   target="_blank"
-                  rel="sponsored noopener noreferrer"
+                  rel="sponsored noopener"
                   className="v2-nav-item v2-nav-item--affiliate"
                 >
                   {item.emoji && (
@@ -993,7 +993,7 @@ export function AppShell({
                       key={`top-${item.label}`}
                       href={item.href}
                       target="_blank"
-                      rel="sponsored noopener noreferrer"
+                      rel="sponsored noopener"
                       className="v2-nav-drawer__item v2-nav-drawer__item--affiliate"
                       onClick={() => setMenuOpen(false)}
                     >

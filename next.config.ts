@@ -7,7 +7,13 @@ const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
   // X-XSS-Protection retiré 2026-04-23 (V11): deprecated since ~2019, can
   // reintroduce XSS in old Edge variants. CSP + frame-ancestors cover us.
-  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  // 2026-05-02: loosened from `strict-origin-when-cross-origin` to
+  // `no-referrer-when-downgrade`. Ad networks (HilltopAds, ExoClick, CR)
+  // need the full referer to attribute traffic correctly. With the strict
+  // policy, ad networks see only the origin (no path) and downgrade RPM
+  // 15-25%, plus CR scrubs clicks as "low-quality" because aff_sub2 is
+  // empty. `no-referrer-when-downgrade` is the standard adult-tube setting.
+  { key: "Referrer-Policy", value: "no-referrer-when-downgrade" },
   {
     key: "Strict-Transport-Security",
     value: "max-age=31536000; includeSubDomains",
