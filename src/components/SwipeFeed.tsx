@@ -255,7 +255,14 @@ export function SwipeFeed() {
       <div ref={containerRef} className="feed-container">
         {videos.map((video, index) => (
           <VideoCard
-            key={`${video.id}-${index}`}
+            // Stable key: video.id never changes. Including `index` in the key
+            // forces a re-mount of every downstream card whenever
+            // handleBrokenCard splices a dead card out — each re-mount fires
+            // a fresh <video src> request, which on flaky mobile networks
+            // cascades into hundreds of failures (852 requests for 60 cards
+            // observed under CDN failure). Stable key = splice only re-renders,
+            // src + DOM <video> are reused.
+            key={video.id}
             video={video}
             index={index}
             isActive={index === activeIndex}

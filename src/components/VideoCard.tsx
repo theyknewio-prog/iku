@@ -363,16 +363,24 @@ export function VideoCard({
    * a proxied IP-bound upstream), treat the card as dead and auto-advance.
    * Without this, the user sees an infinite black-screen spinner on broken
    * cards and has to manually swipe past them — discovered via Playwright
-   * audit 2026-04-11 where card #2 had readyState=0 after 3.7s. */
+   * audit 2026-04-11 where card #2 had readyState=0 after 3.7s.
+   *
+   * Self-fire guard (`reportedBrokenRef`) — once we've reported a card broken,
+   * never re-report it. Without this, splicing dead cards cascades: card 0
+   * dies → splice → card 1 takes the active slot → 4s later same card dies
+   * (mobile CDN flake) → splice → loop. On flaky networks this fired 800+
+   * media requests for 60 cards (mobile error storm 2026-05-02). */
+  const reportedBrokenRef = useRef(false);
   useEffect(() => {
-    if (!isActive || !onBroken) return;
+    if (!isActive || !onBroken || reportedBrokenRef.current) return;
     const el = videoRef.current;
     if (!el) return;
     const timer = setTimeout(() => {
       const current = videoRef.current;
-      if (!current) return;
+      if (!current || reportedBrokenRef.current) return;
       // readyState < HAVE_CURRENT_DATA (2) OR no duration → dead card
       if (current.readyState < 2 || !current.duration) {
+        reportedBrokenRef.current = true;
         onBroken(index);
       }
     }, 4000);
@@ -736,8 +744,12 @@ export function VideoCard({
           onError={() => {
             // Video element errored: broken source, CORS failure, decode error,
             // 403 on IP-bound upstream, etc. Mark this card as broken so
-            // SwipeFeed advances past it.
-            if (isActive && onBroken) onBroken(index);
+            // SwipeFeed advances past it. `reportedBrokenRef` prevents the
+            // same card from triggering multiple splices on repeat errors.
+            if (isActive && onBroken && !reportedBrokenRef.current) {
+              reportedBrokenRef.current = true;
+              onBroken(index);
+            }
           }}
         />
       </div>
