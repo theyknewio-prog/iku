@@ -21,7 +21,7 @@ import { JoinDiscordCTA } from "@/components/JoinDiscordCTA";
 import { SignupCTA } from "@/components/SignupCTA";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { MagneticButton } from "@/components/MagneticButton";
-import { AdJoiBanner } from "@/components/AdJoiBanner";
+import { AdJoiBanner, AdRotationBanner } from "@/components/AdJoiBanner";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 
 export const metadata: Metadata = {
@@ -446,14 +446,31 @@ export default async function HomePage() {
               TRENDING NOW -- Horizontal poster scroll
           ================================================================ */}
           <Carousel title="🔥 Trending Now" badge="HOT" seeAllHref="/trending">
-            {trending.data.map((video, i) => (
-              <PosterCard
-                key={video.id}
-                video={video}
-                rank={i < 8 ? i + 1 : undefined}
-                priority={i < 5}
-              />
-            ))}
+            {trending.data.flatMap((video, i) => {
+              const card = (
+                <PosterCard
+                  key={video.id}
+                  video={video}
+                  rank={i < 8 ? i + 1 : undefined}
+                  priority={i < 5}
+                />
+              );
+              // Native in-grid ad slot at position 9 of the Trending
+              // carousel — inserts a 300x250 GIF as an "ad break" between
+              // poster cards. Per feedback_respect_ad_format: native size,
+              // no fake-card wrapper.
+              if (i === 7) {
+                return [
+                  card,
+                  <AdRotationBanner
+                    key="ad-trending-9"
+                    slug="joi-ai"
+                    surface="trending-grid"
+                  />,
+                ];
+              }
+              return [card];
+            })}
           </Carousel>
 
           {/* Premium CTA #1 — slim inline strip after Trending. */}
@@ -630,6 +647,12 @@ export default async function HomePage() {
               })}
             </div>
           </section>
+
+          {/* Placement A2 — CR Candy.AI 300x250 GIF (Cartoon-Hentai
+              Hasset 1-3). Native size, zero chrome. Mid-page slot. */}
+          <div style={{ margin: "24px auto" }}>
+            <AdRotationBanner slug="candy-ai" surface="homepage-a2" />
+          </div>
 
           {/* ================================================================
               POPULAR GAMES — 3D niche anchor. Ten gradient tiles linking

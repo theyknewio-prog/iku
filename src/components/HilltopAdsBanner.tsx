@@ -1,24 +1,20 @@
 "use client";
 
 /**
- * HilltopAdsBanner — homepage Placement B.
+ * HilltopAdsBanner — 300x250 banner via srcdoc iframe.
  *
- * Restored 2026-05-02 after ad nuke. Renders a HilltopAds banner zone
- * inside a srcdoc iframe so the IIFE's `document.scripts[length-1]`
- * insertion anchor resolves cleanly (each iframe owns its document).
+ * Each iframe owns its document so the IIFE's `document.scripts[length-1]`
+ * insertion anchor resolves cleanly. Without this isolation, multiple
+ * HilltopAds zones on the same page race over the global document.
  *
- * Per `feedback_respect_ad_format.md`: the iframe is sized exactly to
- * the IAB format (300x250), no border, no padding, no chrome around it.
- * The network's tag executes verbatim.
- *
- * Zone 6969681 = banner 300x250.
+ * Per `feedback_respect_ad_format.md`: native 300x250, no border, no
+ * padding, no chrome. The network's tag executes verbatim.
  */
 
-const ZONE_SCRIPT_300x250 =
-  "https://selfassured-celebration.com/b.XTVysFduGPl-0jYXWPcK/-enm/9xumZCUOlBkPPxTeY/5SN/jDkE2MOKDzEZteNgjqkg2UOGTMYt4GNbQa";
+import { HILLTOPADS_ZONES } from "@/lib/ad-registry";
 
-function buildSrcDoc() {
-  const injection = `(function(ht){var d=document,s=d.createElement('script'),l=d.scripts[d.scripts.length-1];s.settings=ht||{};s.src=${JSON.stringify(ZONE_SCRIPT_300x250)};s.async=true;s.referrerPolicy='no-referrer-when-downgrade';l.parentNode.insertBefore(s,l);})({})`;
+function buildSrcDoc(scriptSrc: string) {
+  const injection = `(function(ht){var d=document,s=d.createElement('script'),l=d.scripts[d.scripts.length-1];s.settings=ht||{};s.src=${JSON.stringify(scriptSrc)};s.async=true;s.referrerPolicy='no-referrer-when-downgrade';l.parentNode.insertBefore(s,l);})({})`;
   return `<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;padding:0;overflow:hidden;background:transparent;width:300px;height:250px;}</style></head><body><script>${injection}</script></body></html>`;
 }
 
@@ -29,7 +25,7 @@ export function HilltopAdsBanner() {
   return (
     <iframe
       title="hilltop-banner-300x250"
-      srcDoc={buildSrcDoc()}
+      srcDoc={buildSrcDoc(HILLTOPADS_ZONES.banner300x250)}
       width={300}
       height={250}
       scrolling="no"

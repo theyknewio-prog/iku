@@ -1,34 +1,22 @@
 /**
  * /go/[slug] — Affiliate redirect handler.
  *
- * Minimal post-nuke (2026-05-02). Only Joi-AI for the homepage v1 surface.
- * Add more slugs as new placements ship — kept tiny on purpose.
- *
- * The redirect goes to CrakRevenue's tracker (t.vlmai-1.com) which then
- * routes to the offer landing page based on the offer ID in the path.
- * Logging is fire-and-forget to PostHog so a slow ingest never blocks
- * the user's redirect.
+ * Reads slugs + targets from `lib/ad-registry.ts`. Fire-and-forget
+ * PostHog event for click attribution; never blocks the redirect.
  */
 
 import { NextRequest, NextResponse } from "next/server";
-
-const CR_BASE = "?aff_sub5=SF_006OG000004lmDN";
-const CR = (path: string) => `https://t.vlmai-1.com/410186/${path}${CR_BASE}`;
-
-const AFFILIATE_LINKS: Record<string, string> = {
-  "joi-ai": CR("8080"), // $42 PPS T1 Premium, EPC $0.46 — TOP CONVERTER
-  "candy-ai": CR("8025"), // $44 PPS T1 Premium, EPC $0.22
-  "girlfriend-gpt": CR("8184"), // $55 PPS Premium, EPC $0.20
-};
+import { CR_OFFERS, crRedirect, type CrSlug } from "@/lib/ad-registry";
 
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
-  const url = AFFILIATE_LINKS[slug];
-  if (!url)
+  if (!(slug in CR_OFFERS)) {
     return NextResponse.json({ error: "unknown slug" }, { status: 404 });
+  }
+  const url = crRedirect(slug as CrSlug);
 
   // Fire-and-forget PostHog click event for funnel attribution.
   const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;

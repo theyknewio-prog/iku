@@ -8,6 +8,7 @@ import {
 } from "@/data/blog";
 import { GLOSSARY } from "@/data/glossary";
 import { getInternalLinksForArticle } from "@/data/blog-internal-links";
+import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { getNonce } from "@/lib/csp-nonce";
 
 interface BlogPostProps {
@@ -187,6 +188,12 @@ export default async function BlogPostPage({ params }: BlogPostProps) {
                     ))}
                   </div>
                 </header>
+
+                {/* Inline ad — HilltopAds 300x250, between article header
+                    and body (high viewability). */}
+                <div style={{ margin: "20px auto 28px" }}>
+                  <HilltopAdsBanner />
+                </div>
 
                 {/* Article body — content is from static data files (src/data/blog.ts).
                    If this ever becomes dynamic/user-generated, add a proper HTML

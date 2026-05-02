@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { BLOG_ARTICLES } from "@/data/blog";
+import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 
 export const metadata: Metadata = {
   title: "Hentai Blog — Guides, History & Culture | iku.gg",
@@ -35,6 +36,11 @@ export default function BlogPage() {
               Guides, rankings, history, and deep dives — everything about
               hentai, written for fans.
             </p>
+          </div>
+
+          {/* Inline ad — HilltopAds 300x250 */}
+          <div style={{ margin: "16px auto 24px" }}>
+            <HilltopAdsBanner />
           </div>
 
           {/* Featured article */}
