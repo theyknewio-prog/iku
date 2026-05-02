@@ -17,6 +17,8 @@ const CR = (path: string) => `https://t.vlmai-1.com/410186/${path}${CR_BASE}`;
 
 const AFFILIATE_LINKS: Record<string, string> = {
   "joi-ai": CR("8080"), // $42 PPS T1 Premium, EPC $0.46 — TOP CONVERTER
+  "candy-ai": CR("8025"), // $44 PPS T1 Premium, EPC $0.22
+  "girlfriend-gpt": CR("8184"), // $55 PPS Premium, EPC $0.20
 };
 
 export async function GET(

@@ -4,6 +4,8 @@ import { notFound, permanentRedirect } from "next/navigation";
 import type { Metadata } from "next";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { WatchPlayer } from "@/components/WatchPlayer";
+import { AdRotationBanner } from "@/components/AdJoiBanner";
+import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { ProGatedPlayer } from "@/components/ProGatedPlayer";
 import { isProLocked } from "@/lib/pro-gate";
 import { unlockCost } from "@/lib/unlock-cost";
@@ -692,6 +694,13 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
               <div className="player-divider" />
 
+              {/* Placement C — CR Joi 300x250 GIF (mobile shows here below
+                  player; desktop shows the same in sidebar top via the
+                  aside below). Native size, zero chrome. */}
+              <div style={{ margin: "20px auto" }}>
+                <AdRotationBanner slug="joi-ai" />
+              </div>
+
               {/* Related — mobile grid (below player) */}
               <div style={{ marginTop: "32px" }}>
                 <div className="section-header">
@@ -726,6 +735,12 @@ export default async function WatchPage({ params }: WatchPageProps) {
                   <RelatedGrid video={video} />
                 </Suspense>
               </div>
+
+              {/* Placement E — HilltopAds 300x250 banner. CPM passive,
+                  fires below the related grid (end-of-content slot). */}
+              <div style={{ margin: "24px auto" }}>
+                <HilltopAdsBanner />
+              </div>
             </div>
 
             {/* ── Sidebar (desktop) ─────────────────────────── */}
@@ -753,6 +768,13 @@ export default async function WatchPage({ params }: WatchPageProps) {
               >
                 <RelatedSidebar video={video} offset={0} limit={12} />
               </Suspense>
+
+              {/* Placement D — CR Candy.AI 300x250 GIF (sidebar bottom,
+                  desktop only since aside is hidden on mobile). Different
+                  brand from C above to diversify offers per visitor. */}
+              <div style={{ marginTop: 16 }}>
+                <AdRotationBanner slug="candy-ai" />
+              </div>
             </aside>
           </div>
 

@@ -1,13 +1,13 @@
 /**
- * AdJoiBanner — homepage Placement A.
+ * AdRotationBanner — generic 300x250 affiliate ad slot.
  *
- * Renders ONE 300x250 GIF from CrakRevenue's AI vertical creative pool,
- * picked at random per request (homepage is force-dynamic so each render
- * = fresh pick). Click goes to /go/joi-ai → CR offer 8080.
+ * Server component. Picks ONE 300x250 GIF at random per request from the
+ * shared anime-themed CR creative pool (offer 10138 ourdream.ai —
+ * generic creatives that fit any AI girlfriend landing). Click goes to
+ * /go/<slug> → CR redirect.
  *
  * Per `feedback_respect_ad_format.md`: ZERO wrapper, ZERO badge, ZERO
- * chrome. Plain `<a><img></a>` at native 300x250. The network's creative
- * is the entire visible element.
+ * chrome. Plain `<a><img></a>` at native 300x250.
  */
 
 const GIFS = [
@@ -18,11 +18,17 @@ const GIFS = [
   "https://www.imglnkx.com/10138/300x250---AI-Girls-Just-Want-To-Make-You-Cum---Copy.gif",
 ] as const;
 
-export function AdJoiBanner() {
-  const src = GIFS[Math.floor(Math.random() * GIFS.length)];
+interface Props {
+  slug: string;
+  /** Optional override — useful if a specific offer has dedicated creatives. */
+  gifs?: readonly string[];
+}
+
+export function AdRotationBanner({ slug, gifs = GIFS }: Props) {
+  const src = gifs[Math.floor(Math.random() * gifs.length)];
   return (
     <a
-      href="/go/joi-ai"
+      href={`/go/${slug}`}
       target="_blank"
       rel="sponsored noopener"
       style={{ display: "block", width: 300, height: 250, margin: "0 auto" }}
@@ -39,4 +45,9 @@ export function AdJoiBanner() {
       />
     </a>
   );
+}
+
+/** Backwards-compat alias for the homepage Placement A (uses joi-ai). */
+export function AdJoiBanner() {
+  return <AdRotationBanner slug="joi-ai" />;
 }
