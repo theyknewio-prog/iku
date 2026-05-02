@@ -8,14 +8,20 @@ import { useSession } from "next-auth/react";
 import AffiliateCard from "./AffiliateCard";
 import { AFFILIATES } from "@/lib/affiliates";
 
-// Slugs rotated through for the feed affiliate interstitial
+// Slugs rotated through for the feed affiliate interstitial.
+// Top-EPC offers first (Joi $0.46, Candy $0.22, GirlfriendGPT $55 PPS,
+// DarLink $0.20, Lovescape $0.17, GetHarder $0.16). Skips the placeholder
+// slugs that route through generic Smartlink — direct CR offers convert
+// 660× better than the Smartlink rotator.
 const FEED_AFF_SLUGS = [
+  "joi-ai",
   "candy-ai",
-  "only-waifus",
-  "anime-genius",
-  "kupid-ai",
-  "dream-gf",
-  "crush-on",
+  "girlfriend-gpt",
+  "darlink-ai",
+  "lovescape",
+  "get-harder",
+  "secrets-ai",
+  "anifusion",
 ] as const;
 
 export interface FeedVideo {
@@ -193,7 +199,7 @@ export function SwipeFeed() {
   useEffect(() => {
     if (
       activeIndex > 0 &&
-      (activeIndex + 1) % 8 === 0 &&
+      (activeIndex + 1) % 3 === 0 &&
       activeIndex !== lastAffIndexRef.current &&
       !showInterstitial &&
       !isPro.current

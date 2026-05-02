@@ -503,6 +503,26 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 ))}
               </nav>
 
+              {/* Above-player AffiliateCard — high-EPC slot, viewer about to
+                  press play has maximum attention. Uses the wide banner. */}
+              {(() => {
+                const aff = getAffiliate("joi-ai");
+                if (!aff) return null;
+                return (
+                  <div style={{ marginBottom: 12 }}>
+                    <AffiliateCard
+                      slug={aff.slug}
+                      brand={aff.brand}
+                      tagline={aff.tagline}
+                      thumbnail={aff.thumbnail}
+                      rating={aff.rating}
+                      badge={aff.badge}
+                      variant="wide"
+                    />
+                  </div>
+                );
+              })()}
+
               {/* Video player — Gelbooru URLs are proxied through /api/proxy,
                   Rule34Video + WP are proxied through /api/video-stream to
                   bypass IP-bound access tokens.
@@ -705,8 +725,8 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 {/* A2: Affiliate rail — below player, above related. Mobile-priority.
                     Replaces HilltopAdsBanner 300x250. */}
                 <AffiliateRail
-                  title="Try AI girlfriend chat — uncensored & free"
-                  slugs={["candy-ai", "only-waifus", "anime-genius"]}
+                  title="🔥 AI girlfriend chat — try free now"
+                  slugs={["joi-ai", "candy-ai", "girlfriend-gpt"]}
                   layout="carousel"
                   limit={3}
                 />
@@ -788,6 +808,25 @@ export default async function WatchPage({ params }: WatchPageProps) {
               >
                 <RelatedSidebar video={video} offset={0} limit={12} />
               </Suspense>
+              {/* Bottom-of-sidebar 2nd affiliate — different brand from top to
+                  diversify offers shown in the same scroll viewport. */}
+              {(() => {
+                const aff2 = getAffiliate("girlfriend-gpt");
+                if (!aff2) return null;
+                return (
+                  <div className="aff-rail__divider" style={{ marginTop: 16 }}>
+                    <AffiliateCard
+                      slug={aff2.slug}
+                      brand={aff2.brand}
+                      tagline={aff2.tagline}
+                      thumbnail={aff2.thumbnail}
+                      rating={aff2.rating}
+                      badge={aff2.badge}
+                      variant="compact"
+                    />
+                  </div>
+                );
+              })()}
             </aside>
           </div>
 

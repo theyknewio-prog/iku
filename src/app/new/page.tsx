@@ -84,10 +84,16 @@ export default async function NewPage({ searchParams }: Props) {
 
           {/* C: AI Girlfriend rail — above video grid */}
           <AffiliateRail
-            title="Your AI girlfriend is waiting — try free"
-            slugs={["dream-gf", "nomi-ai", "crush-on", "soulkyn"]}
+            title="🔥 Your AI girlfriend awaits — try free"
+            slugs={[
+              "joi-ai",
+              "girlfriend-gpt",
+              "candy-ai",
+              "lovescape",
+              "get-harder",
+            ]}
             layout="carousel"
-            limit={4}
+            limit={5}
           />
 
           {/* ── Video grid ────────────────────────────────────── */}

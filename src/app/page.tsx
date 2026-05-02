@@ -449,16 +449,16 @@ export default async function HomePage() {
             ))}
           </Carousel>
 
-          {/* B: AI Girlfriend affiliate rail — between Trending and next section.
-              Best CTR position: mid-page after first engagement signal. */}
+          {/* AI Girlfriend rail #1 — top-EPC offers, between Trending and next.
+              Highest converters first: Joi $0.46 EPC, Candy T1 Premium $0.22. */}
           <AffiliateRail
-            title="AI girlfriend — try free"
+            title="🔥 AI girlfriend — try free now"
             slugs={[
+              "joi-ai",
               "candy-ai",
-              "only-waifus",
-              "anime-genius",
-              "kupid-ai",
-              "dream-gf",
+              "girlfriend-gpt",
+              "darlink-ai",
+              "lovescape",
             ]}
             layout="carousel"
             limit={5}
@@ -770,6 +770,21 @@ export default async function HomePage() {
               })}
             </div>
           </section>
+
+          {/* AI Girlfriend rail #2 — mid-page after Top Rated, before genre browse.
+              Features high-EPC offers a viewer hasn't seen yet. */}
+          <AffiliateRail
+            title="💋 Hentai AI chat — uncensored"
+            slugs={[
+              "secrets-ai",
+              "get-harder",
+              "ehentai-ai",
+              "fantasy-ai",
+              "anifusion",
+            ]}
+            layout="carousel"
+            limit={5}
+          />
 
           {/* Premium CTA #2 — different angle from #1 (yearly nudge). */}
           <Link

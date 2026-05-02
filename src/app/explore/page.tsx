@@ -370,12 +370,18 @@ export default async function ExplorePage(props: {
             </div>
           </section>
 
-          {/* C: AI Girlfriend rail — above video grid */}
+          {/* C: AI Girlfriend rail — top-EPC offers above video grid */}
           <AffiliateRail
-            title="AI waifu chat — free & uncensored"
-            slugs={["dream-gf", "crush-on", "soulkyn", "nomi-ai"]}
+            title="🔥 AI waifu chat — try free"
+            slugs={[
+              "joi-ai",
+              "candy-ai",
+              "girlfriend-gpt",
+              "darlink-ai",
+              "lovescape",
+            ]}
             layout="carousel"
-            limit={4}
+            limit={5}
           />
 
           {/* ════════════════════════════════════════════════

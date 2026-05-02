@@ -401,10 +401,16 @@ export default async function CharacterPage({ params, searchParams }: Props) {
           {/* D: AI character chat rail — above video grid on character pages.
               Angle: "chat with an AI version of your favorite character". */}
           <AffiliateRail
-            title="Chat with your favorite anime character — AI, uncensored"
-            slugs={["anime-genius", "kupid-ai", "candy-ai", "crush-on"]}
+            title="🔥 Chat with this character — AI, uncensored"
+            slugs={[
+              "joi-ai",
+              "candy-ai",
+              "girlfriend-gpt",
+              "darlink-ai",
+              "lovescape",
+            ]}
             layout="carousel"
-            limit={4}
+            limit={5}
           />
 
           {/* ── Sort filter bar ───────────────────────────────── */}

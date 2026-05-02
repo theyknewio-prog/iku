@@ -269,10 +269,16 @@ export default async function TagPage({ params, searchParams }: Props) {
 
           {/* D: AI Girlfriend rail — above video grid on tag pages */}
           <AffiliateRail
-            title="AI waifu chat — no limits, free trial"
-            slugs={["candy-ai", "only-waifus", "kupid-ai", "crush-on"]}
+            title="🔥 AI waifu chat — no limits"
+            slugs={[
+              "joi-ai",
+              "candy-ai",
+              "ehentai-ai",
+              "girlfriend-gpt",
+              "darlink-ai",
+            ]}
             layout="carousel"
-            limit={4}
+            limit={5}
           />
 
           {/* ── Video grid ────────────────────────────────────── */}

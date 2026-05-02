@@ -92,10 +92,16 @@ export default async function TrendingPage(props: {
 
           {/* C: AI Girlfriend rail — above video grid */}
           <AffiliateRail
-            title="AI companions — chat uncensored, free trial"
-            slugs={["candy-ai", "kupid-ai", "only-waifus", "anime-genius"]}
+            title="🔥 Top AI girlfriend — try uncensored"
+            slugs={[
+              "joi-ai",
+              "candy-ai",
+              "girlfriend-gpt",
+              "secrets-ai",
+              "darlink-ai",
+            ]}
             layout="carousel"
-            limit={4}
+            limit={5}
           />
 
           {/* ── Video grid with rank badges ───────────────────── */}

@@ -384,10 +384,16 @@ export default async function SeriesPage({ params, searchParams }: Props) {
           {/* D: AI companion rail — above video grid on series pages.
               Angle: "roleplay with characters from this series". */}
           <AffiliateRail
-            title="Roleplay with AI waifus from your favorite series — free"
-            slugs={["only-waifus", "anime-genius", "dream-gf", "kupid-ai"]}
+            title="🔥 Roleplay with this series' waifus — AI"
+            slugs={[
+              "joi-ai",
+              "girlfriend-gpt",
+              "candy-ai",
+              "darlink-ai",
+              "ehentai-ai",
+            ]}
             layout="carousel"
-            limit={4}
+            limit={5}
           />
 
           {/* ── Sort filter bar ───────────────────────────────── */}
