@@ -119,7 +119,7 @@ export const AFFILIATES: readonly Affiliate[] = [
       "Voice-first AI girlfriend — she calls, sexts, and remembers your kinks",
     thumbnail: CRAK_HENTAI_300x250,
     rating: 4.9,
-    badge: "TOP CONVERTER",
+    badge: "MOST POPULAR",
     category: "chat",
   },
   {
