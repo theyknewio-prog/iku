@@ -21,6 +21,8 @@ import { JoinDiscordCTA } from "@/components/JoinDiscordCTA";
 import { SignupCTA } from "@/components/SignupCTA";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { MagneticButton } from "@/components/MagneticButton";
+import { AdJoiBanner } from "@/components/AdJoiBanner";
+import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai, 3D Hentai & Cartoon Porn | 320,000+ Videos",
@@ -434,6 +436,12 @@ export default async function HomePage() {
             </Link>
           </section>
 
+          {/* Placement A — CR Joi-AI 300x250 GIF (rotation 5). Native size,
+              zero chrome. Server-side random pick per request. */}
+          <div style={{ margin: "24px auto" }}>
+            <AdJoiBanner />
+          </div>
+
           {/* ================================================================
               TRENDING NOW -- Horizontal poster scroll
           ================================================================ */}
@@ -524,6 +532,12 @@ export default async function HomePage() {
               </Link>
             </section>
           )}
+
+          {/* Placement B — HilltopAds 300x250 banner (zone 6969681). CPM
+              passive. srcdoc iframe at native size, zero chrome. */}
+          <div style={{ margin: "24px auto" }}>
+            <HilltopAdsBanner />
+          </div>
 
           {/* ================================================================
               TOP RATED THIS WEEK -- 4-column grid

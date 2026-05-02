@@ -131,17 +131,52 @@ export function middleware(request: NextRequest) {
   const ANALYTICS =
     "https://us-assets.i.posthog.com https://us.i.posthog.com https://cdn.onesignal.com https://*.onesignal.com https://onesignal.com";
 
+  // Ad-tech hosts — re-added 2026-05-02 for Placement A (CR Joi GIF) +
+  // Placement B (HilltopAds banner zone 6969681). Minimum set to make
+  // the 2 surfaces fire correctly without breaking attribution:
+  //   - imglnkx: CR creative GIFs (img-src)
+  //   - vlmai-1, mbjms, scptp9, crxcr2, crxcra: CR redirect/popup hosts
+  //   - adsco.re: CR fraud verification (CRITICAL — without this, CR
+  //     scrubs every click as 'unverified' = 0 conversions)
+  //   - blockadsnot, cloudfront: HilltopAds anti-adblock (loaded by
+  //     their banner script; without it they downgrade fill rate)
+  //   - selfassured-celebration + 12 other rotating shards: HilltopAds
+  //     CDN. Bare + wildcard because CSP wildcards don't match apex.
+  const HILLTOPADS_SHARDS = [
+    "selfassured-celebration.com",
+    "sorrowfulpsychology.com",
+    "difficultblock.com",
+    "nightdestruct.com",
+    "lumbering-form.com",
+    "protrafficinspector.com",
+    "pretrafficinspector.com",
+    "skinnycrawlinglax.com",
+    "sourshaped.com",
+    "realizationnewestfangs.com",
+    "hotfree123.com",
+    "preferencenail.com",
+    "wayfarerorthodox.com",
+    "kettledroopingcontinuation.com",
+  ];
+  const HILLTOPADS_HOSTS = HILLTOPADS_SHARDS.flatMap((h) => [
+    `https://${h}`,
+    `https://*.${h}`,
+  ]).join(" ");
+  const CR_HOSTS =
+    "https://*.imglnkx.com https://imglnkx.com https://*.vlmai-1.com https://*.mbjms.com https://*.scptp9.com https://*.crxcr2.com https://*.crxcra.com https://*.adsco.re https://*.blockadsnot.com https://*.cloudfront.net";
+  const AD_SCRIPT = `${HILLTOPADS_HOSTS} ${CR_HOSTS}`;
+
   // `'unsafe-inline'` + `'unsafe-eval'` kept for inline JSON-LD scripts
   // and React dev tooling. Tighten later with hash-based CSP.
   const csp = [
     "default-src 'self'",
-    `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${ANALYTICS} https://static.cloudflareinsights.com https://*.cloudflareinsights.com`,
+    `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${ANALYTICS} ${AD_SCRIPT} https://static.cloudflareinsights.com https://*.cloudflareinsights.com`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
-    `img-src 'self' data: blob: ${INFRA} ${VIDEO_HOSTS_HTTPS}`,
-    `media-src 'self' blob: ${INFRA} ${VIDEO_HOSTS_HTTPS}`,
-    `connect-src 'self' ${ANALYTICS} ${INFRA} ${VIDEO_HOSTS_HTTPS}`,
-    "frame-src 'self'",
+    `img-src 'self' data: blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${CR_HOSTS}`,
+    `media-src 'self' blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${HILLTOPADS_HOSTS}`,
+    `connect-src 'self' ${ANALYTICS} ${INFRA} ${VIDEO_HOSTS_HTTPS} ${AD_SCRIPT}`,
+    `frame-src 'self' ${HILLTOPADS_HOSTS} ${CR_HOSTS}`,
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
