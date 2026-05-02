@@ -256,7 +256,7 @@ export function ProLockOverlay({
           }}
         >
           <span>✓ Every full episode unlocked</span>
-          <span>✓ No ads</span>
+          <span>✓ Unlimited favorites</span>
           <span>✓ 4K when available</span>
         </div>
         {!signedIn && (

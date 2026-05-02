@@ -850,21 +850,21 @@ export default async function HomePage() {
               <div className="hp-go-pro__content">
                 <div className="hp-go-pro__eyebrow">✨ iku.gg Pro</div>
                 <h2 className="hp-go-pro__title">
-                  Remove ads.{" "}
-                  <span className="hp-go-pro__title-accent">Forever.</span>
+                  Support iku.{" "}
+                  <span className="hp-go-pro__title-accent">Get more.</span>
                 </h2>
                 <p className="hp-go-pro__sub">
-                  Zero ads, unlimited favorites, 48h early access, Discord Pro
-                  lounge, and more. From <strong>4.99€/month</strong> — cancel
-                  anytime.
+                  Unlimited favorites, 48h early access on new drops, Discord
+                  Pro lounge, priority loading, and more. From{" "}
+                  <strong>4.99€/month</strong> — cancel anytime.
                 </p>
                 <div className="hp-go-pro__features">
-                  <span>🚫 Zero ads</span>
                   <span>❤️ Unlimited favorites</span>
                   <span>🎯 Early access 48h</span>
                   <span>💎 Pro badge</span>
                   <span>🎮 Discord Pro channel</span>
                   <span>⚡ Priority loading</span>
+                  <span>🔥 4K when available</span>
                 </div>
                 <div className="hp-go-pro__ctas">
                   <MagneticButton>

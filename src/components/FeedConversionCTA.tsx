@@ -65,12 +65,12 @@ export function FeedConversionCTA({ variant, onClose }: Props) {
       : {
           eyebrow: "iku Premium",
           icon: "💎",
-          title: "Skip every ad. Forever.",
-          sub: "Plus 4K when available, 48h early access, and Pro Discord.",
+          title: "Get the most out of iku.",
+          sub: "4K when available, 48h early access, unlimited favorites, Pro Discord.",
           perks: [
-            "🚫 Zero ads (no preroll, no banners)",
             "🎬 4K when available",
             "⚡ 48h early access on new uploads",
+            "❤️ Unlimited favorites + playlists",
             "🎮 Pro-only Discord channel",
           ],
           cta: "Get Premium — 4.99€/mo",

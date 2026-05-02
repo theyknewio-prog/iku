@@ -6,22 +6,22 @@ import { PricingClient } from "./pricing-client";
 import { EmailVerificationBanner } from "@/components/EmailVerificationBanner";
 
 export const metadata: Metadata = {
-  title: "iku.gg Pro — Remove ads, unlimited favorites, early access",
+  title: "iku.gg Pro — Unlimited favorites, early access, Discord Pro",
   description:
-    "Unlock the best of iku.gg — zero ads, unlimited favorites, early access to new clips, Discord Pro channel, and more. From 4.99€/month.",
+    "Unlock the best of iku.gg — unlimited favorites, early access to new clips, Pro Discord channels, priority loading, and more. From 4.99€/month.",
 };
 
 export const dynamic = "force-dynamic";
 
 const FEATURES = [
   {
-    icon: "🚫",
-    name: "Zero ads — ever",
+    icon: "❤️",
+    name: "Unlimited favorites",
     included: ["monthly", "yearly", "lifetime"],
   },
   {
-    icon: "❤️",
-    name: "Unlimited favorites",
+    icon: "🔥",
+    name: "4K when available",
     included: ["monthly", "yearly", "lifetime"],
   },
   {
@@ -120,8 +120,8 @@ export default async function PricingPage() {
             Go <span className="pricing-title__highlight">Pro</span> ✨
           </h1>
           <p className="pricing-sub">
-            Zero ads, unlimited favorites, early access, and full Discord Pro
-            perks. Cancel anytime.
+            Unlimited favorites, 48h early access, full Discord Pro perks,
+            priority loading. Cancel anytime.
           </p>
           {tierDiscount && (
             <div className="pricing-tier-badge">

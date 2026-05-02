@@ -320,7 +320,7 @@ export async function sendWelcomeEmail(opts: {
         <li>🏆 <strong>Gamification</strong> — earn points, badges, and climb 6 tiers</li>
         <li>🔥 <strong>Daily streak</strong> — come back every day for bonus rewards</li>
         <li>🎯 <strong>Daily quests</strong> — complete 3 challenges for +15 pts each</li>
-        <li>💎 <strong>Pro tier</strong> — remove ads, early access, Discord lounge</li>
+        <li>💎 <strong>Pro tier</strong> — early access, unlimited favorites, Discord Pro lounge</li>
       </ul>
       <p style="margin:0 0 16px;">Join the Discord to chat with other fans, get daily drops, and participate in watch parties:</p>
     `,
@@ -398,7 +398,7 @@ export async function sendWinbackEmail(opts: {
         <li>🆕 Fresh clips added daily from all sources</li>
         <li>🎯 3 new daily quests waiting for you (+15 pts each)</li>
         <li>🏆 New badges to unlock on your next visit</li>
-        <li>💎 iku.gg Pro — remove ads + early access (now live)</li>
+        <li>💎 iku.gg Pro — early access + unlimited favorites (now live)</li>
       </ul>
     `,
     ctaLabel: currentStreak > 0 ? "Resume my streak 🔥" : "Take me back 💖",
