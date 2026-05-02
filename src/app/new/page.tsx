@@ -6,6 +6,7 @@ import { getVideos, countVideos } from "@/lib/content";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 import { SortTabs, parseSort } from "@/components/SortTabs";
+import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 
 export const metadata: Metadata = {
   title: "New Hentai Videos — Latest Uploads | iku.gg",
@@ -119,6 +120,10 @@ export default async function NewPage({ searchParams }: Props) {
                   Premium 4.99€/mo →
                 </span>
               </Link>
+              {/* Listing ad — HilltopAds 300x250 above the grid */}
+              <div style={{ margin: "16px auto 24px" }}>
+                <HilltopAdsBanner />
+              </div>
               <div className="video-grid">
                 {videos.map((video: Video, i) => (
                   <ThumbnailCard

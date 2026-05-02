@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { headers } from "next/headers";
+import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { notFound } from "next/navigation";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { Pagination } from "@/components/Pagination";
@@ -392,6 +393,11 @@ export default async function SeriesPage({ params, searchParams }: Props) {
               </Link>
             ))}
           </nav>
+
+          {/* Listing ad — HilltopAds 300x250 above the grid */}
+          <div style={{ margin: "16px auto 24px" }}>
+            <HilltopAdsBanner />
+          </div>
 
           {/* ── Video grid ────────────────────────────────────── */}
           {videos.length === 0 ? (

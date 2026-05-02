@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { headers } from "next/headers";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
+import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { Pagination } from "@/components/Pagination";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
@@ -265,6 +266,11 @@ export default async function TagPage({ params, searchParams }: Props) {
               </Link>
             ))}
           </nav>
+          {/* Listing ad — HilltopAds 300x250 above the grid */}
+          <div style={{ margin: "16px auto 24px" }}>
+            <HilltopAdsBanner />
+          </div>
+
           {/* ── Video grid ────────────────────────────────────── */}
           {videos.length === 0 ? (
             <div

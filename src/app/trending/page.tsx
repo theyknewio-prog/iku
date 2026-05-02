@@ -5,6 +5,7 @@ import { getVideos } from "@/lib/content";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 import { SortTabs, parseSort } from "@/components/SortTabs";
+import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 
 export const metadata: Metadata = {
   title: "Trending Hentai Videos 2026 | iku.gg",
@@ -100,17 +101,23 @@ export default async function TrendingPage(props: {
               <p>No trending hentai available right now. Check back soon.</p>
             </div>
           ) : (
-            <div className="video-grid">
-              {videos.map((video: Video, i) => (
-                <ThumbnailCard
-                  key={video.id}
-                  video={video}
-                  rank={i + 1}
-                  priority={i < 4}
-                  lazy={i >= 4}
-                />
-              ))}
-            </div>
+            <>
+              {/* Listing ad — HilltopAds 300x250 above the grid */}
+              <div style={{ margin: "16px auto 24px" }}>
+                <HilltopAdsBanner />
+              </div>
+              <div className="video-grid">
+                {videos.map((video: Video, i) => (
+                  <ThumbnailCard
+                    key={video.id}
+                    video={video}
+                    rank={i + 1}
+                    priority={i < 4}
+                    lazy={i >= 4}
+                  />
+                ))}
+              </div>
+            </>
           )}
 
           {/* ── Signup CTA (shown only for anonymous visitors) ───── */}

@@ -7,6 +7,7 @@ import React from "react";
 import { AgeGate } from "@/components/AgeGate";
 import { isLikelyBot } from "@/lib/is-bot";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
+import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { SignupCTA } from "@/components/SignupCTA";
 import { CHARACTERS } from "@/data/characters";
 import { SERIES } from "@/data/series";
@@ -402,6 +403,11 @@ export default async function ExplorePage(props: {
               </span>
               <span className="hp-premium-strip__cta">Premium 4.99€/mo →</span>
             </Link>
+
+            {/* Listing ad — HilltopAds 300x250 above the grid */}
+            <div style={{ margin: "16px auto 24px" }}>
+              <HilltopAdsBanner />
+            </div>
 
             {/* Video grid */}
             <BlacklistFilter videos={videos} />

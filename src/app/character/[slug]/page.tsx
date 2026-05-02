@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
+import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { Pagination } from "@/components/Pagination";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { getVideos, countVideos, isBannedTag } from "@/lib/content";
@@ -409,6 +410,11 @@ export default async function CharacterPage({ params, searchParams }: Props) {
               </Link>
             ))}
           </nav>
+
+          {/* Listing ad — HilltopAds 300x250 above the grid */}
+          <div style={{ margin: "16px auto 24px" }}>
+            <HilltopAdsBanner />
+          </div>
 
           {/* ── Video grid ────────────────────────────────────── */}
           {videos.length === 0 ? (
