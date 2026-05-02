@@ -1,40 +1,60 @@
 /**
  * AdRotationBanner — generic 300x250 affiliate ad slot.
  *
- * Server component. Picks ONE 300x250 GIF at random per request from a
- * surface-specific pool. The 5 anime GIFs we have are split across
- * surfaces so the same user doesn't see the same creative on homepage
- * + /watch (ad blindness killer).
+ * Server component. Picks ONE 300x250 creative at random per request
+ * from a (slug × surface)-specific pool. Different surfaces get
+ * non-overlapping GIFs so the same user navigating homepage → /watch
+ * doesn't see the same creative twice (ad blindness killer).
+ *
+ * Brand-matched: each slug uses creatives for its actual landing page
+ * (Joi-AI uses anime-themed ourdream GIFs since Joi 10163 has no 300x250
+ * banners; Candy-AI uses Candy-branded Cartoon-Hentai GIFs from offer
+ * 10022 — pulled directly from CR Ad Tools 2026-05-02).
  *
  * Per `feedback_respect_ad_format.md`: ZERO wrapper, ZERO badge, ZERO
  * chrome. Plain `<a><img></a>` at native 300x250.
  */
 
-// Surface-specific GIF pools (no overlap between surfaces).
-const POOLS = {
-  // Homepage A — entre Hero et Trending
-  "homepage-a": [
-    "https://www.imglnkx.com/10138/anime---succubus.gif",
-    "https://www.imglnkx.com/10138/300x250---AI-Girls-Just-Want-To-Make-You-Cum---Copy.gif",
-  ],
-  // /watch C — sous le player (mobile + desktop)
-  "watch-c": [
-    "https://www.imglnkx.com/10138/anime---lesbian.gif",
-    "https://www.imglnkx.com/10138/anime---tentacle.gif",
-  ],
-  // /watch D — sidebar bottom desktop
-  "watch-d": ["https://www.imglnkx.com/10138/anime---slimebondage.gif"],
-} as const;
+// CrakRevenue creative pools by slug × surface.
+// Each surface has its own dedicated subset → 0 overlap between mounts.
+const POOLS: Record<string, Record<string, readonly string[]>> = {
+  // Joi-AI uses anime-themed creatives (ourdream offer 10138 — Joi
+  // offer 10163 only has 300x100 banners, no 300x250).
+  "joi-ai": {
+    "homepage-a": [
+      "https://www.imglnkx.com/10138/anime---succubus.gif",
+      "https://www.imglnkx.com/10138/300x250---AI-Girls-Just-Want-To-Make-You-Cum---Copy.gif",
+    ],
+    "watch-c": [
+      "https://www.imglnkx.com/10138/anime---lesbian.gif",
+      "https://www.imglnkx.com/10138/anime---tentacle.gif",
+      "https://www.imglnkx.com/10138/anime---slimebondage.gif",
+    ],
+  },
+  // Candy.AI uses Candy-branded Cartoon-Hentai creatives (offer 10022).
+  // 6 GIFs, brand-matched for hentai audience landing on Candy.AI.
+  "candy-ai": {
+    "watch-d": [
+      "https://www.imglnkx.com/10022/CandyAI_202507_Cartoon-Hentai_300x250_Hasset1.gif",
+      "https://www.imglnkx.com/10022/CandyAI_202507_Cartoon-Hentai_300x250_Hasset2.gif",
+      "https://www.imglnkx.com/10022/CandyAI_202507_Cartoon-Hentai_300x250_Hasset3.gif",
+      "https://www.imglnkx.com/10022/CandyAI_202507_Cartoon-Hentai_300x250_Hasset4.gif",
+      "https://www.imglnkx.com/10022/CandyAI_202507_Cartoon-Hentai_300x250_Hasset5.gif",
+      "https://www.imglnkx.com/10022/CandyAI_202507_Cartoon-Hentai_300x250_Hasset6.gif",
+    ],
+  },
+};
 
-type Surface = keyof typeof POOLS;
+type Surface = string;
 
 interface Props {
-  slug: string;
+  slug: keyof typeof POOLS;
   surface: Surface;
 }
 
 export function AdRotationBanner({ slug, surface }: Props) {
-  const pool = POOLS[surface];
+  const pool = POOLS[slug]?.[surface];
+  if (!pool || pool.length === 0) return null;
   const src = pool[Math.floor(Math.random() * pool.length)];
   return (
     <a
