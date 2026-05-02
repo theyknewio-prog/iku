@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { GLOSSARY, getTermsByLetter } from "@/data/glossary";
-import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 
 export const metadata: Metadata = {
   title: "Hentai Glossary — 20+ Terms Explained | iku.gg",
@@ -38,11 +37,6 @@ export default function GlossaryPage() {
                 Browse Tags
               </Link>
             </div>
-          </div>
-
-          {/* Inline ad — HilltopAds 300x250 */}
-          <div style={{ margin: "16px auto 24px" }}>
-            <HilltopAdsBanner />
           </div>
 
           {/* Alphabet nav */}

@@ -4,7 +4,6 @@ import { SERIES } from "@/data/series";
 import { getThumbnailsForTags } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
 import type { Metadata } from "next";
-import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 
 export const metadata: Metadata = {
   title: "Hentai Series — Browse All Anime Series | iku.gg",
@@ -83,11 +82,6 @@ export default async function SeriesIndexPage() {
             >
               {SERIES.length} anime series to explore
             </p>
-          </div>
-
-          {/* Inline ad — HilltopAds 300x250 */}
-          <div style={{ margin: "16px auto 24px" }}>
-            <HilltopAdsBanner />
           </div>
 
           {/* ── All series ───────────────────────────────────── */}

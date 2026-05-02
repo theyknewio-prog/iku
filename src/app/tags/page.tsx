@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { getPopularTags, getPopularCharactersPg } from "@/lib/content";
 import type { Metadata } from "next";
-import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 
 export const metadata: Metadata = {
   title: "Hentai Tags — Browse All Categories | iku.gg",
@@ -53,11 +52,6 @@ export default async function TagsPage() {
             >
               {popularTags.length} popular tags to explore
             </p>
-          </div>
-
-          {/* Inline ad — HilltopAds 300x250 */}
-          <div style={{ margin: "16px auto 24px" }}>
-            <HilltopAdsBanner />
           </div>
 
           {/* ── General tags ──────────────────────────────────── */}

@@ -131,19 +131,17 @@ export function middleware(request: NextRequest) {
   const ANALYTICS =
     "https://us-assets.i.posthog.com https://us.i.posthog.com https://cdn.onesignal.com https://*.onesignal.com https://onesignal.com";
 
-  // Ad-tech hosts — minimum set for the 15 placements live on iku.gg
-  // (homepage + /watch + /feed + 6 listing pages + blog/glossary).
-  // Cleaned 2026-05-03: removed mbjms (Smartlink unused), scptp9 (popunder
-  // unused), crxcr2/crxcra (popin/cams unused), cloudfront/popads (PopAds
-  // unused).
+  // Ad-tech hosts — re-added 2026-05-02 for Placement A (CR Joi GIF) +
+  // Placement B (HilltopAds banner zone 6969681). Minimum set to make
+  // the 2 surfaces fire correctly without breaking attribution:
   //   - imglnkx: CR creative GIFs (img-src)
-  //   - vlmai-1: CR redirect target
+  //   - vlmai-1, mbjms, scptp9, crxcr2, crxcra: CR redirect/popup hosts
   //   - adsco.re: CR fraud verification (CRITICAL — without this, CR
   //     scrubs every click as 'unverified' = 0 conversions)
-  //   - blockadsnot: HilltopAds anti-adblock (loaded by their banner;
-  //     without it they downgrade fill rate)
-  //   - 14 HilltopAds rotating shards (CDN). Bare + wildcard because
-  //     CSP wildcards don't match apex.
+  //   - blockadsnot, cloudfront: HilltopAds anti-adblock (loaded by
+  //     their banner script; without it they downgrade fill rate)
+  //   - selfassured-celebration + 12 other rotating shards: HilltopAds
+  //     CDN. Bare + wildcard because CSP wildcards don't match apex.
   const HILLTOPADS_SHARDS = [
     "selfassured-celebration.com",
     "sorrowfulpsychology.com",
@@ -165,7 +163,7 @@ export function middleware(request: NextRequest) {
     `https://*.${h}`,
   ]).join(" ");
   const CR_HOSTS =
-    "https://*.imglnkx.com https://imglnkx.com https://*.vlmai-1.com https://*.adsco.re https://*.blockadsnot.com";
+    "https://*.imglnkx.com https://imglnkx.com https://*.vlmai-1.com https://*.mbjms.com https://*.scptp9.com https://*.crxcr2.com https://*.crxcra.com https://*.adsco.re https://*.blockadsnot.com https://*.cloudfront.net";
   const AD_SCRIPT = `${HILLTOPADS_HOSTS} ${CR_HOSTS}`;
 
   // `'unsafe-inline'` + `'unsafe-eval'` kept for inline JSON-LD scripts
