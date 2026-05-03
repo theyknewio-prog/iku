@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
         if (invoice.subscription) {
           const { rows } = await pool.query(
             `UPDATE users SET pro_status = 'past_due'
-             WHERE pro_subscription_id = $1 AND pro_status != 'lifetime'
+             WHERE pro_subscription_id = $1 AND pro_status IS DISTINCT FROM 'lifetime'
              RETURNING id, email, username, pro_plan`,
             [String(invoice.subscription)],
           );
@@ -332,7 +332,7 @@ export async function handleSubscriptionUpdate(sub: Stripe.Subscription) {
        pro_subscription_id = $4,
        pro_current_period_end = $5,
        pro_started_at = COALESCE(pro_started_at, NOW())
-     WHERE id = $1 AND pro_status != 'lifetime'`,
+     WHERE id = $1 AND pro_status IS DISTINCT FROM 'lifetime'`,
     [userId, proStatus, plan, sub.id, periodEnd],
   );
 
@@ -347,7 +347,7 @@ export async function handleSubscriptionDeleted(sub: Stripe.Subscription) {
     `UPDATE users SET
        pro_status = 'canceled',
        pro_subscription_id = NULL
-     WHERE id = $1 AND pro_status != 'lifetime'`,
+     WHERE id = $1 AND pro_status IS DISTINCT FROM 'lifetime'`,
     [userId],
   );
   console.log(`pro canceled for user ${userId}`);
