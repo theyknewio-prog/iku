@@ -32,12 +32,17 @@ const POOLS: Record<string, Record<string, readonly string[]>> = {
     ],
   },
   // Candy.AI uses Candy-branded Cartoon-Hentai creatives (offer 10022).
-  // 6 GIFs, brand-matched for hentai audience landing on Candy.AI.
+  // 6 GIFs split between homepage-a2 (Hasset 1-3) and watch-d (Hasset
+  // 4-6) so the same user navigating / → /watch never sees the same
+  // creative twice (ad blindness killer).
   "candy-ai": {
-    "watch-d": [
+    // Homepage A2 — between Top Rated and Popular Games sections.
+    "homepage-a2": [
       "https://www.imglnkx.com/10022/CandyAI_202507_Cartoon-Hentai_300x250_Hasset1.gif",
       "https://www.imglnkx.com/10022/CandyAI_202507_Cartoon-Hentai_300x250_Hasset2.gif",
       "https://www.imglnkx.com/10022/CandyAI_202507_Cartoon-Hentai_300x250_Hasset3.gif",
+    ],
+    "watch-d": [
       "https://www.imglnkx.com/10022/CandyAI_202507_Cartoon-Hentai_300x250_Hasset4.gif",
       "https://www.imglnkx.com/10022/CandyAI_202507_Cartoon-Hentai_300x250_Hasset5.gif",
       "https://www.imglnkx.com/10022/CandyAI_202507_Cartoon-Hentai_300x250_Hasset6.gif",
