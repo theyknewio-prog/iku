@@ -30,6 +30,14 @@ const POOLS: Record<string, Record<string, readonly string[]>> = {
       "https://www.imglnkx.com/10138/anime---tentacle.gif",
       "https://www.imglnkx.com/10138/anime---slimebondage.gif",
     ],
+    // Native in-grid — Trending carousel position 9 inline ad-break.
+    // Per feedback_respect_ad_format: NO fake-card wrapper, GIF stays
+    // at native 300x250 even though surrounded by ~210x300 PosterCards.
+    "trending-grid": [
+      "https://www.imglnkx.com/10138/anime---monsters.gif",
+      "https://www.imglnkx.com/10138/anime---tied.gif",
+      "https://www.imglnkx.com/10138/50k-characters.gif",
+    ],
   },
   // Candy.AI uses Candy-branded Cartoon-Hentai creatives (offer 10022).
   // 6 GIFs split between homepage-a2 (Hasset 1-3) and watch-d (Hasset

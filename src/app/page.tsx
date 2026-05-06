@@ -446,14 +446,36 @@ export default async function HomePage() {
               TRENDING NOW -- Horizontal poster scroll
           ================================================================ */}
           <Carousel title="🔥 Trending Now" badge="HOT" seeAllHref="/trending">
-            {trending.data.map((video, i) => (
-              <PosterCard
-                key={video.id}
-                video={video}
-                rank={i < 8 ? i + 1 : undefined}
-                priority={i < 5}
-              />
-            ))}
+            {trending.data.flatMap((video, i) => {
+              const card = (
+                <PosterCard
+                  key={video.id}
+                  video={video}
+                  rank={i < 8 ? i + 1 : undefined}
+                  priority={i < 5}
+                />
+              );
+              // Native in-grid ad-break at position 9 (after 8th poster).
+              // 300x250 GIF inserted as a flex item, same scroll behavior
+              // as poster cards. No fake-card wrapper per
+              // feedback_respect_ad_format.md.
+              if (i === 7) {
+                return [
+                  card,
+                  <div
+                    key="ad-trending-grid"
+                    style={{
+                      flex: "0 0 300px",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <AdRotationBanner slug="joi-ai" surface="trending-grid" />
+                  </div>,
+                ];
+              }
+              return card;
+            })}
           </Carousel>
 
           {/* Premium CTA #1 — slim inline strip after Trending. */}
