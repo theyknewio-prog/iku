@@ -474,12 +474,23 @@ const ACCOUNT_ITEMS = [
   { href: "/settings", label: "Settings", Icon: IconSettings },
 ] as const;
 
-/* Affiliate partners — emptied 2026-05-02 during full ad nuke. */
+/* Affiliate partners — Stripcash cam revshare re-mounted 2026-05-06.
+ * Surface revival from f227cb1 (originally shipped 2026-04-27). Account
+ * ikumediagg, REV 20% lifetime, smart link routes to best-converting
+ * StripChat landing per visitor geo. Top-level navigation only — no JS,
+ * no CSP, no perf impact. Per feedback_respect_ad_format: native nav
+ * link, not a creative — no wrapper. */
 const AFFILIATE_ITEMS: readonly {
   href: string;
   label: string;
   emoji?: string;
-}[] = [];
+}[] = [
+  {
+    href: "https://go.mavrtracktor.com?userId=17e833691806534d444a0f2a237e4ac61d0cd81990649940427306c52266eced",
+    label: "Live Cams",
+    emoji: "🔴",
+  },
+];
 
 /* Extras — content pages that weren't previously reachable from mobile */
 const EXTRA_ITEMS = [
