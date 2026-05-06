@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getPopularTags, getPopularCharactersPg } from "@/lib/content";
+import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -52,6 +53,11 @@ export default async function TagsPage() {
             >
               {popularTags.length} popular tags to explore
             </p>
+          </div>
+
+          {/* Listing ad — HilltopAds 300x250 below hero */}
+          <div style={{ margin: "16px auto 24px" }}>
+            <HilltopAdsBanner />
           </div>
 
           {/* ── General tags ──────────────────────────────────── */}

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { SERIES } from "@/data/series";
 import { getThumbnailsForTags } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
+import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -82,6 +83,11 @@ export default async function SeriesIndexPage() {
             >
               {SERIES.length} anime series to explore
             </p>
+          </div>
+
+          {/* Listing ad — HilltopAds 300x250 below hero */}
+          <div style={{ margin: "16px auto 24px" }}>
+            <HilltopAdsBanner />
           </div>
 
           {/* ── All series ───────────────────────────────────── */}

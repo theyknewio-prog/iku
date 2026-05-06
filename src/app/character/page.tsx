@@ -5,6 +5,7 @@ import { CHARACTERS } from "@/data/characters";
 import { SERIES } from "@/data/series";
 import { getThumbnailsForTags } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
+import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -109,6 +110,11 @@ export default async function CharactersPage() {
             >
               {CHARACTERS.length} characters from {SERIES.length} anime series
             </p>
+          </div>
+
+          {/* Listing ad — HilltopAds 300x250 below hero */}
+          <div style={{ margin: "16px auto 24px" }}>
+            <HilltopAdsBanner />
           </div>
 
           {/* ── All characters by series ─────────────────────── */}
