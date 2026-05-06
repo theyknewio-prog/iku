@@ -9,6 +9,7 @@ import {
 import { GLOSSARY } from "@/data/glossary";
 import { getInternalLinksForArticle } from "@/data/blog-internal-links";
 import { getNonce } from "@/lib/csp-nonce";
+import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 
 interface BlogPostProps {
   params: Promise<{ slug: string }>;
@@ -203,6 +204,13 @@ export default async function BlogPostPage({ params }: BlogPostProps) {
                       .replace(/javascript:/gi, ""),
                   }}
                 />
+
+                {/* Article-body ad — HilltopAds 300x250 between body
+                    and the cross-link sections. Reader is mid-engagement
+                    here, ad-blindness lower than top-of-page. */}
+                <div style={{ margin: "32px auto" }}>
+                  <HilltopAdsBanner />
+                </div>
 
                 {/* Glossary cross-links */}
                 {glossaryTerms.length > 0 && (

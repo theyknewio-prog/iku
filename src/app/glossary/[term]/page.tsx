@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { GLOSSARY, getTermBySlug, getRelatedTerms } from "@/data/glossary";
 import { BLOG_ARTICLES } from "@/data/blog";
 import { getNonce } from "@/lib/csp-nonce";
+import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 
 interface TermPageProps {
   params: Promise<{ term: string }>;
@@ -147,6 +148,12 @@ export default async function TermPage({ params }: TermPageProps) {
             {/* Definition */}
             <div className="glossary-term-body">
               <p className="glossary-term-definition">{term.definition}</p>
+            </div>
+
+            {/* Term-body ad — HilltopAds 300x250 between definition and
+                cross-link sections. */}
+            <div style={{ margin: "32px auto" }}>
+              <HilltopAdsBanner />
             </div>
 
             {/* Related tags */}
