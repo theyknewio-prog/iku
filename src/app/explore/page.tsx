@@ -8,6 +8,7 @@ import { AgeGate } from "@/components/AgeGate";
 import { isLikelyBot } from "@/lib/is-bot";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
+import { AdRotationBanner } from "@/components/AdJoiBanner";
 import { SignupCTA } from "@/components/SignupCTA";
 import { CHARACTERS } from "@/data/characters";
 import { SERIES } from "@/data/series";
@@ -411,6 +412,13 @@ export default async function ExplorePage(props: {
 
             {/* Video grid */}
             <BlacklistFilter videos={videos} />
+
+            {/* AI bottom — Joi after the grid, before pagination. */}
+            {videos.length > 0 && (
+              <div style={{ margin: "24px auto 8px" }}>
+                <AdRotationBanner slug="joi-ai" surface="explore-bottom" />
+              </div>
+            )}
 
             {/* Empty state */}
             {videos.length === 0 && (

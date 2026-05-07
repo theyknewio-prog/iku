@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
+import { AdRotationBanner } from "@/components/AdJoiBanner";
 import { Pagination } from "@/components/Pagination";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { getVideos, countVideos, isBannedTag } from "@/lib/content";
@@ -453,6 +454,11 @@ export default async function CharacterPage({ params, searchParams }: Props) {
                 </span>
               </Link>
               <BlacklistFilter videos={videos} />
+
+              {/* AI bottom — Joi after the grid, before pagination. */}
+              <div style={{ margin: "24px auto" }}>
+                <AdRotationBanner slug="joi-ai" surface="character-bottom" />
+              </div>
             </>
           )}
 

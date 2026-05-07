@@ -5,7 +5,6 @@ import type { Metadata } from "next";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { WatchPlayer } from "@/components/WatchPlayer";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
-import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { ProGatedPlayer } from "@/components/ProGatedPlayer";
 import { isProLocked } from "@/lib/pro-gate";
 import { unlockCost } from "@/lib/unlock-cost";
@@ -583,6 +582,14 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 initialScore={video.score}
               />
 
+              {/* Placement C — CR Joi 300x250 above the fold. Sits right
+                  under the action bar so it's visible without scrolling
+                  past tags/description/FAQ (where the user usually bounces
+                  on mobile). Highest-intent slot on the page. */}
+              <div style={{ margin: "16px auto 4px" }}>
+                <AdRotationBanner slug="joi-ai" surface="watch-c" />
+              </div>
+
               <div className="player-divider" />
 
               {/* Tag pills */}
@@ -694,14 +701,6 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
               <div className="player-divider" />
 
-              {/* Placement C — CR Joi 300x250 GIF (mobile shows here below
-                  player; desktop shows the same in sidebar top via the
-                  aside below). Native size, zero chrome. Different GIF
-                  pool from homepage A to avoid ad blindness. */}
-              <div style={{ margin: "20px auto" }}>
-                <AdRotationBanner slug="joi-ai" surface="watch-c" />
-              </div>
-
               {/* Related — mobile grid (below player) */}
               <div style={{ marginTop: "32px" }}>
                 <div className="section-header">
@@ -737,18 +736,28 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 </Suspense>
               </div>
 
-              {/* Placement E — HilltopAds 300x250 banner. CPM passive,
-                  fires below the related grid (end-of-content slot). */}
+              {/* Placement E — CR Candy.AI 300x250 below the related grid.
+                  End-of-content slot, last-chance click before bounce.
+                  Different brand from C above to avoid ad blindness. */}
               <div style={{ margin: "24px auto" }}>
-                <HilltopAdsBanner />
+                <AdRotationBanner slug="candy-ai" surface="watch-d" />
               </div>
             </div>
 
             {/* ── Sidebar (desktop) ─────────────────────────── */}
             <aside className="player-sidebar">
               <div className="player-sidebar__title">Up next</div>
+
+              {/* Placement D — CR Candy.AI 300x250 at the TOP of the
+                  sidebar (right under the title, before any related item).
+                  Maximizes visibility on desktop where the sidebar is the
+                  natural eye anchor next to the player. */}
+              <div style={{ margin: "0 auto 16px" }}>
+                <AdRotationBanner slug="candy-ai" surface="watch-d" />
+              </div>
+
               <Suspense
-                fallback={Array.from({ length: 12 }).map((_, i) => (
+                fallback={Array.from({ length: 6 }).map((_, i) => (
                   <div key={i} className="related-item">
                     <div
                       className="related-item__thumb skeleton-thumb"
@@ -767,15 +776,37 @@ export default async function WatchPage({ params }: WatchPageProps) {
                   </div>
                 ))}
               >
-                <RelatedSidebar video={video} offset={0} limit={12} />
+                <RelatedSidebar video={video} offset={0} limit={6} />
               </Suspense>
 
-              {/* Placement D — CR Candy.AI 300x250 GIF (sidebar bottom,
-                  desktop only since aside is hidden on mobile). Different
-                  brand AND different GIF pool from C above. */}
-              <div style={{ marginTop: 16 }}>
-                <AdRotationBanner slug="candy-ai" surface="watch-d" />
+              {/* Placement F — Joi mid-sidebar between related sets so the
+                  user scrolling the up-next list hits an ad halfway down. */}
+              <div style={{ margin: "16px auto" }}>
+                <AdRotationBanner slug="joi-ai" surface="watch-c" />
               </div>
+
+              <Suspense
+                fallback={Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="related-item">
+                    <div
+                      className="related-item__thumb skeleton-thumb"
+                      style={{ width: "130px" }}
+                    />
+                    <div style={{ flex: 1 }}>
+                      <div
+                        className="skeleton-line skeleton"
+                        style={{ width: "90%", marginBottom: "5px" }}
+                      />
+                      <div
+                        className="skeleton-line skeleton"
+                        style={{ width: "50%", height: "10px" }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              >
+                <RelatedSidebar video={video} offset={6} limit={6} />
+              </Suspense>
             </aside>
           </div>
 

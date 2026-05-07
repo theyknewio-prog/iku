@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { Suspense } from "react";
+import React, { Suspense } from "react";
 import type { Metadata } from "next";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { Pagination } from "@/components/Pagination";
 import { getVideos, countVideos } from "@/lib/content";
 import { SORT_OPTIONS, parseSort } from "@/lib/sort-options";
+import { AdRotationBanner } from "@/components/AdJoiBanner";
 import type { Video } from "@/types/video";
 
 export const revalidate = 1800;
@@ -157,15 +158,44 @@ export default async function EpisodesPage({ searchParams }: Props) {
                   Premium 4.99€/mo →
                 </span>
               </Link>
+              {/* AI #1 — Candy.AI 300x250 above the grid. */}
+              <div style={{ margin: "8px auto 20px" }}>
+                <AdRotationBanner slug="candy-ai" surface="page-episodes-top" />
+              </div>
               <div className="video-grid">
-                {videos.map((video: Video, i) => (
-                  <ThumbnailCard
-                    key={video.id}
-                    video={video}
-                    priority={i < 4}
-                    lazy={i >= 4}
-                  />
-                ))}
+                {videos.map((video: Video, i) => {
+                  if (i === 12) {
+                    return (
+                      <React.Fragment key={`ad-${video.id}`}>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <AdRotationBanner
+                            slug="joi-ai"
+                            surface="page-episodes-grid"
+                          />
+                        </div>
+                        <ThumbnailCard
+                          video={video}
+                          priority={false}
+                          lazy={true}
+                        />
+                      </React.Fragment>
+                    );
+                  }
+                  return (
+                    <ThumbnailCard
+                      key={video.id}
+                      video={video}
+                      priority={i < 4}
+                      lazy={i >= 4}
+                    />
+                  );
+                })}
               </div>
             </>
           )}
@@ -180,6 +210,16 @@ export default async function EpisodesPage({ searchParams }: Props) {
                   totalPages={totalPages}
                 />
               </Suspense>
+            </div>
+          )}
+
+          {/* AI #2 — bottom of page, last-chance click before bounce. */}
+          {videos.length > 0 && (
+            <div style={{ margin: "16px auto 32px" }}>
+              <AdRotationBanner
+                slug="candy-ai"
+                surface="page-episodes-bottom"
+              />
             </div>
           )}
 

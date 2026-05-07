@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { headers } from "next/headers";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
+import { AdRotationBanner } from "@/components/AdJoiBanner";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { Pagination } from "@/components/Pagination";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
@@ -308,6 +309,11 @@ export default async function TagPage({ params, searchParams }: Props) {
                 </span>
               </Link>
               <BlacklistFilter videos={videos} />
+
+              {/* AI bottom — Candy.AI after the grid, before pagination. */}
+              <div style={{ margin: "24px auto" }}>
+                <AdRotationBanner slug="candy-ai" surface="tag-bottom" />
+              </div>
             </>
           )}
 

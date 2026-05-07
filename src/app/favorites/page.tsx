@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { auth } from "@/auth";
 import { getUserFavorites } from "@/lib/content";
+import { AdRotationBanner } from "@/components/AdJoiBanner";
 import { FavoritesClient, type InitialFavorite } from "./favorites-client";
 
 export const metadata: Metadata = {
@@ -31,9 +32,16 @@ export default async function FavoritesPage() {
   }
 
   return (
-    <FavoritesClient
-      initialItems={initialItems}
-      isAuthenticated={Boolean(session?.user?.id)}
-    />
+    <>
+      <FavoritesClient
+        initialItems={initialItems}
+        isAuthenticated={Boolean(session?.user?.id)}
+      />
+      {/* AI banner at the bottom of /favorites — noindex page, no SEO
+          impact, but logged-in users on this page are highly engaged. */}
+      <div style={{ margin: "24px auto 48px" }}>
+        <AdRotationBanner slug="candy-ai" surface="page-favorites" />
+      </div>
+    </>
   );
 }

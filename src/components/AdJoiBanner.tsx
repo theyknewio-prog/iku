@@ -77,8 +77,19 @@ interface Props {
 }
 
 export function AdRotationBanner({ slug, surface }: Props) {
-  const pool = POOLS[slug]?.[surface];
-  if (!pool || pool.length === 0) return null;
+  let pool = POOLS[slug]?.[surface];
+  // Fallback: unknown surface → flatten all pools for this slug. Lets us
+  // mount AI on any new placement (3d/hentai/episodes/listings/etc.) without
+  // adding a dedicated pool entry every time. `surface` still matters as a
+  // string for /go logging when we wire it.
+  if (!pool || pool.length === 0) {
+    const slugPools = POOLS[slug];
+    if (!slugPools) return null;
+    const flat: string[] = [];
+    for (const k of Object.keys(slugPools)) flat.push(...slugPools[k]);
+    if (flat.length === 0) return null;
+    pool = flat;
+  }
   const src = pool[Math.floor(Math.random() * pool.length)];
   return (
     <a

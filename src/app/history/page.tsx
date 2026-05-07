@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { auth } from "@/auth";
 import { getUserHistory } from "@/lib/content";
+import { AdRotationBanner } from "@/components/AdJoiBanner";
 import { HistoryClient, type InitialHistoryItem } from "./history-client";
 
 export const metadata: Metadata = {
@@ -31,9 +32,16 @@ export default async function HistoryPage() {
   }
 
   return (
-    <HistoryClient
-      initialItems={initialItems}
-      isAuthenticated={Boolean(session?.user?.id)}
-    />
+    <>
+      <HistoryClient
+        initialItems={initialItems}
+        isAuthenticated={Boolean(session?.user?.id)}
+      />
+      {/* AI banner at the bottom of /history — noindex page, no SEO
+          impact, but logged-in users on this page are highly engaged. */}
+      <div style={{ margin: "24px auto 48px" }}>
+        <AdRotationBanner slug="joi-ai" surface="page-history" />
+      </div>
+    </>
   );
 }

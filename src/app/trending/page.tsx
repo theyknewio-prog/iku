@@ -1,4 +1,5 @@
 import Link from "next/link";
+import React from "react";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { SignupCTA } from "@/components/SignupCTA";
 import { getVideos } from "@/lib/content";
@@ -6,6 +7,7 @@ import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 import { SortTabs, parseSort } from "@/components/SortTabs";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
+import { AdRotationBanner } from "@/components/AdJoiBanner";
 
 export const metadata: Metadata = {
   title: "Trending Hentai Videos 2026 | iku.gg",
@@ -107,15 +109,70 @@ export default async function TrendingPage(props: {
                 <HilltopAdsBanner />
               </div>
               <div className="video-grid">
-                {videos.map((video: Video, i) => (
-                  <ThumbnailCard
-                    key={video.id}
-                    video={video}
-                    rank={i + 1}
-                    priority={i < 4}
-                    lazy={i >= 4}
-                  />
-                ))}
+                {videos.map((video: Video, i) => {
+                  if (i === 12) {
+                    return (
+                      <React.Fragment key={`ad-${video.id}`}>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <AdRotationBanner
+                            slug="joi-ai"
+                            surface="trending-grid"
+                          />
+                        </div>
+                        <ThumbnailCard
+                          video={video}
+                          rank={i + 1}
+                          priority={false}
+                          lazy={true}
+                        />
+                      </React.Fragment>
+                    );
+                  }
+                  if (i === 28) {
+                    return (
+                      <React.Fragment key={`ad-mid-${video.id}`}>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <AdRotationBanner
+                            slug="candy-ai"
+                            surface="trending-grid-2"
+                          />
+                        </div>
+                        <ThumbnailCard
+                          video={video}
+                          rank={i + 1}
+                          priority={false}
+                          lazy={true}
+                        />
+                      </React.Fragment>
+                    );
+                  }
+                  return (
+                    <ThumbnailCard
+                      key={video.id}
+                      video={video}
+                      rank={i + 1}
+                      priority={i < 4}
+                      lazy={i >= 4}
+                    />
+                  );
+                })}
+              </div>
+
+              {/* AI bottom — last-chance click after the grid. */}
+              <div style={{ margin: "24px auto" }}>
+                <AdRotationBanner slug="candy-ai" surface="trending-bottom" />
               </div>
             </>
           )}
