@@ -16,9 +16,14 @@ const CR_BASE = "?aff_sub5=SF_006OG000004lmDN";
 const CR = (path: string) => `https://t.vlmai-1.com/410186/${path}${CR_BASE}`;
 
 const AFFILIATE_LINKS: Record<string, string> = {
+  // CrakRevenue offers
   "joi-ai": CR("8080"), // $42 PPS T1 Premium, EPC $0.46 — TOP CONVERTER
   "candy-ai": CR("8025"), // $44 PPS T1 Premium, EPC $0.22
   "girlfriend-gpt": CR("8184"), // $55 PPS Premium, EPC $0.20
+  // Direct affiliate programs (approved 2026-05-02 → 2026-05-05)
+  "kupid-ai": "https://kpdtrk.com/iku-gg-gr53", // Kupid AI — Dub.co partner
+  anifusion: "https://anifusion.ai/?atp=ikugg", // Anifusion — 30% lifetime
+  soulkyn: "https://soulkyn.com/?_go=sab35", // Soulkyn — 15% recurring + 10% sub-aff
 };
 
 export async function GET(

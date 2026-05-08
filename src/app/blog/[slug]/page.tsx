@@ -10,6 +10,7 @@ import { GLOSSARY } from "@/data/glossary";
 import { getInternalLinksForArticle } from "@/data/blog-internal-links";
 import { getNonce } from "@/lib/csp-nonce";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
+import { AdRotationBanner } from "@/components/AdJoiBanner";
 
 interface BlogPostProps {
   params: Promise<{ slug: string }>;
@@ -210,6 +211,14 @@ export default async function BlogPostPage({ params }: BlogPostProps) {
                     here, ad-blindness lower than top-of-page. */}
                 <div style={{ margin: "32px auto" }}>
                   <HilltopAdsBanner />
+                </div>
+
+                {/* AI affiliate ad — Candy-AI 300x250, second mid-article slot */}
+                <div style={{ margin: "16px auto 32px" }}>
+                  <AdRotationBanner
+                    slug="candy-ai"
+                    surface="blog-article-mid"
+                  />
                 </div>
 
                 {/* Glossary cross-links */}

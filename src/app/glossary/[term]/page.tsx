@@ -5,6 +5,7 @@ import { GLOSSARY, getTermBySlug, getRelatedTerms } from "@/data/glossary";
 import { BLOG_ARTICLES } from "@/data/blog";
 import { getNonce } from "@/lib/csp-nonce";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
+import { AdRotationBanner } from "@/components/AdJoiBanner";
 
 interface TermPageProps {
   params: Promise<{ term: string }>;
@@ -154,6 +155,12 @@ export default async function TermPage({ params }: TermPageProps) {
                 cross-link sections. */}
             <div style={{ margin: "32px auto" }}>
               <HilltopAdsBanner />
+            </div>
+
+            {/* AI affiliate ad — Candy-AI 300x250, paired with HilltopAds
+                in mid-article slot. Reader is mid-engagement here. */}
+            <div style={{ margin: "16px auto 32px" }}>
+              <AdRotationBanner slug="candy-ai" surface="glossary-term-mid" />
             </div>
 
             {/* Related tags */}

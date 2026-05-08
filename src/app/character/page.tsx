@@ -6,6 +6,7 @@ import { SERIES } from "@/data/series";
 import { getThumbnailsForTags } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
+import { AdRotationBanner } from "@/components/AdJoiBanner";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -171,6 +172,11 @@ export default async function CharactersPage() {
               </section>
             </React.Fragment>
           ))}
+
+          {/* AI affiliate ad — Joi-AI 300x250 between character grid and cross-links */}
+          <div style={{ margin: "32px auto 16px" }}>
+            <AdRotationBanner slug="joi-ai" surface="character-index-bottom" />
+          </div>
 
           {/* ── Cross-links ──────────────────────────────────── */}
           <section className="page-section">

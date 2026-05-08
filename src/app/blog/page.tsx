@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { BLOG_ARTICLES } from "@/data/blog";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
+import { AdRotationBanner } from "@/components/AdJoiBanner";
 
 export const metadata: Metadata = {
   title: "Hentai Blog — Guides, History & Culture | iku.gg",
@@ -94,6 +95,11 @@ export default function BlogPage() {
                 <span className="blog-card__cta">Read →</span>
               </Link>
             ))}
+          </div>
+
+          {/* AI affiliate ad — Joi-AI 300x250, between grid and cross-link */}
+          <div style={{ margin: "32px auto 16px" }}>
+            <AdRotationBanner slug="joi-ai" surface="blog-index-bottom" />
           </div>
 
           {/* Cross-link to glossary */}
