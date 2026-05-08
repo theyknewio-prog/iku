@@ -67,6 +67,32 @@ const POOLS: Record<string, Record<string, readonly string[]>> = {
       "https://www.imglnkx.com/10022/CandyAI_202507_Realistic_tired_of_porn_banner_6.gif",
     ],
   },
+  // Swipey AI — added 2026-05-08 for brand-rotation variety. CR offer
+  // 10100, $38.50 PPS, EPC $0.0591. 14 Realistic + 2 Anime 300x250 GIFs
+  // pulled directly from CR Ad Tools 2026-05-08. Lower EPC than Joi/Candy
+  // but third-brand mixed in cuts ad blindness on multi-page sessions.
+  swipey: {
+    "default-realistic": [
+      "https://www.imglnkx.com/10100/Swipey_202506_300250_Realistic_1.gif",
+      "https://www.imglnkx.com/10100/Swipey_202506_300250_Realistic_2.gif",
+      "https://www.imglnkx.com/10100/Swipey_202506_300250_Realistic_3.gif",
+      "https://www.imglnkx.com/10100/Swipey_202506_300250_Realistic_4.gif",
+      "https://www.imglnkx.com/10100/Swipey_202506_300250_Realistic_5.gif",
+      "https://www.imglnkx.com/10100/Swipey_202506_300250_Realistic_6.gif",
+      "https://www.imglnkx.com/10100/Swipey_202506_300250_Realistic_7.gif",
+      "https://www.imglnkx.com/10100/Swipey_202506_300250_Realistic_8.gif",
+      "https://www.imglnkx.com/10100/Swipey_202506_300250_Realistic_9.gif",
+      "https://www.imglnkx.com/10100/Swipey_202506_300250_Realistic_10.gif",
+      "https://www.imglnkx.com/10100/Swipey_202506_300250_Realistic_11.gif",
+      "https://www.imglnkx.com/10100/Swipey_202506_300250_Realistic_12.gif",
+      "https://www.imglnkx.com/10100/Swipey_202506_300250_Realistic_13.gif",
+      "https://www.imglnkx.com/10100/Swipey_202506_300250_Realistic_14.gif",
+    ],
+    "default-anime": [
+      "https://www.imglnkx.com/10100/Swipey_202506_300250_Anime_15.gif",
+      "https://www.imglnkx.com/10100/Swipey_202506_300250_Anime_16.gif",
+    ],
+  },
 };
 
 type Surface = string;

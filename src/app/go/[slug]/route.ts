@@ -19,7 +19,8 @@ const AFFILIATE_LINKS: Record<string, string> = {
   // CrakRevenue offers
   "joi-ai": CR("8080"), // $42 PPS T1 Premium, EPC $0.46 — TOP CONVERTER
   "candy-ai": CR("8025"), // $44 PPS T1 Premium, EPC $0.22
-  "girlfriend-gpt": CR("8184"), // $55 PPS Premium, EPC $0.20
+  "girlfriend-gpt": CR("10407"), // $55 PPS Premium, EPC $0.27 (replaced dead 8184 with new 10407 — verified 2026-05-08)
+  swipey: CR("10100"), // $38.50 PPS, EPC $0.06 — added 2026-05-08 for variety (Realistic + Anime creatives)
   // Direct affiliate programs (approved 2026-05-02 → 2026-05-05)
   "kupid-ai": "https://kpdtrk.com/iku-gg-gr53", // Kupid AI — Dub.co partner
   anifusion: "https://anifusion.ai/?atp=ikugg", // Anifusion — 30% lifetime

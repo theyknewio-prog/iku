@@ -5,6 +5,7 @@ import { Pagination } from "@/components/Pagination";
 import { getVideos, countVideos } from "@/lib/content";
 import { SORT_OPTIONS, parseSort } from "@/lib/sort-options";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
+import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 
@@ -219,6 +220,19 @@ export default async function ThreeDPage({ searchParams }: Props) {
             <div style={{ margin: "16px auto 32px" }}>
               <AdRotationBanner slug="candy-ai" surface="page-3d-bottom" />
             </div>
+          )}
+
+          {/* Swipey 300x250 + Soulkyn vertical — extra brand variety
+              before SEO footer block. */}
+          {videos.length > 0 && (
+            <>
+              <div style={{ margin: "16px auto" }}>
+                <AdRotationBanner slug="swipey" surface="page-3d-swipey" />
+              </div>
+              <div style={{ margin: "16px auto 32px" }}>
+                <SoulkynVerticalAd surface="page-3d-vertical" />
+              </div>
+            </>
           )}
 
           {/* ── SEO footer block ─────────────────────────────── */}

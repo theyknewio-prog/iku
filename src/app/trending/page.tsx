@@ -8,6 +8,7 @@ import type { Metadata } from "next";
 import { SortTabs, parseSort } from "@/components/SortTabs";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
+import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 
 export const metadata: Metadata = {
   title: "Trending Hentai Videos 2026 | iku.gg",
@@ -173,6 +174,19 @@ export default async function TrendingPage(props: {
               {/* AI bottom — last-chance click after the grid. */}
               <div style={{ margin: "24px auto" }}>
                 <AdRotationBanner slug="candy-ai" surface="trending-bottom" />
+              </div>
+
+              {/* Soulkyn vertical — direct affiliate variation. */}
+              <div style={{ margin: "24px auto" }}>
+                <SoulkynVerticalAd surface="trending-bottom-vertical" />
+              </div>
+
+              {/* Swipey 300x250 — third brand in rotation, cuts ad blindness. */}
+              <div style={{ margin: "24px auto" }}>
+                <AdRotationBanner
+                  slug="swipey"
+                  surface="trending-bottom-swipey"
+                />
               </div>
             </>
           )}

@@ -8,6 +8,7 @@ import type { Metadata } from "next";
 import { SortTabs, parseSort } from "@/components/SortTabs";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
+import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 
 export const metadata: Metadata = {
   title: "New Hentai Videos — Latest Uploads | iku.gg",
@@ -184,6 +185,16 @@ export default async function NewPage({ searchParams }: Props) {
               {/* AI bottom — last-chance click after the grid. */}
               <div style={{ margin: "24px auto" }}>
                 <AdRotationBanner slug="candy-ai" surface="new-bottom" />
+              </div>
+
+              {/* Soulkyn vertical — direct affiliate, mobile-first 4:5. */}
+              <div style={{ margin: "24px auto" }}>
+                <SoulkynVerticalAd surface="new-bottom-vertical" />
+              </div>
+
+              {/* Swipey 300x250 — third brand in rotation. */}
+              <div style={{ margin: "24px auto" }}>
+                <AdRotationBanner slug="swipey" surface="new-bottom-swipey" />
               </div>
             </>
           )}
