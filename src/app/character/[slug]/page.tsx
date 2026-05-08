@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
+import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 import { Pagination } from "@/components/Pagination";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { getVideos, countVideos, isBannedTag } from "@/lib/content";
@@ -458,6 +459,11 @@ export default async function CharacterPage({ params, searchParams }: Props) {
               {/* AI bottom — Joi after the grid, before pagination. */}
               <div style={{ margin: "24px auto" }}>
                 <AdRotationBanner slug="joi-ai" surface="character-bottom" />
+              </div>
+
+              {/* Soulkyn vertical 4:5 — paired direct-affiliate slot. */}
+              <div style={{ margin: "24px auto 32px" }}>
+                <SoulkynVerticalAd surface="character-bottom-vertical" />
               </div>
             </>
           )}

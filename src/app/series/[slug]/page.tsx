@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { headers } from "next/headers";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
+import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 import { notFound } from "next/navigation";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { Pagination } from "@/components/Pagination";
@@ -441,6 +442,11 @@ export default async function SeriesPage({ params, searchParams }: Props) {
               {/* AI bottom — Candy.AI after the grid, before pagination. */}
               <div style={{ margin: "24px auto" }}>
                 <AdRotationBanner slug="candy-ai" surface="series-bottom" />
+              </div>
+
+              {/* Soulkyn vertical 4:5 — paired direct-affiliate slot. */}
+              <div style={{ margin: "24px auto 32px" }}>
+                <SoulkynVerticalAd surface="series-bottom-vertical" />
               </div>
             </>
           )}

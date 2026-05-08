@@ -22,6 +22,7 @@ import { SignupCTA } from "@/components/SignupCTA";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { MagneticButton } from "@/components/MagneticButton";
 import { AdJoiBanner, AdRotationBanner } from "@/components/AdJoiBanner";
+import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 
 export const metadata: Metadata = {
@@ -658,6 +659,13 @@ export default async function HomePage() {
               Native, zero chrome. Brand-matched for hentai audience. */}
           <div style={{ margin: "24px auto" }}>
             <AdRotationBanner slug="candy-ai" surface="homepage-a2" />
+          </div>
+
+          {/* Soulkyn vertical 4:5 — direct affiliate, mobile-first format
+              (90% iku.gg traffic is mobile). Paired with the 300x250 above
+              so users see two distinct creatives back to back. */}
+          <div style={{ margin: "16px auto 24px" }}>
+            <SoulkynVerticalAd surface="homepage-soulkyn" />
           </div>
 
           {/* ================================================================

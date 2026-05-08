@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
+import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { Pagination } from "@/components/Pagination";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
@@ -313,6 +314,12 @@ export default async function TagPage({ params, searchParams }: Props) {
               {/* AI bottom — Candy.AI after the grid, before pagination. */}
               <div style={{ margin: "24px auto" }}>
                 <AdRotationBanner slug="candy-ai" surface="tag-bottom" />
+              </div>
+
+              {/* Soulkyn vertical 4:5 — mobile-first format, paired with
+                  the 300x250 above. Direct affiliate (35%/15% recurring). */}
+              <div style={{ margin: "24px auto 32px" }}>
+                <SoulkynVerticalAd surface="tag-bottom-vertical" />
               </div>
             </>
           )}
