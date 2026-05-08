@@ -9,6 +9,7 @@ import { isLikelyBot } from "@/lib/is-bot";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
+import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 import { SignupCTA } from "@/components/SignupCTA";
 import { CHARACTERS } from "@/data/characters";
 import { SERIES } from "@/data/series";
@@ -418,6 +419,18 @@ export default async function ExplorePage(props: {
               <div style={{ margin: "24px auto 8px" }}>
                 <AdRotationBanner slug="joi-ai" surface="explore-bottom" />
               </div>
+            )}
+
+            {/* Swipey 300x250 + Soulkyn vertical — variety stack. */}
+            {videos.length > 0 && (
+              <>
+                <div style={{ margin: "16px auto" }}>
+                  <AdRotationBanner slug="swipey" surface="explore-swipey" />
+                </div>
+                <div style={{ margin: "16px auto 24px" }}>
+                  <SoulkynVerticalAd surface="explore-vertical" />
+                </div>
+              </>
             )}
 
             {/* Empty state */}

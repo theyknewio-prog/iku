@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { BLOG_ARTICLES } from "@/data/blog";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
+import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 
 export const metadata: Metadata = {
   title: "Hentai Blog — Guides, History & Culture | iku.gg",
@@ -98,8 +99,13 @@ export default function BlogPage() {
           </div>
 
           {/* AI affiliate ad — Joi-AI 300x250, between grid and cross-link */}
-          <div style={{ margin: "32px auto 16px" }}>
+          <div style={{ margin: "32px auto 8px" }}>
             <AdRotationBanner slug="joi-ai" surface="blog-index-bottom" />
+          </div>
+
+          {/* Soulkyn vertical 4:5 — second brand. */}
+          <div style={{ margin: "8px auto 16px" }}>
+            <SoulkynVerticalAd surface="blog-index-vertical" />
           </div>
 
           {/* Cross-link to glossary */}

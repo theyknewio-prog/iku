@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getPopularTags, getPopularCharactersPg } from "@/lib/content";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
+import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -88,8 +89,13 @@ export default async function TagsPage() {
           <div className="divider" />
 
           {/* AI affiliate ad — Joi-AI 300x250 between tag groups */}
-          <div style={{ margin: "24px auto" }}>
+          <div style={{ margin: "24px auto 8px" }}>
             <AdRotationBanner slug="joi-ai" surface="tags-index-mid" />
+          </div>
+
+          {/* Soulkyn vertical 4:5 — second brand. */}
+          <div style={{ margin: "8px auto 24px" }}>
+            <SoulkynVerticalAd surface="tags-index-vertical" />
           </div>
 
           {/* ── Character tags ────────────────────────────────── */}

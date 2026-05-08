@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { WatchPlayer } from "@/components/WatchPlayer";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
+import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 import { ProGatedPlayer } from "@/components/ProGatedPlayer";
 import { isProLocked } from "@/lib/pro-gate";
 import { unlockCost } from "@/lib/unlock-cost";
@@ -588,6 +589,16 @@ export default async function WatchPage({ params }: WatchPageProps) {
                   on mobile). Highest-intent slot on the page. */}
               <div style={{ margin: "16px auto 4px" }}>
                 <AdRotationBanner slug="joi-ai" surface="watch-c" />
+              </div>
+
+              {/* Placement C2 — Swipey 300x250, second brand back-to-back. */}
+              <div style={{ margin: "8px auto" }}>
+                <AdRotationBanner slug="swipey" surface="watch-c-swipey" />
+              </div>
+
+              {/* Placement C3 — Soulkyn vertical mobile-first 4:5. */}
+              <div style={{ margin: "12px auto 4px" }}>
+                <SoulkynVerticalAd surface="watch-c-vertical" />
               </div>
 
               <div className="player-divider" />

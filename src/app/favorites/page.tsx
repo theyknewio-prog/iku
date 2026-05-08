@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { auth } from "@/auth";
 import { getUserFavorites } from "@/lib/content";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
+import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 import { FavoritesClient, type InitialFavorite } from "./favorites-client";
 
 export const metadata: Metadata = {
@@ -37,10 +38,16 @@ export default async function FavoritesPage() {
         initialItems={initialItems}
         isAuthenticated={Boolean(session?.user?.id)}
       />
-      {/* AI banner at the bottom of /favorites — noindex page, no SEO
+      {/* AI banners at the bottom of /favorites — noindex page, no SEO
           impact, but logged-in users on this page are highly engaged. */}
-      <div style={{ margin: "24px auto 48px" }}>
+      <div style={{ margin: "24px auto 8px" }}>
         <AdRotationBanner slug="candy-ai" surface="page-favorites" />
+      </div>
+      <div style={{ margin: "8px auto" }}>
+        <AdRotationBanner slug="swipey" surface="page-favorites-swipey" />
+      </div>
+      <div style={{ margin: "16px auto 48px" }}>
+        <SoulkynVerticalAd surface="page-favorites-vertical" />
       </div>
     </>
   );

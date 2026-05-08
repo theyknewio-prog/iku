@@ -5,6 +5,7 @@ import { Pagination } from "@/components/Pagination";
 import { getVideos, countVideos } from "@/lib/content";
 import { SORT_OPTIONS, parseSort } from "@/lib/sort-options";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
+import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 
@@ -180,6 +181,18 @@ export default async function HentaiPage({ searchParams }: Props) {
             <div style={{ margin: "16px auto 32px" }}>
               <AdRotationBanner slug="joi-ai" surface="page-hentai-bottom" />
             </div>
+          )}
+
+          {/* Swipey 300x250 + Soulkyn vertical — variety stack. */}
+          {videos.length > 0 && (
+            <>
+              <div style={{ margin: "16px auto" }}>
+                <AdRotationBanner slug="swipey" surface="page-hentai-swipey" />
+              </div>
+              <div style={{ margin: "16px auto 32px" }}>
+                <SoulkynVerticalAd surface="page-hentai-vertical" />
+              </div>
+            </>
           )}
 
           {/* ── SEO footer block ─────────────────────────────── */}

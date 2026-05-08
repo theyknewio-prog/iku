@@ -6,6 +6,7 @@ import { BLOG_ARTICLES } from "@/data/blog";
 import { getNonce } from "@/lib/csp-nonce";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
+import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 
 interface TermPageProps {
   params: Promise<{ term: string }>;
@@ -159,8 +160,13 @@ export default async function TermPage({ params }: TermPageProps) {
 
             {/* AI affiliate ad — Candy-AI 300x250, paired with HilltopAds
                 in mid-article slot. Reader is mid-engagement here. */}
-            <div style={{ margin: "16px auto 32px" }}>
+            <div style={{ margin: "16px auto 8px" }}>
               <AdRotationBanner slug="candy-ai" surface="glossary-term-mid" />
+            </div>
+
+            {/* Soulkyn vertical 4:5 — third brand mid-article. */}
+            <div style={{ margin: "8px auto 32px" }}>
+              <SoulkynVerticalAd surface="glossary-term-vertical" />
             </div>
 
             {/* Related tags */}

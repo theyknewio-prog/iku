@@ -7,6 +7,7 @@ import { getThumbnailsForTags } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
+import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -174,8 +175,13 @@ export default async function CharactersPage() {
           ))}
 
           {/* AI affiliate ad — Joi-AI 300x250 between character grid and cross-links */}
-          <div style={{ margin: "32px auto 16px" }}>
+          <div style={{ margin: "32px auto 8px" }}>
             <AdRotationBanner slug="joi-ai" surface="character-index-bottom" />
+          </div>
+
+          {/* Soulkyn vertical 4:5 — second brand. */}
+          <div style={{ margin: "8px auto 16px" }}>
+            <SoulkynVerticalAd surface="character-index-vertical" />
           </div>
 
           {/* ── Cross-links ──────────────────────────────────── */}

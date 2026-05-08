@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { GLOSSARY, getTermsByLetter } from "@/data/glossary";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
+import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 
 export const metadata: Metadata = {
   title: "Hentai Glossary — 20+ Terms Explained | iku.gg",
@@ -91,8 +92,13 @@ export default function GlossaryPage() {
           </div>
 
           {/* AI affiliate ad — Joi-AI 300x250 between glossary and cross-links */}
-          <div style={{ margin: "32px auto 16px" }}>
+          <div style={{ margin: "32px auto 8px" }}>
             <AdRotationBanner slug="joi-ai" surface="glossary-index-bottom" />
+          </div>
+
+          {/* Soulkyn vertical 4:5 — second brand. */}
+          <div style={{ margin: "8px auto 16px" }}>
+            <SoulkynVerticalAd surface="glossary-index-vertical" />
           </div>
 
           {/* Bottom cross-links */}

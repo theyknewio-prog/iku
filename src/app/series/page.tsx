@@ -5,6 +5,7 @@ import { getThumbnailsForTags } from "@/lib/content";
 import { getNonce } from "@/lib/csp-nonce";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
+import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -132,8 +133,13 @@ export default async function SeriesIndexPage() {
           </section>
 
           {/* AI affiliate ad — Candy-AI 300x250 between series grid and cross-links */}
-          <div style={{ margin: "32px auto 16px" }}>
+          <div style={{ margin: "32px auto 8px" }}>
             <AdRotationBanner slug="candy-ai" surface="series-index-bottom" />
+          </div>
+
+          {/* Soulkyn vertical 4:5 — second brand. */}
+          <div style={{ margin: "8px auto 16px" }}>
+            <SoulkynVerticalAd surface="series-index-vertical" />
           </div>
 
           {/* ── Cross-links ──────────────────────────────────── */}

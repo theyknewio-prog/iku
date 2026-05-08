@@ -6,6 +6,7 @@ import { Pagination } from "@/components/Pagination";
 import { getVideos, countVideos } from "@/lib/content";
 import { SORT_OPTIONS, parseSort } from "@/lib/sort-options";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
+import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 import type { Video } from "@/types/video";
 
 export const revalidate = 1800;
@@ -221,6 +222,21 @@ export default async function EpisodesPage({ searchParams }: Props) {
                 surface="page-episodes-bottom"
               />
             </div>
+          )}
+
+          {/* Swipey 300x250 + Soulkyn vertical — variety stack. */}
+          {videos.length > 0 && (
+            <>
+              <div style={{ margin: "16px auto" }}>
+                <AdRotationBanner
+                  slug="swipey"
+                  surface="page-episodes-swipey"
+                />
+              </div>
+              <div style={{ margin: "16px auto 32px" }}>
+                <SoulkynVerticalAd surface="page-episodes-vertical" />
+              </div>
+            </>
           )}
 
           {/* ── SEO body ──────────────────────────────────────── */}
