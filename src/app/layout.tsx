@@ -8,6 +8,7 @@ import { UserDataSync } from "@/components/UserDataSync";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { getNonce } from "@/lib/csp-nonce";
 import { PushNotifications } from "@/components/PushNotifications";
+import { PopAdsPopunder } from "@/components/PopAdsPopunder";
 
 // Fonts: Nunito (primary body) + Righteous (display/headings).
 // Previously we also loaded Inter, Poppins, and Quicksand — they were
@@ -158,6 +159,12 @@ export default async function RootLayout({
               network, every popunder, every affiliate card, every banner,
               every preroll). Site runs zero monetization while the new
               strategy is decided. */}
+          {/* 2026-05-08 — PopAds popunder re-mounted (site approved
+              2026-05-01, ID 5296964). Standard Adcode (no anti-adblock
+              variant rotation, simpler CSP). Free Pro users still don't
+              see it because the script no-ops via early-return on data-pro=1
+              (TODO if we want full Pro silence). */}
+          <PopAdsPopunder />
           <PushNotifications />
           <AppShell footer={<MegaFooter />}>{children}</AppShell>
         </SessionProviderClient>
