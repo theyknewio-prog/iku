@@ -474,22 +474,23 @@ const ACCOUNT_ITEMS = [
   { href: "/settings", label: "Settings", Icon: IconSettings },
 ] as const;
 
-/* Affiliate partners — Stripcash cam revshare re-mounted 2026-05-06.
- * Surface revival from f227cb1 (originally shipped 2026-04-27). Account
- * ikumediagg, REV 20% lifetime, smart link routes to best-converting
- * StripChat landing per visitor geo. Top-level navigation only — no JS,
- * no CSP, no perf impact. Per feedback_respect_ad_format: native nav
- * link, not a creative — no wrapper. */
+/* Affiliate partners — text-link surfaces in sidebar + mobile drawer.
+ * 2026-05-09 expansion: from 1 (Stripcash only) to 6 entries covering
+ * the full approved-affiliate stack (4 direct + 1 CR + 1 Stripcash).
+ * All routed via /go/{slug} for PostHog click attribution.
+ * Per feedback_respect_ad_format: native nav link, not a creative —
+ * no wrapper, just emoji + label inheriting drawer/sidebar styles. */
 const AFFILIATE_ITEMS: readonly {
   href: string;
   label: string;
   emoji?: string;
 }[] = [
-  {
-    href: "https://go.mavrtracktor.com?userId=17e833691806534d444a0f2a237e4ac61d0cd81990649940427306c52266eced",
-    label: "Live Cams",
-    emoji: "🔴",
-  },
+  { href: "/go/stripcash", label: "Live Cams", emoji: "🔴" },
+  { href: "/go/joi-ai", label: "AI Girlfriend", emoji: "💋" },
+  { href: "/go/soulkyn", label: "AI Hentai Chat", emoji: "💜" },
+  { href: "/go/candy-ai", label: "AI Sexting", emoji: "🍬" },
+  { href: "/go/kupid-ai", label: "AI Companion", emoji: "💘" },
+  { href: "/go/anifusion", label: "AI Image Gen", emoji: "🎨" },
 ];
 
 /* Extras — content pages that weren't previously reachable from mobile */

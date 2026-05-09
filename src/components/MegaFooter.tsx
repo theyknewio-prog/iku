@@ -112,6 +112,57 @@ export async function MegaFooter() {
   return (
     <footer className="mega-footer" role="contentinfo">
       <div className="mega-footer__inner">
+        {/* ── Partners / affiliate text-links ────────────────
+             Native nav links (no banner chrome). All routed via
+             /go/{slug} for PostHog click tracking. Added 2026-05-09
+             to surface our 6-affiliate stack to footer-scrolling
+             users + SEO crawlers. */}
+        <section className="mega-footer__section">
+          <h3 className="mega-footer__title">Partners</h3>
+          <ul className="mega-footer__links">
+            <li>
+              <a href="/go/stripcash" rel="sponsored noopener">
+                🔴 Live Cams
+              </a>
+            </li>
+            <li>
+              <a href="/go/joi-ai" rel="sponsored noopener">
+                💋 AI Girlfriend (Joi)
+              </a>
+            </li>
+            <li>
+              <a href="/go/soulkyn" rel="sponsored noopener">
+                💜 AI Hentai Chat (Soulkyn)
+              </a>
+            </li>
+            <li>
+              <a href="/go/candy-ai" rel="sponsored noopener">
+                🍬 AI Sexting (Candy)
+              </a>
+            </li>
+            <li>
+              <a href="/go/kupid-ai" rel="sponsored noopener">
+                💘 AI Companion (Kupid)
+              </a>
+            </li>
+            <li>
+              <a href="/go/anifusion" rel="sponsored noopener">
+                🎨 AI Image Generator (Anifusion)
+              </a>
+            </li>
+            <li>
+              <a href="/go/swipey" rel="sponsored noopener">
+                🔥 Swipe AI Dates (Swipey)
+              </a>
+            </li>
+            <li>
+              <a href="/go/girlfriend-gpt" rel="sponsored noopener">
+                💬 Girlfriend GPT
+              </a>
+            </li>
+          </ul>
+        </section>
+
         {/* ── Categories / Hubs ─────────────────────────────── */}
         <section className="mega-footer__section">
           <h3 className="mega-footer__title">Categories</h3>

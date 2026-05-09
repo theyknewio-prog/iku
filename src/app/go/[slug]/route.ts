@@ -25,6 +25,9 @@ const AFFILIATE_LINKS: Record<string, string> = {
   "kupid-ai": "https://kpdtrk.com/iku-gg-gr53", // Kupid AI — Dub.co partner
   anifusion: "https://anifusion.ai/?atp=ikugg", // Anifusion — 30% lifetime
   soulkyn: "https://soulkyn.com/?_go=sab35", // Soulkyn — 15% recurring + 10% sub-aff
+  // Cam network (Stripcash) — REV 20% lifetime, smart link routes per visitor geo
+  stripcash:
+    "https://go.mavrtracktor.com?userId=17e833691806534d444a0f2a237e4ac61d0cd81990649940427306c52266eced",
 };
 
 export async function GET(
