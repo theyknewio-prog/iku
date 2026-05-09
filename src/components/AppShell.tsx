@@ -719,9 +719,6 @@ export function AppShell({
                     </span>
                   )}
                   <span className="v2-nav-item__label">{item.label}</span>
-                  <span className="v2-nav-badge v2-nav-badge--gradient">
-                    Ad
-                  </span>
                 </a>
               ))}
             </div>
@@ -1002,9 +999,6 @@ export function AppShell({
                         </span>
                       )}
                       <span className="v2-nav-drawer__label">{item.label}</span>
-                      <span className="v2-nav-drawer__badge v2-nav-drawer__badge--gradient">
-                        Ad
-                      </span>
                     </a>
                   ))}
                 </div>
