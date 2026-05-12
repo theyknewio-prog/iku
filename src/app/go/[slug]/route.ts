@@ -15,13 +15,50 @@ import { NextRequest, NextResponse } from "next/server";
 const CR_BASE = "?aff_sub5=SF_006OG000004lmDN";
 const CR = (path: string) => `https://t.vlmai-1.com/410186/${path}${CR_BASE}`;
 
+// FULL CrakRevenue AI catalog (38 offers) wired 2026-05-12 — user wanted
+// "la totalité". Each slug uses CR's tracker URL with the offer ID. Where
+// the same brand has Premium + Standard + Revshare variants, all three are
+// exposed under suffixed slugs so we can rotate by EPC tier.
+//
+// EPC values frozen at catalog read 2026-05-12 — re-pull quarterly.
 const AFFILIATE_LINKS: Record<string, string> = {
-  // CrakRevenue offers
-  "joi-ai": CR("8080"), // $42 PPS T1 Premium, EPC $0.46 — TOP CONVERTER
-  "candy-ai": CR("8025"), // $44 PPS T1 Premium, EPC $0.22
-  "girlfriend-gpt": CR("10407"), // $55 PPS Premium, EPC $0.27 (replaced dead 8184 with new 10407 — verified 2026-05-08)
-  swipey: CR("10100"), // $38.50 PPS, EPC $0.06 — added 2026-05-08 for variety (Realistic + Anime creatives)
-  // Direct affiliate programs (approved 2026-05-02 → 2026-05-05)
+  // ── Premium tier (REQUEST APPROVAL — currently locked until $1 earned) ──
+  "joi-ai": CR("10358"), // Joi PPS Premium $42, EPC $0.4806 — TOP EPC
+  "candy-ai": CR("10335"), // Candy.ai PPS Premium $44, EPC $0.2606
+  "girlfriend-gpt": CR("10407"), // GG PPS Premium $55, EPC $0.2516
+  "ourdream-ai-premium": CR("10402"), // ourdream PPS Premium $42, EPC $0.0647
+
+  // ── Approved PPS — usable today ──
+  swipey: CR("10100"), // Swipey PPS $38.50, EPC $0.0583
+  "darlink-ai": CR("10345"), // DarLink PPS $30, EPC $0.1831
+  lovescape: CR("10223"), // Lovescape PPS $42, EPC $0.1643
+  "get-harder": CR("10182"), // Get-Harder PPS $34, EPC $0.1506
+  "ourdream-ai": CR("10138"), // ourdream PPS $32.40, EPC $0.0271
+  "secrets-ai": CR("10381"), // Secrets.ai PPS $50, EPC $0.0452
+  "joi-ai-t1": CR("10163"), // Joi Tier 1 PPS $35, EPC $0.0352 (fallback when Premium 10358 not approved yet)
+  "joi-ai-t2": CR("10280"), // Joi Tier 2 PPS $28, EPC $0.0130
+  "candy-ai-standard": CR("10022"), // Candy.ai PPS $36, EPC $0.0162
+  fanfinity: CR("10141"), // Fanfinity PPS $17.50, EPC $0.0034
+
+  // ── Approved Multi-CPA + Revshare (passive recurring) ──
+  "xotic-ai": CR("10401"), // Xotic AI Revshare 35% (NEW)
+  spicier: CR("10257"), // Spicier Multi-CPA (Exclusive)
+  xtease: CR("10341"), // Xtease.ai Multi-CPA (Exclusive), EPC $0.0201
+  "joi-ai-rs": CR("10222"), // Joi Revshare 28%, EPC $0.0537
+  "candy-ai-rs": CR("9022"), // Candy.ai Revshare 40%
+  "lovescape-rs": CR("10224"), // Lovescape Revshare 35%
+  "darlink-ai-rs": CR("10344"), // DarLink Revshare 45%, EPC $0.0512
+  "ourdream-ai-rs": CR("10139"), // ourdream Revshare 30%, EPC $0.0313
+  "swipey-rs": CR("10219"), // Swipey Revshare 35%
+  "secrets-ai-rs": CR("10406"), // Secrets.ai Revshare 40%
+  "fanfinity-rs": CR("10140"), // Fanfinity Revshare 45%, EPC $0.0055
+  "fantasy-ai": CR("10057"), // Fantasy.Ai Revshare 35%
+  "mylovely-ai": CR("10318"), // MyLovely Ai Revshare 35%
+  "dreambf-ai": CR("9183"), // DreamBF.ai Revshare 35%
+  "dreamgf-ai": CR("9057"), // Dreamgf.ai Revshare 35%
+  "ehentai-ai": CR("9182"), // eHentai.ai Revshare 35%
+
+  // ── Direct affiliate programs (approved 2026-05-02 → 2026-05-05) ──
   "kupid-ai": "https://kpdtrk.com/iku-gg-gr53", // Kupid AI — Dub.co partner
   anifusion: "https://anifusion.ai/?atp=ikugg", // Anifusion — 30% lifetime
   soulkyn: "https://soulkyn.com/?_go=sab35", // Soulkyn — 15% recurring + 10% sub-aff

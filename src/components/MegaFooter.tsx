@@ -160,6 +160,76 @@ export async function MegaFooter() {
                 💬 Girlfriend GPT
               </a>
             </li>
+            <li>
+              <a href="/go/darlink-ai" rel="sponsored noopener">
+                💎 DarLink AI
+              </a>
+            </li>
+            <li>
+              <a href="/go/lovescape" rel="sponsored noopener">
+                💕 Lovescape AI
+              </a>
+            </li>
+            <li>
+              <a href="/go/get-harder" rel="sponsored noopener">
+                🔥 Get Harder
+              </a>
+            </li>
+            <li>
+              <a href="/go/secrets-ai" rel="sponsored noopener">
+                🤫 Secrets AI
+              </a>
+            </li>
+            <li>
+              <a href="/go/ourdream-ai" rel="sponsored noopener">
+                💭 OurDream AI
+              </a>
+            </li>
+            <li>
+              <a href="/go/xotic-ai" rel="sponsored noopener">
+                ✨ Xotic AI
+              </a>
+            </li>
+            <li>
+              <a href="/go/spicier" rel="sponsored noopener">
+                🌶️ Spicier AI
+              </a>
+            </li>
+            <li>
+              <a href="/go/xtease" rel="sponsored noopener">
+                😈 Xtease AI
+              </a>
+            </li>
+            <li>
+              <a href="/go/dreamgf-ai" rel="sponsored noopener">
+                🌙 DreamGF AI
+              </a>
+            </li>
+            <li>
+              <a href="/go/dreambf-ai" rel="sponsored noopener">
+                👨 DreamBF AI
+              </a>
+            </li>
+            <li>
+              <a href="/go/fanfinity" rel="sponsored noopener">
+                ⭐ Fanfinity
+              </a>
+            </li>
+            <li>
+              <a href="/go/fantasy-ai" rel="sponsored noopener">
+                🦋 Fantasy AI
+              </a>
+            </li>
+            <li>
+              <a href="/go/mylovely-ai" rel="sponsored noopener">
+                💗 MyLovely AI
+              </a>
+            </li>
+            <li>
+              <a href="/go/ehentai-ai" rel="sponsored noopener">
+                🎌 eHentai AI
+              </a>
+            </li>
           </ul>
         </section>
 

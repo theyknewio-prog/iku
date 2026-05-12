@@ -489,8 +489,12 @@ const AFFILIATE_ITEMS: readonly {
   { href: "/go/joi-ai", label: "AI Girlfriend", emoji: "💋" },
   { href: "/go/soulkyn", label: "AI Hentai Chat", emoji: "💜" },
   { href: "/go/candy-ai", label: "AI Sexting", emoji: "🍬" },
+  { href: "/go/darlink-ai", label: "DarLink AI", emoji: "💎" },
+  { href: "/go/lovescape", label: "Lovescape", emoji: "💕" },
+  { href: "/go/get-harder", label: "Get Harder", emoji: "🔥" },
   { href: "/go/kupid-ai", label: "AI Companion", emoji: "💘" },
   { href: "/go/anifusion", label: "AI Image Gen", emoji: "🎨" },
+  { href: "/go/dreamgf-ai", label: "DreamGF AI", emoji: "🌙" },
 ];
 
 /* Extras — content pages that weren't previously reachable from mobile */
