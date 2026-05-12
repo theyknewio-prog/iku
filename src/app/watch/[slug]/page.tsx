@@ -6,6 +6,8 @@ import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { WatchPlayer } from "@/components/WatchPlayer";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
 import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
+import { MondiadBanner } from "@/components/MondiadBanner";
+import { MondiadNative } from "@/components/MondiadNative";
 import { ProGatedPlayer } from "@/components/ProGatedPlayer";
 import { isProLocked } from "@/lib/pro-gate";
 import { unlockCost } from "@/lib/unlock-cost";
@@ -599,6 +601,17 @@ export default async function WatchPage({ params }: WatchPageProps) {
               {/* Placement C3 — Soulkyn vertical mobile-first 4:5. */}
               <div style={{ margin: "12px auto 4px" }}>
                 <SoulkynVerticalAd surface="watch-c-vertical" />
+              </div>
+
+              {/* Placement C4 — Mondiad 300x250 banner. 100% revshare promo
+                  for 11 days (signed 2026-05-11). */}
+              <div style={{ margin: "12px auto 4px" }}>
+                <MondiadBanner width={300} height={250} />
+              </div>
+
+              {/* Placement C5 — Mondiad native unit. */}
+              <div style={{ margin: "12px auto 4px" }}>
+                <MondiadNative width={300} height={250} />
               </div>
 
               <div className="player-divider" />

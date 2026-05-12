@@ -24,6 +24,7 @@ import { MagneticButton } from "@/components/MagneticButton";
 import { AdJoiBanner, AdRotationBanner } from "@/components/AdJoiBanner";
 import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
+import { MondiadBanner } from "@/components/MondiadBanner";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai, 3D Hentai & Cartoon Porn | 320,000+ Videos",
@@ -560,6 +561,13 @@ export default async function HomePage() {
               passive. srcdoc iframe at native size, zero chrome. */}
           <div style={{ margin: "24px auto" }}>
             <HilltopAdsBanner />
+          </div>
+
+          {/* Placement B2 — Mondiad 300x250 banner. 11-day 100% revshare
+              promo running since 2026-05-11. Side-by-side with HilltopAds
+              so we can A/B eCPM after 7d. */}
+          <div style={{ margin: "24px auto" }}>
+            <MondiadBanner width={300} height={250} />
           </div>
 
           {/* ================================================================

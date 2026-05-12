@@ -164,7 +164,12 @@ export function middleware(request: NextRequest) {
   ]).join(" ");
   const CR_HOSTS =
     "https://*.imglnkx.com https://imglnkx.com https://*.vlmai-1.com https://*.mbjms.com https://*.scptp9.com https://*.crxcr2.com https://*.crxcra.com https://*.adsco.re https://*.blockadsnot.com https://*.cloudfront.net";
-  const AD_SCRIPT = `${HILLTOPADS_HOSTS} ${CR_HOSTS}`;
+  // Mondiad — site 27564 ACCEPTED 2026-05-11, 4 zones live, 11-day 100% revshare
+  // promo. Static delivery host is ss.mrmnd.com; creatives/iframes/click-trackers
+  // rotate through several mondiad subdomains so the wildcard catches them.
+  const MONDIAD_HOSTS =
+    "https://ss.mrmnd.com https://*.mrmnd.com https://mrmnd.com";
+  const AD_SCRIPT = `${HILLTOPADS_HOSTS} ${CR_HOSTS} ${MONDIAD_HOSTS}`;
 
   // `'unsafe-inline'` + `'unsafe-eval'` kept for inline JSON-LD scripts
   // and React dev tooling. Tighten later with hash-based CSP.
@@ -173,10 +178,10 @@ export function middleware(request: NextRequest) {
     `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${ANALYTICS} ${AD_SCRIPT} https://static.cloudflareinsights.com https://*.cloudflareinsights.com`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
-    `img-src 'self' data: blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${CR_HOSTS}`,
-    `media-src 'self' blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${HILLTOPADS_HOSTS}`,
+    `img-src 'self' data: blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${CR_HOSTS} ${MONDIAD_HOSTS}`,
+    `media-src 'self' blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${HILLTOPADS_HOSTS} ${MONDIAD_HOSTS}`,
     `connect-src 'self' ${ANALYTICS} ${INFRA} ${VIDEO_HOSTS_HTTPS} ${AD_SCRIPT}`,
-    `frame-src 'self' ${HILLTOPADS_HOSTS} ${CR_HOSTS}`,
+    `frame-src 'self' ${HILLTOPADS_HOSTS} ${CR_HOSTS} ${MONDIAD_HOSTS}`,
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
