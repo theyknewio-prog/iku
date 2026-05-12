@@ -48,14 +48,21 @@ export async function GET(
       "0.0.0.0";
     const ua = req.headers.get("user-agent") || "";
     const referer = req.headers.get("referer") || "";
+    // PostHog requires `distinct_id` — without it events are silently
+    // dropped (HTTP 200 but never stored). Bug found 2026-05-12 after 7
+    // days of zero `affiliate_click` recorded despite live traffic.
+    // Anonymous identifier = IP + UA hash (stable per visitor session).
+    const distinctId = `anon-${ip}-${ua.slice(0, 32)}`.replace(/\s+/g, "_");
     fetch("https://us.i.posthog.com/i/v0/e/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         api_key: posthogKey,
         event: "affiliate_click",
+        distinct_id: distinctId,
         properties: {
           slug,
+          distinct_id: distinctId,
           $current_url: req.url,
           referer,
           $ip: ip,
