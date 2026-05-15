@@ -67,6 +67,12 @@ const AFFILIATE_LINKS: Record<string, string> = {
     "https://go.mavrtracktor.com?userId=17e833691806534d444a0f2a237e4ac61d0cd81990649940427306c52266eced",
 };
 
+// Known crawler / bot user-agents. SEO crawlers (Yandex, Ahrefs, MJ12, …)
+// sweep every /go/ link in the MegaFooter; matching UAs are bounced to the
+// homepage with no event logged and no affiliate redirect.
+const BOT_UA =
+  /bot|crawl|spider|slurp|webindexer|wakeup-check|headless|phantom|python-requests|http-client|curl\/|wget|go-http|scrapy|facebookexternalhit|embedly|preview/i;
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
@@ -76,6 +82,16 @@ export async function GET(
   if (!url)
     return NextResponse.json({ error: "unknown slug" }, { status: 404 });
 
+  const ua = req.headers.get("user-agent") || "";
+
+  // Crawlers sweep every /go/ link in the footer — that pollutes PostHog
+  // and pipes invalid traffic into CrakRevenue's tracker, which risks
+  // flagging the affiliate account. Bots get no event and no affiliate
+  // redirect; bounce them to the homepage instead.
+  if (BOT_UA.test(ua)) {
+    return NextResponse.redirect(new URL("/", req.url), 302);
+  }
+
   // Fire-and-forget PostHog click event for funnel attribution.
   const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
   if (posthogKey) {
@@ -83,7 +99,6 @@ export async function GET(
       req.headers.get("x-real-ip") ||
       req.headers.get("x-forwarded-for")?.split(",").pop()?.trim() ||
       "0.0.0.0";
-    const ua = req.headers.get("user-agent") || "";
     const referer = req.headers.get("referer") || "";
     // PostHog requires `distinct_id` — without it events are silently
     // dropped (HTTP 200 but never stored). Bug found 2026-05-12 after 7

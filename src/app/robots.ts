@@ -52,6 +52,7 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
       disallow: [
         "/api/",
         "/_next/",
+        "/go/", // affiliate redirects — keep crawlers out (added 2026-05-15)
         "/feed",
         "/v/",
         "/favorites",
