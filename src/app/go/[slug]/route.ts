@@ -89,7 +89,7 @@ export async function GET(
   // flagging the affiliate account. Bots get no event and no affiliate
   // redirect; bounce them to the homepage instead.
   if (BOT_UA.test(ua)) {
-    return NextResponse.redirect(new URL("/", req.url), 302);
+    return NextResponse.redirect("https://iku.gg/", 302);
   }
 
   // Fire-and-forget PostHog click event for funnel attribution.
