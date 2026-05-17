@@ -88,6 +88,26 @@ if [ "$APP_DEAD" = "1" ]; then
       DUMP="$STATE/freeze-$(date +%Y%m%d-%H%M%S)"
       docker logs --tail 150 "$APP_CNT" > "${DUMP}.log" 2>&1 || true
       docker stats --no-stream "$APP_CNT" > "${DUMP}.stats" 2>&1 || true
+      # Native backtrace of the frozen Node process — only when truly hung (not just slow).
+      # gdb pauses the target, dumps every thread's stack, detaches. On a CPU-spinning V8
+      # thread the frames reveal the category: irregexp (catastrophic regex), MarkCompact
+      # (GC death-spiral), or plain JIT frames (a JS infinite loop). Never blocks recovery.
+      if [ "$HOME_CODE" != "200" ] && command -v gdb >/dev/null 2>&1; then
+        # The Node process — its title is "next-server (vXX)", not "node"; the sh
+        # wrapper lines say "node server.js", so match the unique "next-server" token.
+        NODE_PID=$(docker top "$APP_CNT" 2>/dev/null | awk '/next-server/{print $2; exit}')
+        if [ -n "${NODE_PID:-}" ]; then
+          # Pass /proc/PID/exe as the symbol file (host gdb can't resolve the binary
+          # path across the container mount ns) + sysroot for the shared libs. Yields
+          # real frames: v8::internal::RegExp* = catastrophic regex, MarkCompact* = GC
+          # death-spiral, Builtins_/JIT frames = a plain JS infinite loop.
+          timeout 70 gdb /proc/"$NODE_PID"/exe "$NODE_PID" -batch \
+            -iex 'set auto-load safe-path /' \
+            -ex "set sysroot /proc/$NODE_PID/root" \
+            -ex 'set pagination off' -ex 'thread apply all bt' \
+            > "${DUMP}.gdb" 2>&1 || true
+        fi
+      fi
     fi
     log "app probe HTTP ${HOME_CODE} (${HOME_MS}ms) — restarting app, forensics: ${DUMP}"
     [ -n "$APP_CNT" ] && docker restart "$APP_CNT" > /dev/null 2>&1
