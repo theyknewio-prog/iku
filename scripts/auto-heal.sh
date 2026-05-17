@@ -58,18 +58,53 @@ if [ "${DISK_PCT:-0}" -gt 85 ]; then
   ping_sab "Disque ${DISK_PCT}% → nettoyé, maintenant ${DISK_AFTER}%."
 fi
 
-# ---- 3. Home TTFB > 5s → CF purge + app restart ----
-HOME_MS=$(curl -sS -o /dev/null --max-time 10 -w '%{time_starttransfer}' https://iku.gg/ 2>/dev/null | awk '{print int($1*1000)}')
-if [ -n "${HOME_MS:-}" ] && [ "$HOME_MS" -gt 5000 ]; then
+# ---- 3. App dead (non-2xx / unreachable) OR slow (TTFB>5s) → app restart ----
+# Probe the app directly through local Traefik (--resolve to 127.0.0.1), bypassing Cloudflare.
+# WHY: a hung Node process keeps the container "Running" so check #5 never fires, and a failed
+# curl reports time_starttransfer=0 — the OLD check read that as "0ms = instant = healthy" and
+# sat on a dead site for 17h (incident 2026-05-16). The fix keys off the HTTP CODE, not speed.
+# /api/health is a dynamic route — a frozen event loop physically cannot serve a 200.
+PROBE=$(curl -sk -o /dev/null --max-time 15 --resolve iku.gg:443:127.0.0.1 \
+  -w '%{http_code} %{time_starttransfer}' https://iku.gg/api/health 2>/dev/null)
+HOME_CODE=$(echo "$PROBE" | awk '{print $1}')
+HOME_MS=$(echo "$PROBE" | awk '{print int($2*1000)}')
+[ -z "${HOME_CODE:-}" ] && HOME_CODE=000
+[ -z "${HOME_MS:-}" ] && HOME_MS=0
+
+APP_DEAD=0
+case "$HOME_CODE" in
+  200) [ "$HOME_MS" -gt 5000 ] && APP_DEAD=1 ;;  # responds but too slow
+  *)   APP_DEAD=1 ;;                              # 000 / 5xx / 502 / 522 = hung or down
+esac
+
+if [ "$APP_DEAD" = "1" ]; then
   last_app_heal=$(cat "$STATE/last_app_heal" 2>/dev/null || echo 0)
   now=$(date +%s)
-  if [ $((now - last_app_heal)) -gt 3600 ]; then
-    log "Home TTFB ${HOME_MS}ms — restarting app"
-    APP_CNT=$(docker ps --filter name=hjta50cv9nfem56atjtwmlx1 -q)
+  if [ $((now - last_app_heal)) -gt 1200 ]; then
+    APP_CNT=$(docker ps --filter name=hjta50cv9nfem56atjtwmlx1 -q | head -1)
+    DUMP="none"
+    if [ -n "$APP_CNT" ]; then
+      # Capture forensics BEFORE restart — past freezes were silent (no logs at all).
+      DUMP="$STATE/freeze-$(date +%Y%m%d-%H%M%S)"
+      docker logs --tail 150 "$APP_CNT" > "${DUMP}.log" 2>&1 || true
+      docker stats --no-stream "$APP_CNT" > "${DUMP}.stats" 2>&1 || true
+    fi
+    log "app probe HTTP ${HOME_CODE} (${HOME_MS}ms) — restarting app, forensics: ${DUMP}"
     [ -n "$APP_CNT" ] && docker restart "$APP_CNT" > /dev/null 2>&1
     echo "$now" > "$STATE/last_app_heal"
-    ping_sab "Home TTFB ${HOME_MS}ms → restart app."
+    streak=$(cat "$STATE/app_heal_streak" 2>/dev/null || echo 0)
+    streak=$((streak + 1))
+    echo "$streak" > "$STATE/app_heal_streak"
+    if [ "$streak" -ge 3 ]; then
+      ping_sab "🚨 App relancée ${streak}× d'affilée (HTTP ${HOME_CODE}) — ça reboucle, intervention manuelle requise."
+    else
+      ping_sab "🚨 App morte (HTTP ${HOME_CODE}, ${HOME_MS}ms) → restart. Site reprend."
+    fi
+  else
+    log "app probe HTTP ${HOME_CODE} (${HOME_MS}ms) but in cooldown ($((now - last_app_heal))s < 1200s) — no restart"
   fi
+else
+  echo 0 > "$STATE/app_heal_streak"
 fi
 
 # ---- 4. iku-postgres stopped ? → restart ----
@@ -102,4 +137,4 @@ if ! iptables -L DOCKER-USER -n 2>/dev/null | grep -q 'DROP.*tcp dpt:5432'; then
   ping_sab "Firewall 5432 avait sauté → remis."
 fi
 
-log "heartbeat OK (pg=${PG_CPU:-?}% disk=${DISK_PCT:-?}% home=${HOME_MS:-?}ms)"
+log "heartbeat OK (pg=${PG_CPU:-?}% disk=${DISK_PCT:-?}% home=${HOME_CODE:-?}/${HOME_MS:-?}ms)"
