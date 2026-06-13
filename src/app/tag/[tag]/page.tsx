@@ -12,6 +12,7 @@ import { notFound } from "next/navigation";
 import { getVideos, countVideos, isBannedTag } from "@/lib/content";
 import { SORT_OPTIONS, parseSort } from "@/lib/sort-options";
 import { getEntitySeo } from "@/lib/entity-seo";
+import { EntityStatsPanel } from "@/components/EntityStatsPanel";
 import { getNonce } from "@/lib/csp-nonce";
 import { shouldBlockTaxonomy } from "@/lib/taxonomy-guard";
 import type { Video } from "@/types/video";
@@ -396,6 +397,12 @@ export default async function TagPage({ params, searchParams }: Props) {
               </p>
             )}
           </section>
+
+          {entitySeo?.meta && entitySeo.meta.total ? (
+            <section className="page-section">
+              <EntityStatsPanel meta={entitySeo.meta} type="tag" />
+            </section>
+          ) : null}
 
           {/* FAQ — from entity_seo (Google FAQPage rich result eligible). */}
           {entitySeo && entitySeo.faq.length > 0 && (

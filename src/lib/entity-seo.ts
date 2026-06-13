@@ -11,10 +11,30 @@ import { memoize } from "@/lib/memo";
 
 export type EntityType = "tag" | "character" | "series";
 
+export interface EntityStat {
+  name: string;
+  c: number;
+  label?: string;
+}
+export interface EntityMeta {
+  total?: number;
+  threeD?: number;
+  twoD?: number;
+  avgScore?: number;
+  maxScore?: number;
+  recent30d?: number;
+  sources?: Array<{ source: string; c: number }>;
+  topArtists?: EntityStat[];
+  topCoTags?: EntityStat[];
+  topCharacters?: EntityStat[];
+  topCopyrights?: EntityStat[];
+}
+
 export interface EntitySeo {
   intro: string;
   faq: Array<{ q: string; a: string }>;
   videoCount: number;
+  meta: EntityMeta;
   generatedAt: Date;
 }
 
@@ -26,9 +46,10 @@ async function _getEntitySeo(
     intro: string;
     faq: Array<{ q: string; a: string }>;
     video_count: number;
+    meta: EntityMeta;
     generated_at: Date;
   }>(
-    `SELECT intro, faq, video_count, generated_at
+    `SELECT intro, faq, video_count, meta, generated_at
      FROM entity_seo
      WHERE entity_type = $1 AND slug = $2
      LIMIT 1`,
@@ -39,6 +60,7 @@ async function _getEntitySeo(
     intro: rows[0].intro,
     faq: rows[0].faq || [],
     videoCount: rows[0].video_count,
+    meta: rows[0].meta || {},
     generatedAt: new Date(rows[0].generated_at),
   };
 }

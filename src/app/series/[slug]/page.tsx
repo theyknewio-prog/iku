@@ -10,6 +10,7 @@ import { Pagination } from "@/components/Pagination";
 import { getVideos, countVideos, isBannedTag } from "@/lib/content";
 import { SORT_OPTIONS, parseSort } from "@/lib/sort-options";
 import { getEntitySeo } from "@/lib/entity-seo";
+import { EntityStatsPanel } from "@/components/EntityStatsPanel";
 import { getNonce } from "@/lib/csp-nonce";
 import { shouldBlockTaxonomy } from "@/lib/taxonomy-guard";
 import { SERIES, getSeriesBySlug, type Series } from "@/data/series";
@@ -329,6 +330,7 @@ export default async function SeriesPage({ params, searchParams }: Props) {
                     {para}
                   </p>
                 ))}
+                <EntityStatsPanel meta={entitySeo.meta} type="series" />
                 {entitySeo.faq.length > 0 && (
                   <div className="watch-faq" style={{ marginTop: "24px" }}>
                     <h2 className="watch-faq__heading">

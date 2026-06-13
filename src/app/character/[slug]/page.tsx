@@ -8,6 +8,7 @@ import { AdRotationBanner } from "@/components/AdJoiBanner";
 import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 import { Pagination } from "@/components/Pagination";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
+import { EntityStatsPanel } from "@/components/EntityStatsPanel";
 import { getVideos, countVideos, isBannedTag } from "@/lib/content";
 import { SORT_OPTIONS, parseSort } from "@/lib/sort-options";
 import { getEntitySeo } from "@/lib/entity-seo";
@@ -363,6 +364,10 @@ export default async function CharacterPage({ params, searchParams }: Props) {
                   return seoData?.seoDescription || character.description;
                 })()}
               </p>
+            )}
+            {/* First-party stats panel (unique data + internal maillage) */}
+            {entitySeo?.meta && (
+              <EntityStatsPanel meta={entitySeo.meta} type="character" />
             )}
             {/* FAQ — entity_seo first, fallback to characters-seo.ts */}
             {entitySeo && entitySeo.faq.length > 0 ? (

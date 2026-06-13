@@ -56,14 +56,61 @@ function videoTitle(v: Video): string {
   }
   const char = v.characters[0] ? humanize(v.characters[0]) : "";
   const copy = v.copyrights[0] ? humanize(v.copyrights[0]) : "";
-  if (char && copy) return `${char} — ${copy}`;
-  if (char) return char;
-  if (copy) return copy;
-  // Prefer Latin-script tags for the synthesis fallback (EN SEO). If none,
-  // accept anything so the title is never empty.
+  const artist = v.artists[0] ? humanize(v.artists[0]) : "";
+
+  // Distinctive tags (skip structural/generic). These + artist make the
+  // synthesized title UNIQUE per clip. Without them every clip of the same
+  // character collapsed to one title ("Chun-Li — Street Fighter") → ~11.6K
+  // duplicate <title> tags that Yandex AND Google penalise. char + 2 tags +
+  // artist is unique for >95% of the booru catalogue. (Google-war, 2026-06-13)
+  const TITLE_NOISE = new Set([
+    "animated",
+    "video",
+    "sound",
+    "hentai",
+    "1girl",
+    "1boy",
+    "2d",
+    "3d",
+    "solo",
+    "duo",
+    "hd",
+    "uncensored",
+    "censored",
+    "has_audio",
+    "voice_acted",
+    "tagme",
+    "english",
+    "sound_edit",
+    "webm",
+    "mp4",
+  ]);
+  const distTags = v.tags
+    .filter((t) => HAS_LATIN_RE.test(t) && t.length > 2 && !TITLE_NOISE.has(t))
+    .slice(0, 2)
+    .map(humanize);
+
+  let base = "";
+  if (char && copy) base = `${char} — ${copy}`;
+  else if (char) base = char;
+  else if (copy) base = copy;
+
+  if (base) {
+    const extra = [distTags.join(", "), artist ? `by ${artist}` : ""]
+      .filter(Boolean)
+      .join(" ");
+    return extra ? `${base} — ${extra}` : base;
+  }
+
+  // No character/copyright: build from distinctive (or any Latin) tags + artist.
   const latinTags = v.tags.filter((t) => HAS_LATIN_RE.test(t));
-  const tagList = latinTags.length > 0 ? latinTags : v.tags;
-  return tagList.slice(0, 3).map(humanize).join(", ") || `Video #${v.id}`;
+  const tagBase = (
+    distTags.length
+      ? distTags
+      : (latinTags.length ? latinTags : v.tags).slice(0, 3).map(humanize)
+  ).join(", ");
+  if (tagBase) return artist ? `${tagBase} by ${artist}` : tagBase;
+  return `Hentai Video #${v.id}`;
 }
 
 export function buildVideoMetadata(video: Video): Metadata {
