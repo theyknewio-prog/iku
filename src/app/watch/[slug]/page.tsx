@@ -395,10 +395,16 @@ export default async function WatchPage({ params }: WatchPageProps) {
         ? video.createdAt.toISOString()
         : new Date(video.createdAt).toISOString(),
     ...(duration ? { duration: `PT${Math.floor(duration)}S` } : {}),
+    // Correct adult classification — pairs with the RTA meta. Honest signal
+    // that helps Bing/Yandex bucket the page into adult results (they surface
+    // adult; Google filters regardless). NOT AggregateRating: the booru
+    // "score" is an upvote count, not a 1-5 rating — faking it = misleading
+    // structured data. interactionStatistic (real counts) is the honest form.
+    isFamilyFriendly: false,
     interactionStatistic: [
       {
         "@type": "InteractionCounter",
-        interactionType: "https://schema.org/WatchAction",
+        interactionType: "https://schema.org/LikeAction",
         userInteractionCount: video.favorites,
       },
     ],
