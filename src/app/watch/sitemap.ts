@@ -28,6 +28,35 @@ export async function generateSitemaps() {
   }
 }
 
+const humanize = (s?: string) =>
+  s ? s.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "";
+
+// Build a clean ≤100-char title. Prefer the real scraped title (Latin only),
+// else synthesize from character/copyright. Mirrors seo.ts intent but kept
+// dependency-free + cheap for 45K-row sitemap generation.
+function sitemapTitle(row: VideoRow): string {
+  if (row.title && /[a-zA-Z]/.test(row.title)) {
+    return row.title.replace(/\s+/g, " ").trim().slice(0, 95);
+  }
+  const char = humanize(row.characters?.[0]);
+  const copy = humanize(row.copyrights?.[0]);
+  let t = "Animated Hentai Video";
+  if (char && copy) t = `${char} — ${copy} Hentai`;
+  else if (char) t = `${char} Hentai`;
+  else if (copy) t = `${copy} Hentai`;
+  return t.slice(0, 95);
+}
+
+interface VideoRow {
+  slug: string;
+  created_at: string;
+  thumbnail: string | null;
+  title: string | null;
+  characters: string[] | null;
+  copyrights: string[] | null;
+  duration: number | null;
+}
+
 export default async function sitemap(props: {
   id: Promise<string>;
 }): Promise<MetadataRoute.Sitemap> {
@@ -35,10 +64,11 @@ export default async function sitemap(props: {
   const id = parseInt(idStr, 10);
   const offset = id * MAX_PER_SITEMAP;
 
-  let rows: Array<{ slug: string; created_at: string }> = [];
+  let rows: VideoRow[] = [];
   try {
     const result = await pool.query(
-      `SELECT slug, created_at FROM videos WHERE ${LIVE_FILTER} ORDER BY pk LIMIT $1 OFFSET $2`,
+      `SELECT slug, created_at, thumbnail, title, characters, copyrights, duration
+       FROM videos WHERE ${LIVE_FILTER} ORDER BY pk LIMIT $1 OFFSET $2`,
       [MAX_PER_SITEMAP, offset],
     );
     rows = result.rows;
@@ -47,12 +77,48 @@ export default async function sitemap(props: {
     return [];
   }
 
-  return rows.map((row) => ({
-    url: `${SITE}/watch/${row.slug}`,
-    lastModified: row.created_at
+  return rows.map((row) => {
+    const url = `${SITE}/watch/${row.slug}`;
+    const lastModified = row.created_at
       ? new Date(row.created_at).toISOString()
-      : new Date().toISOString(),
-    changeFrequency: "monthly" as const,
-    priority: 0.6,
-  }));
+      : new Date().toISOString();
+
+    // Video sitemap extension — turns watch URLs into video-search-eligible
+    // entries (Bing/Yandex/Google video results) for a video-first site.
+    // Only emit when the thumbnail is a crawlable absolute https URL; an
+    // invalid thumbnail_loc would warn the whole video entry out.
+    const thumb = row.thumbnail || "";
+    const videoEligible = /^https:\/\//.test(thumb);
+    const title = sitemapTitle(row);
+    const dur =
+      row.duration && row.duration > 0
+        ? Math.min(28800, Math.floor(row.duration))
+        : undefined;
+
+    return {
+      url,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+      ...(videoEligible
+        ? {
+            videos: [
+              {
+                title,
+                thumbnail_loc: thumb,
+                description:
+                  `Watch ${title} free on iku.gg — streaming animated hentai, no signup.`.slice(
+                    0,
+                    500,
+                  ),
+                player_loc: url,
+                publication_date: lastModified,
+                family_friendly: "no" as const,
+                ...(dur ? { duration: dur } : {}),
+              },
+            ],
+          }
+        : {}),
+    };
+  });
 }
