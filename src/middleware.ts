@@ -167,7 +167,7 @@ export function middleware(request: NextRequest) {
     `https://*.${h}`,
   ]).join(" ");
   const CR_HOSTS =
-    "https://*.imglnkx.com https://imglnkx.com https://*.vlmai-1.com https://*.mbjms.com https://*.scptp9.com https://*.crxcr2.com https://*.crxcra.com https://*.adsco.re https://*.blockadsnot.com https://*.cloudfront.net";
+    "https://*.imglnkx.com https://imglnkx.com https://*.vlmai-1.com https://*.mbjms.com https://*.scptp9.com https://*.crxcr2.com https://*.crxcra.com https://*.adsco.re https://adsco.re https://*.blockadsnot.com https://*.cloudfront.net";
   // Mondiad — site 27564 ACCEPTED 2026-05-11, 4 zones live, 11-day 100% revshare
   // promo. Static delivery host is ss.mrmnd.com; creatives/iframes/click-trackers
   // rotate through several mondiad subdomains so the wildcard catches them.
@@ -182,9 +182,9 @@ export function middleware(request: NextRequest) {
     `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${ANALYTICS} ${AD_SCRIPT} https://static.cloudflareinsights.com https://*.cloudflareinsights.com`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
-    `img-src 'self' data: blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${CR_HOSTS} ${MONDIAD_HOSTS} https://mc.yandex.ru`,
+    `img-src 'self' data: blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${CR_HOSTS} ${MONDIAD_HOSTS} https://mc.yandex.ru https://mc.yandex.com`,
     `media-src 'self' blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${HILLTOPADS_HOSTS} ${MONDIAD_HOSTS}`,
-    `connect-src 'self' ${ANALYTICS} ${INFRA} ${VIDEO_HOSTS_HTTPS} ${AD_SCRIPT}`,
+    `connect-src 'self' ${ANALYTICS} ${INFRA} ${VIDEO_HOSTS_HTTPS} ${AD_SCRIPT} wss://mc.yandex.ru wss://mc.yandex.com`,
     `frame-src 'self' ${HILLTOPADS_HOSTS} ${CR_HOSTS} ${MONDIAD_HOSTS}`,
     "frame-ancestors 'none'",
     "base-uri 'self'",
