@@ -189,6 +189,9 @@ export function middleware(request: NextRequest) {
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
+    // worker-src: app + ad scripts spawn blob: web workers; default-src 'self'
+    // doesn't cover blob workers, so they were throwing CSP errors. (2026-06-13)
+    "worker-src 'self' blob:",
   ].join("; ");
 
   response.headers.set("Content-Security-Policy", csp);
