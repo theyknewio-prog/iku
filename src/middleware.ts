@@ -128,8 +128,12 @@ export function middleware(request: NextRequest) {
   const INFRA = "https://*.workers.dev https://cdn.iku.gg https://*.b-cdn.net";
 
   // Analytics + push notifications (the only third-party scripts left).
+  // Yandex Metrica (counter 109826109) added 2026-06-13 — feeds the
+  // behavioral signals (dwell/CTR/Webvisor) that dominate Yandex ranking,
+  // and speeds Yandex crawl. tag.js loads from mc.yandex.ru; beacons +
+  // Webvisor session-replay uploads go to mc.yandex.ru / mc.yandex.com.
   const ANALYTICS =
-    "https://us-assets.i.posthog.com https://us.i.posthog.com https://cdn.onesignal.com https://*.onesignal.com https://onesignal.com";
+    "https://us-assets.i.posthog.com https://us.i.posthog.com https://cdn.onesignal.com https://*.onesignal.com https://onesignal.com https://mc.yandex.ru https://mc.yandex.com https://*.mc.yandex.ru https://yastatic.net";
 
   // Ad-tech hosts — re-added 2026-05-02 for Placement A (CR Joi GIF) +
   // Placement B (HilltopAds banner zone 6969681). Minimum set to make
@@ -178,7 +182,7 @@ export function middleware(request: NextRequest) {
     `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${ANALYTICS} ${AD_SCRIPT} https://static.cloudflareinsights.com https://*.cloudflareinsights.com`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
-    `img-src 'self' data: blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${CR_HOSTS} ${MONDIAD_HOSTS}`,
+    `img-src 'self' data: blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${CR_HOSTS} ${MONDIAD_HOSTS} https://mc.yandex.ru`,
     `media-src 'self' blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${HILLTOPADS_HOSTS} ${MONDIAD_HOSTS}`,
     `connect-src 'self' ${ANALYTICS} ${INFRA} ${VIDEO_HOSTS_HTTPS} ${AD_SCRIPT}`,
     `frame-src 'self' ${HILLTOPADS_HOSTS} ${CR_HOSTS} ${MONDIAD_HOSTS}`,

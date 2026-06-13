@@ -142,6 +142,33 @@ export default async function RootLayout({
         <meta name="monetag" content="1c258acd4421e13c48d418e4cf06f894" />
         {/* Mondiad site verification (added 2026-05-08, signed up 2026-05-02) */}
         <meta name="mnd-ver" content="f29dtqlesjwyun1nvvdfg" />
+        {/* Adult content classification (added 2026-06-13). Bing shows adult
+            on default SafeSearch and Yandex ranks it freely — both need the
+            site correctly bucketed as adult or they mis-classify and drop it.
+            RTA label is the canonical adult-content signal for crawlers +
+            parental filters. Pairs with other.rating="adult" above. */}
+        <meta name="RATING" content="RTA-5042-1996-1400-1577-RTA" />
+        <meta name="content-rating" content="mature" />
+        {/* Yandex Metrica (counter 109826109) — added 2026-06-13. Webvisor ON.
+            Feeds the behavioral signals (dwell time, CTR, scroll) that DOMINATE
+            Yandex ranking (leaked 2023 algo) + speeds Yandex crawl of updates.
+            Yandex already outperforms Google for iku.gg, so this is the highest-
+            leverage channel signal. CSP hosts whitelisted in middleware.ts. */}
+        <script
+          nonce={nonce}
+          dangerouslySetInnerHTML={{
+            __html: `(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=109826109', 'ym');ym(109826109, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});`,
+          }}
+        />
+        <noscript>
+          <div>
+            <img
+              src="https://mc.yandex.ru/watch/109826109"
+              style={{ position: "absolute", left: "-9999px" }}
+              alt=""
+            />
+          </div>
+        </noscript>
       </head>
       <body data-pro={isPro ? "1" : "0"}>
         <div className="sparkles-bg" aria-hidden="true">
