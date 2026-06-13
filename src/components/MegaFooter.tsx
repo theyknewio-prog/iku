@@ -411,7 +411,14 @@ export async function MegaFooter() {
           </ul>
         </section>
 
-        {/* ── Friends / Partner Sites ──────────────────────── */}
+        {/* ── Friends / Partner Sites ──────────────────────────
+             Reciprocal link-exchange block. These adult directories
+             list iku.gg in exchange for a return link here (they
+             monitor for the back-link before approving — e.g.
+             eroslist uses Linkspun). Dofollow on purpose so the
+             exchange is honoured. Keep this list SHORT (a handful) —
+             too many reciprocals on a 320K-page site reads as a link
+             scheme. Add only directories we've actually exchanged with. */}
         <section className="mega-footer__section">
           <h3 className="mega-footer__title">Friends</h3>
           <ul className="mega-footer__links">
@@ -422,6 +429,11 @@ export async function MegaFooter() {
                 rel="noopener"
               >
                 My Porn Adviser
+              </a>
+            </li>
+            <li>
+              <a href="https://eroslist.net" target="_blank" rel="noopener">
+                ErosList
               </a>
             </li>
           </ul>
