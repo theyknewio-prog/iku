@@ -4,7 +4,11 @@ import pool from "@/lib/db";
 async function getWatchSitemapCount(): Promise<number> {
   const MAX_PER_SITEMAP = 45000;
   try {
-    const { rows } = await pool.query("SELECT COUNT(*) as total FROM videos");
+    // Must match the LIVE filter in watch/sitemap.ts (dead/thumbless excluded)
+    // or robots would reference chunk URLs the sitemap no longer generates.
+    const { rows } = await pool.query(
+      "SELECT COUNT(*) as total FROM videos WHERE dead_at IS NULL AND thumbnail <> ''",
+    );
     const total = parseInt(rows[0].total, 10);
     return Math.ceil(total / MAX_PER_SITEMAP);
   } catch {
