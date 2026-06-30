@@ -19,7 +19,9 @@ const ZONE_SCRIPT_300x250 =
 
 function buildSrcDoc() {
   const injection = `(function(ht){var d=document,s=d.createElement('script'),l=d.scripts[d.scripts.length-1];s.settings=ht||{};s.src=${JSON.stringify(ZONE_SCRIPT_300x250)};s.async=true;s.referrerPolicy='no-referrer-when-downgrade';l.parentNode.insertBefore(s,l);})({})`;
-  return `<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;padding:0;overflow:hidden;background:transparent;width:300px;height:250px;}</style></head><body><script>${injection}</script></body></html>`;
+  // html+body both transparent: a no-fill load must never show the browser's
+  // default white UA canvas (the "pub blanche" issue, fixed 2026-06-30).
+  return `<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;padding:0;overflow:hidden;background:transparent;width:300px;height:250px;}</style></head><body><script>${injection}</script></body></html>`;
 }
 
 export function HilltopAdsBanner() {
