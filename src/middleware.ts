@@ -166,13 +166,24 @@ export function middleware(request: NextRequest) {
     `https://${h}`,
     `https://*.${h}`,
   ]).join(" ");
+  // Adscore (CR fraud check) connects to its shards on the NON-STANDARD port
+  // 2087 (e.g. https://4.adsco.re:2087/). A host-source without a port only
+  // matches 443, so https://*.adsco.re was silently blocking the verification
+  // beacon -> CR scrubbed every click as 'unverified' = 0 conversions. Add the
+  // :2087 variants. Also add the bare blockadsnot.com (wildcard misses apex).
+  // Found via live console audit 2026-06-30.
   const CR_HOSTS =
-    "https://*.imglnkx.com https://imglnkx.com https://*.vlmai-1.com https://*.mbjms.com https://*.scptp9.com https://*.crxcr2.com https://*.crxcra.com https://*.adsco.re https://adsco.re https://*.blockadsnot.com https://*.cloudfront.net";
+    "https://*.imglnkx.com https://imglnkx.com https://*.vlmai-1.com https://*.mbjms.com https://*.scptp9.com https://*.crxcr2.com https://*.crxcra.com https://*.adsco.re https://adsco.re https://*.adsco.re:2087 https://adsco.re:2087 https://*.blockadsnot.com https://blockadsnot.com https://*.cloudfront.net";
   // Mondiad — site 27564 ACCEPTED 2026-05-11, 4 zones live, 11-day 100% revshare
   // promo. Static delivery host is ss.mrmnd.com; creatives/iframes/click-trackers
   // rotate through several mondiad subdomains so the wildcard catches them.
+  // Live audit 2026-06-30: the Mondiad interstitial/push scripts (loaded from
+  // ss.mrmnd.com) make runtime connect/img-sync calls to sibling domains
+  // klmmnd.com and cs.eu.cckmnd.com that the mrmnd-only list never covered —
+  // so the SDK never initialised (window.mondiad stayed undefined). Whitelist
+  // the sync domains so the live zones can actually fill.
   const MONDIAD_HOSTS =
-    "https://ss.mrmnd.com https://*.mrmnd.com https://mrmnd.com";
+    "https://ss.mrmnd.com https://*.mrmnd.com https://mrmnd.com https://klmmnd.com https://*.klmmnd.com https://cckmnd.com https://*.cckmnd.com";
   const AD_SCRIPT = `${HILLTOPADS_HOSTS} ${CR_HOSTS} ${MONDIAD_HOSTS}`;
 
   // `'unsafe-inline'` + `'unsafe-eval'` kept for inline JSON-LD scripts
