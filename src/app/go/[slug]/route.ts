@@ -22,11 +22,17 @@ const CR = (path: string) => `https://t.vlmai-1.com/410186/${path}${CR_BASE}`;
 //
 // EPC values frozen at catalog read 2026-05-12 — re-pull quarterly.
 const AFFILIATE_LINKS: Record<string, string> = {
-  // ── Premium tier (REQUEST APPROVAL — currently locked until $1 earned) ──
-  "joi-ai": CR("10358"), // Joi PPS Premium $42, EPC $0.4806 — TOP EPC
-  "candy-ai": CR("10335"), // Candy.ai PPS Premium $44, EPC $0.2606
-  "girlfriend-gpt": CR("10407"), // GG PPS Premium $55, EPC $0.2516
-  "ourdream-ai-premium": CR("10402"), // ourdream PPS Premium $42, EPC $0.0647
+  // ── Premium tier REROUTED 2026-06-30 → approved variants ──
+  // The Premium offer IDs (10358/10335/10407/10402) are "REQUEST APPROVAL"
+  // and locked until $1 earned. Sending our #1 traffic slug (joi-ai, 189
+  // clicks/mo) to a locked offer = CR bounces it to a fallback that credits
+  // nothing → permanent $0 (the cycle: can't earn the $1 that unlocks them).
+  // Route the high-traffic public slugs to their APPROVED equivalents so they
+  // actually credit. Flip back to the Premium IDs once approved.
+  "joi-ai": CR("10163"), // → Joi Tier 1 PPS $35 (approved). was 10358 Premium (locked)
+  "candy-ai": CR("10022"), // → Candy.ai PPS $36 (approved). was 10335 Premium (locked)
+  "girlfriend-gpt": CR("10407"), // GG PPS Premium $55 — no approved variant; keep
+  "ourdream-ai-premium": CR("10138"), // → ourdream PPS $32.40 (approved). was 10402 Premium (locked)
 
   // ── Approved PPS — usable today ──
   swipey: CR("10100"), // Swipey PPS $38.50, EPC $0.0583
