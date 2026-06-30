@@ -173,7 +173,7 @@ export function middleware(request: NextRequest) {
   // :2087 variants. Also add the bare blockadsnot.com (wildcard misses apex).
   // Found via live console audit 2026-06-30.
   const CR_HOSTS =
-    "https://*.imglnkx.com https://imglnkx.com https://*.vlmai-1.com https://*.mbjms.com https://*.scptp9.com https://*.crxcr2.com https://*.crxcra.com https://*.adsco.re https://adsco.re https://*.adsco.re:2087 https://adsco.re:2087 https://*.blockadsnot.com https://blockadsnot.com https://*.cloudfront.net";
+    "https://*.imglnkx.com https://imglnkx.com https://*.vlmai-1.com https://*.mbjms.com https://*.scptp9.com https://*.crxcr2.com https://*.crxcra.com https://*.adsco.re https://adsco.re https://*.adsco.re:2087 https://adsco.re:2087 https://*.blockadsnot.com https://blockadsnot.com https://*.cloudfront.net https://snappypractice.com https://*.snappypractice.com";
   // Mondiad — site 27564 ACCEPTED 2026-05-11, 4 zones live, 11-day 100% revshare
   // promo. Static delivery host is ss.mrmnd.com; creatives/iframes/click-trackers
   // rotate through several mondiad subdomains so the wildcard catches them.
@@ -183,7 +183,7 @@ export function middleware(request: NextRequest) {
   // so the SDK never initialised (window.mondiad stayed undefined). Whitelist
   // the sync domains so the live zones can actually fill.
   const MONDIAD_HOSTS =
-    "https://ss.mrmnd.com https://*.mrmnd.com https://mrmnd.com https://klmmnd.com https://*.klmmnd.com https://cckmnd.com https://*.cckmnd.com";
+    "https://ss.mrmnd.com https://*.mrmnd.com https://mrmnd.com https://klmmnd.com https://*.klmmnd.com https://cckmnd.com https://*.cckmnd.com https://atmndx.com https://*.atmndx.com";
   const AD_SCRIPT = `${HILLTOPADS_HOSTS} ${CR_HOSTS} ${MONDIAD_HOSTS}`;
 
   // `'unsafe-inline'` + `'unsafe-eval'` kept for inline JSON-LD scripts
