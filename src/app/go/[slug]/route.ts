@@ -13,7 +13,18 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const CR_BASE = "?aff_sub5=SF_006OG000004lmDN";
-const CR = (path: string) => `https://t.vlmai-1.com/410186/${path}${CR_BASE}`;
+// CR tracking link format = {domain}/{affiliate_id}/{offer_id}/{url_id}.
+// The trailing /0 (default landing page) is REQUIRED — without it the
+// tracker serves a blank 200 page: no redirect, no click recorded.
+// Root cause of 100% CR click loss, found 2026-07-03 (CR dashboard showed
+// 0 clicks all-time while PostHog logged 800+/mo). Links re-generated via
+// phoenix-api.crakrevenue.com/offer/generate-tracking-link and each one
+// verified live (302 chain → offer landing) before shipping.
+// The tracker domain varies per vertical: t.vlmai-1.com (AI),
+// t.aagm.link (Adult Gaming), t.bbwafx.com (XGamehub).
+const CR = (path: string) => `https://t.vlmai-1.com/410186/${path}/0${CR_BASE}`;
+const CRGAME = (path: string) =>
+  `https://t.aagm.link/410186/${path}/0${CR_BASE}`;
 
 // FULL CrakRevenue AI catalog (38 offers) wired 2026-05-12 — user wanted
 // "la totalité". Each slug uses CR's tracker URL with the offer ID. Where
@@ -29,7 +40,7 @@ const AFFILIATE_LINKS: Record<string, string> = {
   // nothing → permanent $0 (the cycle: can't earn the $1 that unlocks them).
   // Route the high-traffic public slugs to their APPROVED equivalents so they
   // actually credit. Flip back to the Premium IDs once approved.
-  "joi-ai": CR("10163"), // → Joi Tier 1 PPS $35 (approved). was 10358 Premium (locked)
+  "joi-ai": CR("10415"), // → Joi PPS $35 (approved). 10163 removed from CR catalog; was 10358 Premium (locked)
   "candy-ai": CR("10022"), // → Candy.ai PPS $36 (approved). was 10335 Premium (locked)
   "girlfriend-gpt": CR("10407"), // GG PPS Premium $55 — no approved variant; keep
   "ourdream-ai-premium": CR("10138"), // → ourdream PPS $32.40 (approved). was 10402 Premium (locked)
@@ -41,8 +52,8 @@ const AFFILIATE_LINKS: Record<string, string> = {
   "get-harder": CR("10182"), // Get-Harder PPS $34, EPC $0.1506
   "ourdream-ai": CR("10138"), // ourdream PPS $32.40, EPC $0.0271
   "secrets-ai": CR("10381"), // Secrets.ai PPS $50, EPC $0.0452
-  "joi-ai-t1": CR("10163"), // Joi Tier 1 PPS $35, EPC $0.0352 (fallback when Premium 10358 not approved yet)
-  "joi-ai-t2": CR("10280"), // Joi Tier 2 PPS $28, EPC $0.0130
+  "joi-ai-t1": CR("10415"), // Joi PPS $35 (10163 removed from CR catalog)
+  "joi-ai-t2": CR("10415"), // Joi PPS $35 (10280 dead — generate-tracking-link 403s)
   "candy-ai-standard": CR("10022"), // Candy.ai PPS $36, EPC $0.0162
   fanfinity: CR("10141"), // Fanfinity PPS $17.50, EPC $0.0034
 
@@ -63,6 +74,11 @@ const AFFILIATE_LINKS: Record<string, string> = {
   "dreambf-ai": CR("9183"), // DreamBF.ai Revshare 35%
   "dreamgf-ai": CR("9057"), // Dreamgf.ai Revshare 35%
   "ehentai-ai": CR("9182"), // eHentai.ai Revshare 35%
+
+  // ── Adult Gaming (added 2026-07-03 — offer aligned with hentai traffic) ──
+  "hentai-heroes": CRGAME("10049"), // Hentai Heroes PPS $45.98
+  "hentai-heroes-rs": CRGAME("6562"), // Hentai Heroes Revshare Lifetime 50%
+  xgamehub: `https://t.bbwafx.com/410186/10421/0${CR_BASE}`, // XGamehub PPS $35, EPC $0.106
 
   // ── Direct affiliate programs (approved 2026-05-02 → 2026-05-05) ──
   "kupid-ai": "https://kpdtrk.com/iku-gg-gr53", // Kupid AI — Dub.co partner
