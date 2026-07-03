@@ -8,7 +8,6 @@ import { UserDataSync } from "@/components/UserDataSync";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { getNonce } from "@/lib/csp-nonce";
 import { PushNotifications } from "@/components/PushNotifications";
-import { PopAdsPopunder } from "@/components/PopAdsPopunder";
 import { MondiadInterstitial } from "@/components/MondiadInterstitial";
 import { MondiadInPagePush } from "@/components/MondiadInPagePush";
 
@@ -190,12 +189,8 @@ export default async function RootLayout({
               network, every popunder, every affiliate card, every banner,
               every preroll). Site runs zero monetization while the new
               strategy is decided. */}
-          {/* 2026-05-08 — PopAds popunder re-mounted (site approved
-              2026-05-01, ID 5296964). Standard Adcode (no anti-adblock
-              variant rotation, simpler CSP). Free Pro users still don't
-              see it because the script no-ops via early-return on data-pro=1
-              (TODO if we want full Pro silence). */}
-          <PopAdsPopunder />
+          {/* 2026-07-03 — PopAds popunder removed: $0.0024 total over 2
+              months, zero fill on our RU/Bing traffic. Zombie network. */}
           {/* Mondiad — site 27564 accepted 2026-05-11, 11-day 100% revshare
               window. Interstitial fires once per page-load after window.load
               + 1.5s delay (avoids blocking LCP). In-page push runs globally. */}
