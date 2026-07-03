@@ -187,8 +187,11 @@ export function middleware(request: NextRequest) {
   // ExoClick (re-lit 2026-07-03) — ad-provider.js from a.magsrv.com, creatives
   // and click-trackers rotate across magsrv/exosrv/exoclick, media on afcdn.
   // Both bare + wildcard variants (wildcards never cover the apex).
+  // Live console 2026-07-03: creatives come from bkcdn.net (img/video),
+  // clickthrough frames from marzaent.com; exdynsrv/wpncdn are the other
+  // documented ExoClick serving domains — whitelist them all up front.
   const EXOCLICK_HOSTS =
-    "https://a.magsrv.com https://magsrv.com https://*.magsrv.com https://exosrv.com https://*.exosrv.com https://exoclick.com https://*.exoclick.com https://afcdn.net https://*.afcdn.net";
+    "https://a.magsrv.com https://magsrv.com https://*.magsrv.com https://exosrv.com https://*.exosrv.com https://exoclick.com https://*.exoclick.com https://afcdn.net https://*.afcdn.net https://bkcdn.net https://*.bkcdn.net https://marzaent.com https://*.marzaent.com https://exdynsrv.com https://*.exdynsrv.com https://wpncdn.com https://*.wpncdn.com";
   const AD_SCRIPT = `${HILLTOPADS_HOSTS} ${CR_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS}`;
 
   // `'unsafe-inline'` + `'unsafe-eval'` kept for inline JSON-LD scripts

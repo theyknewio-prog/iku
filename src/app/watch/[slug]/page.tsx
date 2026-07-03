@@ -802,6 +802,10 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 <AdRotationBanner slug="candy-ai" surface="watch-d" />
               </div>
 
+              {/* ExoClick 300x250 — CPM display, second sidebar slot
+                  (lazy: only loads when scrolled into view). */}
+              <AdZoneClient zoneId={AD_ZONES.sidebar300} size="300x250" lazy />
+
               <Suspense
                 fallback={Array.from({ length: 6 }).map((_, i) => (
                   <div key={i} className="related-item">

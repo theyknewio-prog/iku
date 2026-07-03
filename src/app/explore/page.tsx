@@ -9,6 +9,8 @@ import { isLikelyBot } from "@/lib/is-bot";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
+import { AdZoneClient } from "@/components/AdZoneClient";
+import { AD_ZONES } from "@/lib/ad-config";
 import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 import { SignupCTA } from "@/components/SignupCTA";
 import { CHARACTERS } from "@/data/characters";
@@ -413,6 +415,9 @@ export default async function ExplorePage(props: {
 
             {/* Video grid */}
             <BlacklistFilter videos={videos} />
+
+            {/* ExoClick native — CPM/CPC display after the grid (lazy). */}
+            <AdZoneClient zoneId={AD_ZONES.nativeGrid} size="native" lazy />
 
             {/* AI bottom — Joi after the grid, before pagination. */}
             {videos.length > 0 && (
