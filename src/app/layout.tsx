@@ -8,6 +8,7 @@ import { UserDataSync } from "@/components/UserDataSync";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { getNonce } from "@/lib/csp-nonce";
 import { PushNotifications } from "@/components/PushNotifications";
+import { AdScript } from "@/components/AdScript";
 import { MondiadInterstitial } from "@/components/MondiadInterstitial";
 import { MondiadInPagePush } from "@/components/MondiadInPagePush";
 
@@ -191,6 +192,9 @@ export default async function RootLayout({
               strategy is decided. */}
           {/* 2026-07-03 — PopAds popunder removed: $0.0024 total over 2
               months, zero fill on our RU/Bing traffic. Zombie network. */}
+          {/* ExoClick ad-provider.js — global lazy loader for the display
+              CPM layer (zones mounted per-page via AdZoneClient). */}
+          <AdScript />
           {/* Mondiad — site 27564 accepted 2026-05-11, 11-day 100% revshare
               window. Interstitial fires once per page-load after window.load
               + 1.5s delay (avoids blocking LCP). In-page push runs globally. */}

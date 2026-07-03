@@ -184,7 +184,12 @@ export function middleware(request: NextRequest) {
   // the sync domains so the live zones can actually fill.
   const MONDIAD_HOSTS =
     "https://ss.mrmnd.com https://*.mrmnd.com https://mrmnd.com https://klmmnd.com https://*.klmmnd.com https://cckmnd.com https://*.cckmnd.com https://atmndx.com https://*.atmndx.com";
-  const AD_SCRIPT = `${HILLTOPADS_HOSTS} ${CR_HOSTS} ${MONDIAD_HOSTS}`;
+  // ExoClick (re-lit 2026-07-03) — ad-provider.js from a.magsrv.com, creatives
+  // and click-trackers rotate across magsrv/exosrv/exoclick, media on afcdn.
+  // Both bare + wildcard variants (wildcards never cover the apex).
+  const EXOCLICK_HOSTS =
+    "https://a.magsrv.com https://magsrv.com https://*.magsrv.com https://exosrv.com https://*.exosrv.com https://exoclick.com https://*.exoclick.com https://afcdn.net https://*.afcdn.net";
+  const AD_SCRIPT = `${HILLTOPADS_HOSTS} ${CR_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS}`;
 
   // `'unsafe-inline'` + `'unsafe-eval'` kept for inline JSON-LD scripts
   // and React dev tooling. Tighten later with hash-based CSP.
@@ -193,10 +198,10 @@ export function middleware(request: NextRequest) {
     `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${ANALYTICS} ${AD_SCRIPT} https://static.cloudflareinsights.com https://*.cloudflareinsights.com`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
-    `img-src 'self' data: blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${CR_HOSTS} ${MONDIAD_HOSTS} https://mc.yandex.ru https://mc.yandex.com`,
-    `media-src 'self' blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${HILLTOPADS_HOSTS} ${MONDIAD_HOSTS}`,
+    `img-src 'self' data: blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${CR_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS} https://mc.yandex.ru https://mc.yandex.com`,
+    `media-src 'self' blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${HILLTOPADS_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS}`,
     `connect-src 'self' ${ANALYTICS} ${INFRA} ${VIDEO_HOSTS_HTTPS} ${AD_SCRIPT} wss://mc.yandex.ru wss://mc.yandex.com`,
-    `frame-src 'self' ${HILLTOPADS_HOSTS} ${CR_HOSTS} ${MONDIAD_HOSTS}`,
+    `frame-src 'self' ${HILLTOPADS_HOSTS} ${CR_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS}`,
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",

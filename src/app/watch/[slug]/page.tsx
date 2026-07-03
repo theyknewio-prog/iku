@@ -5,6 +5,8 @@ import type { Metadata } from "next";
 import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { WatchPlayer } from "@/components/WatchPlayer";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
+import { AdZoneClient } from "@/components/AdZoneClient";
+import { AD_ZONES } from "@/lib/ad-config";
 import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 import { MondiadBanner } from "@/components/MondiadBanner";
 import { MondiadNative } from "@/components/MondiadNative";
@@ -589,6 +591,20 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 thumbnail={video.thumbnail}
                 initialFavorites={video.favorites}
                 initialScore={video.score}
+              />
+
+              {/* ExoClick underplayer — CPM display layer (re-lit
+                  2026-07-03). 728x90 desktop / 320x50 mobile, separate
+                  zone per size. First slot under the action bar. */}
+              <AdZoneClient
+                zoneId={AD_ZONES.watchUnderplayer728}
+                size="728x90"
+                className="ad-zone--desktop-only"
+              />
+              <AdZoneClient
+                zoneId={AD_ZONES.watchUnderplayer300x50}
+                size="320x50"
+                className="ad-zone--mobile-only"
               />
 
               {/* Placement C — CR Joi 300x250 above the fold. Sits right
