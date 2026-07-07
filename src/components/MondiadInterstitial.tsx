@@ -10,8 +10,19 @@ export function MondiadInterstitial() {
     if (typeof document === "undefined") return;
     if (document.body?.dataset.pro === "1") return;
     if (document.querySelector('script[data-mondiad-int="1"]')) return;
+    // Owner rule: max 1 interstitial/popunder per session. Without this the
+    // script re-armed on every full page load since 2026-05-11.
+    if (window.location.pathname.startsWith("/feed")) return; // Shorts ad-free
+    try {
+      if (sessionStorage.getItem("iku-int-fired") === "1") return;
+    } catch {
+      /* sessionStorage blocked (private mode) — fall through, worst case = old behavior */
+    }
 
     const fire = () => {
+      try {
+        sessionStorage.setItem("iku-int-fired", "1");
+      } catch {}
       const s = document.createElement("script");
       s.src = INTERSTITIAL_SRC;
       s.async = true;
