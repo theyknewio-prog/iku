@@ -331,6 +331,12 @@ export default async function WatchPage({ params }: WatchPageProps) {
       const gv = await getGelbooruPost(id);
       if (!gv) notFound();
       video = gv;
+      // Gelbooru's video CDN is hotlink-protected — a browser playing the
+      // URL directly gets 404 (no gelbooru.com Referer). Route through
+      // /api/video-stream, which sends the Referer server-side.
+      if (gv.url) {
+        streamProxyUrl = `/api/video-stream?url=${encodeURIComponent(gv.url)}`;
+      }
     } else {
       // PG-first, live fallback only for fresh unscraped posts.
       const dv = await getDanbooruVideo(id, { liveFallback: true });

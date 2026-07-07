@@ -270,6 +270,9 @@ export async function GET(request: NextRequest) {
     "hentaivideo.tube",
     "eporner.com",
     "porn3dx.com",
+    // Gelbooru video CDN — hotlink-protected (needs gelbooru.com Referer,
+    // handled below). Stored URLs use img*/video-cdn*.gelbooru.com hosts.
+    "gelbooru.com",
     // 8 generic-source CDNs (direct MP4, no yt-dlp resolve)
     "hembed.com", // hanime1 (vdownload.hembed.com)
     "vintageporno.stream", // hentaibros (cdn.*)
@@ -356,11 +359,24 @@ export async function GET(request: NextRequest) {
 
   // Proxy the video, passing through Range header for seek support
   const rangeHeader = request.headers.get("range");
+  // Gelbooru enforces hotlink protection: its img*.gelbooru.com CDN 404s /
+  // redirects unless the Referer is gelbooru.com. Every other source is happy
+  // with the file URL as its own Referer.
+  const streamHost = (() => {
+    try {
+      return new URL(streamUrl).hostname;
+    } catch {
+      return "";
+    }
+  })();
+  const referer = /(^|\.)gelbooru\.com$/.test(streamHost)
+    ? "https://gelbooru.com/"
+    : pageUrl;
   const upstreamHeaders: Record<string, string> = {
     "User-Agent":
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     Accept: "*/*",
-    Referer: pageUrl,
+    Referer: referer,
   };
   if (rangeHeader) upstreamHeaders.Range = rangeHeader;
 
