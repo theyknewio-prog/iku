@@ -16,9 +16,15 @@ const ALLOWED_HOSTS = [
   "video-cdn3.gelbooru.com",
   "video-cdn2.gelbooru.com",
   "video-cdn1.gelbooru.com",
+  // Gelbooru rotated its image CDN to imgN hosts (2026-07). The API now
+  // returns preview_url/file_url on img4/img5/img0 — must be allowlisted or
+  // the thumbnail + video proxy 403s.
+  "img5.gelbooru.com",
+  "img4.gelbooru.com",
   "img3.gelbooru.com",
   "img2.gelbooru.com",
   "img1.gelbooru.com",
+  "img0.gelbooru.com",
   "media.gelbooru.com",
   "gelbooru.com",
   // Danbooru thumbnail CDN — hotlink-protected against flagged residential IPs

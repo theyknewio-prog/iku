@@ -43,8 +43,13 @@ const where = deadOnly
   : "source='gelbooru' AND dead_at IS NULL";
 const limitSql = argLimit > 0 ? `LIMIT ${argLimit}` : "";
 const { rows } = await pool.query(
-  `SELECT pk, slug, url FROM videos WHERE ${where} ORDER BY score DESC ${limitSql}`,
+  `SELECT pk, slug, url, thumbnail FROM videos WHERE ${where} ORDER BY score DESC ${limitSql}`,
 );
+
+// Gelbooru thumbnails are hotlink-protected — store them pre-wrapped in
+// /api/proxy so cards render (the proxy adds the gelbooru.com Referer).
+const proxyThumb = (raw) =>
+  raw ? `/api/proxy?url=${encodeURIComponent(raw)}` : "";
 console.log(`refreshing ${rows.length} gelbooru rows (deadOnly=${deadOnly})`);
 
 let updated = 0,
@@ -53,7 +58,7 @@ let updated = 0,
   err = 0;
 
 for (let i = 0; i < rows.length; i++) {
-  const { pk, slug, url } = rows[i];
+  const { pk, slug, url, thumbnail } = rows[i];
   const id = idFromSlug(slug);
   if (!id) {
     err++;
@@ -77,15 +82,24 @@ for (let i = 0; i < rows.length; i++) {
         [pk],
       );
       deleted++;
-    } else if (post.file_url !== url) {
-      await pool.query(
-        "UPDATE videos SET url = $1, dead_at = NULL WHERE pk = $2",
-        [post.file_url, pk],
-      );
-      updated++;
     } else {
-      await pool.query("UPDATE videos SET dead_at = NULL WHERE pk = $1", [pk]);
-      same++;
+      // Refresh both the video URL and the (hotlink-proxied) thumbnail from
+      // the current API values. Idempotent — re-runs converge.
+      const freshThumb = proxyThumb(post.preview_url);
+      const urlChanged = post.file_url !== url;
+      const thumbChanged = freshThumb && freshThumb !== thumbnail;
+      if (urlChanged || thumbChanged) {
+        await pool.query(
+          "UPDATE videos SET url = $1, thumbnail = COALESCE(NULLIF($2,''), thumbnail), dead_at = NULL WHERE pk = $3",
+          [post.file_url, freshThumb, pk],
+        );
+        updated++;
+      } else {
+        await pool.query("UPDATE videos SET dead_at = NULL WHERE pk = $1", [
+          pk,
+        ]);
+        same++;
+      }
     }
   } catch {
     err++;
