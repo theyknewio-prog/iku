@@ -24,7 +24,7 @@ import { MagneticButton } from "@/components/MagneticButton";
 import { AdJoiBanner, AdRotationBanner } from "@/components/AdJoiBanner";
 import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
-import { MondiadBanner } from "@/components/MondiadBanner";
+import { NativeOfferCard } from "@/components/NativeOfferCard";
 
 export const metadata: Metadata = {
   title: "iku.gg — Free Hentai, 3D Hentai & Cartoon Porn | 320,000+ Videos",
@@ -457,11 +457,11 @@ export default async function HomePage() {
                   priority={i < 5}
                 />
               );
-              // Native in-grid ad-break at position 9 (after 8th poster).
-              // 300x250 GIF inserted as a flex item, same scroll behavior
-              // as poster cards. No fake-card wrapper per
-              // feedback_respect_ad_format.md.
-              if (i === 7) {
+              // Ad-break après le 3e poster (recon 2026-07-08: mobile
+              // n'affiche que ~1.8 posters, la position 9 n'était JAMAIS
+              // atteinte — naturalWidth 0 prouvé). Même flex item, créa
+              // 300x250 native.
+              if (i === 2) {
                 return [
                   card,
                   <div
@@ -472,7 +472,11 @@ export default async function HomePage() {
                       alignItems: "center",
                     }}
                   >
-                    <AdRotationBanner slug="joi-ai" surface="trending-grid" />
+                    <AdRotationBanner
+                      slug="joi-ai"
+                      surface="trending-grid"
+                      eager
+                    />
                   </div>,
                 ];
               }
@@ -563,13 +567,6 @@ export default async function HomePage() {
             <HilltopAdsBanner />
           </div>
 
-          {/* Placement B2 — Mondiad 300x250 banner. 11-day 100% revshare
-              promo running since 2026-05-11. Side-by-side with HilltopAds
-              so we can A/B eCPM after 7d. */}
-          <div style={{ margin: "24px auto" }}>
-            <MondiadBanner width={300} height={250} />
-          </div>
-
           {/* ================================================================
               TOP RATED THIS WEEK -- 4-column grid
           ================================================================ */}
@@ -656,6 +653,17 @@ export default async function HomePage() {
                         </div>
                       </div>
                     </Link>
+                    {/* Natives in-grid 1/6 — comblent ~4 écrans de scroll
+                        sans pub mesurés au recon (candy d'abord: joi est
+                        déjà en Placement A au-dessus). */}
+                    {(i === 5 || i === 11 || i === 17) && (
+                      <NativeOfferCard
+                        slug={
+                          i === 5 ? "candy-ai" : i === 11 ? "swipey" : "meet"
+                        }
+                        surface={`toprated-native-${i}`}
+                      />
+                    )}
                   </React.Fragment>
                 );
               })}
@@ -667,13 +675,6 @@ export default async function HomePage() {
               Native, zero chrome. Brand-matched for hentai audience. */}
           <div style={{ margin: "24px auto" }}>
             <AdRotationBanner slug="candy-ai" surface="homepage-a2" />
-          </div>
-
-          {/* Soulkyn vertical 4:5 — direct affiliate, mobile-first format
-              (90% iku.gg traffic is mobile). Paired with the 300x250 above
-              so users see two distinct creatives back to back. */}
-          <div style={{ margin: "16px auto 24px" }}>
-            <SoulkynVerticalAd surface="homepage-soulkyn" />
           </div>
 
           {/* ================================================================
@@ -767,6 +768,12 @@ export default async function HomePage() {
               ))}
             </div>
           </section>
+
+          {/* Soulkyn vertical 4:5 — déplacé ici (2026-07-08): la section
+              Games sépare candy-ai du Soulkyn, plus de mur de 774px. */}
+          <div style={{ margin: "16px auto 24px" }}>
+            <SoulkynVerticalAd surface="homepage-soulkyn" />
+          </div>
 
           {/* ================================================================
               POPULAR CHARACTERS -- Circular avatars with gradient rings
@@ -892,6 +899,12 @@ export default async function HomePage() {
               <PosterCard key={video.id} video={video} badge="NEW" />
             ))}
           </Carousel>
+
+          {/* Swipey 300x250 — comble le gap ~2400px avant le footer
+              mesuré au recon 2026-07-08. */}
+          <div style={{ margin: "24px auto" }}>
+            <AdRotationBanner slug="swipey" surface="homepage-b3" />
+          </div>
 
           {/* Signup CTA — anon visitors only, before the Pro pitch */}
           <SignupCTA placement="homepage" />

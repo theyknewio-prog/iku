@@ -100,9 +100,11 @@ type Surface = string;
 interface Props {
   slug: keyof typeof POOLS;
   surface: Surface;
+  /** Créa proche de l'above-fold → charge immédiate (sinon lazy). */
+  eager?: boolean;
 }
 
-export function AdRotationBanner({ slug, surface }: Props) {
+export function AdRotationBanner({ slug, surface, eager }: Props) {
   let pool = POOLS[slug]?.[surface];
   // Fallback: unknown surface → flatten all pools for this slug. Lets us
   // mount AI on any new placement (3d/hentai/episodes/listings/etc.) without
@@ -130,7 +132,7 @@ export function AdRotationBanner({ slug, surface }: Props) {
         width={300}
         height={250}
         style={{ display: "block", width: 300, height: 250 }}
-        loading="lazy"
+        loading={eager ? "eager" : "lazy"}
         decoding="async"
         referrerPolicy="no-referrer-when-downgrade"
       />
