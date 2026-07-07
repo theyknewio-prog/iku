@@ -9,8 +9,6 @@ import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { getNonce } from "@/lib/csp-nonce";
 import { PushNotifications } from "@/components/PushNotifications";
 import { AdScript } from "@/components/AdScript";
-import { MondiadInterstitial } from "@/components/MondiadInterstitial";
-import { AdsterraPopunder } from "@/components/AdsterraPopunder";
 import { AdsterraSocialBar } from "@/components/AdsterraSocialBar";
 
 // Fonts: Nunito (primary body) + Righteous (display/headings).
@@ -196,18 +194,14 @@ export default async function RootLayout({
           {/* ExoClick ad-provider.js — global lazy loader for the display
               CPM layer (zones mounted per-page via AdZoneClient). */}
           <AdScript />
-          {/* Mondiad — site 27564 accepted 2026-05-11, 11-day 100% revshare
-              window. Interstitial fires once per page-load after window.load
-              + 1.5s delay (avoids blocking LCP). In-page push runs globally. */}
-          <MondiadInterstitial />
+          {/* 2026-07-08 — ZÉRO POPUP (ordre owner): MondiadInterstitial
+              (overlay plein écran) et AdsterraPopunder (window.open, eCPM
+              $0.469 — meilleur earner mesuré, sacrifié sciemment) retirés.
+              La stratégie bascule sur display dense + natives in-grid. */}
           {/* 2026-07-07 — MondiadInPagePush swapped out for Adsterra
               SocialBar_1 (28986140): same floating-overlay slot, Mondiad
               push earned $0.005 all-time vs Social Bar CTR 8.77%. */}
           <AdsterraSocialBar />
-          {/* Adsterra Popunder_1 (28986138) — best eCPM ever measured on
-              this traffic ($0.469). Fires on first non-affiliate click,
-              capped 1/12h via localStorage, skips Pro + /feed. */}
-          <AdsterraPopunder />
           <PushNotifications />
           <AppShell footer={<MegaFooter />}>{children}</AppShell>
         </SessionProviderClient>
