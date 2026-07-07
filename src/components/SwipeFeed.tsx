@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, Fragment } from "react";
 import Link from "next/link";
 import { VideoCard } from "./VideoCard";
+import { FeedAdSlide } from "./FeedAdSlide";
 import { FeedConversionCTA } from "./FeedConversionCTA";
 import { useSession } from "next-auth/react";
 export interface FeedVideo {
@@ -35,6 +36,9 @@ export function SwipeFeed() {
   const interstitialCountRef = useRef(0);
   const lastInterstitialIndexRef = useRef(-10);
   const isPro = useRef(false);
+  // Pro state as STATE (not just ref) — les slides pub in-feed doivent
+  // disparaître au render quand Pro est détecté, pas au prochain event.
+  const [isProState, setIsProState] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const loadingRef = useRef(false);
   // Keyset cursor forwarded on each subsequent request. null = first request
@@ -110,6 +114,7 @@ export function SwipeFeed() {
   useEffect(() => {
     const read = () => {
       isPro.current = document.body.dataset.pro === "1";
+      setIsProState(isPro.current);
     };
     read();
     const observer = new MutationObserver(read);
@@ -176,6 +181,12 @@ export function SwipeFeed() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
+            // Slide pub in-feed: aucun data-index — on met activeIndex à -1
+            // pour que TOUTES les vidéos se mettent en pause derrière.
+            if (entry.target.hasAttribute("data-ad")) {
+              setActiveIndex(-1);
+              return;
+            }
             const index = Number(entry.target.getAttribute("data-index"));
             if (!isNaN(index)) {
               setActiveIndex(index);
@@ -251,23 +262,30 @@ export function SwipeFeed() {
 
       <div ref={containerRef} className="feed-container">
         {videos.map((video, index) => (
-          <VideoCard
-            // Stable key: video.id never changes. Including `index` in the key
-            // forces a re-mount of every downstream card whenever
-            // handleBrokenCard splices a dead card out — each re-mount fires
-            // a fresh <video src> request, which on flaky mobile networks
-            // cascades into hundreds of failures (852 requests for 60 cards
-            // observed under CDN failure). Stable key = splice only re-renders,
-            // src + DOM <video> are reused.
-            key={video.id}
-            video={video}
-            index={index}
-            isActive={index === activeIndex}
-            preloadNext={index > activeIndex && index <= activeIndex + 2}
-            globalMuted={globalMuted}
-            onMuteChange={setGlobalMuted}
-            onBroken={handleBrokenCard}
-          />
+          <Fragment key={video.id}>
+            {/* Slide pub in-feed toutes les 4 slides (owner 2026-07-08),
+                jamais avant la 4e, jamais pour les Pro. Rendue AVANT la
+                vidéo `index` pour ne pas décaler data-index. */}
+            {!isProState && index > 0 && index % 4 === 0 && (
+              <FeedAdSlide slot={index / 4} />
+            )}
+            <VideoCard
+              // Stable key: video.id never changes. Including `index` in the key
+              // forces a re-mount of every downstream card whenever
+              // handleBrokenCard splices a dead card out — each re-mount fires
+              // a fresh <video src> request, which on flaky mobile networks
+              // cascades into hundreds of failures (852 requests for 60 cards
+              // observed under CDN failure). Stable key = splice only re-renders,
+              // src + DOM <video> are reused.
+              video={video}
+              index={index}
+              isActive={index === activeIndex}
+              preloadNext={index > activeIndex && index <= activeIndex + 2}
+              globalMuted={globalMuted}
+              onMuteChange={setGlobalMuted}
+              onBroken={handleBrokenCard}
+            />
+          </Fragment>
         ))}
       </div>
     </div>
