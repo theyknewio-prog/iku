@@ -197,8 +197,12 @@ export function middleware(request: NextRequest) {
   // tags serve from highperformanceformat / effectiveratecpm /
   // profitableratecpm shards. Both bare + wildcard (wildcards miss the apex).
   // Re-check live console after wiring each unit — Adsterra rotates shards.
+  // portalfluently.com: 2nd-stage script chained by the Social Bar tag
+  // (pl*.effectivecpmnetwork.com → sfp.js). Found via live console probe
+  // 2026-07-07 — same rotating-shard pattern as ExoClick bkcdn/marzaent.
+  // Re-probe the console after each Adsterra change; shards rotate.
   const ADSTERRA_HOSTS =
-    "https://effectivecpmnetwork.com https://*.effectivecpmnetwork.com https://highperformanceformat.com https://*.highperformanceformat.com https://effectiveratecpm.com https://*.effectiveratecpm.com https://profitableratecpm.com https://*.profitableratecpm.com";
+    "https://effectivecpmnetwork.com https://*.effectivecpmnetwork.com https://highperformanceformat.com https://*.highperformanceformat.com https://effectiveratecpm.com https://*.effectiveratecpm.com https://profitableratecpm.com https://*.profitableratecpm.com https://portalfluently.com https://*.portalfluently.com";
   const AD_SCRIPT = `${HILLTOPADS_HOSTS} ${CR_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS} ${ADSTERRA_HOSTS}`;
 
   // `'unsafe-inline'` + `'unsafe-eval'` kept for inline JSON-LD scripts
