@@ -31,23 +31,28 @@ function write(items: HistoryItem[]): void {
   }
 }
 
-/** Fire-and-forget server sync. 401 for anon users is ignored. */
+/** Fire-and-forget server sync. Skipped for anon users (would 401 and log a
+ *  console error on ~99% of pageviews). PostHog tracking still fires for all. */
 function syncToServer(slug: string): void {
   if (typeof window === "undefined") return;
-  fetch("/api/history", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ slug }),
-  }).catch(() => {
-    /* silent — anon users return 401 */
-  });
 
-  // Fire scoring event for video_view (silently handles anon + streaks)
-  import("./score-client").then(({ recordScoreEvent }) => {
-    recordScoreEvent("video_view", { slug });
-  });
+  const isAuthed = document.body?.dataset.auth === "1";
+  if (isAuthed) {
+    fetch("/api/history", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slug }),
+    }).catch(() => {
+      /* silent */
+    });
 
-  // PostHog: track video view
+    // Scoring event for video_view (streaks etc.) — logged-in only.
+    import("./score-client").then(({ recordScoreEvent }) => {
+      recordScoreEvent("video_view", { slug });
+    });
+  }
+
+  // PostHog: track video view for everyone (anon analytics matter).
   import("./analytics").then(({ track, EVENTS }) => {
     track(EVENTS.VIDEO_VIEW, { slug });
   });
@@ -81,10 +86,12 @@ export function isWatched(id: number): boolean {
 export function clearHistory(): void {
   if (typeof window === "undefined") return;
   write([]);
-  // Also clear server-side. Log failures — a silent swallow here would mean
-  // the user cleared locally but the server still has old history that
-  // resurfaces on next device login.
-  fetch("/api/history", { method: "DELETE" }).catch((err) => {
-    console.error("clearHistory server sync failed:", err);
-  });
+  // Also clear server-side (logged-in only — anon has nothing server-side and
+  // the DELETE would 401). Log real failures so a logged-in user's cleared
+  // history doesn't resurface on next device login.
+  if (document.body?.dataset.auth === "1") {
+    fetch("/api/history", { method: "DELETE" }).catch((err) => {
+      console.error("clearHistory server sync failed:", err);
+    });
+  }
 }

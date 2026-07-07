@@ -37,6 +37,9 @@ export async function recordScoreEvent(
   meta?: Record<string, unknown>,
 ): Promise<ScoreResponse | null> {
   if (typeof window === "undefined") return null;
+  // Anon users have no server score — skip the POST (would 401 + log a
+  // console error). Belt-and-suspenders alongside the caller-side guard.
+  if (document.body?.dataset.auth !== "1") return null;
   try {
     const res = await fetch("/api/score", {
       method: "POST",

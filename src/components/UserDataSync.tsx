@@ -51,8 +51,13 @@ export function UserDataSync() {
   useEffect(() => {
     if (status !== "authenticated" || !session?.user?.id) {
       document.body.dataset.pro = "0";
+      // Anon: mark not-authenticated so client libs skip server sync
+      // (history/score POSTs) that would 401 and spam the console on ~99%
+      // of pageviews (audit 2026-07-07).
+      document.body.dataset.auth = "0";
       return;
     }
+    document.body.dataset.auth = "1";
     fetch("/api/user/stats")
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
