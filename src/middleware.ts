@@ -133,7 +133,7 @@ export function middleware(request: NextRequest) {
   // and speeds Yandex crawl. tag.js loads from mc.yandex.ru; beacons +
   // Webvisor session-replay uploads go to mc.yandex.ru / mc.yandex.com.
   const ANALYTICS =
-    "https://us-assets.i.posthog.com https://us.i.posthog.com https://cdn.onesignal.com https://*.onesignal.com https://onesignal.com https://mc.yandex.ru https://mc.yandex.com https://*.mc.yandex.ru https://yastatic.net";
+    "https://us-assets.i.posthog.com https://us.i.posthog.com https://cdn.onesignal.com https://*.onesignal.com https://onesignal.com https://mc.yandex.ru https://mc.yandex.com https://mc.yandex.com.tr https://*.mc.yandex.ru https://yastatic.net";
 
   // Ad-tech hosts — re-added 2026-05-02 for Placement A (CR Joi GIF) +
   // Placement B (HilltopAds banner zone 6969681). Minimum set to make
@@ -183,7 +183,7 @@ export function middleware(request: NextRequest) {
   // so the SDK never initialised (window.mondiad stayed undefined). Whitelist
   // the sync domains so the live zones can actually fill.
   const MONDIAD_HOSTS =
-    "https://ss.mrmnd.com https://*.mrmnd.com https://mrmnd.com https://klmmnd.com https://*.klmmnd.com https://cckmnd.com https://*.cckmnd.com https://atmndx.com https://*.atmndx.com";
+    "https://ss.mrmnd.com https://*.mrmnd.com https://mrmnd.com https://klmmnd.com https://*.klmmnd.com https://cckmnd.com https://*.cckmnd.com https://atmndx.com https://*.atmndx.com https://btmnd.com https://*.btmnd.com";
   // ExoClick (re-lit 2026-07-03) — ad-provider.js from a.magsrv.com, creatives
   // and click-trackers rotate across magsrv/exosrv/exoclick, media on afcdn.
   // Both bare + wildcard variants (wildcards never cover the apex).
@@ -202,7 +202,7 @@ export function middleware(request: NextRequest) {
   // 2026-07-07 — same rotating-shard pattern as ExoClick bkcdn/marzaent.
   // Re-probe the console after each Adsterra change; shards rotate.
   const ADSTERRA_HOSTS =
-    "https://effectivecpmnetwork.com https://*.effectivecpmnetwork.com https://highperformanceformat.com https://*.highperformanceformat.com https://effectiveratecpm.com https://*.effectiveratecpm.com https://profitableratecpm.com https://*.profitableratecpm.com https://portalfluently.com https://*.portalfluently.com";
+    "https://effectivecpmnetwork.com https://*.effectivecpmnetwork.com https://highperformanceformat.com https://*.highperformanceformat.com https://effectiveratecpm.com https://*.effectiveratecpm.com https://profitableratecpm.com https://*.profitableratecpm.com https://portalfluently.com https://*.portalfluently.com https://show-sb.com https://*.show-sb.com";
   const AD_SCRIPT = `${HILLTOPADS_HOSTS} ${CR_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS} ${ADSTERRA_HOSTS}`;
 
   // `'unsafe-inline'` + `'unsafe-eval'` kept for inline JSON-LD scripts
@@ -212,7 +212,7 @@ export function middleware(request: NextRequest) {
     `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${ANALYTICS} ${AD_SCRIPT} https://static.cloudflareinsights.com https://*.cloudflareinsights.com`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
-    `img-src 'self' data: blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${CR_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS} ${ADSTERRA_HOSTS} https://mc.yandex.ru https://mc.yandex.com`,
+    `img-src 'self' data: blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${CR_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS} ${ADSTERRA_HOSTS} https://mc.yandex.ru https://mc.yandex.com https://mc.yandex.com.tr`,
     `media-src 'self' blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${HILLTOPADS_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS} ${ADSTERRA_HOSTS}`,
     `connect-src 'self' ${ANALYTICS} ${INFRA} ${VIDEO_HOSTS_HTTPS} ${AD_SCRIPT} wss://mc.yandex.ru wss://mc.yandex.com`,
     `frame-src 'self' ${HILLTOPADS_HOSTS} ${CR_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS} ${ADSTERRA_HOSTS}`,
