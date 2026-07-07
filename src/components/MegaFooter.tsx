@@ -191,13 +191,13 @@ export async function MegaFooter() {
               </a>
             </li>
             <li>
-              <a href="/go/spicier" rel="sponsored noopener">
-                🌶️ Spicier AI
+              <a href="/go/adult-friendfinder" rel="sponsored noopener">
+                🔞 Adult FriendFinder
               </a>
             </li>
             <li>
-              <a href="/go/xtease" rel="sponsored noopener">
-                😈 Xtease AI
+              <a href="/go/meet" rel="sponsored noopener">
+                💘 Local Dating
               </a>
             </li>
             <li>
@@ -206,13 +206,13 @@ export async function MegaFooter() {
               </a>
             </li>
             <li>
-              <a href="/go/dreambf-ai" rel="sponsored noopener">
-                👨 DreamBF AI
+              <a href="/go/cams" rel="sponsored noopener">
+                🎥 Live Cams (Jerkmate)
               </a>
             </li>
             <li>
-              <a href="/go/fanfinity" rel="sponsored noopener">
-                ⭐ Fanfinity
+              <a href="/go/milffindr" rel="sponsored noopener">
+                🍑 MILF Dating
               </a>
             </li>
             <li>
@@ -221,8 +221,8 @@ export async function MegaFooter() {
               </a>
             </li>
             <li>
-              <a href="/go/mylovely-ai" rel="sponsored noopener">
-                💗 MyLovely AI
+              <a href="/go/wannahookup" rel="sponsored noopener">
+                🔥 Hookup Tonight
               </a>
             </li>
             <li>

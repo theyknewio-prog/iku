@@ -25,6 +25,47 @@ const CR_BASE = "?aff_sub5=SF_006OG000004lmDN";
 const CR = (path: string) => `https://t.vlmai-1.com/410186/${path}/0${CR_BASE}`;
 const CRGAME = (path: string) =>
   `https://t.aagm.link/410186/${path}/0${CR_BASE}`;
+// Dating + Cam verticals (added 2026-07-07). Domains pulled from
+// phoenix-api generate-tracking-link and every link curl -L verified to a
+// real landing page before shipping: t.crdtg3.com (Dating), t.acust-7.com
+// (Smartlinks), t.mbjrkmms.com (Jerkmate/Cam).
+const CRDATE = (path: string) =>
+  `https://t.crdtg3.com/410186/${path}/0${CR_BASE}`;
+const CRSMART = (path: string) =>
+  `https://t.acust-7.com/410186/${path}/0${CR_BASE}`;
+const CRCAM = (path: string) =>
+  `https://t.mbjrkmms.com/410186/${path}/0${CR_BASE}`;
+
+// Geo-routed hub slugs (2026-07-07). Our affiliate CLICKS are 80% Tier-1
+// (US 187 / NL 97 / GB 46 / DE 31 per PostHog 14d) but every slug used to
+// send all geos to the same offer — US clicks on RU-friendly offers and
+// vice-versa convert at ~0. Cloudflare sets `cf-ipcountry` on every
+// request; route each click to the best APPROVED CR offer for its geo,
+// falling back to CR's own geo-adaptive Smartlink for the long tail.
+// EPCs from catalog pull 2026-07-06 (re-pull quarterly, IDs rotate).
+const GEO_HUBS: Record<string, Record<string, string>> = {
+  // Dating hub — footer/nav "Local Dating" style links.
+  meet: {
+    US: CRDATE("7912"), // Instabang PPS $40 — EPC $0.938, best in catalog
+    CA: CRDATE("7912"),
+    GB: CRDATE("10285"), // Adult FriendFinder LQ PPS $40 — EPC $0.593
+    AU: CRDATE("8570"), // GoNaughty DOI $4.20 — pays on free signup
+    DE: CRDATE("10444"), // lovefrauen PPS $70 — EPC $0.381
+    NL: CRDATE("9433"), // EroFantasie DOI $3.78 (BE/NL)
+    BE: CRDATE("9433"),
+    DEFAULT: CRSMART("3785"), // DatingSmartlink — geo-adaptive, our only
+    // paid conversion so far (2026-07-03) came through it
+  },
+  // Live cams hub — Jerkmate PPS only pays its 5 target geos.
+  cams: {
+    US: CRCAM("8780"), // Jerkmate PPS $50 — EPC $0.270, CR exclusive
+    CA: CRCAM("8780"),
+    GB: CRCAM("8780"),
+    AU: CRCAM("8780"),
+    NZ: CRCAM("8780"),
+    DEFAULT: CRSMART("3664"), // Cam Smartlink — geo-adaptive
+  },
+};
 
 // FULL CrakRevenue AI catalog (38 offers) wired 2026-05-12 — user wanted
 // "la totalité". Each slug uses CR's tracker URL with the offer ID. Where
@@ -42,7 +83,7 @@ const AFFILIATE_LINKS: Record<string, string> = {
   // actually credit. Flip back to the Premium IDs once approved.
   "joi-ai": CR("10415"), // → Joi PPS $35 (approved). 10163 removed from CR catalog; was 10358 Premium (locked)
   "candy-ai": CR("10022"), // → Candy.ai PPS $36 (approved). was 10335 Premium (locked)
-  "girlfriend-gpt": CR("10407"), // GG PPS Premium $55 — no approved variant; keep
+  "girlfriend-gpt": CR("10046"), // GG PPS $45 APPROVED (EPC $0.0367). Was 10407 Premium $55 = REQUEST APPROVAL locked → credited $0 since day one. Flip back once unlocked.
   "ourdream-ai-premium": CR("10138"), // → ourdream PPS $32.40 (approved). was 10402 Premium (locked)
 
   // ── Approved PPS — usable today ──
@@ -87,6 +128,25 @@ const AFFILIATE_LINKS: Record<string, string> = {
   // Cam network (Stripcash) — REV 20% lifetime, smart link routes per visitor geo
   stripcash:
     "https://go.mavrtracktor.com?userId=17e833691806534d444a0f2a237e4ac61d0cd81990649940427306c52266eced",
+
+  // ── Dating + Cam PPS/DOI (added 2026-07-07, all APPROVED) ──
+  // Our click audience is 80% Tier-1 (US/NL/GB/DE) — these EPCs are 3-30×
+  // the AI-companion offers the site pushed until now. DOI offers pay on a
+  // free double-opt-in signup (no purchase needed) = fastest path to first $.
+  "adult-friendfinder": CRDATE("4299"), // AFF PPS $90, EPC $0.507
+  instabang: CRDATE("7912"), // PPS $40, EPC $0.938 (AU/CA/US)
+  "aff-lq": CRDATE("10285"), // AFF low-quality-traffic variant, PPS $40, EPC $0.593
+  wannahookup: CRDATE("8517"), // DOI $4.55 US — free signup payout
+  milffindr: CRDATE("9736"), // DOI $3.36 UK
+  gonaughty: CRDATE("8570"), // DOI $4.20 AU
+  naughtycharm: CRDATE("10366"), // PPS $56 US, EPC $0.179
+  hometownflirt: CRDATE("10435"), // PPS $81 US, EPC $0.321
+  lovefrauen: CRDATE("10444"), // PPS $70 DE, EPC $0.381
+  erofantasie: CRDATE("9433"), // DOI $3.78 BE/NL
+  "dating-smart": CRSMART("3785"), // DatingSmartlink, geo-adaptive Multi-CPA
+  "cam-smart": CRSMART("3664"), // Cam Smartlink, geo-adaptive Multi-CPA
+  jerkmate: CRCAM("8780"), // Jerkmate PPS $50 (US/CA/GB/AU/NZ), EPC $0.270
+  "jerkmate-rs": CRCAM("6224"), // Jerkmate Revshare Lifetime 30%
 };
 
 // Known crawler / bot user-agents. SEO crawlers (Yandex, Ahrefs, MJ12, …)
@@ -100,7 +160,12 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
-  const url = AFFILIATE_LINKS[slug];
+  // Geo hubs first: Cloudflare stamps cf-ipcountry on every request (we sit
+  // behind CF, header is trustworthy). Missing header (direct origin hit,
+  // health checks) falls through to the hub's DEFAULT smartlink.
+  const geoCountry = (req.headers.get("cf-ipcountry") || "").toUpperCase();
+  const hub = GEO_HUBS[slug];
+  const url = hub ? (hub[geoCountry] ?? hub.DEFAULT) : AFFILIATE_LINKS[slug];
   if (!url)
     return NextResponse.json({ error: "unknown slug" }, { status: 404 });
 
@@ -141,6 +206,8 @@ export async function GET(
           referer,
           $ip: ip,
           $user_agent: ua,
+          geo_country: geoCountry || "unknown",
+          resolved_url: url,
         },
         timestamp: new Date().toISOString(),
       }),
