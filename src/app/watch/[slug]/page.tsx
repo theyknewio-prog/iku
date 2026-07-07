@@ -8,8 +8,7 @@ import { AdRotationBanner } from "@/components/AdJoiBanner";
 import { AdZoneClient } from "@/components/AdZoneClient";
 import { AD_ZONES } from "@/lib/ad-config";
 import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
-import { MondiadBanner } from "@/components/MondiadBanner";
-import { MondiadNative } from "@/components/MondiadNative";
+import { NativeOfferCard } from "@/components/NativeOfferCard";
 import { ProGatedPlayer } from "@/components/ProGatedPlayer";
 import { isProLocked } from "@/lib/pro-gate";
 import { unlockCost } from "@/lib/unlock-cost";
@@ -627,26 +626,9 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 <AdRotationBanner slug="joi-ai" surface="watch-c" />
               </div>
 
-              {/* Placement C2 — Swipey 300x250, second brand back-to-back. */}
-              <div style={{ margin: "8px auto" }}>
-                <AdRotationBanner slug="swipey" surface="watch-c-swipey" />
-              </div>
-
-              {/* Placement C3 — Soulkyn vertical mobile-first 4:5. */}
-              <div style={{ margin: "12px auto 4px" }}>
-                <SoulkynVerticalAd surface="watch-c-vertical" />
-              </div>
-
-              {/* Placement C4 — Mondiad 300x250 banner. 100% revshare promo
-                  for 11 days (signed 2026-05-11). */}
-              <div style={{ margin: "12px auto 4px" }}>
-                <MondiadBanner width={300} height={250} />
-              </div>
-
-              {/* Placement C5 — Mondiad native unit. */}
-              <div style={{ margin: "12px auto 4px" }}>
-                <MondiadNative width={300} height={250} />
-              </div>
+              {/* (2026-07-08 — mur de 6 pubs dissous: swipey déplacé après
+                  la description, Soulkyn après la FAQ, Mondiad C4/C5 morts
+                  supprimés. Zone actions→tags = underplayer + joi max.) */}
 
               <div className="player-divider" />
 
@@ -667,6 +649,12 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
               {/* Auto-generated video description */}
               <p className="watch-description">{videoDescription}</p>
+
+              {/* Swipey 300x250 — contenu→pub→contenu entre description
+                  et FAQ (ex-C2 du mur). */}
+              <div style={{ margin: "16px auto" }}>
+                <AdRotationBanner slug="swipey" surface="watch-c-swipey" />
+              </div>
 
               {/* FAQ accordion — renders rich answerHtml (internal links) when
                   present. content-generator escapes every user/source value
@@ -697,6 +685,12 @@ export default async function WatchPage({ params }: WatchPageProps) {
                   ))}
                 </section>
               )}
+
+              {/* Soulkyn vertical 4:5 — après la FAQ, avant l'artiste
+                  (ex-C3 du mur). */}
+              <div style={{ margin: "16px auto" }}>
+                <SoulkynVerticalAd surface="watch-c-vertical" />
+              </div>
 
               {/* Artist credit */}
               {video.artists[0] && (
@@ -814,10 +808,6 @@ export default async function WatchPage({ params }: WatchPageProps) {
                 <AdRotationBanner slug="candy-ai" surface="watch-d" />
               </div>
 
-              {/* ExoClick 300x250 — CPM display, second sidebar slot
-                  (lazy: only loads when scrolled into view). */}
-              <AdZoneClient zoneId={AD_ZONES.sidebar300} size="300x250" lazy />
-
               <Suspense
                 fallback={Array.from({ length: 6 }).map((_, i) => (
                   <div key={i} className="related-item">
@@ -869,6 +859,10 @@ export default async function WatchPage({ params }: WatchPageProps) {
               >
                 <RelatedSidebar video={video} offset={6} limit={6} />
               </Suspense>
+
+              {/* ExoClick 300x250 — CPM display en fin de sidebar (lazy),
+                  déplacé du haut où il était dos-à-dos avec candy. */}
+              <AdZoneClient zoneId={AD_ZONES.sidebar300} size="300x250" lazy />
             </aside>
           </div>
 
@@ -912,7 +906,11 @@ async function RelatedGrid({ video }: { video: Video }) {
   if (!related.length) return null;
   return (
     <div className="video-grid">
-      {related.map((v) => (
+      {related.slice(0, 4).map((v) => (
+        <ThumbnailCard key={v.id} video={v} />
+      ))}
+      <NativeOfferCard slug="meet" surface="watch-related-grid" />
+      {related.slice(4).map((v) => (
         <ThumbnailCard key={v.id} video={v} />
       ))}
     </div>

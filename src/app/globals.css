@@ -2801,6 +2801,15 @@ body {
   min-width: 0;
 }
 
+/* Mobile: la sidebar dupliquait 12 related + 2 pubs déjà présents dans la
+   colonne principale (~2000px de scroll mort mesurés au recon 2026-07-08).
+   On la masque — le DOM reste (maillage SEO), seul l'affichage saute. */
+@media (max-width: 1199px) {
+  .player-sidebar {
+    display: none;
+  }
+}
+
 @media (min-width: 1200px) {
   .player-sidebar {
     position: sticky;
