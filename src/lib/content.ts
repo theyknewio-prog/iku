@@ -609,6 +609,28 @@ export async function countVideos(
   }
 }
 
+/**
+ * Count for SEO copy (titles/descriptions): precomputed value only, never
+ * the pagination estimate. estimateCount() returns a hardcoded 2000 for
+ * long-tail tags — fine for page counts, but as a <title> it stamped
+ * "2,000 Free HD Clips" on thousands of pages with 26 real videos
+ * (doorway pattern, audit 2026-07-08). null = omit the number.
+ */
+const _countPreciseMemo = memoize(
+  "videos-count-precise",
+  (opts: GetVideosOptions) => readPrecomputedCount(opts),
+  60 * 60 * 1000,
+);
+export async function countVideosPrecise(
+  opts: GetVideosOptions = {},
+): Promise<number | null> {
+  try {
+    return await _countPreciseMemo(opts);
+  } catch {
+    return null;
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Curated genre tags for the homepage "Browse by Genre" section.
 // These are deliberately chosen to be "sexy" / genre-ish, not generic

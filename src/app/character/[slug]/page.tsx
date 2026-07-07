@@ -10,7 +10,12 @@ import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 import { Pagination } from "@/components/Pagination";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { EntityStatsPanel } from "@/components/EntityStatsPanel";
-import { getVideos, countVideos, isBannedTag } from "@/lib/content";
+import {
+  getVideos,
+  countVideos,
+  countVideosPrecise,
+  isBannedTag,
+} from "@/lib/content";
 import { SORT_OPTIONS, parseSort } from "@/lib/sort-options";
 import { getEntitySeo } from "@/lib/entity-seo";
 import { getNonce } from "@/lib/csp-nonce";
@@ -95,7 +100,9 @@ export async function generateMetadata({
   let count = 0;
   try {
     const charTag = character.tags[0] || slug.replace(/-/g, "_");
-    count = await countVideos({ tags: charTag, requireThumbnail: true });
+    count =
+      (await countVideosPrecise({ tags: charTag, requireThumbnail: true })) ??
+      0;
   } catch {
     /* fall through to stored seoTitle */
   }

@@ -8,7 +8,12 @@ import { notFound } from "next/navigation";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
 import { buildGridInterleave } from "@/components/GridAds";
 import { Pagination } from "@/components/Pagination";
-import { getVideos, countVideos, isBannedTag } from "@/lib/content";
+import {
+  getVideos,
+  countVideos,
+  countVideosPrecise,
+  isBannedTag,
+} from "@/lib/content";
 import { SORT_OPTIONS, parseSort } from "@/lib/sort-options";
 import { getEntitySeo } from "@/lib/entity-seo";
 import { EntityStatsPanel } from "@/components/EntityStatsPanel";
@@ -117,7 +122,9 @@ export async function generateMetadata({
   let count = 0;
   try {
     const seriesTag = series.tags[0] || slug.replace(/-/g, "_");
-    count = await countVideos({ tags: seriesTag, requireThumbnail: true });
+    count =
+      (await countVideosPrecise({ tags: seriesTag, requireThumbnail: true })) ??
+      0;
   } catch {
     /* fall through to stored seoTitle */
   }
