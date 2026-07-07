@@ -6,6 +6,7 @@ import { AdRotationBanner } from "@/components/AdJoiBanner";
 import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 import { notFound } from "next/navigation";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
+import { buildGridInterleave } from "@/components/GridAds";
 import { Pagination } from "@/components/Pagination";
 import { getVideos, countVideos, isBannedTag } from "@/lib/content";
 import { SORT_OPTIONS, parseSort } from "@/lib/sort-options";
@@ -439,7 +440,10 @@ export default async function SeriesPage({ params, searchParams }: Props) {
                   Premium 4.99€/mo →
                 </span>
               </Link>
-              <BlacklistFilter videos={videos} />
+              <BlacklistFilter
+                videos={videos}
+                interleave={buildGridInterleave("series")}
+              />
 
               {/* AI bottom — Candy.AI after the grid, before pagination. */}
               <div style={{ margin: "24px auto" }}>

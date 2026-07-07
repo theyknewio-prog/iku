@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
+import { buildGridInterleave } from "@/components/GridAds";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
 import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
@@ -459,7 +460,10 @@ export default async function CharacterPage({ params, searchParams }: Props) {
                   Premium 4.99€/mo →
                 </span>
               </Link>
-              <BlacklistFilter videos={videos} />
+              <BlacklistFilter
+                videos={videos}
+                interleave={buildGridInterleave("character")}
+              />
 
               {/* AI bottom — Joi after the grid, before pagination. */}
               <div style={{ margin: "24px auto" }}>

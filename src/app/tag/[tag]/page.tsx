@@ -8,6 +8,7 @@ import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 import { Pagination } from "@/components/Pagination";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
+import { buildGridInterleave } from "@/components/GridAds";
 import { notFound } from "next/navigation";
 import { getVideos, countVideos, isBannedTag } from "@/lib/content";
 import { SORT_OPTIONS, parseSort } from "@/lib/sort-options";
@@ -310,7 +311,10 @@ export default async function TagPage({ params, searchParams }: Props) {
                   Premium 4.99€/mo →
                 </span>
               </Link>
-              <BlacklistFilter videos={videos} />
+              <BlacklistFilter
+                videos={videos}
+                interleave={buildGridInterleave("tag")}
+              />
 
               {/* AI bottom — Candy.AI after the grid, before pagination. */}
               <div style={{ margin: "24px auto" }}>

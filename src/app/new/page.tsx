@@ -9,6 +9,20 @@ import { SortTabs, parseSort } from "@/components/SortTabs";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
 import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
+import { NativeOfferCard } from "@/components/NativeOfferCard";
+import { GridAdBreak } from "@/components/GridAdBreak";
+
+const NATIVE_AT: Record<number, string> = {
+  6: "swipey",
+  13: "joi-ai",
+  21: "candy-ai",
+  29: "meet",
+  37: "swipey",
+};
+const BREAK_AT: Record<number, string> = {
+  17: "joi-ai",
+  33: "candy-ai",
+};
 
 export const metadata: Metadata = {
   title: "New Hentai Videos — Latest Uploads | iku.gg",
@@ -128,73 +142,39 @@ export default async function NewPage({ searchParams }: Props) {
               </div>
               <div className="video-grid">
                 {videos.map((video: Video, i) => {
-                  if (i === 12) {
-                    return (
-                      <React.Fragment key={`ad-${video.id}`}>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <AdRotationBanner slug="joi-ai" surface="new-grid" />
-                        </div>
-                        <ThumbnailCard
-                          video={video}
-                          priority={false}
-                          lazy={true}
-                        />
-                      </React.Fragment>
-                    );
-                  }
-                  if (i === 28) {
-                    return (
-                      <React.Fragment key={`ad-mid-${video.id}`}>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <AdRotationBanner
-                            slug="candy-ai"
-                            surface="new-grid-2"
-                          />
-                        </div>
-                        <ThumbnailCard
-                          video={video}
-                          priority={false}
-                          lazy={true}
-                        />
-                      </React.Fragment>
-                    );
-                  }
+                  const native = NATIVE_AT[i];
+                  const gridBreak = BREAK_AT[i];
                   return (
-                    <ThumbnailCard
-                      key={video.id}
-                      video={video}
-                      priority={i < 4}
-                      lazy={i >= 4}
-                    />
+                    <React.Fragment key={video.id}>
+                      {native && (
+                        <NativeOfferCard
+                          slug={native}
+                          surface={`new-native-${i}`}
+                        />
+                      )}
+                      {gridBreak && (
+                        <GridAdBreak>
+                          <AdRotationBanner
+                            slug={gridBreak}
+                            surface={`new-break-${i}`}
+                          />
+                        </GridAdBreak>
+                      )}
+                      <ThumbnailCard
+                        video={video}
+                        priority={i < 4}
+                        lazy={i >= 4}
+                      />
+                    </React.Fragment>
                   );
                 })}
               </div>
 
-              {/* AI bottom — last-chance click after the grid. */}
+              {/* AI bottom — last-chance click after the grid. (Ex-mur de 3
+                  dissous 2026-07-08: swipey remonté en grid break, Soulkyn
+                  déplacé après la pagination.) */}
               <div style={{ margin: "24px auto" }}>
                 <AdRotationBanner slug="candy-ai" surface="new-bottom" />
-              </div>
-
-              {/* Soulkyn vertical — direct affiliate, mobile-first 4:5. */}
-              <div style={{ margin: "24px auto" }}>
-                <SoulkynVerticalAd surface="new-bottom-vertical" />
-              </div>
-
-              {/* Swipey 300x250 — third brand in rotation. */}
-              <div style={{ margin: "24px auto" }}>
-                <AdRotationBanner slug="swipey" surface="new-bottom-swipey" />
               </div>
             </>
           )}
@@ -209,6 +189,12 @@ export default async function NewPage({ searchParams }: Props) {
                   totalPages={totalPages}
                 />
               </Suspense>
+            </div>
+          )}
+
+          {videos.length > 0 && (
+            <div style={{ margin: "0 auto 32px" }}>
+              <SoulkynVerticalAd surface="new-bottom-vertical" />
             </div>
           )}
         </div>

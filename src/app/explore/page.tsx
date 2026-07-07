@@ -7,6 +7,7 @@ import React from "react";
 import { AgeGate } from "@/components/AgeGate";
 import { isLikelyBot } from "@/lib/is-bot";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
+import { buildGridInterleave } from "@/components/GridAds";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
 import { AdZoneClient } from "@/components/AdZoneClient";
@@ -414,7 +415,10 @@ export default async function ExplorePage(props: {
             </div>
 
             {/* Video grid */}
-            <BlacklistFilter videos={videos} />
+            <BlacklistFilter
+                videos={videos}
+                interleave={buildGridInterleave("explore")}
+              />
 
             {/* ExoClick native — CPM/CPC display after the grid (lazy). */}
             <AdZoneClient zoneId={AD_ZONES.nativeGrid} size="native" lazy />

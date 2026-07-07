@@ -9,6 +9,20 @@ import { SortTabs, parseSort } from "@/components/SortTabs";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
 import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
+import { NativeOfferCard } from "@/components/NativeOfferCard";
+import { GridAdBreak } from "@/components/GridAdBreak";
+
+const NATIVE_AT: Record<number, string> = {
+  6: "candy-ai",
+  13: "swipey",
+  21: "joi-ai",
+  29: "meet",
+  37: "candy-ai",
+};
+const BREAK_AT: Record<number, string> = {
+  17: "candy-ai",
+  33: "swipey",
+};
 
 export const metadata: Metadata = {
   title: "Trending Hentai Videos 2026 | iku.gg",
@@ -111,88 +125,52 @@ export default async function TrendingPage(props: {
               </div>
               <div className="video-grid">
                 {videos.map((video: Video, i) => {
-                  if (i === 12) {
-                    return (
-                      <React.Fragment key={`ad-${video.id}`}>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <AdRotationBanner
-                            slug="joi-ai"
-                            surface="trending-grid"
-                          />
-                        </div>
-                        <ThumbnailCard
-                          video={video}
-                          rank={i + 1}
-                          priority={false}
-                          lazy={true}
-                        />
-                      </React.Fragment>
-                    );
-                  }
-                  if (i === 28) {
-                    return (
-                      <React.Fragment key={`ad-mid-${video.id}`}>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <AdRotationBanner
-                            slug="candy-ai"
-                            surface="trending-grid-2"
-                          />
-                        </div>
-                        <ThumbnailCard
-                          video={video}
-                          rank={i + 1}
-                          priority={false}
-                          lazy={true}
-                        />
-                      </React.Fragment>
-                    );
-                  }
+                  const native = NATIVE_AT[i];
+                  const gridBreak = BREAK_AT[i];
                   return (
-                    <ThumbnailCard
-                      key={video.id}
-                      video={video}
-                      rank={i + 1}
-                      priority={i < 4}
-                      lazy={i >= 4}
-                    />
+                    <React.Fragment key={video.id}>
+                      {native && (
+                        <NativeOfferCard
+                          slug={native}
+                          surface={`trending-native-${i}`}
+                        />
+                      )}
+                      {gridBreak && (
+                        <GridAdBreak>
+                          <AdRotationBanner
+                            slug={gridBreak}
+                            surface={`trending-break-${i}`}
+                          />
+                        </GridAdBreak>
+                      )}
+                      <ThumbnailCard
+                        video={video}
+                        rank={i + 1}
+                        priority={i < 4}
+                        lazy={i >= 4}
+                      />
+                    </React.Fragment>
                   );
                 })}
               </div>
 
-              {/* AI bottom — last-chance click after the grid. */}
+              {/* AI bottom — last-chance click after the grid. (Ex-mur de 3
+                  dissous 2026-07-08: swipey remonté en grid break, Soulkyn
+                  déplacé après SignupCTA — contenu entre chaque pub.) */}
               <div style={{ margin: "24px auto" }}>
                 <AdRotationBanner slug="candy-ai" surface="trending-bottom" />
-              </div>
-
-              {/* Soulkyn vertical — direct affiliate variation. */}
-              <div style={{ margin: "24px auto" }}>
-                <SoulkynVerticalAd surface="trending-bottom-vertical" />
-              </div>
-
-              {/* Swipey 300x250 — third brand in rotation, cuts ad blindness. */}
-              <div style={{ margin: "24px auto" }}>
-                <AdRotationBanner
-                  slug="swipey"
-                  surface="trending-bottom-swipey"
-                />
               </div>
             </>
           )}
 
           {/* ── Signup CTA (shown only for anonymous visitors) ───── */}
           <SignupCTA placement="trending" />
+
+          {videos.length > 0 && (
+            <div style={{ margin: "24px auto" }}>
+              <SoulkynVerticalAd surface="trending-bottom-vertical" />
+            </div>
+          )}
 
           {/* ── Bottom CTA ────────────────────────────────────── */}
           <div
