@@ -192,7 +192,14 @@ export function middleware(request: NextRequest) {
   // documented ExoClick serving domains — whitelist them all up front.
   const EXOCLICK_HOSTS =
     "https://a.magsrv.com https://magsrv.com https://*.magsrv.com https://exosrv.com https://*.exosrv.com https://exoclick.com https://*.exoclick.com https://afcdn.net https://*.afcdn.net https://bkcdn.net https://*.bkcdn.net https://marzaent.com https://*.marzaent.com https://exdynsrv.com https://*.exdynsrv.com https://wpncdn.com https://*.wpncdn.com";
-  const AD_SCRIPT = `${HILLTOPADS_HOSTS} ${CR_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS}`;
+  // Adsterra (units reactivated 2026-07-07: Popunder_1 28986138 + SocialBar_1
+  // 28986140). Direct-link domain is effectivecpmnetwork.com; their script
+  // tags serve from highperformanceformat / effectiveratecpm /
+  // profitableratecpm shards. Both bare + wildcard (wildcards miss the apex).
+  // Re-check live console after wiring each unit — Adsterra rotates shards.
+  const ADSTERRA_HOSTS =
+    "https://effectivecpmnetwork.com https://*.effectivecpmnetwork.com https://highperformanceformat.com https://*.highperformanceformat.com https://effectiveratecpm.com https://*.effectiveratecpm.com https://profitableratecpm.com https://*.profitableratecpm.com";
+  const AD_SCRIPT = `${HILLTOPADS_HOSTS} ${CR_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS} ${ADSTERRA_HOSTS}`;
 
   // `'unsafe-inline'` + `'unsafe-eval'` kept for inline JSON-LD scripts
   // and React dev tooling. Tighten later with hash-based CSP.
@@ -201,10 +208,10 @@ export function middleware(request: NextRequest) {
     `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${ANALYTICS} ${AD_SCRIPT} https://static.cloudflareinsights.com https://*.cloudflareinsights.com`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
-    `img-src 'self' data: blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${CR_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS} https://mc.yandex.ru https://mc.yandex.com`,
-    `media-src 'self' blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${HILLTOPADS_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS}`,
+    `img-src 'self' data: blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${CR_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS} ${ADSTERRA_HOSTS} https://mc.yandex.ru https://mc.yandex.com`,
+    `media-src 'self' blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${HILLTOPADS_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS} ${ADSTERRA_HOSTS}`,
     `connect-src 'self' ${ANALYTICS} ${INFRA} ${VIDEO_HOSTS_HTTPS} ${AD_SCRIPT} wss://mc.yandex.ru wss://mc.yandex.com`,
-    `frame-src 'self' ${HILLTOPADS_HOSTS} ${CR_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS}`,
+    `frame-src 'self' ${HILLTOPADS_HOSTS} ${CR_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS} ${ADSTERRA_HOSTS}`,
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
