@@ -40,30 +40,6 @@ function IconHeart({ filled }: { filled: boolean }) {
   );
 }
 
-function IconBookmark({ filled }: { filled: boolean }) {
-  return (
-    <svg
-      width="28"
-      height="28"
-      viewBox="0 0 24 24"
-      fill={filled ? "#f5c518" : "none"}
-      stroke={filled ? "#f5c518" : "#fff"}
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      style={{
-        filter: filled
-          ? "drop-shadow(0 0 8px rgba(245,197,24,0.85))"
-          : "drop-shadow(0 2px 6px rgba(0,0,0,0.7))",
-        transition: "fill 0.15s ease, filter 0.15s ease",
-      }}
-    >
-      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-    </svg>
-  );
-}
-
 function IconShare() {
   return (
     <svg
@@ -224,13 +200,15 @@ function ActionBtn({
       onClick={onClick}
       aria-label={ariaLabel}
       aria-pressed={active}
-      className={`feed-action${active ? " feed-action--active" : ""}${animating ? " feed-action--animating" : ""}`}
+      className={`feed-action${count !== undefined ? " feed-action--hero" : ""}${active ? " feed-action--active" : ""}${animating ? " feed-action--animating" : ""}`}
     >
       <span className="feed-action__circle">{children}</span>
       {count !== undefined && (
         <span className="feed-action__count">{count}</span>
       )}
-      {label && <span className="feed-action__label">{label}</span>}
+      {label && count === undefined && (
+        <span className="feed-action__label">{label}</span>
+      )}
     </button>
   );
 }
@@ -270,8 +248,6 @@ export function VideoCard({
   // "saves" column without changing this surface.
   const [liked, setLiked] = useState(() => isFavorite(video.id));
   const [likeAnimating, setLikeAnimating] = useState(false);
-  const [saved, setSaved] = useState(() => isFavorite(video.id));
-  const [saveAnimating, setSaveAnimating] = useState(false);
   // Per-card guard against re-firing video_view events on every mount/active
   // cycle. Reset when the card unmounts so a user who actually re-opens the
   // feed later still gets a fresh view event.
@@ -496,13 +472,10 @@ export function VideoCard({
       if (mode === "add" && liked) return true;
       const next = toggleFavorite(favoriteEntry());
       setLiked(next);
-      setSaved(next);
       if (next) {
         setLikeAnimating(true);
-        setSaveAnimating(true);
         setTimeout(() => {
           setLikeAnimating(false);
-          setSaveAnimating(false);
         }, 350);
       }
       return next;
@@ -686,6 +659,18 @@ export function VideoCard({
       {/* Inject keyframe animations once */}
       <style>{HEART_BURST_STYLES}</style>
 
+      {/* Blurred backdrop — fills the letterbox bars behind a contained
+          video (varied hentai aspect ratios) with a scaled, blurred copy of
+          the thumbnail. Kills the dead-black gutters that made the feed feel
+          empty. Standard RedGifs / modern-shorts treatment. */}
+      {video.thumbnail && shouldLoad && (
+        <div
+          className="feed-backdrop"
+          aria-hidden="true"
+          style={{ backgroundImage: `url("${video.thumbnail}")` }}
+        />
+      )}
+
       {/* Poster + spinner while loading */}
       {!loaded && isActive && (
         <>
@@ -703,7 +688,7 @@ export function VideoCard({
                 height: "100%",
                 objectFit: "contain",
                 zIndex: 5,
-                background: "#000",
+                background: "transparent",
               }}
             />
           )}
@@ -736,7 +721,9 @@ export function VideoCard({
             width: "100%",
             height: "100%",
             objectFit: "contain",
-            background: "#000",
+            background: "transparent",
+            position: "relative",
+            zIndex: 1,
           }}
           onLoadedData={() => setLoaded(true)}
           onTimeUpdate={handleTimeUpdate}
@@ -846,20 +833,6 @@ export function VideoCard({
           active={liked}
         >
           <IconHeart filled={liked} />
-        </ActionBtn>
-
-        {/* Bookmark / Save — shares the same favorite store */}
-        <ActionBtn
-          onClick={(e) => {
-            e.stopPropagation();
-            applyFavorite("toggle");
-          }}
-          ariaLabel={saved ? "Unsave" : "Save"}
-          label="Save"
-          animating={saveAnimating}
-          active={saved}
-        >
-          <IconBookmark filled={saved} />
         </ActionBtn>
 
         {/* Share */}

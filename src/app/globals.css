@@ -760,20 +760,36 @@ body {
   filter: drop-shadow(0 0 6px rgba(255, 32, 128, 0.8));
 }
 
+/* Blurred backdrop fill — sits behind the contained <video>, scaled to
+   cover the whole item so letterbox bars are filled with a dim, blurred
+   copy of the poster instead of dead black. */
+.feed-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(28px) brightness(0.42) saturate(1.1);
+  transform: scale(1.15); /* hide the blurred edge bleed */
+  pointer-events: none;
+}
+
 /* ──────────────────────────────────────────────────────────────
-   Shorts/feed action rail v2
-   Mobile-first TikTok style + desktop upgrade with larger targets,
-   hover states, and a subtle translucent panel.
+   Shorts/feed action rail v2 — RedGifs-style: bottom-anchored, tight
+   vertical stack of glassy circular actions on the right edge.
    ────────────────────────────────────────────────────────────── */
 .feed-actions-rail {
   position: absolute;
-  right: 12px;
-  bottom: max(110px, calc(env(safe-area-inset-bottom) + 90px));
+  right: 10px;
+  /* Anchor to bottom, sitting just above the title/tags + progress bar.
+     No longer spread across full height (the heart used to float alone in
+     the black top gutter — the "dégueu" the owner flagged 2026-07-07). */
+  bottom: max(96px, calc(env(safe-area-inset-bottom) + 84px));
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
-  z-index: 10;
+  gap: 14px;
+  z-index: 12;
 }
 @media (min-width: 1024px) {
   /* Desktop: push the rail further out, add a subtle backdrop panel to
@@ -812,11 +828,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(20, 16, 28, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   transition:
     transform 180ms var(--v2-ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1)),
     background 180ms,
@@ -885,17 +903,28 @@ body {
 }
 
 .feed-action__count {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   color: #fff;
   letter-spacing: 0.01em;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.85);
   line-height: 1;
 }
 @media (min-width: 1024px) {
   .feed-action__count {
     font-size: 13px;
   }
+}
+
+/* Hero action (Like) — slightly larger circle so the primary action reads
+   as the anchor of the rail, RedGifs-style. */
+.feed-action--hero .feed-action__circle {
+  width: 52px;
+  height: 52px;
+}
+.feed-action--hero .feed-action__circle svg {
+  width: 28px;
+  height: 28px;
 }
 
 .feed-action__label {
