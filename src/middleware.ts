@@ -49,83 +49,17 @@ export function middleware(request: NextRequest) {
     );
   }
 
-  // ─── Video source CDNs ─────────────────────────────────────────────
-  // All sources our scrapers + player consume. Each gets the bare domain
-  // and the wildcard form because CSP wildcards do not match the apex.
-  const VIDEO_HOSTS = [
-    "cdn.donmai.us",
-    "danbooru.donmai.us",
-    "gelbooru.com",
-    "*.gelbooru.com",
-    "rule34.xxx",
-    "*.rule34.xxx",
-    "rule34video.com",
-    "*.rule34video.com",
-    "hgasm1.com",
-    "hgasm2.com",
-    "hgasm3.com",
-    "hgasm4.com",
-    "hgasm5.com",
-    "hgasm6.com",
-    "hgasm7.com",
-    "hgasm8.com",
-    "hgasm9.com",
-    "hentaicity.com",
-    "*.hentaicity.com",
-    "eporner.com",
-    "*.eporner.com",
-    "sfmcompile.club",
-    "*.sfmcompile.club",
-    "3dhentai.tube",
-    "*.3dhentai.tube",
-    "hentaiplay.net",
-    "*.hentaiplay.net",
-    "hentaiplanet.info",
-    "*.hentaiplanet.info",
-    "hentaisea.com",
-    "*.hentaisea.com",
-    "hentaibros.net",
-    "*.hentaibros.net",
-    "hentaifreak.org",
-    "*.hentaifreak.org",
-    "media.hentaifreak.org",
-    "tube.hentaistream.com",
-    "*.hentaistream.com",
-    "i0.wp.com",
-    "i1.wp.com",
-    "i2.wp.com",
-    "hentaicloud.com",
-    "*.hentaicloud.com",
-    "www.hentaicloud.com",
-    "vdownload.hembed.com",
-    "*.hembed.com",
-    "hentaimama.io",
-    "hentai.tv",
-    "animeidhentai.com",
-    "watchhentai.net",
-    "hentaiworld.tv",
-    "hentaigasm.com",
-    "gdvid.info",
-    "*.gdvid.info",
-    "javprovider.com",
-    "*.javprovider.com",
-    "na-01.javprovider.com",
-    "pornobuono.com",
-    "*.pornobuono.com",
-    "vintageporno.stream",
-    "*.vintageporno.stream",
-    "cdn.vintageporno.stream",
-    "streamhentai.org",
-    "*.streamhentai.org",
-    "cdn1.streamhentai.org",
-    "cdn3.streamhentai.org",
-    "*.ahcdn.com",
-    "ahcdn.com",
-  ];
-  const VIDEO_HOSTS_HTTPS = VIDEO_HOSTS.map((h) => `https://${h}`).join(" ");
-
-  // Our infra (CF Worker proxy, CDN, BunnyNet for hosted assets).
-  const INFRA = "https://*.workers.dev https://cdn.iku.gg https://*.b-cdn.net";
+  // ─── CSP strategy (2026-07-07) ─────────────────────────────────────
+  // script-src is the ONLY whitelist that meaningfully limits XSS impact,
+  // so it stays strict. img/media/connect/frame moved to scheme-wide
+  // `https:` because the exhaustive host lists (60+ video CDNs × 3
+  // directives + 5 ad networks × 5 directives) pushed the CSP header to
+  // 15.5KB — over the 16KB total-header limit of Node/most HTTP clients
+  // ("Header overflow"). The lists also broke silently every time an ad
+  // network rotated shards or a scraper added a CDN (5+ incidents:
+  // adsco.re:2087, klmmnd, portalfluently, btmnd, img4.gelbooru…).
+  // A scheme source matches any host and any port, so those failure
+  // classes are gone for non-script resources.
 
   // Analytics + push notifications (the only third-party scripts left).
   // Yandex Metrica (counter 109826109) added 2026-06-13 — feeds the
@@ -183,7 +117,7 @@ export function middleware(request: NextRequest) {
   // so the SDK never initialised (window.mondiad stayed undefined). Whitelist
   // the sync domains so the live zones can actually fill.
   const MONDIAD_HOSTS =
-    "https://ss.mrmnd.com https://*.mrmnd.com https://mrmnd.com https://klmmnd.com https://*.klmmnd.com https://cckmnd.com https://*.cckmnd.com https://atmndx.com https://*.atmndx.com https://btmnd.com https://*.btmnd.com";
+    "https://*.mrmnd.com https://mrmnd.com https://klmmnd.com https://*.klmmnd.com https://cckmnd.com https://*.cckmnd.com https://atmndx.com https://*.atmndx.com https://btmnd.com https://*.btmnd.com";
   // ExoClick (re-lit 2026-07-03) — ad-provider.js from a.magsrv.com, creatives
   // and click-trackers rotate across magsrv/exosrv/exoclick, media on afcdn.
   // Both bare + wildcard variants (wildcards never cover the apex).
@@ -191,7 +125,7 @@ export function middleware(request: NextRequest) {
   // clickthrough frames from marzaent.com; exdynsrv/wpncdn are the other
   // documented ExoClick serving domains — whitelist them all up front.
   const EXOCLICK_HOSTS =
-    "https://a.magsrv.com https://magsrv.com https://*.magsrv.com https://exosrv.com https://*.exosrv.com https://exoclick.com https://*.exoclick.com https://afcdn.net https://*.afcdn.net https://bkcdn.net https://*.bkcdn.net https://marzaent.com https://*.marzaent.com https://exdynsrv.com https://*.exdynsrv.com https://wpncdn.com https://*.wpncdn.com";
+    "https://magsrv.com https://*.magsrv.com https://exosrv.com https://*.exosrv.com https://exoclick.com https://*.exoclick.com https://afcdn.net https://*.afcdn.net https://bkcdn.net https://*.bkcdn.net https://marzaent.com https://*.marzaent.com https://exdynsrv.com https://*.exdynsrv.com https://wpncdn.com https://*.wpncdn.com";
   // Adsterra (units reactivated 2026-07-07: Popunder_1 28986138 + SocialBar_1
   // 28986140). Direct-link domain is effectivecpmnetwork.com; their script
   // tags serve from highperformanceformat / effectiveratecpm /
@@ -212,10 +146,10 @@ export function middleware(request: NextRequest) {
     `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${ANALYTICS} ${AD_SCRIPT} https://static.cloudflareinsights.com https://*.cloudflareinsights.com`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
-    `img-src 'self' data: blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${CR_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS} ${ADSTERRA_HOSTS} https://mc.yandex.ru https://mc.yandex.com https://mc.yandex.com.tr`,
-    `media-src 'self' blob: ${INFRA} ${VIDEO_HOSTS_HTTPS} ${HILLTOPADS_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS} ${ADSTERRA_HOSTS}`,
-    `connect-src 'self' ${ANALYTICS} ${INFRA} ${VIDEO_HOSTS_HTTPS} ${AD_SCRIPT} wss://mc.yandex.ru wss://mc.yandex.com`,
-    `frame-src 'self' ${HILLTOPADS_HOSTS} ${CR_HOSTS} ${MONDIAD_HOSTS} ${EXOCLICK_HOSTS} ${ADSTERRA_HOSTS}`,
+    "img-src 'self' data: blob: https:",
+    "media-src 'self' blob: https:",
+    "connect-src 'self' https: wss:",
+    "frame-src 'self' https:",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
