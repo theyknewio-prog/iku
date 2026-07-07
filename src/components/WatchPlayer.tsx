@@ -1651,13 +1651,14 @@ export function WatchPlayer({
             opacity: controlsVisible && !ended ? 1 : 0,
             transform:
               controlsVisible && !ended ? "translateY(0)" : "translateY(6px)",
-            pointerEvents: controlsVisible && !ended ? "auto" : "none",
+            // The gradient wrapper must never eat taps: on small mobile
+            // players its 40px top padding reaches the video's center, so a
+            // center tap hit this div instead of the <video> and play/pause
+            // never toggled. Events pass through; only the button row below
+            // re-enables them.
+            pointerEvents: "none",
             zIndex: 5,
           }}
-          onMouseEnter={() => {
-            if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
-          }}
-          onMouseLeave={scheduleHide}
         >
           {/* Bottom controls row */}
           <div
@@ -1666,7 +1667,12 @@ export function WatchPlayer({
               alignItems: "center",
               gap: 2,
               minHeight: 36,
+              pointerEvents: controlsVisible && !ended ? "auto" : "none",
             }}
+            onMouseEnter={() => {
+              if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+            }}
+            onMouseLeave={scheduleHide}
           >
             {/* Play/Pause */}
             <ControlBtn onClick={togglePlay} label={playing ? "Pause" : "Play"}>
