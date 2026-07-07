@@ -6,6 +6,22 @@ import { getVideos, countVideos } from "@/lib/content";
 import { SORT_OPTIONS, parseSort } from "@/lib/sort-options";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
 import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
+import { NativeOfferCard } from "@/components/NativeOfferCard";
+import { GridAdBreak } from "@/components/GridAdBreak";
+
+// Native affiliate cards woven into the grid (index → offer slug) and
+// full-row network breaks (index → AdRotationBanner slug).
+const NATIVE_AT: Record<number, string> = {
+  6: "joi-ai",
+  13: "candy-ai",
+  21: "swipey",
+  29: "meet",
+  37: "joi-ai",
+};
+const BREAK_AT: Record<number, string> = {
+  17: "swipey",
+  33: "candy-ai",
+};
 import type { Video } from "@/types/video";
 import type { Metadata } from "next";
 
@@ -127,36 +143,32 @@ export default async function HentaiPage({ searchParams }: Props) {
               </div>
               <div className="video-grid">
                 {videos.map((video: Video, i) => {
-                  if (i === 12) {
-                    return (
-                      <React.Fragment key={`ad-${video.id}`}>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <AdRotationBanner
-                            slug="candy-ai"
-                            surface="page-hentai-grid"
-                          />
-                        </div>
-                        <ThumbnailCard
-                          video={video}
-                          priority={false}
-                          lazy={true}
-                        />
-                      </React.Fragment>
-                    );
-                  }
+                  // Natives in-grid (1/8 cards) + full-row network breaks
+                  // every ~2 screens — tube-standard density, zero walls.
+                  const native = NATIVE_AT[i];
+                  const gridBreak = BREAK_AT[i];
                   return (
-                    <ThumbnailCard
-                      key={video.id}
-                      video={video}
-                      priority={i < 4}
-                      lazy={i >= 4}
-                    />
+                    <React.Fragment key={video.id}>
+                      {native && (
+                        <NativeOfferCard
+                          slug={native}
+                          surface={`hentai-native-${i}`}
+                        />
+                      )}
+                      {gridBreak && (
+                        <GridAdBreak>
+                          <AdRotationBanner
+                            slug={gridBreak}
+                            surface={`page-hentai-break-${i}`}
+                          />
+                        </GridAdBreak>
+                      )}
+                      <ThumbnailCard
+                        video={video}
+                        priority={i < 4}
+                        lazy={i >= 4}
+                      />
+                    </React.Fragment>
                   );
                 })}
               </div>
@@ -176,23 +188,13 @@ export default async function HentaiPage({ searchParams }: Props) {
             </div>
           )}
 
-          {/* AI #2 — bottom of page, last-chance click before bounce. */}
+          {/* AI #2 — bottom of page, last-chance click before bounce.
+              (Ex-mur de 3 dissous 2026-07-08: swipey remonté en grid break,
+              Soulkyn déplacé après le bloc SEO — contenu entre chaque pub.) */}
           {videos.length > 0 && (
             <div style={{ margin: "16px auto 32px" }}>
               <AdRotationBanner slug="joi-ai" surface="page-hentai-bottom" />
             </div>
-          )}
-
-          {/* Swipey 300x250 + Soulkyn vertical — variety stack. */}
-          {videos.length > 0 && (
-            <>
-              <div style={{ margin: "16px auto" }}>
-                <AdRotationBanner slug="swipey" surface="page-hentai-swipey" />
-              </div>
-              <div style={{ margin: "16px auto 32px" }}>
-                <SoulkynVerticalAd surface="page-hentai-vertical" />
-              </div>
-            </>
           )}
 
           {/* ── SEO footer block ─────────────────────────────── */}
@@ -231,6 +233,12 @@ export default async function HentaiPage({ searchParams }: Props) {
               <Link href="/feed">Shorts feed</Link> for quick clips.
             </p>
           </section>
+
+          {videos.length > 0 && (
+            <div style={{ margin: "24px auto 32px" }}>
+              <SoulkynVerticalAd surface="page-hentai-vertical" />
+            </div>
+          )}
         </div>
       </main>
     </div>
