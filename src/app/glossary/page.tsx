@@ -6,9 +6,9 @@ import { AdRotationBanner } from "@/components/AdJoiBanner";
 import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
 
 export const metadata: Metadata = {
-  title: "Hentai Glossary — 20+ Terms Explained | iku.gg",
+  title: "Hentai Glossary — 60+ Terms Explained | iku.gg",
   description:
-    "Complete hentai glossary with 20+ terms explained. Understand ecchi, NTR, ahegao, vanilla, futanari, and every tag you see on iku.gg.",
+    "Complete hentai glossary with 60+ terms explained. Understand ecchi, NTR, ahegao, vanilla, futanari, and every tag you see on iku.gg.",
   alternates: { canonical: "https://iku.gg/glossary" },
   robots: { index: true, follow: true },
 };
@@ -62,12 +62,28 @@ export default function GlossaryPage() {
 
           {/* Terms grouped by letter */}
           <div className="glossary-sections">
-            {letters.map((letter) => (
+            {letters.map((letter, li) => (
               <section
                 key={letter}
                 id={`letter-${letter}`}
                 className="glossary-letter-section"
               >
+                {/* Pub entre sections de lettres (1 toutes les 2 lettres,
+                    brands rotées, 1/3 en vertical Soulkyn). */}
+                {li > 0 &&
+                  li % 2 === 1 &&
+                  (li % 6 === 5 ? (
+                    <div style={{ margin: "8px auto 24px" }}>
+                      <SoulkynVerticalAd surface={`glossary-sec-${li}`} />
+                    </div>
+                  ) : (
+                    <div style={{ margin: "8px auto 24px" }}>
+                      <AdRotationBanner
+                        slug={li % 4 === 1 ? "candy-ai" : "swipey"}
+                        surface={`glossary-sec-${li}`}
+                      />
+                    </div>
+                  ))}
                 <h2 className="glossary-letter-heading">{letter}</h2>
                 <div className="glossary-grid">
                   {byLetter[letter].map((term) => (

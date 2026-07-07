@@ -170,6 +170,12 @@ async function _getThumbnailForTag(tag: string): Promise<string> {
     if (rows[0].source === "danbooru" && raw.includes("/180x180/")) {
       return raw.replace("/180x180/", "/720x720/").replace(/\.jpg$/, ".webp");
     }
+    // Gelbooru est hotlink-protégé (Referer requis) → ORB/naturalWidth 0
+    // côté browser. Les covers séries/characters sortaient l'URL brute de
+    // la DB (audit 2026-07-08). Wrap /api/proxy comme les cards vidéo.
+    if (/^https?:\/\/([a-z0-9-]+\.)*gelbooru\.com\//i.test(raw)) {
+      return `/api/proxy?url=${encodeURIComponent(raw)}`;
+    }
     return raw;
   } catch {
     return "";

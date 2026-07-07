@@ -9,7 +9,6 @@ import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { getNonce } from "@/lib/csp-nonce";
 import { PushNotifications } from "@/components/PushNotifications";
 import { AdScript } from "@/components/AdScript";
-import { AdsterraSocialBar } from "@/components/AdsterraSocialBar";
 
 // Fonts: Nunito (primary body) + Righteous (display/headings).
 // Previously we also loaded Inter, Poppins, and Quicksand — they were
@@ -198,10 +197,11 @@ export default async function RootLayout({
               (overlay plein écran) et AdsterraPopunder (window.open, eCPM
               $0.469 — meilleur earner mesuré, sacrifié sciemment) retirés.
               La stratégie bascule sur display dense + natives in-grid. */}
-          {/* 2026-07-07 — MondiadInPagePush swapped out for Adsterra
-              SocialBar_1 (28986140): same floating-overlay slot, Mondiad
-              push earned $0.005 all-time vs Social Bar CTR 8.77%. */}
-          <AdsterraSocialBar />
+          {/* 2026-07-08 — AdsterraSocialBar retirée (audit v2): son
+              container z-index max recouvrait la topbar quand elle fill
+              (taps logo/recherche volés) ET son script 2e étage
+              (cdn.redgarto.com) était bloqué CSP = surface semi-morte.
+              L'inventaire vit dans les natives in-grid + display. */}
           <PushNotifications />
           <AppShell footer={<MegaFooter />}>{children}</AppShell>
         </SessionProviderClient>

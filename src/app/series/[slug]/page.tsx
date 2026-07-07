@@ -292,7 +292,9 @@ export default async function SeriesPage({ params, searchParams }: Props) {
             </nav>
             <p className="tag-hero__label">Hentai Series</p>
             <h1 className="tag-hero__title">
-              {series.name} Hentai — Best Videos &amp; Fan Animation
+              {/* Template literal: le compilateur JSX strippe l'espace
+                  inline après {series.name} (prouvé au build). */}
+              {`${series.name} Hentai — Best Videos & Fan Animation`}
             </h1>
 
             <div className="tag-hero__stats">

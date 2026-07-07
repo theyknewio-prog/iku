@@ -293,7 +293,9 @@ export default async function CharacterPage({ params, searchParams }: Props) {
             </nav>
             <p className="tag-hero__label">Hentai Character</p>
             <h1 className="tag-hero__title">
-              {character.name} Hentai — Best Videos &amp; Fan Animation
+              {/* {" "} explicite: le compilateur JSX strippe l'espace inline
+                  ici (prouvé au build: children:[name,"Hentai — ..."]) */}
+              {`${character.name} Hentai — Best Videos & Fan Animation`}
             </h1>
 
             {series && (

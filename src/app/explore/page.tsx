@@ -416,9 +416,9 @@ export default async function ExplorePage(props: {
 
             {/* Video grid */}
             <BlacklistFilter
-                videos={videos}
-                interleave={buildGridInterleave("explore")}
-              />
+              videos={videos}
+              interleave={buildGridInterleave("explore")}
+            />
 
             {/* ExoClick native — CPM/CPC display after the grid (lazy). */}
             <AdZoneClient zoneId={AD_ZONES.nativeGrid} size="native" lazy />

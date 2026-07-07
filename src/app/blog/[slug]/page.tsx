@@ -10,8 +10,8 @@ import { GLOSSARY } from "@/data/glossary";
 import { getInternalLinksForArticle } from "@/data/blog-internal-links";
 import { getNonce } from "@/lib/csp-nonce";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
-import { AdRotationBanner } from "@/components/AdJoiBanner";
-import { SoulkynVerticalAd } from "@/components/SoulkynVerticalAd";
+import { ArticleBodyWithAds } from "@/components/ArticleBodyWithAds";
+import { NativeOfferCard } from "@/components/NativeOfferCard";
 
 interface BlogPostProps {
   params: Promise<{ slug: string }>;
@@ -191,40 +191,15 @@ export default async function BlogPostPage({ params }: BlogPostProps) {
                   </div>
                 </header>
 
-                {/* Article body — content is from static data files (src/data/blog.ts).
-                   If this ever becomes dynamic/user-generated, add a proper HTML
-                   sanitizer like DOMPurify. The basic strip below is a safety net. */}
-                <div
-                  className="blog-post-body"
-                  dangerouslySetInnerHTML={{
-                    __html: article.content
-                      .replace(
-                        /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-                        "",
-                      )
-                      .replace(/on\w+\s*=\s*["'][^"']*["']/gi, "")
-                      .replace(/javascript:/gi, ""),
-                  }}
-                />
+                {/* Article body avec slots in-content tous les 4 § —
+                    sanitization identique déplacée dans le composant.
+                    (Ex-mur post-body Hilltop+candy+soulkyn dissous
+                    2026-07-08 — l'inventaire vit DANS le corps.) */}
+                <ArticleBodyWithAds html={article.content} />
 
-                {/* Article-body ad — HilltopAds 300x250 between body
-                    and the cross-link sections. Reader is mid-engagement
-                    here, ad-blindness lower than top-of-page. */}
+                {/* HilltopAds 300x250 — fin de lecture, avant cross-links. */}
                 <div style={{ margin: "32px auto" }}>
                   <HilltopAdsBanner />
-                </div>
-
-                {/* AI affiliate ad — Candy-AI 300x250, second mid-article slot */}
-                <div style={{ margin: "16px auto 8px" }}>
-                  <AdRotationBanner
-                    slug="candy-ai"
-                    surface="blog-article-mid"
-                  />
-                </div>
-
-                {/* Soulkyn vertical 4:5 — third brand mid-article. */}
-                <div style={{ margin: "8px auto 32px" }}>
-                  <SoulkynVerticalAd surface="blog-article-vertical" />
                 </div>
 
                 {/* Glossary cross-links */}
@@ -252,6 +227,10 @@ export default async function BlogPostPage({ params }: BlogPostProps) {
                           </span>
                         </Link>
                       ))}
+                      <NativeOfferCard
+                        slug="candy-ai"
+                        surface="blog-glossary-grid"
+                      />
                     </div>
                   </section>
                 )}
