@@ -11,6 +11,7 @@ import { PushNotifications } from "@/components/PushNotifications";
 import { AdScript } from "@/components/AdScript";
 import { MondiadInterstitial } from "@/components/MondiadInterstitial";
 import { MondiadInPagePush } from "@/components/MondiadInPagePush";
+import { AdsterraPopunder } from "@/components/AdsterraPopunder";
 
 // Fonts: Nunito (primary body) + Righteous (display/headings).
 // Previously we also loaded Inter, Poppins, and Quicksand — they were
@@ -200,6 +201,10 @@ export default async function RootLayout({
               + 1.5s delay (avoids blocking LCP). In-page push runs globally. */}
           <MondiadInterstitial />
           <MondiadInPagePush />
+          {/* Adsterra Popunder_1 (28986138) — best eCPM ever measured on
+              this traffic ($0.469). Fires on first non-affiliate click,
+              capped 1/12h via localStorage, skips Pro + /feed. */}
+          <AdsterraPopunder />
           <PushNotifications />
           <AppShell footer={<MegaFooter />}>{children}</AppShell>
         </SessionProviderClient>
