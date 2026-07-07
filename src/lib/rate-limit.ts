@@ -116,14 +116,23 @@ export function createRateLimiter(opts: RateLimitOptions): RateLimiter {
 }
 
 /**
- * Extract the client IP from a request, preferring Traefik's `x-real-ip`
- * header (non-spoofable) and falling back to the last entry of
- * `x-forwarded-for` (also non-spoofable — the last hop is the one closest
- * to our reverse proxy).
+ * Extract the client IP from a request.
  *
- * NEVER use `x-forwarded-for[0]` — the first entry is user-controllable.
+ * We sit behind Cloudflare → Traefik. Cloudflare sets `cf-connecting-ip` to
+ * the REAL client IP (non-spoofable — CF overwrites any client-supplied
+ * value). This MUST come first: behind CF, `x-real-ip` is the Cloudflare
+ * edge IP (varies per connection), so every rate limiter keyed on it treated
+ * all traffic as a handful of CF IPs and never fired — 65 concurrent /api/feed
+ * hits returned 0×429 (audit 2026-07-07).
+ *
+ * Fallbacks for direct-origin hits (health checks, non-CF paths): `x-real-ip`
+ * (Traefik), then the LAST entry of `x-forwarded-for` (closest to our proxy,
+ * non-spoofable). NEVER use `x-forwarded-for[0]` — the first entry is
+ * user-controllable.
  */
 export function getClientIp(request: Request): string {
+  const cf = request.headers.get("cf-connecting-ip");
+  if (cf) return cf;
   const real = request.headers.get("x-real-ip");
   if (real) return real;
   const fwd = request.headers.get("x-forwarded-for");

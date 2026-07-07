@@ -235,14 +235,28 @@ export const VERTICAL_SOURCES = {
 } as const;
 
 /** Map a database row to a Video object */
+/**
+ * Gelbooru's thumbnail CDN is hotlink-protected (needs a gelbooru.com
+ * Referer). Bare `*.gelbooru.com` thumbnail URLs stored in the DB render as
+ * grey/broken cards (ERR_BLOCKED_BY_ORB). Route them through /api/proxy,
+ * which sends the Referer server-side. Already-proxied URLs pass through.
+ */
+function proxyGelbooruThumb(raw: string): string {
+  if (!raw || raw.startsWith("/api/proxy")) return raw;
+  if (/^https:\/\/([a-z0-9-]+\.)?gelbooru\.com\//i.test(raw)) {
+    return `/api/proxy?url=${encodeURIComponent(raw)}`;
+  }
+  return raw;
+}
+
 function rowToVideo(row: Record<string, unknown>): Video {
   return {
     id: row.source_id as number,
     pk: typeof row.pk === "number" ? row.pk : undefined,
     slug: row.slug as string,
     url: row.url as string,
-    thumbnail: row.thumbnail as string,
-    preview: row.preview as string,
+    thumbnail: proxyGelbooruThumb(row.thumbnail as string),
+    preview: proxyGelbooruThumb(row.preview as string),
     score: row.score as number,
     favorites: row.favorites as number,
     tags: (row.tags as string[]) || [],
