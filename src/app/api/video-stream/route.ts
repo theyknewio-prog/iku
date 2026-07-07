@@ -322,18 +322,27 @@ export async function GET(request: NextRequest) {
   // Banned-content + dead-row guard (B3). Must run BEFORE any outbound
   // fetch so we never become an anonymous proxy for content we didn't
   // ingest + validate. Runs exactly one indexed DB lookup.
-  const allowCheck = await checkPageUrlAllowed(pageUrl);
-  if (allowCheck === "banned") {
-    return NextResponse.json(
-      { error: "content not available" },
-      { status: 403 },
-    );
-  }
-  if (allowCheck === "unknown") {
-    return NextResponse.json(
-      { error: "content not in catalogue" },
-      { status: 404 },
-    );
+  //
+  // EXCEPTION: Bunny pull-zone URLs (vz-*.b-cdn.net) are porn3dx HLS
+  // sub-resources — the variant playlists + .dts segments referenced by a
+  // manifest we already validated. They aren't rows in `videos`, so the DB
+  // lookup would 404 every segment and break playback. The host allowlist
+  // above already restricts these to our own Bunny pull zone, and the
+  // top-level manifest passed this check, so trust its children.
+  if (!isBunnyPullZone) {
+    const allowCheck = await checkPageUrlAllowed(pageUrl);
+    if (allowCheck === "banned") {
+      return NextResponse.json(
+        { error: "content not available" },
+        { status: 403 },
+      );
+    }
+    if (allowCheck === "unknown") {
+      return NextResponse.json(
+        { error: "content not in catalogue" },
+        { status: 404 },
+      );
+    }
   }
 
   // Fast path: if the URL already points at a playable MP4, skip the
@@ -343,13 +352,16 @@ export async function GET(request: NextRequest) {
   // yt-dlp on them always 502s. We still proxy to hide the source host and
   // normalise Range handling.
   const pathname = parsed.pathname.toLowerCase();
-  const isDirectMp4 =
+  // Bunny pull-zone URLs (porn3dx HLS: .m3u8 manifests + .ts/.dts segments)
+  // are always direct — never send them to the yt-dlp/HTML resolver.
+  const isDirect =
+    isBunnyPullZone ||
     pathname.endsWith(".mp4") ||
     pathname.endsWith(".m4v") ||
     pathname.endsWith(".webm");
 
   // Resolve the page URL to a stream URL (only when we actually need to)
-  const streamUrl = isDirectMp4 ? pageUrl : await resolveUrl(pageUrl);
+  const streamUrl = isDirect ? pageUrl : await resolveUrl(pageUrl);
   if (!streamUrl) {
     return NextResponse.json(
       { error: "could not resolve video URL" },
@@ -408,12 +420,54 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  const upstreamType = upstream.headers.get("content-type") || "video/mp4";
+
+  // HLS manifest rewriting. Bunny (porn3dx) serves .m3u8 with open CORS, but
+  // Chromium's ORB (Opaque Response Blocking) still blocks hls.js from loading
+  // the cross-origin manifest → black player. Fix: proxy the manifest SAME-
+  // ORIGIN and rewrite every variant-playlist / segment URI to point back
+  // through this endpoint. Segments (video/mp2t) fall through as raw bytes;
+  // nested variant playlists recurse (detected by content-type again).
+  const isManifest =
+    /mpegurl/i.test(upstreamType) ||
+    streamUrl.toLowerCase().split("?")[0].endsWith(".m3u8");
+  if (isManifest) {
+    const raw = await upstream.text();
+    const base = streamUrl; // resolve relative URIs against the manifest URL
+    const toProxy = (uri: string): string => {
+      try {
+        const abs = new URL(uri, base).toString();
+        return `/api/video-stream?url=${encodeURIComponent(abs)}`;
+      } catch {
+        return uri;
+      }
+    };
+    const rewritten = raw
+      .split("\n")
+      .map((line) => {
+        const trimmed = line.trim();
+        if (!trimmed) return line;
+        if (trimmed.startsWith("#")) {
+          // Rewrite URI="..." attributes (EXT-X-KEY, EXT-X-MEDIA, EXT-X-MAP…)
+          return line.replace(
+            /URI="([^"]+)"/g,
+            (_m, u) => `URI="${toProxy(u)}"`,
+          );
+        }
+        // Bare URI line = variant playlist or segment
+        return toProxy(trimmed);
+      })
+      .join("\n");
+
+    const mh = new Headers();
+    mh.set("Content-Type", "application/vnd.apple.mpegurl");
+    mh.set("Cache-Control", "public, max-age=300");
+    return new NextResponse(rewritten, { status: 200, headers: mh });
+  }
+
   // Build response headers — pass through content-type, length, range info
   const headers = new Headers();
-  headers.set(
-    "Content-Type",
-    upstream.headers.get("content-type") || "video/mp4",
-  );
+  headers.set("Content-Type", upstreamType);
   const contentLength = upstream.headers.get("content-length");
   if (contentLength) headers.set("Content-Length", contentLength);
   const contentRange = upstream.headers.get("content-range");

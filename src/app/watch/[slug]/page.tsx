@@ -265,18 +265,17 @@ export default async function WatchPage({ params }: WatchPageProps) {
       const gv = await getGenericSourcePost(genericSource, id);
       if (!gv) notFound();
       video = gv;
-      // Most generic sources serve MP4s directly — proxy through
-      // /api/video-stream so the source host never appears in the DOM and
-      // Range handling stays uniform. EXCEPTION: HLS (.m3u8, porn3dx) must
-      // reach the browser raw so the player's hls.js sees the .m3u8 extension
-      // and attaches. Proxying hides the extension AND breaks manifest-
-      // relative segment resolution → black player. Bunny CDN serves porn3dx
-      // HLS with open CORS, so no host-hiding proxy is needed there.
+      // Generic sources proxy through /api/video-stream so the source host
+      // stays private and Range handling is uniform. HLS (.m3u8, porn3dx)
+      // ALSO proxies — but with an `&hls=1` marker so the player attaches
+      // hls.js to the proxy URL. The proxy rewrites the manifest to same-
+      // origin segment URLs, sidestepping Chromium ORB (which blocks hls.js
+      // from loading Bunny's cross-origin manifest → black player).
       if (gv.url) {
         const isHls = gv.url.toLowerCase().split("?")[0].endsWith(".m3u8");
-        streamProxyUrl = isHls
-          ? null
-          : `/api/video-stream?url=${encodeURIComponent(gv.url)}`;
+        streamProxyUrl = `/api/video-stream?url=${encodeURIComponent(gv.url)}${
+          isHls ? "&hls=1" : ""
+        }`;
       }
     } else if (isHentaicitySlug(slug)) {
       const hv = await getHentaicityPost(id);

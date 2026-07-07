@@ -114,7 +114,12 @@ export function WatchPlayer({
   useEffect(() => {
     const v = videoRef.current;
     if (!v || !resolvedSrc) return;
-    const isHls = resolvedSrc.toLowerCase().split("?")[0].endsWith(".m3u8");
+    // HLS is either a raw .m3u8 URL or our same-origin proxy carrying `hls=1`
+    // (porn3dx: proxied to dodge ORB — the .m3u8 extension is hidden behind
+    // /api/video-stream so we can't sniff it from the path alone).
+    const isHls =
+      resolvedSrc.toLowerCase().split("?")[0].endsWith(".m3u8") ||
+      /[?&]hls=1(&|$)/.test(resolvedSrc);
     if (!isHls) return;
 
     if (v.canPlayType("application/vnd.apple.mpegurl")) {
@@ -1023,7 +1028,8 @@ export function WatchPlayer({
           ref={videoRef}
           src={
             resolvedSrc &&
-            !resolvedSrc.toLowerCase().split("?")[0].endsWith(".m3u8")
+            !resolvedSrc.toLowerCase().split("?")[0].endsWith(".m3u8") &&
+            !/[?&]hls=1(&|$)/.test(resolvedSrc)
               ? resolvedSrc
               : undefined
           }
