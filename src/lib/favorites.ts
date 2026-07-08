@@ -32,17 +32,24 @@ function write(items: FavoriteItem[]): void {
  */
 function syncToServer(method: "POST" | "DELETE", slug: string): void {
   if (typeof window === "undefined") return;
-  const url =
-    method === "DELETE"
-      ? `/api/favorites?slug=${encodeURIComponent(slug)}`
-      : "/api/favorites";
-  fetch(url, {
-    method,
-    headers: { "Content-Type": "application/json" },
-    body: method === "POST" ? JSON.stringify({ slug }) : undefined,
-  }).catch(() => {
-    /* silent — anon users return 401, offline returns network error */
-  });
+  // Skip the server sync entirely for anon users. .catch() doesn't hide a
+  // 401 — fetch only rejects on network failure, so the browser still logs
+  // the 401 to the console (audit 2026-07-08). Same guard as score-client
+  // (d3cd031). Favorites live in localStorage for anon; the sync only
+  // mirrors them for logged-in accounts.
+  if (document.body?.dataset.auth === "1") {
+    const url =
+      method === "DELETE"
+        ? `/api/favorites?slug=${encodeURIComponent(slug)}`
+        : "/api/favorites";
+    fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: method === "POST" ? JSON.stringify({ slug }) : undefined,
+    }).catch(() => {
+      /* silent — offline / network error */
+    });
+  }
 
   // Fire scoring event for favorite_add (silently handles anon + badges)
   if (method === "POST") {

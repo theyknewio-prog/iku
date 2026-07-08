@@ -43,6 +43,7 @@ export function AdZoneClient({
   const insertedRef = useRef(false);
   const [isPro, setIsPro] = useState(true); // default hidden until checked
   const [visible, setVisible] = useState(!lazy);
+  const [noFill, setNoFill] = useState(false);
 
   useEffect(() => {
     setIsPro(document.body.dataset.pro === "1");
@@ -80,6 +81,18 @@ export function AdZoneClient({
 
     // Trigger ExoClick to fill the zone
     (window.AdProvider = window.AdProvider || []).push({ serve: {} });
+
+    // No-fill collapse: if nothing painted after 3.5s, hide the reserved
+    // box so it doesn't leave an empty gap (audit 2026-07-08 flagged blank
+    // 320x50 / 300x250 / tablet gaps). Check the CONTAINER's rendered
+    // children (iframe/img/ins-with-content), not just <ins> presence —
+    // ExoClick leaves an empty <ins> on no-fill (feedback_exoclick_fill_patterns).
+    setTimeout(() => {
+      const el = containerRef.current;
+      if (!el) return;
+      const painted = el.querySelector("iframe, img, ins > *");
+      if (!painted) setNoFill(true);
+    }, 3500);
   }, [zoneId]);
 
   // Insert ad when visible and not Pro
@@ -101,7 +114,7 @@ export function AdZoneClient({
     };
   }, []);
 
-  if (isPro) return null;
+  if (isPro || noFill) return null;
 
   const dims = SIZE_MAP[size] || SIZE_MAP["300x250"];
   const sizeClass = `ad-zone--${size}`;
