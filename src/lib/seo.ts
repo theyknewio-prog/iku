@@ -17,8 +17,8 @@ const NAME = "iku.gg";
  * (header 353K+, hero 360K+, stats 353K+) shipped 2026-04-30 because
  * each component had its own hardcoded string.
  */
-export const VIDEO_COUNT_DISPLAY = "320K+";
-export const VIDEO_COUNT_DISPLAY_LONG = "320,000+";
+export const VIDEO_COUNT_DISPLAY = "300K+";
+export const VIDEO_COUNT_DISPLAY_LONG = "300,000+";
 
 function humanize(tag: string): string {
   return tag.replace(/_/g, " ");

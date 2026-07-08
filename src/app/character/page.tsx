@@ -1,9 +1,9 @@
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { CHARACTERS } from "@/data/characters";
 import { SERIES } from "@/data/series";
 import { getThumbnailsForTags } from "@/lib/content";
+import { CoverImage } from "@/components/CoverImage";
 import { getNonce } from "@/lib/csp-nonce";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
@@ -144,22 +144,20 @@ export default async function CharactersPage() {
                         className="index-char-card"
                       >
                         <div className="index-char-card__avatar">
-                          {thumb ? (
-                            <Image
+                          {/* Emoji fallback underneath; CoverImage overlays
+                              and unmounts on 404 (dead-cover self-heal). */}
+                          <span
+                            className="index-char-card__fallback"
+                            aria-hidden
+                          >
+                            {fallbackEmoji(c.name)}
+                          </span>
+                          {thumb && (
+                            <CoverImage
                               src={thumb}
                               alt={c.name}
-                              fill
-                              sizes="(max-width: 768px) 110px, 130px"
                               className="index-char-card__img"
-                              unoptimized
                             />
-                          ) : (
-                            <span
-                              className="index-char-card__fallback"
-                              aria-hidden
-                            >
-                              {fallbackEmoji(c.name)}
-                            </span>
                           )}
                         </div>
                         <span className="index-char-card__name">{c.name}</span>

@@ -6,6 +6,7 @@ import React from "react";
 import { AgeGate } from "@/components/AgeGate";
 import { isLikelyBot } from "@/lib/is-bot";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
+import { ThumbnailCard } from "@/components/ThumbnailCard";
 import { CoverImage } from "@/components/CoverImage";
 import { buildGridInterleave } from "@/components/GridAds";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
@@ -35,9 +36,9 @@ export async function generateMetadata(props: {
     title:
       page > 1
         ? `Explore Hentai Videos — Page ${page} | iku.gg`
-        : "Explore All Hentai Videos — 353,000+ Free Animated Clips | iku.gg",
+        : "Explore All Hentai Videos — 300,000+ Free Animated Clips | iku.gg",
     description:
-      "Explore the largest collection of free hentai videos. 353,000+ animated hentai clips sorted by score, newest, and favorites. Browse by character, series, or tag.",
+      "Explore the largest collection of free hentai videos. 300,000+ animated hentai clips sorted by score, newest, and favorites. Browse by character, series, or tag.",
     other: { rating: "adult" },
     alternates: {
       canonical,
@@ -171,6 +172,20 @@ export default async function ExplorePage(props: {
     source: "all",
   });
 
+  // Source diversity: the revived gelbooru catalogue (~19.5K live) is
+  // score-buried under rule34 (avg 6291 vs 1035) and never surfaces in any
+  // score-sorted browse grid (audit 2026-07-08). Fetch a small gelbooru
+  // slice and interleave it as real video cards so revived content is
+  // reachable by navigation, not just direct URL. Page-level + additive —
+  // zero change to the shared getVideos ordering / pagination.
+  const { data: gelbooruMix } = await getVideos({
+    limit: 4,
+    page,
+    order: sort,
+    source: "gelbooru",
+    requireThumbnail: true,
+  });
+
   // Fetch real cover thumbnails in parallel for the hub cards, the character
   // scroll row, and the series scroll row. All batched via getThumbnailsForTags
   // which is memoized (1h TTL) — effectively free on warm cache.
@@ -210,7 +225,7 @@ export default async function ExplorePage(props: {
           <div className="explore-header">
             <h1 className="explore-header__title">Explore</h1>
             <p className="explore-header__sub">
-              353,000+ free animated hentai videos — browse by character,
+              300,000+ free animated hentai videos — browse by character,
               series, or vibe
             </p>
           </div>
@@ -393,10 +408,18 @@ export default async function ExplorePage(props: {
               <HilltopAdsBanner />
             </div>
 
-            {/* Video grid */}
+            {/* Video grid — ads + a diversity slice of revived gelbooru
+                content woven in at content-only indices (offset from the
+                ad indices so nothing stacks). */}
             <BlacklistFilter
               videos={videos}
-              interleave={buildGridInterleave("explore")}
+              interleave={[
+                ...buildGridInterleave("explore"),
+                ...gelbooruMix.map((v, k) => ({
+                  index: [3, 10, 24, 34][k] ?? 3 + k * 8,
+                  node: <ThumbnailCard key={`gel-${v.id}`} video={v} />,
+                })),
+              ]}
             />
 
             {/* ExoClick native — CPM/CPC display after the grid (lazy). */}

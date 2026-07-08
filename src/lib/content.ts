@@ -154,6 +154,7 @@ async function _getThumbnailForTag(tag: string): Promise<string> {
     const { rows } = await pool.query(
       `SELECT thumbnail, source FROM videos
        WHERE thumbnail != ''
+         AND dead_at IS NULL
          AND ($1 = ANY(characters) OR $1 = ANY(copyrights) OR $1 = ANY(tags))
          AND NOT (tags && $2::text[])
          AND NOT (COALESCE(characters, ARRAY[]::text[]) && $2::text[])

@@ -1,7 +1,7 @@
 import Link from "next/link";
-import Image from "next/image";
 import { SERIES } from "@/data/series";
 import { getThumbnailsForTags } from "@/lib/content";
+import { CoverImage } from "@/components/CoverImage";
 import { getNonce } from "@/lib/csp-nonce";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
@@ -111,13 +111,10 @@ export default async function SeriesIndexPage() {
                   >
                     <div className="index-series-card__poster">
                       {thumb && (
-                        <Image
+                        <CoverImage
                           src={thumb}
                           alt={s.name}
-                          fill
-                          sizes="(max-width: 768px) 160px, 200px"
                           className="index-series-card__img"
-                          unoptimized
                         />
                       )}
                       <span className="index-series-card__name">{s.name}</span>

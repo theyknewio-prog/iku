@@ -10,7 +10,7 @@ import { buildTitle } from "@/lib/video-display";
 export const metadata: Metadata = {
   title: "Hentai Shorts Feed — Swipe & Watch | iku.gg",
   description:
-    "Endless vertical hentai shorts. Swipe through 360,000+ free animated clips — TikTok-style feed on iku.gg.",
+    "Endless vertical hentai shorts. Swipe through 300,000+ free animated clips — TikTok-style feed on iku.gg.",
   other: { rating: "adult" },
   robots: { index: true, follow: true },
   alternates: { canonical: "https://iku.gg/feed" },
@@ -22,7 +22,7 @@ export default async function FeedPage() {
   // Bot view: server-rendered list so Googlebot sees real content.
   // The human-facing swipe feed is fully client-rendered (SwipeFeed) which
   // yields an empty shell to crawlers — killing any chance of indexing the
-  // 360K-shorts surface. This fallback mirrors the format of a trending
+  // 300K-shorts surface. This fallback mirrors the format of a trending
   // feed: headings, links, thumbnails, and enough copy to establish topical
   // relevance for "hentai shorts" / "hentai feed" / "animated shorts".
   if (bot) {
