@@ -4223,8 +4223,13 @@ body {
    ============================================================ */
 
 .page-container {
+  /* width:100% obligatoire: .shell-content est un flex-column, et
+     `margin:0 auto` (marges cross-axis auto) désactive le stretch flex →
+     le conteneur se dimensionnait sur son max-content plafonné à 1500px,
+     débordant/clippé à 1500 sur tablette 810px (audit 2026-07-08). */
+  width: 100%;
   max-width: 1500px;
-  margin: 0 auto;
+  margin-inline: auto;
   padding-inline: 16px;
 }
 
@@ -4793,7 +4798,12 @@ body {
   left: 0;
   right: 0;
   height: var(--v2-topbar-h);
-  background: rgba(26, 22, 37, 0.8);
+  /* 0.96 (was 0.8): le blur backdrop-filter est ignoré par certains
+     moteurs (headless/anciens) → le contenu défilait visiblement à
+     travers le topbar (audit 2026-07-08). Opacité quasi-pleine = pas de
+     bleed-through même sans backdrop-filter, effet verre gardé quand il
+     est supporté. */
+  background: rgba(26, 22, 37, 0.96);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);

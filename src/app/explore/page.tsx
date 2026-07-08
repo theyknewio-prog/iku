@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import { getVideos, getThumbnailsForTags } from "@/lib/content";
 import { SORT_OPTIONS, parseSort, type SortValue } from "@/lib/sort-options";
 import React from "react";
 import { AgeGate } from "@/components/AgeGate";
 import { isLikelyBot } from "@/lib/is-bot";
 import { BlacklistFilter } from "@/components/BlacklistFilter";
+import { CoverImage } from "@/components/CoverImage";
 import { buildGridInterleave } from "@/components/GridAds";
 import { HilltopAdsBanner } from "@/components/HilltopAdsBanner";
 import { AdRotationBanner } from "@/components/AdJoiBanner";
@@ -232,14 +232,10 @@ export default async function ExplorePage(props: {
                     style={{ background: card.gradient }}
                   >
                     {thumb && (
-                      <Image
+                      <CoverImage
                         src={thumb}
                         alt=""
-                        fill
-                        sizes="(max-width: 768px) 50vw, 33vw"
                         className="ex-hub-card__bg"
-                        unoptimized
-                        aria-hidden="true"
                       />
                     )}
                     <span className="ex-hub-card__icon" aria-hidden="true">
@@ -285,29 +281,17 @@ export default async function ExplorePage(props: {
                         gradient + initials fallback otherwise. */}
                     <div
                       className="v2-char-card__avatar"
-                      style={
-                        thumb
-                          ? undefined
-                          : {
-                              background:
-                                CHAR_GRADIENTS[i % CHAR_GRADIENTS.length],
-                            }
-                      }
+                      style={{
+                        background: CHAR_GRADIENTS[i % CHAR_GRADIENTS.length],
+                      }}
                     >
-                      {thumb ? (
-                        <Image
-                          src={thumb}
-                          alt={char.name}
-                          fill
-                          sizes="(max-width: 1024px) 120px, 130px"
-                          style={{ objectFit: "cover" }}
-                          unoptimized
-                        />
-                      ) : (
-                        <span className="v2-char-card__initials">
-                          {initials(char.name)}
-                        </span>
-                      )}
+                      {/* Initials always rendered underneath; CoverImage
+                          overlays the thumb and unmounts itself on 404,
+                          revealing the initials (dead-cover self-heal). */}
+                      <span className="v2-char-card__initials">
+                        {initials(char.name)}
+                      </span>
+                      {thumb && <CoverImage src={thumb} alt={char.name} />}
                     </div>
                     <div className="v2-char-card__name">{char.name}</div>
                     <div className="v2-char-card__count">{char.seriesName}</div>
@@ -342,25 +326,20 @@ export default async function ExplorePage(props: {
                       background: SERIES_GRADIENTS[i % SERIES_GRADIENTS.length],
                     }}
                   >
+                    {/* Watermark always underneath; CoverImage overlays and
+                        self-heals to it on 404 (dead gelbooru covers). */}
+                    <span
+                      className="ex-series-card__watermark"
+                      aria-hidden="true"
+                    >
+                      {s.name.slice(0, 2).toUpperCase()}
+                    </span>
                     {thumb && (
-                      <Image
+                      <CoverImage
                         src={thumb}
                         alt=""
-                        fill
-                        sizes="(max-width: 768px) 260px, 300px"
                         className="ex-series-card__bg"
-                        unoptimized
-                        aria-hidden="true"
                       />
-                    )}
-                    {/* Decorative faint title watermark (only when no image) */}
-                    {!thumb && (
-                      <span
-                        className="ex-series-card__watermark"
-                        aria-hidden="true"
-                      >
-                        {s.name.slice(0, 2).toUpperCase()}
-                      </span>
                     )}
                     <div className="ex-series-card__content">
                       <strong className="ex-series-card__name">{s.name}</strong>
