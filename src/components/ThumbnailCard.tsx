@@ -374,13 +374,34 @@ export function ThumbnailCard({
         <h3 className="video-card__title">{title}</h3>
 
         <div className="video-card__meta">
-          <span
-            className="video-card__stars"
-            aria-label={`Rating ${(video.score >= 500 ? 5 : video.score >= 200 ? 4.5 : video.score >= 50 ? 4 : 3.5).toFixed(1)} out of 5`}
-          >
-            {"★★★★★"}
-          </span>
-          <span className="video-card__views">{displayScore} views</span>
+          {(() => {
+            // Vary the stars by score tier so cards don't all show an
+            // identical 5/5 (read as fake, audit 2026-07-08). Half-star
+            // via a partially-filled glyph row.
+            const rating =
+              video.score >= 500
+                ? 5
+                : video.score >= 200
+                  ? 4.5
+                  : video.score >= 50
+                    ? 4
+                    : 3.5;
+            const full = Math.floor(rating);
+            const half = rating - full >= 0.5;
+            return (
+              <span
+                className="video-card__stars"
+                aria-label={`Rating ${rating.toFixed(1)} out of 5`}
+              >
+                {"★".repeat(full)}
+                {half ? "½" : ""}
+                {"☆".repeat(5 - full - (half ? 1 : 0))}
+              </span>
+            );
+          })()}
+          {video.score > 0 && (
+            <span className="video-card__views">{displayScore} views</span>
+          )}
         </div>
       </div>
     </Link>
