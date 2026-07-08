@@ -89,15 +89,19 @@ for (let i = 0; i < rows.length; i++) {
       const urlChanged = post.file_url !== url;
       const thumbChanged = freshThumb && freshThumb !== thumbnail;
       if (urlChanged || thumbChanged) {
+        // Also clear dead_thumbnail_at: we just fetched a fresh thumbnail, so
+        // any stale "dead thumbnail" flag from a past transient 404 must be
+        // lifted or the video stays hidden despite a working thumb.
         await pool.query(
-          "UPDATE videos SET url = $1, thumbnail = COALESCE(NULLIF($2,''), thumbnail), dead_at = NULL WHERE pk = $3",
+          "UPDATE videos SET url = $1, thumbnail = COALESCE(NULLIF($2,''), thumbnail), dead_at = NULL, dead_thumbnail_at = NULL WHERE pk = $3",
           [post.file_url, freshThumb, pk],
         );
         updated++;
       } else {
-        await pool.query("UPDATE videos SET dead_at = NULL WHERE pk = $1", [
-          pk,
-        ]);
+        await pool.query(
+          "UPDATE videos SET dead_at = NULL, dead_thumbnail_at = NULL WHERE pk = $1",
+          [pk],
+        );
         same++;
       }
     }
