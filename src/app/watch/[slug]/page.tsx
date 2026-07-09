@@ -461,6 +461,18 @@ export default async function WatchPage({ params }: WatchPageProps) {
 
   return (
     <>
+      {/* LCP: the player poster (third-party CDN thumbnail) is the largest
+          above-fold element. Without a preload the browser only discovers it
+          after CSS/JS — CF Web Analytics measured it at 5.5s (2026-07-09).
+          React 19 hoists this <link> into <head>. */}
+      {/^https:\/\//.test(video.thumbnail || "") && (
+        <link
+          rel="preload"
+          as="image"
+          href={video.thumbnail}
+          fetchPriority="high"
+        />
+      )}
       {/* JSON-LD — VideoObject */}
       <script
         type="application/ld+json"

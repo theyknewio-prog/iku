@@ -134,6 +134,9 @@ export function AdRotationBanner({ slug, surface, eager }: Props) {
         style={{ display: "block", width: 300, height: 250 }}
         loading={eager ? "eager" : "lazy"}
         decoding="async"
+        // Ads must never win the bandwidth race against content (CF Web
+        // Analytics 2026-07-09: these GIFs WERE the LCP element at 3.4-4s).
+        fetchPriority="low"
         referrerPolicy="no-referrer-when-downgrade"
       />
     </a>

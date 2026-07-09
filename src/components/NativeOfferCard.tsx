@@ -91,6 +91,7 @@ export function NativeOfferCard({ slug, surface }: Props) {
           className="video-card__thumbnail"
           loading="lazy"
           decoding="async"
+          fetchPriority="low"
           referrerPolicy="no-referrer-when-downgrade"
         />
         <span className="video-card__duration video-card__ad-pill">AD</span>

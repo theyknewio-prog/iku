@@ -41,12 +41,22 @@ export function AdZoneClient({
 }: AdZoneProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const insertedRef = useRef(false);
-  const [isPro, setIsPro] = useState(true); // default hidden until checked
+  // Default FALSE so the reserved box is in the SSR HTML from first paint.
+  // Starting at true (hidden-until-checked) made every zone pop in after
+  // hydration and shoved the whole page down — CF Web Analytics measured
+  // CLS 0.27-1.0 attributed to page-container/mega-footer (2026-07-09).
+  // Pro users never see the box: body[data-pro="1"] hides .ad-zone via CSS
+  // synchronously, and this state only gates the ad INSERTION.
+  const [isPro, setIsPro] = useState(false);
+  // Ads must not be INSERTED before the Pro check ran, or Pro users would
+  // get hidden impressions. The box renders meanwhile (space reservation).
+  const [proChecked, setProChecked] = useState(false);
   const [visible, setVisible] = useState(!lazy);
   const [noFill, setNoFill] = useState(false);
 
   useEffect(() => {
     setIsPro(document.body.dataset.pro === "1");
+    setProChecked(true);
   }, []);
 
   // IntersectionObserver for lazy ads
@@ -95,11 +105,11 @@ export function AdZoneClient({
     }, 3500);
   }, [zoneId]);
 
-  // Insert ad when visible and not Pro
+  // Insert ad when visible, after the Pro check confirmed non-Pro
   useEffect(() => {
-    if (isPro || !visible) return;
+    if (!proChecked || isPro || !visible) return;
     insertAd();
-  }, [isPro, visible, insertAd]);
+  }, [proChecked, isPro, visible, insertAd]);
 
   // Cleanup on unmount
   useEffect(() => {

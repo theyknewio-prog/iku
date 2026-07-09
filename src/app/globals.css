@@ -12561,6 +12561,11 @@ body {
 }
 
 /* ── Ad Zones (ExoClick — re-lit 2026-07-03) ─────────────────── */
+/* Pro: hide reserved ad boxes from first paint (data-pro is SSR'd on body,
+   so this applies before hydration — no flash, no layout shift). */
+body[data-pro="1"] .ad-zone {
+  display: none !important;
+}
 .ad-zone {
   display: flex;
   align-items: center;
