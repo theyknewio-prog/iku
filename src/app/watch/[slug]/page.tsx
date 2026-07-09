@@ -465,7 +465,9 @@ export default async function WatchPage({ params }: WatchPageProps) {
           above-fold element. Without a preload the browser only discovers it
           after CSS/JS — CF Web Analytics measured it at 5.5s (2026-07-09).
           React 19 hoists this <link> into <head>. */}
-      {/^https:\/\//.test(video.thumbnail || "") && (
+      {/* Accept both absolute https (hentaicity/rule34video/hanime1) and
+          root-relative /api/proxy?... (gelbooru posters are proxied). */}
+      {/^(https:\/\/|\/)/.test(video.thumbnail || "") && (
         <link
           rel="preload"
           as="image"
