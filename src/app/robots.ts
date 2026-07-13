@@ -1,6 +1,11 @@
 import type { MetadataRoute } from "next";
 import pool from "@/lib/db";
 
+// PG is unreachable during the Docker build, so a build-time prerender always
+// falls into the catch below and bakes the fallback count in for good. Recompute
+// daily in prod (where PG is up) so the advertised chunk list tracks the catalog.
+export const revalidate = 86400;
+
 async function getWatchSitemapCount(): Promise<number> {
   const MAX_PER_SITEMAP = 45000;
   try {
