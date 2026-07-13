@@ -421,6 +421,14 @@ async function main() {
     max: 3,
     statement_timeout: 30000,
   });
+  // CRITICAL: without this, an 'error' event on an IDLE pooled client
+  // (e.g. a statement_timeout cancel, or a dropped connection) is unhandled
+  // and crashes the whole process — even though the per-entity try/catch
+  // already caught the query rejection. This is what killed the run twice
+  // (at 1959, then 5420). Swallow idle-client errors; the loop reconnects.
+  pool.on("error", (err) =>
+    console.log(`  pool client error (ignored): ${err.message}`),
+  );
   let total = 0;
   try {
     const types = ENTITY === "all" ? ["tag", "character", "series"] : [ENTITY];

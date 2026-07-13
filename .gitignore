@@ -64,3 +64,22 @@ exo.json
 tok.json
 *.json.tmp
 .playwright-mcp/
+
+# Research notes + raw scrape logs — kept on disk, not in the repo
+/data/yt-transcripts/
+/data/scrape-logs/
+
+# Throwaway audit/probe scratch (scripts, screenshots, logs, patch dirs)
+.tmp-*
+/agent-*.jpeg
+/affiliate-shots*/
+/*.png
+/*.jpg
+/*.jpeg
+/*.log
+/cr-*.json
+/cr-dashboard.yml
+/yandex-*.yml
+/gmail_inbox_scan*.json
+/twenty-agents-report.json
+/stripcash-vs-snapshot.md

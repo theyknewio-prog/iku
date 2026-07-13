@@ -152,12 +152,17 @@ async function checkGoLinksEndToEnd() {
         failures.push(
           `/go/${slug}: DEAD-ENDS on tracker ${finalUrl.hostname} (status ${res.status}, body ${body.length}b) — offer id dead or link format broken`,
         );
-      } else if (res.status === 403 && finalUrl.hostname.endsWith("soulkyn.com")) {
+      } else if (
+        res.status === 403 &&
+        finalUrl.hostname.endsWith("soulkyn.com")
+      ) {
         // Soulkyn's WAF blocks datacenter IPs (Hetzner) but serves 200 to
         // residential traffic — verified 2026-07-03. Reaching soulkyn.com
         // at all means the redirect chain is intact.
       } else if (res.status !== 200) {
-        failures.push(`/go/${slug}: landing ${finalUrl.hostname} → HTTP ${res.status}`);
+        failures.push(
+          `/go/${slug}: landing ${finalUrl.hostname} → HTTP ${res.status}`,
+        );
       } else if (body.length < 500) {
         failures.push(
           `/go/${slug}: landing ${finalUrl.hostname} near-blank (${body.length}b)`,
@@ -258,7 +263,8 @@ async function checkWatchMobile() {
           return { ok: false, reason: "Live Cams link missing in drawer" };
         return { ok: true, links };
       });
-      if (!drawerProbe.ok) failures.push(`Drawer broken: ${drawerProbe.reason}`);
+      if (!drawerProbe.ok)
+        failures.push(`Drawer broken: ${drawerProbe.reason}`);
     }
   } catch (e) {
     failures.push(`page error: ${e.message}`);
@@ -301,8 +307,8 @@ async function checkHomepageDesktop() {
           (a) => (a.href || "").includes("/go/candy-ai"),
         ).length,
         adInsideTrendingCarousel: adInTrack,
-        goAnchorsTotal: Array.from(document.querySelectorAll("a")).filter(
-          (a) => (a.href || "").includes("/go/"),
+        goAnchorsTotal: Array.from(document.querySelectorAll("a")).filter((a) =>
+          (a.href || "").includes("/go/"),
         ).length,
       };
     });
