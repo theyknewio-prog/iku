@@ -134,6 +134,7 @@ export async function GET(request: NextRequest) {
         return {
           id: v.id,
           slug: v.slug,
+          title: v.title,
           // Both field names for compatibility (HomeFeed uses `url`, SwipeFeed uses `videoUrl`)
           url: playableUrl,
           videoUrl: playableUrl,

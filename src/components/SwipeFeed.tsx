@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 export interface FeedVideo {
   id: number;
   slug?: string;
+  title?: string;
   videoUrl: string;
   thumbnail: string;
   score: number;

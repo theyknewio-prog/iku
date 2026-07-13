@@ -367,14 +367,16 @@ export function VideoCard({
    * Matches the watch-page derivation so a Shorts save lands in /favorites with
    * the same label the user would see on the watch card. */
   const favoriteEntry = useCallback(() => {
-    const title = video.character
-      ? `${video.character.replace(/_/g, " ")}${
-          video.copyright ? ` — ${video.copyright.replace(/_/g, " ")}` : ""
-        }`
-      : (video.tags || [])
-          .slice(0, 3)
-          .map((t) => t.replace(/_/g, " "))
-          .join(", ") || "Untitled";
+    const title =
+      video.title?.trim() ||
+      (video.character
+        ? `${video.character.replace(/_/g, " ")}${
+            video.copyright ? ` — ${video.copyright.replace(/_/g, " ")}` : ""
+          }`
+        : (video.tags || [])
+            .slice(0, 3)
+            .map((t) => t.replace(/_/g, " "))
+            .join(", ") || "Untitled");
     return {
       id: video.id,
       slug: video.slug ?? "",
@@ -631,17 +633,23 @@ export function VideoCard({
   // Build a clean title: character name > copyright > curated tags
   const charName = video.character?.replace(/_/g, " ");
   const seriesName = video.copyright?.replace(/_/g, " ");
-  const title = charName
-    ? seriesName
-      ? `${charName} — ${seriesName}`
-      : charName
-    : seriesName
+  // The scraped title beats anything we can assemble from tags. Falling straight
+  // to the tag list is what put "abarabone94, aged up" on screen: booru tags are
+  // stored alphabetically, so the first two are whatever sorts first, not what
+  // the clip is about.
+  const title =
+    video.title?.trim() ||
+    (charName
       ? seriesName
-      : video.tags
-          .filter((t) => !HIDDEN_TAGS.has(t))
-          .slice(0, 2)
-          .map((t) => t.replace(/_/g, " "))
-          .join(", ") || "Untitled";
+        ? `${charName} — ${seriesName}`
+        : charName
+      : seriesName
+        ? seriesName
+        : video.tags
+            .filter((t) => !HIDDEN_TAGS.has(t))
+            .slice(0, 2)
+            .map((t) => t.replace(/_/g, " "))
+            .join(", ") || "Untitled");
 
   // Curated tags: filter out noise, show the interesting ones
   const displayTags = video.tags
