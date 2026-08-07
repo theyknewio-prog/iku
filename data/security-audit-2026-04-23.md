@@ -70,8 +70,8 @@ Et vérifier que le call-site serveur de `advanceDailyQuests` appelle `recordSco
 **Attack** :
 
 ```bash
-# Token exposé : 8428448598:AAFwli73qAOBXrhMYqAGLfgpBjeM5M5Ehkw
-curl -s "https://api.telegram.org/bot8428448598:AAFwli73qAOBXrhMYqAGLfgpBjeM5M5Ehkw/getMe"
+# Token exposé : [TOKEN-REVOQUE-NE-PLUS-UTILISER]
+curl -s "https://api.telegram.org/bot[TOKEN-REVOQUE-NE-PLUS-UTILISER]/getMe"
 # {"ok":true,"result":{"id":8428448598,"is_bot":true,"username":"Addictives_bot"}}
 
 # Envoie spam à Sab (chat_id 5617056258 aussi hardcodé) :
@@ -94,7 +94,7 @@ Le token apparaît aussi dans `scripts/setup-revenue-cron.sh` qui est un script 
 1. Révoquer le token immédiatement via BotFather (`/revoke` → nouveau token)
 2. Purger des 4 fichiers :
    ```bash
-   sed -i 's|"8428448598:AAFwli73qAOBXrhMYqAGLfgpBjeM5M5Ehkw"|process.env.TELEGRAM_BOT_TOKEN ?? ""|g' \
+   sed -i 's|"[TOKEN-REVOQUE-NE-PLUS-UTILISER]"|process.env.TELEGRAM_BOT_TOKEN ?? ""|g' \
      scripts/tg-recap-signups.mjs \
      scripts/tg-recap-hilltop-zones.mjs \
      scripts/telegram-recap-2026-04-18.mjs
